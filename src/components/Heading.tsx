@@ -12,11 +12,6 @@ export const Heading = () => {
             Log In
           </Button>
         </Link>
-        <Link to="/signup" className="hidden sm:block">
-          <Button className="bg-black dark:bg-white text-white dark:text-black transition-transform hover:scale-105">
-            Get Started
-          </Button>
-        </Link>
       </div>
     </header>
   );
