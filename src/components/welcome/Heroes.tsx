@@ -2,7 +2,7 @@ import documents from "@/assets/documents.png";
 import documents_dark from "@/assets/documents-dark.png";
 import reading from "@/assets/reading.png";
 import reading_dark from "@/assets/reading-dark.png";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 export const Heroes = () => {

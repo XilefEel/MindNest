@@ -1,7 +1,7 @@
 import AuthForm from "@/components/AuthForm";
 import { Link } from "react-router-dom";
 import { signupUser } from "@/lib/authService";
-import { SignupData, LoginData } from "@/lib/authService";
+import { SignupData, LoginData } from "../lib/types";
 
 export default function SignupPage() {
   const handleSignup = async (data: SignupData | LoginData): Promise<void> => {

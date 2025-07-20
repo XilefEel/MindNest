@@ -14,7 +14,7 @@ export function ThemeProvider({
 }) {
   return (
     <NextThemesProvider
-      attribute="class" // <== very important!
+      attribute="class"
       defaultTheme="system"
       enableSystem
       storageKey="mindnest-theme"
