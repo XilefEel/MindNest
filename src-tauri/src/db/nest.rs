@@ -52,3 +52,37 @@ pub fn get_nests_by_user(user_id: i32) -> Result<Vec<Nest>, String> {
 
     Ok(nests)
 }
+
+pub fn update_nest_title(nest_id: i32, new_title: String) -> Result<(), String> {
+    let conn = get_connection().map_err(|e| e.to_string())?;
+    conn.execute(
+        "UPDATE nests SET title = ?1 WHERE id = ?2",
+        params![new_title, nest_id],
+    ).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+pub fn delete_nest_from_db(nest_id: i32) -> Result<(), String> {
+    let conn = get_connection().map_err(|e| e.to_string())?;
+    conn.execute(
+        "DELETE FROM nests WHERE id = ?1",
+        params![nest_id],
+    ).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+pub fn get_nest_data(nest_id: i32) -> Result<Nest, String> {
+    let conn = get_connection().map_err(|e| e.to_string())?;
+    let mut statement = conn.prepare(
+        "SELECT id, user_id, title, created_at FROM nests WHERE id = ?1"
+    ).map_err(|e| e.to_string())?;
+    let nest = statement.query_row([nest_id], |row| {
+        Ok(Nest {
+            id: row.get(0)?,
+            user_id: row.get(1)?,
+            title: row.get(2)?,
+            created_at: row.get(3)?,
+        })
+    }).map_err(|e| e.to_string())?;
+    Ok(nest)
+}

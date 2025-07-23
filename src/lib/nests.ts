@@ -21,3 +21,15 @@ export async function getUserNests(userId: number) {
     return [];
   }
 }
+
+export async function updateNest(nestId: number, newTitle: string) {
+  return await invoke("update_nest", { nestId, newTitle });
+}
+
+export async function deleteNest(nestId: number) {
+  return await invoke("delete_nest", { nestId });
+}
+
+export async function getNestFromId(nestId: number) {
+  return await invoke<Nest>("get_nest_by_id", { nestId });
+}

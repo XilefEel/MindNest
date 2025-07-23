@@ -1,21 +1,30 @@
 import { useState } from "react";
 import { createNest } from "@/lib/nests";
-import { useAuth } from "@/context/AuthContext";
 import { Button } from "../ui/button";
 import { Plus, X } from "lucide-react";
+import { User } from "@/lib/types";
 
 export default function AddNestModal({
-  onSuccess,
+  user,
+  refresh,
 }: {
-  onSuccess?: () => void;
+  user: User | null;
+  refresh?: () => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+
+  const handleExit = () => {
+    refresh?.();
+    setIsOpen(false);
+    setTitle("");
+    setError(null);
+  };
 
   const handleCreateNest = async () => {
-    if (!title.trim()) return alert("Please enter a title");
+    if (!title.trim()) return setError("Title is required");
 
     const userId = user?.id;
     if (!userId) return alert("User not logged in");
@@ -23,20 +32,16 @@ export default function AddNestModal({
     setLoading(true);
     try {
       await createNest(userId, title.trim());
-      onSuccess?.();
-      alert("Nest created!");
-      setIsOpen(false);
-      setTitle("");
+      handleExit();
     } catch (err) {
       console.error(err);
-      alert("Failed to create nest");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <>
+    <div>
       <Button
         onClick={() => setIsOpen(true)}
         className="bg-black dark:bg-white text-white dark:text-black hover:scale-105 transition"
@@ -46,19 +51,19 @@ export default function AddNestModal({
 
       {isOpen && (
         <div
-          onClick={() => setIsOpen(false)}
+          onClick={() => handleExit()}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 space-y-6 transition-all"
+            className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 space-y-3 transition-all"
           >
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-black dark:text-white">
                 Create a New Nest
               </h2>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => handleExit()}
                 className="text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
               >
                 <X className="w-5 h-5" />
@@ -78,6 +83,8 @@ export default function AddNestModal({
               />
             </div>
 
+            {error && <p className="text-sm text-red-500">{error}</p>}
+
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setIsOpen(false)}
@@ -96,6 +103,6 @@ export default function AddNestModal({
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
