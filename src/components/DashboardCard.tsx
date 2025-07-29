@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "./ui/card";
 
 interface DashboardCardProps {
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
@@ -12,9 +12,9 @@ export default function DashboardCard({
   return (
     <Card
       onClick={onClick}
-      className="rounded-2xl bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-800 p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+      className="rounded-2xl border-gray-200 bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-700"
     >
-      <CardContent className="p-4 space-y-1">{children}</CardContent>
+      <CardContent className="space-y-1 p-4">{children}</CardContent>
     </Card>
   );
 }

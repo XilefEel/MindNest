@@ -2,83 +2,115 @@ import { updateNest, deleteNest } from "@/lib/nests";
 import { Nest } from "@/lib/types";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { Trash, X } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "../ui/input";
+import { toast } from "sonner";
 
 export default function EditNestModal({
   nest,
   refresh,
 }: {
-  nest: Nest;
+  nest: Nest | null;
   refresh?: () => void;
 }) {
-  const [title, setTitle] = useState(nest.title);
+  const [isOpen, setIsOpen] = useState(false);
+  const [title, setTitle] = useState(nest?.title ?? "");
   const [error, setError] = useState<string | null>(null);
 
   const handleEdit = async () => {
-    if (title.trim() == "") return setError("Title is required");
+    if (!nest) return setError("Nest not found");
+    if (title.trim() == "") {
+      toast.warning("Title is required");
+      return;
+    }
+
     await updateNest(nest.id, title);
-    refresh?.();
+    handleExit();
+    toast.info("Nest title updated");
   };
   const handleDelete = async () => {
+    if (!nest) return setError("Nest not found");
     await deleteNest(nest.id);
+    handleExit();
+    toast.error("Nest deleted");
+  };
+
+  const handleExit = () => {
     refresh?.();
+    setTitle("");
+    setIsOpen(false);
+    setError(null);
   };
 
   return (
-    <div
-      onClick={refresh}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 space-y-4 transition-all"
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-black dark:text-white">
-            Edit Nest
-          </h2>
-          <button
-            onClick={refresh}
-            className="text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <div>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger className="flex size-4 cursor-pointer items-center rounded-lg dark:text-white">
+          <Pencil className="size-4" />
+        </DialogTrigger>
+        <DialogContent className="space-y-2 rounded-2xl bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
+          <DialogHeader className="justify-between">
+            <DialogTitle className="text-xl font-bold text-black dark:text-white">
+              Edit Nest
+            </DialogTitle>
+            <DialogDescription>
+              Don't like the title? You can change it! or delete it.
+            </DialogDescription>
+          </DialogHeader>
 
-        <div>
-          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Nest Title
-          </p>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Personal, Work, School"
-            className="w-full px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        {error && <p className="text-sm text-red-500">{error}</p>}
-
-        <div className="flex justify-between items-center mt-4">
-          <Button
-            onClick={handleDelete}
-            className="flex items-center gap-1 text-sm px-3 py-2 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition"
-          >
-            <Trash size={14} />
-            Delete
-          </Button>
-          <div className="flex gap-2">
-            <Button
-              onClick={handleEdit}
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition"
-            >
-              Save
-            </Button>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              New Nest Title
+            </label>
+            <Input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. Personal, Work, School"
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-black focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
+            />
           </div>
-        </div>
-      </div>
+
+          {error && <p className="text-sm text-red-500">{error}</p>}
+
+          <DialogFooter className="flex justify-between gap-2">
+            <Button
+              onClick={handleDelete}
+              className="mr-auto cursor-pointer rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
+            >
+              <Trash size={14} />
+              Delete
+            </Button>
+            <div className="flex gap-2">
+              <DialogClose asChild>
+                <Button
+                  variant="ghost"
+                  className="cursor-pointer rounded-lg bg-gray-200 text-black hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                >
+                  Cancel
+                </Button>
+              </DialogClose>
+
+              <Button
+                onClick={handleEdit}
+                className="cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
+              >
+                Save
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

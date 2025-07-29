@@ -15,6 +15,10 @@ pub fn get_connection() -> Result<Connection, Error> {
 
 pub fn init_db() -> Result<(), String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
+
+    connection.execute("PRAGMA foreign_keys = ON;", [])
+        .map_err(|e| e.to_string())?;
+
     connection
         .execute_batch(
         "
@@ -33,14 +37,26 @@ pub fn init_db() -> Result<(), String> {
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         );
 
-        CREATE TABLE IF NOT EXISTS notes (
+        CREATE TABLE IF NOT EXISTS folders (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nest_id INTEGER NOT NULL,
-            title TEXT NOT NULL,
+            name TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            FOREIGN KEY (nest_id) REFERENCES nests(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS nestlings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nest_id INTEGER NOT NULL,
+            folder_id INTEGER,
+            type TEXT NOT NULL,
+            title TEXT,
             content TEXT,
             created_at TEXT NOT NULL,
-            updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (nest_id) REFERENCES nests(id) ON DELETE CASCADE
+            updated_at TEXT NOT NULL,
+            FOREIGN KEY (nest_id) REFERENCES nests(id) ON DELETE CASCADE,
+            FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE SET NULL
         );
         "
     ).map_err(|e| e.to_string())?;

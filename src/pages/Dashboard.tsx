@@ -65,20 +65,20 @@ export default function DashboardPage() {
   }, [isSidebarOpen]);
 
   return (
-    <div className="flex h-screen overflow-hidden  bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-white cursor-default">
+    <div className="flex h-screen cursor-default overflow-hidden bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-white">
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/30 z-30 md:hidden"
+          className="fixed inset-0 z-30 bg-black/30 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       <aside
         className={cn(
-          "bg-white dark:bg-gray-800 dark:text-white shadow-lg w-64 h-screen flex flex-col z-40",
-          "fixed top-0 left-0 transition-transform duration-300 ease-in-out shadow-xl",
+          "z-40 flex h-screen w-64 flex-col bg-white shadow-lg dark:bg-gray-800 dark:text-white",
+          "fixed top-0 left-0 shadow-xl transition-transform duration-300 ease-in-out",
           isSidebarOpen ? "translate-x-0" : "-translate-x-full",
-          "md:translate-x-0 md:relative md:flex"
+          "md:relative md:flex md:translate-x-0",
         )}
       >
         <Sidebar
@@ -91,16 +91,16 @@ export default function DashboardPage() {
         />
       </aside>
 
-      <div className="flex-1 flex flex-col">
-        <header className="md:hidden p-4 bg-white dark:bg-gray-950">
+      <div className="flex flex-1 flex-col">
+        <header className="bg-white p-4 md:hidden dark:bg-gray-950">
           <button
-            className="bg-white dark:text-black cursor-pointer rounded-md p-2 hover:bg-gray-100 transition-colors duration-200"
+            className="cursor-pointer rounded-md bg-white p-2 transition-colors duration-200 hover:bg-gray-100 dark:text-black"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           >
             <Menu />
           </button>
         </header>
-        <main className="flex-1 p-6 overflow-y-auto transition-opacity duration-200">
+        <main className="flex-1 overflow-y-auto p-6 transition-opacity duration-200">
           {renderSection()}
         </main>
       </div>

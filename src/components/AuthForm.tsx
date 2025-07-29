@@ -36,7 +36,7 @@ export default function AuthForm({ type, onSubmit }: AuthFormProps) {
     setLoading(true);
     try {
       await onSubmit(
-        type === "signup" ? { username, email, password } : { email, password }
+        type === "signup" ? { username, email, password } : { email, password },
       );
     } catch (err: any) {
       const message = err.message || "Something went wrong. Please try again.";
@@ -47,7 +47,7 @@ export default function AuthForm({ type, onSubmit }: AuthFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-sm">
+    <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-6">
       {type === "signup" && (
         <div className="space-y-2">
           <Label htmlFor="username">Username</Label>
@@ -93,7 +93,7 @@ export default function AuthForm({ type, onSubmit }: AuthFormProps) {
 
       <Button
         type="submit"
-        className="w-full mt-2 bg-black dark:bg-white text-white dark:text-black transition-transform hover:scale-105"
+        className="mt-2 w-full bg-black text-white transition-transform hover:scale-105 dark:bg-white dark:text-black"
         disabled={loading}
       >
         {loading
@@ -101,8 +101,8 @@ export default function AuthForm({ type, onSubmit }: AuthFormProps) {
             ? "Creating Account..."
             : "Logging In..."
           : type === "signup"
-          ? "Create Account"
-          : "Log In"}
+            ? "Create Account"
+            : "Log In"}
       </Button>
     </form>
   );

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createNest } from "@/lib/nests";
+import { createFolder } from "@/lib/nestlings";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,15 +12,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { User } from "@/lib/types";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AddNestModal({
-  user,
+  nestId,
   refresh,
 }: {
-  user: User | null;
+  nestId: number;
   refresh?: () => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,46 +34,39 @@ export default function AddNestModal({
     setError(null);
   };
 
-  const handleCreateNest = async () => {
-    if (title.trim() == "") {
-      toast.warning("Title is required");
-      return;
-    }
-
-    const userId = user?.id;
-    if (!userId) return alert("User not logged in");
-
+  const handleCreateFolder = async () => {
+    if (!title.trim()) return;
     setLoading(true);
     try {
-      await createNest(userId, title.trim());
+      await createFolder({ nest_id: nestId, name: title });
       handleExit();
     } catch (err) {
-      console.error(err);
+      console.error("Failed to create Folder:", err);
     } finally {
       setLoading(false);
+      toast.success("Folder created");
     }
-    toast.success("Nest created");
   };
 
   return (
     <div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger className="flex cursor-pointer items-center rounded-lg bg-black p-2 px-3 text-sm font-semibold text-white transition hover:scale-105 dark:bg-white dark:text-black">
-          <Plus className="mr-1 size-4" /> Create Nest
+          <Plus className="mr-1 size-4" /> Create Folder
         </DialogTrigger>
-        <DialogContent className="space-y-2 rounded-2xl bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
+        <DialogContent className="rounded-2xl bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
           <DialogHeader className="justify-between">
             <DialogTitle className="text-xl font-bold text-black dark:text-white">
-              Create a New Nest
+              Create a New Folder
             </DialogTitle>
             <DialogDescription>
-              Give your nest a title. You can always change it later.
+              Create a new folder to organize your notes.
             </DialogDescription>
           </DialogHeader>
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Nest Title
+              Folder Title
             </label>
             <Input
               value={title}
@@ -97,7 +89,7 @@ export default function AddNestModal({
             </DialogClose>
 
             <Button
-              onClick={handleCreateNest}
+              onClick={handleCreateFolder}
               disabled={loading}
               className="cursor-pointer rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
             >

@@ -5,7 +5,7 @@ import LoginPage from "../pages/Login";
 import SignupPage from "../pages/Signup";
 import DashboardPage from "../pages/Dashboard";
 import ProtectedRoute from "./ProtectedRoutes";
-import NestDashboard from "@/components/nests/NestDashboard";
+import NestDashboard from "@/pages/NestDashboard";
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();

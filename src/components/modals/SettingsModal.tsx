@@ -12,20 +12,20 @@ export default function SettingsModal({
       onClick={() => setIsSettingsOpen(false)}
     >
       <div
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-[90%] max-w-md"
+        className="w-[90%] max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold">Settings</h2>
           <button
             onClick={() => setIsSettingsOpen(false)}
-            className="text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
+            className="text-gray-400 transition hover:text-gray-700 dark:hover:text-white"
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
         <div className="space-y-4">
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Toggle Mode</span>
             <ThemeToggle />
           </div>

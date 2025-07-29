@@ -15,10 +15,10 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-12 bg-background">
-      <div className="w-full max-w-md border border-muted bg-card rounded-2xl shadow-xl p-10">
-        <div className="mb-6 text-center space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+    <div className="bg-background flex min-h-screen items-center justify-center px-6 py-12">
+      <div className="border-muted bg-card w-full max-w-md rounded-2xl border p-10 shadow-xl">
+        <div className="mb-6 space-y-2 text-center">
+          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
             Create your MindNest account
           </h1>
           <p className="text-muted-foreground text-sm">
@@ -27,9 +27,9 @@ export default function SignupPage() {
           <hr className="border-muted my-4" />
         </div>
         <AuthForm type="signup" onSubmit={handleSignup} />
-        <p className="mt-6 text-sm text-muted-foreground text-center">
+        <p className="text-muted-foreground mt-6 text-center text-sm">
           Already have an account?{" "}
-          <Link to="/login" className="underline hover:text-primary">
+          <Link to="/login" className="hover:text-primary underline">
             Log in
           </Link>
         </p>

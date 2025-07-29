@@ -23,18 +23,18 @@ export function ThemeToggle() {
 
   const icon =
     current === "light" ? (
-      <Sun className="w-4 h-4" />
+      <Sun className="h-4 w-4" />
     ) : current === "dark" ? (
-      <Moon className="w-4 h-4" />
+      <Moon className="h-4 w-4" />
     ) : (
-      <Laptop className="w-4 h-4" />
+      <Laptop className="h-4 w-4" />
     );
 
   return (
     <Button
       size="icon"
       onClick={cycleTheme}
-      className="bg-black dark:bg-white text-white dark:text-black"
+      className="bg-black text-white dark:bg-white dark:text-black"
     >
       {icon}
     </Button>

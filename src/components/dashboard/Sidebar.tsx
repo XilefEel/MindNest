@@ -31,8 +31,8 @@ export default function Sidebar({
     }
   };
   return (
-    <aside className="h-screen p-5 flex flex-col">
-      <div className="text-2xl font-bold mb-6">🧠 MindNest</div>
+    <aside className="flex h-screen flex-col p-5">
+      <div className="mb-6 text-2xl font-bold">🧠 MindNest</div>
 
       <nav className="space-y-2">
         <SidebarItem
@@ -60,7 +60,7 @@ export default function Sidebar({
           onClick={() => setActiveSection("explore")}
         />
       </nav>
-      <div className="mt-auto pt-6 border-t border-gray-200">
+      <div className="mt-auto border-t border-gray-200 pt-6">
         <SidebarItem
           icon={<CircleUserRound />}
           label="Profile"

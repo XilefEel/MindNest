@@ -8,7 +8,7 @@ use crate::db::nest::{
 };
 
 #[tauri::command]
-pub fn create_nest(data: NewNest) -> Result<Nest, String> {
+pub fn create_nest(data: NewNest) -> Result<(), String> {
     create_nest_in_db(data)
 }
 
