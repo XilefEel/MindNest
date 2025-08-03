@@ -1,18 +1,18 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getNestFromId } from "@/lib/nests";
-import { Nest } from "@/lib/types";
+import { Nest, Nestling } from "@/lib/types";
 
 import Topbar from "@/components/nests/Topbar";
 import Sidebar from "@/components/nests/Sidebar";
 import Home from "@/components/nests/Home";
-import SettingsModal from "@/components/modals/SettingsModal";
+import NoteEditor from "@/components/editors/NoteEditor";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
   const [nest, setNest] = useState<Nest | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [activeNestling, setActiveNestling] = useState<Nestling | null>(null);
 
   useEffect(() => {
     async function fetchNest() {
@@ -35,19 +35,21 @@ export default function NestDashboardPage() {
   return (
     <div className="flex h-screen cursor-default flex-col bg-gray-50 px-6 pb-6 dark:bg-gray-900">
       <div className="shrink-0">
-        <Topbar nest={nest} setIsSettingsOpen={setIsSettingsOpen} />
+        <Topbar nest={nest} />
       </div>
       <div className="mt-6 flex flex-1 gap-6 overflow-hidden">
-        <aside className="h-full w-72 overflow-y-auto">
-          <Sidebar nestId={nest.id} />
-        </aside>
-        <main className="flex-1 overflow-y-auto px-6 pb-6">
-          <Home id={nest.id} />
+        <Sidebar nestId={nest.id} setActiveNestling={setActiveNestling} />
+        <main className="flex-1 overflow-y-auto px-6">
+          {activeNestling && activeNestling.nestling_type === "note" ? (
+            <NoteEditor
+              nestling={activeNestling}
+              onClose={() => setActiveNestling(null)}
+            />
+          ) : (
+            <Home nestId={nest.id} />
+          )}
         </main>
       </div>
-      {isSettingsOpen && (
-        <SettingsModal setIsSettingsOpen={setIsSettingsOpen} />
-      )}
     </div>
   );
 }

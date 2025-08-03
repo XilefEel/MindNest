@@ -13,8 +13,12 @@ export default function useNests(userId: number) {
     try {
       const fetchedNests = await getUserNests(userId);
       setNests(fetchedNests);
-    } catch (err: any) {
-      setError(err.message || "Failed to fetch nests");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }

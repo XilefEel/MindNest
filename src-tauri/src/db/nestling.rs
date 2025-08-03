@@ -96,13 +96,40 @@ pub fn get_folders_by_nest(nest_id: i32) -> Result<Vec<Folder>, String> {
     Ok(result)
 }
 
-pub fn update_nestling_folder(id: i64, folder_id: i64) -> Result<(), String> {
+pub fn update_nestling_folder(id: i64, folder_id: Option<i64>) -> Result<(), String> {
     let conn = get_connection().map_err(|e| e.to_string())?;
 
     conn.execute(
         "UPDATE nestlings SET folder_id = ?1, updated_at = CURRENT_TIMESTAMP WHERE id = ?2",
         params![folder_id, id],
     ).map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
+pub fn update_note(
+    id: i64,
+    title: Option<String>,
+    content: Option<String>
+) -> Result<(), String> {
+    let conn = get_connection().map_err(|e| e.to_string())?;
+    
+    if title.is_some() && content.is_some() {
+    conn.execute(
+        "UPDATE nestlings SET title = ?1, content = ?2 WHERE id = ?3",
+        params![title.unwrap(), content.unwrap(), &id]
+        ).map_err(|e| e.to_string())?;
+    } else if let Some(title) = title {
+    conn.execute(
+        "UPDATE nestlings SET title = ?1 WHERE id = ?2",
+        params![title, &id]
+        ).map_err(|e| e.to_string())?;
+    } else if let Some(content) = content {
+    conn.execute(
+        "UPDATE nestlings SET content = ?1 WHERE id = ?2",
+        params![content, &id]
+        ).map_err(|e| e.to_string())?;
+    }
 
     Ok(())
 }

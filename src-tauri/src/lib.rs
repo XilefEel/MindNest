@@ -15,6 +15,7 @@ use handler::nestling::create_folder;
 use handler::nestling::get_nestlings;
 use handler::nestling::get_folders;
 use handler::nestling::update_folder;
+use handler::nestling::edit_note;
 
 use utils::user::init_db;
 
@@ -37,7 +38,8 @@ pub fn run() {
             create_folder,
             get_nestlings,
             get_folders,
-            update_folder]
+            update_folder,
+            edit_note]
         )
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

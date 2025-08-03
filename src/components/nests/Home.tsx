@@ -3,7 +3,7 @@ import DashboardCard from "../DashboardCard";
 import AddNestlingModal from "../modals/AddNestlingModal";
 import AddFolderModal from "../modals/AddFolderModal";
 
-export default function Home({ id }: { id: number }) {
+export default function Home({ nestId }: { nestId: number }) {
   return (
     <main className="flex flex-col gap-10 p-8">
       <header className="space-y-1">
@@ -18,8 +18,8 @@ export default function Home({ id }: { id: number }) {
           Quick Actions
         </h2>
         <div className="flex flex-wrap gap-3">
-          <AddNestlingModal nestId={id} />
-          <AddFolderModal nestId={id} />
+          <AddNestlingModal nestId={nestId} />
+          <AddFolderModal nestId={nestId} />
         </div>
       </section>
 

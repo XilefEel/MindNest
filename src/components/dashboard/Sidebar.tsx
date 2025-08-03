@@ -10,15 +10,14 @@ import {
 import SidebarItem from "./SidebarItem";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import SettingsModal from "../modals/SettingsModal";
 
 export default function Sidebar({
   activeSection,
   setActiveSection,
-  setIsSettingsOpen,
 }: {
   activeSection: string;
   setActiveSection: (section: any) => void;
-  setIsSettingsOpen: (open: boolean) => void;
 }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -67,11 +66,10 @@ export default function Sidebar({
           active={activeSection === "profile"}
           onClick={() => {}}
         />
-        <SidebarItem
-          icon={<Settings />}
-          label="Settings"
-          onClick={() => setIsSettingsOpen(true)}
-        />
+        <SettingsModal>
+          <SidebarItem icon={<Settings />} label="Settings" />
+        </SettingsModal>
+
         <SidebarItem icon={<LogOut />} label="Log Out" onClick={handleLogOut} />
       </div>
     </aside>

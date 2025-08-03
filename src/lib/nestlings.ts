@@ -19,10 +19,22 @@ export async function getFolders(nestId: number) {
 
 export async function updateNestlingFolder(
   nestlingId: number,
-  folderId: number,
+  folderId: number | null,
 ) {
   return await invoke("update_folder", {
     id: nestlingId,
     folderId,
+  });
+}
+
+export async function editNote(
+  nestlingId: number,
+  title: string | null,
+  content: string | null,
+) {
+  return await invoke("edit_note", {
+    id: nestlingId,
+    title,
+    content,
   });
 }

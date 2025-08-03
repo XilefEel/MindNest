@@ -1,36 +1,35 @@
-import { X } from "lucide-react";
 import { ThemeToggle } from "../theme-toggle";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { useState } from "react";
 
 export default function SettingsModal({
-  setIsSettingsOpen: setIsSettingsOpen,
+  children,
 }: {
-  setIsSettingsOpen: (open: boolean) => void;
+  children: React.ReactNode;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
-      onClick={() => setIsSettingsOpen(false)}
-    >
-      <div
-        className="w-[90%] max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold">Settings</h2>
-          <button
-            onClick={() => setIsSettingsOpen(false)}
-            className="text-gray-400 transition hover:text-gray-700 dark:hover:text-white"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Toggle Mode</span>
+    <div>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger className="w-full">{children}</DialogTrigger>
+        <DialogContent className="space-y-2 rounded-2xl border-0 bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
+          <DialogHeader className="justify-between">
+            <DialogTitle className="text-xl font-bold text-black dark:text-white">
+              Settings
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex justify-between">
+            <h1>Theme</h1>
             <ThemeToggle />
           </div>
-        </div>
-      </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

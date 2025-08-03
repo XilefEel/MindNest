@@ -23,14 +23,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 
-export default function AddNestModal({
-  nestId,
-  refresh,
-}: {
-  nestId: number;
-  refresh?: () => void;
-}) {
+export default function AddNestModal({ nestId }: { nestId: number }) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [nestlingType, setNestlingType] = useState("note");
@@ -38,8 +33,10 @@ export default function AddNestModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleExit = () => {
-    refresh?.();
+  const refreshData = useNestlingTreeStore((s) => s.refreshData);
+
+  const handleExit = async () => {
+    await refreshData();
     setTitle("");
     setContent("");
     setIsOpen(false);
@@ -72,7 +69,7 @@ export default function AddNestModal({
         <DialogTrigger className="flex cursor-pointer items-center rounded-lg bg-black p-2 px-3 text-sm font-semibold text-white transition hover:scale-105 dark:bg-white dark:text-black">
           <Plus className="mr-1 size-4" /> Create Nest
         </DialogTrigger>
-        <DialogContent className="rounded-2xl bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
+        <DialogContent className="rounded-2xl border-0 bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
           <DialogHeader className="justify-between">
             <DialogTitle className="text-xl font-bold text-black dark:text-white">
               Create a New Nestling

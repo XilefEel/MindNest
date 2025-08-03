@@ -8,14 +8,9 @@ import {
   CircleUserRound,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import SettingsModal from "../modals/SettingsModal";
 
-export default function Topbar({
-  nest,
-  setIsSettingsOpen,
-}: {
-  nest: Nest;
-  setIsSettingsOpen: (open: boolean) => void;
-}) {
+export default function Topbar({ nest }: { nest: Nest }) {
   const navigate = useNavigate();
   return (
     <nav className="flex w-full items-center justify-between border-b p-4 pt-12">
@@ -44,13 +39,15 @@ export default function Topbar({
         >
           <Link className="size-5" />
         </Button>
-        <Button
-          variant="ghost"
-          className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
-          onClick={() => setIsSettingsOpen(true)}
-        >
-          <Settings className="size-5" />
-        </Button>
+        <SettingsModal>
+          <Button
+            variant="ghost"
+            className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
+          >
+            <Settings className="size-5" />
+          </Button>
+        </SettingsModal>
+
         <Button
           variant="ghost"
           className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"

@@ -1,8 +1,28 @@
 import { Nestling } from "@/lib/types";
 import { useDraggable } from "@dnd-kit/core";
-import { FileText } from "lucide-react";
+import {
+  FileText,
+  List,
+  Calendar,
+  FileImage,
+  GripVertical,
+  LucideIcon,
+} from "lucide-react";
 
-export default function NestlingItem({ nestling }: { nestling: Nestling }) {
+const iconMap: Record<string, LucideIcon> = {
+  note: FileText,
+  board: List,
+  journal: Calendar,
+  gallery: FileImage,
+};
+
+export default function NestlingItem({
+  nestling,
+  setActiveNestling,
+}: {
+  nestling: Nestling;
+  setActiveNestling: (nestling: Nestling) => void;
+}) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: `nestling-${nestling.id}`,
@@ -15,16 +35,28 @@ export default function NestlingItem({ nestling }: { nestling: Nestling }) {
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const Icon = iconMap[nestling.nestling_type] || FileText;
+
   return (
     <div
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
+      className="flex w-full max-w-full cursor-pointer items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+      onClick={() => setActiveNestling(nestling)}
       style={style}
-      className="text-muted-foreground flex cursor-pointer items-center gap-2 rounded px-2 py-1"
     >
-      <FileText className="size-4" />
-      <span>{nestling.title}</span>
+      <div className="flex items-center gap-1">
+        <Icon className="size-4" />
+        <span className="max-w-[140px] truncate">{nestling.title}</span>
+      </div>
+
+      <div
+        ref={setNodeRef}
+        {...listeners}
+        {...attributes}
+        onClick={(e) => e.stopPropagation()}
+        className="cursor-grab p-1"
+      >
+        <GripVertical className="h-4 w-4 text-gray-500" />
+      </div>
     </div>
   );
 }

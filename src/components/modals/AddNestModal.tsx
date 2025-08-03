@@ -62,7 +62,7 @@ export default function AddNestModal({
         <DialogTrigger className="flex cursor-pointer items-center rounded-lg bg-black p-2 px-3 text-sm font-semibold text-white transition hover:scale-105 dark:bg-white dark:text-black">
           <Plus className="mr-1 size-4" /> Create Nest
         </DialogTrigger>
-        <DialogContent className="space-y-2 rounded-2xl bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
+        <DialogContent className="space-y-2 rounded-2xl border-0 bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
           <DialogHeader className="justify-between">
             <DialogTitle className="text-xl font-bold text-black dark:text-white">
               Create a New Nest
