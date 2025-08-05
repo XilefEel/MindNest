@@ -1,7 +1,29 @@
-# Tauri + React + Typescript
+# MindNest
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+MindNest is a desktop productivity app built with Tauri and React inspired by Obsidian, Trello, and Notion.
 
-## Recommended IDE Setup
+## Tech Stack
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+### Frontend
+
+- React
+- TypeScript
+- Tailwind CSS
+- ShadCN/UI
+- React Router
+- Zustand
+- dnd-kit
+
+### Backend
+
+- Tauri (Rust)
+- SQLite
+
+## Getting Started
+
+To run the app locally:
+
+```bash
+npm install
+npm run tauri dev
+```
