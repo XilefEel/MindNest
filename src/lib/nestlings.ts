@@ -1,6 +1,10 @@
 import { invoke } from "@tauri-apps/api/core";
 import { NewNestling, NewFolder } from "./types";
 
+/*
+Functions to create, get, update, and delete nestlings from the database using Tauri
+ */
+
 export async function createNestling(data: NewNestling) {
   return await invoke("create_nestling", { data });
 }

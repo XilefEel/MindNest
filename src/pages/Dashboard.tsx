@@ -3,7 +3,6 @@ import HomeSection from "@/components/dashboard/HomeSection";
 import NestSection from "@/components/dashboard/NestSection";
 import SharedSection from "@/components/dashboard/SharedSection";
 import ExploreSection from "@/components/dashboard/DiscoverSection";
-import SettingsModal from "@/components/modals/SettingsModal";
 
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
@@ -17,7 +16,6 @@ export default function DashboardPage() {
     "home" | "nests" | "shared" | "explore"
   >("home");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [activeNest, setActiveNest] = useState<Nest | null>(null);
 
   const { user } = useAuth();
@@ -87,7 +85,6 @@ export default function DashboardPage() {
             setActiveSection(section);
             setIsSidebarOpen(false);
           }}
-          setIsSettingsOpen={setIsSettingsOpen}
         />
       </aside>
 
@@ -104,10 +101,6 @@ export default function DashboardPage() {
           {renderSection()}
         </main>
       </div>
-
-      {isSettingsOpen && (
-        <SettingsModal setIsSettingsOpen={setIsSettingsOpen} />
-      )}
     </div>
   );
 }

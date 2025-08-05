@@ -1,6 +1,10 @@
 import { invoke } from "@tauri-apps/api/core";
 import { Nest } from "./types";
 
+/*
+Functions to create, get, update, and delete nests from the database using Tauri
+ */
+
 export async function createNest(userId: number, title: string) {
   return await invoke("create_nest", {
     data: {

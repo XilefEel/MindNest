@@ -9,16 +9,23 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SettingsModal from "../modals/SettingsModal";
+import { clearLastNestId, clearLastNestling } from "@/lib/session";
 
 export default function Topbar({ nest }: { nest: Nest }) {
   const navigate = useNavigate();
+
+  const handleExit = () => {
+    navigate("/dashboard");
+    clearLastNestId();
+    clearLastNestling();
+  };
   return (
     <nav className="flex w-full items-center justify-between border-b p-4 pt-12">
       <div className="flex items-center gap-3">
         <Button
           variant="ghost"
           className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => handleExit()}
         >
           <ArrowLeft className="size-5" />
         </Button>

@@ -7,17 +7,10 @@ import { DndContext, closestCenter } from "@dnd-kit/core";
 import LooseNestlings from "./LooseNestlings";
 import { SidebarContextMenu } from "../context-menu/SidebarContextMenu";
 import { useEffect, useMemo } from "react";
-import { Nestling } from "@/lib/types";
 
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 
-export default function Sidebar({
-  nestId,
-  setActiveNestling,
-}: {
-  nestId: number;
-  setActiveNestling: (nestling: Nestling | null) => void;
-}) {
+export default function Sidebar({ nestId }: { nestId: number }) {
   const folders = useNestlingTreeStore((s) => s.folders);
   const nestlings = useNestlingTreeStore((s) => s.nestlings);
 
@@ -38,6 +31,7 @@ export default function Sidebar({
   const handleDragEnd = useNestlingTreeStore((s) => s.handleDragEnd);
   const refreshData = useNestlingTreeStore((s) => s.refreshData);
   const setNestId = useNestlingTreeStore((s) => s.setNestId);
+  const setActiveNestling = useNestlingTreeStore((s) => s.setActiveNestling);
 
   useEffect(() => {
     if (nestId) {
@@ -70,18 +64,13 @@ export default function Sidebar({
               nestlings={folder.nestlings}
               isOpen={openFolders[folder.id] || false}
               onToggle={() => toggleFolder(folder.id)}
-              setActiveNestling={setActiveNestling}
             />
           ))}
 
           <LooseNestlings>
             <div>
               {looseNestlings.map((nestling) => (
-                <NestlingItem
-                  key={nestling.id}
-                  nestling={nestling}
-                  setActiveNestling={setActiveNestling}
-                />
+                <NestlingItem key={nestling.id} nestling={nestling} />
               ))}
             </div>
           </LooseNestlings>

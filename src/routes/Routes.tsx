@@ -10,7 +10,7 @@ import NestDashboard from "@/pages/NestDashboard";
 const AppRoutes = () => {
   const { user, loading } = useAuth();
 
-  if (loading) return <div>Loading...</div>; // or a spinner
+  if (loading) return <div>Loading...</div>;
   return (
     <Routes>
       <Route

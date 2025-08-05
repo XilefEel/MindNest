@@ -7,17 +7,17 @@ import { BookOpen, Pencil } from "lucide-react";
 import ToolBar from "./ToolBar";
 import { useNestlingTree } from "@/hooks/useNestlingTree";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import BottomBar from "./BottomBar";
+import { saveLastNestling } from "@/lib/session";
 
-export default function NoteEditor({
-  nestling,
-  onClose,
-}: {
-  nestling: Nestling;
-  onClose: () => void;
-}) {
+export default function NoteEditor({ nestling }: { nestling: Nestling }) {
   const [title, setTitle] = useState(nestling.title);
   const [content, setContent] = useState(nestling.content ?? "");
   const [previewMode, setPreviewMode] = useState(false);
+  const [autoSaveStatus, setAutoSaveStatus] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
+
   const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const { refreshData } = useNestlingTree(nestling.nest_id);
@@ -33,6 +33,8 @@ export default function NoteEditor({
   useEffect(() => {
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
 
+    setAutoSaveStatus("saving");
+
     saveTimeout.current = setTimeout(() => {
       const updated = {
         title,
@@ -43,8 +45,19 @@ export default function NoteEditor({
       updateNestling(nestling.id, updated);
 
       editNote(nestling.id, title, content)
-        .then(() => refreshData())
-        .catch((err) => console.error("Failed to save note", err));
+        .then(() => {
+          setAutoSaveStatus("saved");
+          setTimeout(() => setAutoSaveStatus("idle"), 1000);
+          refreshData();
+          saveLastNestling({
+            ...nestling,
+            ...updated,
+          });
+        })
+        .catch((err) => {
+          console.error("Failed to save note", err);
+          setAutoSaveStatus("error");
+        });
     }, 500);
 
     return () => {
@@ -53,8 +66,8 @@ export default function NoteEditor({
   }, [title, content]);
 
   return (
-    <div className="mx-auto h-full w-full space-y-4 overflow-y-auto px-4">
-      <div className="sticky top-0 z-10 flex justify-between bg-white px-3">
+    <div className="flex h-full w-full flex-col space-y-2 overflow-hidden px-4">
+      <div className="flex justify-between rounded-lg bg-white px-3 dark:bg-gray-800">
         <ToolBar />
         <button
           onClick={() => setPreviewMode(!previewMode)}
@@ -68,18 +81,16 @@ export default function NoteEditor({
         </button>
       </div>
 
-      <div className="flex justify-between">
-        <TextareaAutosize
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full resize-none bg-transparent text-3xl font-bold outline-none"
-          placeholder="Note title..."
-        />
-      </div>
+      <TextareaAutosize
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        className="w-full resize-none bg-transparent text-3xl font-bold outline-none"
+        placeholder="Note title..."
+      />
 
-      <div className="h-full">
+      <div className="flex-1 overflow-y-auto">
         {previewMode ? (
-          <div className="prose dark:prose-invert h-[calc(100vh-200px)] max-w-none overflow-y-auto">
+          <div className="prose dark:prose-invert max-w-none">
             <ReactMarkdown>
               {content || "*Nothing to preview yet.*"}
             </ReactMarkdown>
@@ -89,9 +100,13 @@ export default function NoteEditor({
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Start typing..."
-            className="h-[calc(100vh-200px)] w-full resize-none overflow-y-auto bg-transparent text-base leading-relaxed outline-none"
+            className="h-full w-full resize-none bg-transparent text-base leading-relaxed outline-none"
           />
         )}
+      </div>
+
+      <div className="flex justify-between rounded-lg bg-white px-3 dark:bg-gray-800">
+        <BottomBar autoSaveStatus={autoSaveStatus} content={content} />
       </div>
     </div>
   );

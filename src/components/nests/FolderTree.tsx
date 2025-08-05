@@ -9,17 +9,16 @@ export default function FolderTree({
   nestlings,
   isOpen,
   onToggle,
-  setActiveNestling,
 }: {
   folder: Folder;
   nestlings: Nestling[];
   isOpen: boolean;
   onToggle: () => void;
-  setActiveNestling: (nestling: Nestling) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `folder-${folder.id}`,
   });
+
   return (
     <div
       ref={setNodeRef}
@@ -41,11 +40,7 @@ export default function FolderTree({
       {isOpen && (
         <div className="ml-6">
           {nestlings.map((nestling) => (
-            <NestlingItem
-              key={nestling.id}
-              nestling={nestling}
-              setActiveNestling={setActiveNestling}
-            />
+            <NestlingItem key={nestling.id} nestling={nestling} />
           ))}
         </div>
       )}

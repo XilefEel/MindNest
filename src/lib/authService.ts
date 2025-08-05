@@ -1,10 +1,14 @@
 import { invoke } from "@tauri-apps/api/core";
 import { User } from "./types";
 
+/*
+Functions to add and get users from the database using Tauri
+ */
+
 export async function signupUser(
   username: string,
   email: string,
-  password: string
+  password: string,
 ) {
   try {
     await invoke("signup_user", {

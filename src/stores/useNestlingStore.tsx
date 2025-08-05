@@ -8,30 +8,59 @@ import { Folder, Nestling, FolderWithNestlings } from "@/lib/types";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 
 type NestlingTreeState = {
-  nestId: number | null;
-  folders: Folder[];
-  nestlings: Nestling[];
-  openFolders: Record<number, boolean>;
-  activeId: number | null;
-  setNestId: (nestId: number) => void;
-  refreshData: () => Promise<void>;
-  toggleFolder: (folderId: number) => void;
-  handleDragStart: (event: DragStartEvent) => void;
-  handleDragEnd: (event: DragEndEvent) => Promise<void>;
-  folderGroups: () => FolderWithNestlings[];
-  looseNestlings: () => Nestling[];
-  updateNestling: (id: number, updates: Partial<Nestling>) => void;
+  // State
+  nestId: number | null; // The ID of the current nest
+  folders: Folder[]; // Lists of Folders in the current nest
+  nestlings: Nestling[]; // Lists of Nestlings in the current nest, regardless of folder
+  openFolders: Record<number, boolean>; // Keeps track of which folders are open (true) or closed (false)
+  activeNestling: Nestling | null; // The currently selected or opened Nestling
+  activeDraggingNestlingId: number | null; // The ID of the Nestling currently being dragged
+
+  // Actions
+  setActiveNestling: (nestling: Nestling | null) => void; // Sets the currently selected or opened Nestling
+  setNestId: (nestId: number) => void; // Sets the ID of the current nest
+  setFolderOpen: (folder_ids: number, isOpen: boolean) => void; // Sets the open/closed state of a folder
+
+  // Helpers
+  refreshData: () => Promise<void>; // Re-fetches the folders + nestlings from the backend/database
+  toggleFolder: (folderId: number) => void; // Expands/collapses a folder in the sidebar
+  handleDragStart: (event: DragStartEvent) => void; // Triggered when a drag begins.
+  handleDragEnd: (event: DragEndEvent) => Promise<void>; // Triggered when a drag ends.
+  folderGroups: () => FolderWithNestlings[]; // Groups folders with their nestlings
+  looseNestlings: () => Nestling[]; // Returns all nestlings that are not in a folder
+  updateNestling: (id: number, updates: Partial<Nestling>) => void; // Updates a nestling
 };
 
 export const useNestlingTreeStore = create<NestlingTreeState>((set, get) => ({
+  // State
   nestId: null,
   folders: [],
   nestlings: [],
   openFolders: {},
-  activeId: null,
+  activeNestling: null,
+  activeDraggingNestlingId: null,
 
-  setNestId: (id: number) => set({ nestId: id }),
+  // Actions
+  setNestId: (nestId: number) =>
+    set((state) => {
+      const isSameNest = state.activeNestling?.nest_id === nestId;
 
+      return {
+        nestId,
+        activeNestling: isSameNest ? state.activeNestling : null,
+      };
+    }),
+
+  setActiveNestling: (nestling) => set({ activeNestling: nestling }),
+  setFolderOpen: (folderId: number, isOpen: boolean) =>
+    set((state) => ({
+      openFolders: {
+        ...state.openFolders,
+        [folderId]: isOpen,
+      },
+    })),
+
+  // Helpers
   refreshData: async () => {
     const { nestId } = get();
     if (!nestId) return;
@@ -66,12 +95,12 @@ export const useNestlingTreeStore = create<NestlingTreeState>((set, get) => ({
   },
 
   handleDragStart: (event) => {
-    set({ activeId: event.active.id as number });
+    set({ activeDraggingNestlingId: event.active.id as number });
   },
 
   handleDragEnd: async (event) => {
     const { active, over } = event;
-    set({ activeId: null });
+    set({ activeDraggingNestlingId: null });
 
     if (!over || active.id === over.id) return;
 

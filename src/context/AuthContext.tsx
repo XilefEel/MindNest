@@ -3,22 +3,29 @@ import {
   getUserSession,
   clearUserSession,
   saveUserSession,
+  getLastNestId,
 } from "../lib/session";
 import { User } from "@/lib/types";
+import { useNavigate } from "react-router-dom";
 
+// Define the shape of the auth context
 type AuthContextType = {
-  user: User | null;
-  login: (user: User) => Promise<void>;
-  logout: () => Promise<void>;
-  loading: boolean;
+  user: User | null; // Logged-in user info, or null if not logged in
+  login: (user: User) => Promise<void>; // Logs in a user
+  logout: () => Promise<void>; // Logs out the user
+  loading: boolean; // Whether session is being restored on app load
 };
 
+// Create the actual context object
 const AuthContext = createContext<AuthContextType | null>(null);
 
+// Provider component that wraps the app and provides auth state
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null); // Holds the current user
+  const [loading, setLoading] = useState(true); // Indicates loading state
+  const navigate = useNavigate(); // Navigation hook
 
+  // Save user session and update state
   const login = async (user: User) => {
     try {
       await saveUserSession(user);
@@ -28,6 +35,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // Clear session and reset user
   const logout = async () => {
     try {
       await clearUserSession();
@@ -37,17 +45,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // On first load, restore session if available
   useEffect(() => {
     const fetchUserSession = async () => {
       const userSession = await getUserSession();
+      const lastNestId = await getLastNestId();
+
       if (userSession) {
         setUser(userSession);
+        // Navigate to last opened nest, or dashboard
+        if (lastNestId) {
+          navigate(`/nest/${lastNestId}`);
+        } else {
+          navigate("/dashboard");
+        }
       }
+
       setLoading(false);
     };
+
     fetchUserSession();
   }, []);
 
+  // Provide auth state and actions to children
   return (
     <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
@@ -55,6 +75,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// Custom hook to use the auth context
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be inside AuthProvider");

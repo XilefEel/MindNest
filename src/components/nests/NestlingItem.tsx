@@ -1,4 +1,7 @@
+import { saveLastNestling } from "@/lib/session";
 import { Nestling } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useDraggable } from "@dnd-kit/core";
 import {
   FileText,
@@ -16,13 +19,15 @@ const iconMap: Record<string, LucideIcon> = {
   gallery: FileImage,
 };
 
-export default function NestlingItem({
-  nestling,
-  setActiveNestling,
-}: {
-  nestling: Nestling;
-  setActiveNestling: (nestling: Nestling) => void;
-}) {
+export default function NestlingItem({ nestling }: { nestling: Nestling }) {
+  const activeNestling = useNestlingTreeStore((s) => s.activeNestling);
+  const setActiveNestling = useNestlingTreeStore((s) => s.setActiveNestling);
+
+  const handleSelect = () => {
+    setActiveNestling(nestling);
+    saveLastNestling(nestling);
+  };
+
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: `nestling-${nestling.id}`,
@@ -39,8 +44,12 @@ export default function NestlingItem({
 
   return (
     <div
-      className="flex w-full max-w-full cursor-pointer items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
-      onClick={() => setActiveNestling(nestling)}
+      className={cn(
+        "flex w-full max-w-full cursor-pointer items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-700",
+        nestling.id === activeNestling?.id &&
+          "bg-gray-100 font-bold dark:bg-gray-700",
+      )}
+      onClick={() => handleSelect()}
       style={style}
     >
       <div className="flex items-center gap-1">
