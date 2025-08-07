@@ -3,10 +3,9 @@ import {
   getUserSession,
   clearUserSession,
   saveUserSession,
-  getLastNestId,
 } from "../lib/session";
 import { User } from "@/lib/types";
-import { useNavigate } from "react-router-dom";
+import LoadingScreen from "@/components/LoadingScreen";
 
 // Define the shape of the auth context
 type AuthContextType = {
@@ -21,9 +20,8 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 // Provider component that wraps the app and provides auth state
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null); // Holds the current user
-  const [loading, setLoading] = useState(true); // Indicates loading state
-  const navigate = useNavigate(); // Navigation hook
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Save user session and update state
   const login = async (user: User) => {
@@ -47,25 +45,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // On first load, restore session if available
   useEffect(() => {
-    const fetchUserSession = async () => {
+    const restoreSession = async () => {
       const userSession = await getUserSession();
-      const lastNestId = await getLastNestId();
-
-      if (userSession) {
-        setUser(userSession);
-        // Navigate to last opened nest, or dashboard
-        if (lastNestId) {
-          navigate(`/nest/${lastNestId}`);
-        } else {
-          navigate("/dashboard");
-        }
-      }
-
+      if (userSession) setUser(userSession);
       setLoading(false);
     };
 
-    fetchUserSession();
+    restoreSession();
   }, []);
+
+  if (loading) return <LoadingScreen />;
 
   // Provide auth state and actions to children
   return (

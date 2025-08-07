@@ -9,6 +9,7 @@ import Home from "@/components/nests/Home";
 import NoteEditor from "@/components/editors/NoteEditor";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { getLastNestling, saveLastNestId } from "@/lib/session";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -23,10 +24,11 @@ export default function NestDashboardPage() {
     async function fetchNest() {
       const restoreLastNestling = async () => {
         const lastNestling = await getLastNestling();
-        if (lastNestling) {
+        if (lastNestling && Number(id) === lastNestling.nest_id) {
           setActiveNestling(lastNestling);
-          if (lastNestling.folder_id)
+          if (lastNestling.folder_id) {
             setFolderOpen(lastNestling.folder_id, true);
+          }
         }
       };
 
@@ -46,7 +48,7 @@ export default function NestDashboardPage() {
     fetchNest();
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingScreen />;
   if (!nest) return <p>Nest not found.</p>;
 
   return (
@@ -64,7 +66,7 @@ export default function NestDashboardPage() {
           }`}
         >
           {activeNestling && activeNestling.nestling_type === "note" ? (
-            <NoteEditor nestling={activeNestling} />
+            <NoteEditor />
           ) : (
             <Home nestId={nest.id} />
           )}
