@@ -3,17 +3,24 @@ import { ChevronDown, Folder as LucideFolder } from "lucide-react";
 import NestlingItem from "./NestlingItem";
 import { useDroppable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
+import { ContextTarget } from "./Sidebar";
 
 export default function FolderTree({
   folder,
   nestlings,
   isOpen,
+  setIsSidebarOpen,
   onToggle,
+  onContextMenu,
+  setContextTarget,
 }: {
   folder: Folder;
   nestlings: Nestling[];
   isOpen: boolean;
+  setIsSidebarOpen: (isOpen: boolean) => void;
   onToggle: () => void;
+  onContextMenu: (e: React.MouseEvent) => void;
+  setContextTarget: React.Dispatch<React.SetStateAction<ContextTarget>>;
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `folder-${folder.id}`,
@@ -26,6 +33,7 @@ export default function FolderTree({
         "flex cursor-pointer flex-col gap-1 rounded px-2 py-1 font-medium",
         isOver && "bg-gray-200 dark:bg-gray-700",
       )}
+      onContextMenu={onContextMenu}
     >
       <div
         onClick={onToggle}
@@ -40,7 +48,17 @@ export default function FolderTree({
       {isOpen && (
         <div className="ml-6">
           {nestlings.map((nestling) => (
-            <NestlingItem key={nestling.id} nestling={nestling} />
+            <NestlingItem
+              key={nestling.id}
+              nestling={nestling}
+              setIsSidebarOpen={setIsSidebarOpen}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                alert("Nestling context menu");
+                setContextTarget({ type: "nestling", id: nestling.id });
+              }}
+            />
           ))}
         </div>
       )}

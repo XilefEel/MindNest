@@ -19,7 +19,15 @@ const iconMap: Record<string, LucideIcon> = {
   gallery: FileImage,
 };
 
-export default function NestlingItem({ nestling }: { nestling: Nestling }) {
+export default function NestlingItem({
+  nestling,
+  setIsSidebarOpen,
+  onContextMenu,
+}: {
+  nestling: Nestling;
+  setIsSidebarOpen: (isOpen: boolean) => void;
+  onContextMenu?: (e: React.MouseEvent) => void;
+}) {
   const activeNestling = useNestlingTreeStore((s) => s.activeNestling);
   const setActiveNestling = useNestlingTreeStore((s) => s.setActiveNestling);
 
@@ -49,8 +57,12 @@ export default function NestlingItem({ nestling }: { nestling: Nestling }) {
         nestling.id === activeNestling?.id &&
           "bg-gray-100 font-bold dark:bg-gray-700",
       )}
-      onClick={() => handleSelect()}
+      onClick={() => {
+        handleSelect();
+        setIsSidebarOpen(false);
+      }}
       style={style}
+      onContextMenu={onContextMenu}
     >
       <div className="flex items-center gap-1">
         <Icon className="size-4" />

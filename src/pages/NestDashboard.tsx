@@ -10,11 +10,13 @@ import NoteEditor from "@/components/editors/NoteEditor";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { getLastNestling, saveLastNestId } from "@/lib/session";
 import LoadingScreen from "@/components/LoadingScreen";
+import { cn } from "@/lib/utils";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
   const [nest, setNest] = useState<Nest | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const activeNestling = useNestlingTreeStore((s) => s.activeNestling);
   const setActiveNestling = useNestlingTreeStore((s) => s.setActiveNestling);
@@ -52,14 +54,38 @@ export default function NestDashboardPage() {
   if (!nest) return <p>Nest not found.</p>;
 
   return (
-    <div className="flex h-screen cursor-default flex-col bg-gray-50 px-6 pb-6 dark:bg-gray-900">
+    <div className="flex h-screen cursor-default flex-col bg-gray-50 pb-3 md:px-6 md:pb-6 dark:bg-gray-900">
       <div className="shrink-0">
-        <Topbar nest={nest} />
+        <Topbar
+          nest={nest}
+          isSidebarOpen={isSidebarOpen}
+          setIsSidebarOpen={setIsSidebarOpen}
+        />
       </div>
-      <div className="mt-6 flex flex-1 gap-6 overflow-hidden">
-        <Sidebar nestId={nest.id} />
+      <div className="mt-6 flex flex-1 overflow-hidden">
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 z-30 bg-black/30 md:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        <aside
+          className={cn(
+            "fixed top-0 z-40 h-full transition-transform duration-300 ease-in-out md:z-0",
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full",
+            "md:relative md:translate-x-0",
+          )}
+        >
+          <Sidebar
+            nestId={nest.id}
+            isSidebarOpen={isSidebarOpen}
+            setIsSidebarOpen={setIsSidebarOpen}
+          />
+        </aside>
+
         <main
-          className={`flex-1 px-6 ${
+          className={`flex-1 px-10 ${
             activeNestling?.nestling_type === "note"
               ? "overflow-hidden"
               : "overflow-y-auto"

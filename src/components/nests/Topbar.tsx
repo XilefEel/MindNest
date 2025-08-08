@@ -6,12 +6,21 @@ import {
   Link,
   ArrowLeft,
   CircleUserRound,
+  Menu,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SettingsModal from "../modals/SettingsModal";
 import { clearLastNestId, clearLastNestling } from "@/lib/session";
 
-export default function Topbar({ nest }: { nest: Nest }) {
+export default function Topbar({
+  nest,
+  isSidebarOpen,
+  setIsSidebarOpen,
+}: {
+  nest: Nest;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (isOpen: boolean) => void;
+}) {
   const navigate = useNavigate();
 
   const handleExit = () => {
@@ -20,38 +29,45 @@ export default function Topbar({ nest }: { nest: Nest }) {
     clearLastNestling();
   };
   return (
-    <nav className="flex w-full items-center justify-between border-b p-4 pt-12">
+    <nav className="flex w-full items-center justify-between border-b p-2 pt-8 sm:p-4 sm:pt-10">
       <div className="flex items-center gap-3">
         <Button
           variant="ghost"
-          className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
+          className="hidden cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 md:block dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
           onClick={() => handleExit()}
         >
-          <ArrowLeft className="size-5" />
+          <ArrowLeft className="size-4 sm:size-5" />
         </Button>
-        <span className="text-2xl font-bold tracking-tight">
+        <Button
+          variant="ghost"
+          className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 md:hidden dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          <Menu />
+        </Button>
+        <span className="text-xl font-bold tracking-tight sm:text-2xl">
           🐣 {nest.title}
         </span>
         <Button
           variant="ghost"
           className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
         >
-          <Pencil className="size-5" />
+          <Pencil className="size-4 sm:size-5" />
         </Button>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center sm:gap-2">
         <Button
           variant="ghost"
           className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
         >
-          <Link className="size-5" />
+          <Link className="size-4 sm:size-5" />
         </Button>
         <SettingsModal>
           <Button
             variant="ghost"
             className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
           >
-            <Settings className="size-5" />
+            <Settings className="size-4 sm:size-5" />
           </Button>
         </SettingsModal>
 
@@ -59,7 +75,7 @@ export default function Topbar({ nest }: { nest: Nest }) {
           variant="ghost"
           className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
         >
-          <CircleUserRound className="size-5" />
+          <CircleUserRound className="size-4 sm:size-5" />
         </Button>
       </div>
     </nav>

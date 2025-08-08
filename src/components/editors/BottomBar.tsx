@@ -2,7 +2,7 @@ export default function BottomBar({
   autoSaveStatus,
   content,
 }: {
-  autoSaveStatus: string;
+  autoSaveStatus: "idle" | "saving" | "saved" | "error";
   content: string;
 }) {
   return (

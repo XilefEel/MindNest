@@ -6,7 +6,7 @@ export default function Titlebar() {
   return (
     <div
       data-tauri-drag-region
-      className="flex h-6 w-full items-center justify-between dark:bg-zinc-900 dark:text-white"
+      className="fixed flex h-6 w-full items-center justify-between dark:bg-zinc-900 dark:text-white"
     >
       <div className="ml-auto flex items-center">
         <div

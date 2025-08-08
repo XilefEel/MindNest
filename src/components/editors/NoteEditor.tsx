@@ -4,14 +4,12 @@ import ToolBar from "./ToolBar";
 import BottomBar from "./BottomBar";
 
 import { useEffect, useRef, useState } from "react";
-import { editNote } from "@/lib/nestlings";
 import { BookOpen, Pencil } from "lucide-react";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
-import { saveLastNestling } from "@/lib/session";
-import { debounce } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNoteStore } from "@/stores/useNoteStore";
 import { useHotkeys } from "react-hotkeys-hook";
+import useAutoSaveNote from "@/hooks/useAutoSaveNote";
 
 export default function NoteEditor() {
   const nestling = useNestlingTreeStore((s) => s.activeNestling);
@@ -20,9 +18,6 @@ export default function NoteEditor() {
 
   const [title, setTitle] = useState(nestling.title);
   const [previewMode, setPreviewMode] = useState(false);
-  const [autoSaveStatus, setAutoSaveStatus] = useState<
-    "idle" | "saving" | "saved" | "error"
-  >("idle");
 
   const refreshData = useNestlingTreeStore((s) => s.refreshData);
   const updateNestling = useNestlingTreeStore((s) => s.updateNestling);
@@ -30,7 +25,14 @@ export default function NoteEditor() {
   const content = useNoteStore((s) => s.present);
   const { updateNote, undo, redo } = useNoteStore();
 
-  const latestNestlingRef = useRef(nestling);
+  const { autoSaveStatus } = useAutoSaveNote({
+    nestling,
+    title,
+    content,
+    updateNestling,
+    refreshData,
+  });
+
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const applyFormatting = (type: string) => {
@@ -116,32 +118,6 @@ export default function NoteEditor() {
     }, 0);
   };
 
-  const debouncedSave = useRef(
-    debounce((newTitle: string, newContent: string) => {
-      const currentNestling = latestNestlingRef.current;
-
-      const updated = {
-        title: newTitle,
-        content: newContent,
-        updated_at: new Date().toISOString(),
-      };
-
-      updateNestling(currentNestling.id, updated);
-
-      editNote(currentNestling.id, newTitle, newContent)
-        .then(() => {
-          setAutoSaveStatus("saved");
-          setTimeout(() => setAutoSaveStatus("idle"), 1000);
-          refreshData();
-          saveLastNestling({ ...currentNestling, ...updated });
-        })
-        .catch((err) => {
-          console.error("Failed to save note", err);
-          setAutoSaveStatus("error");
-        });
-    }, 500),
-  ).current;
-
   // Load selected note title and content
   useEffect(() => {
     if (nestling) {
@@ -150,22 +126,11 @@ export default function NoteEditor() {
     }
   }, [nestling]);
 
-  useEffect(() => {
-    latestNestlingRef.current = nestling;
-  }, [nestling]);
-
-  // Handle autosave
-  useEffect(() => {
-    if (title === nestling.title && content === nestling.content) return;
-    setAutoSaveStatus("saving");
-    debouncedSave(title, content);
-  }, [title, content]);
-
   useHotkeys("ctrl+z", undo, [undo]);
   useHotkeys("ctrl+shift+z, ctrl+y", redo, [redo]);
 
   return (
-    <div className="flex h-full w-full flex-col space-y-2 overflow-hidden px-4">
+    <div className="flex h-full w-full flex-col space-y-2 overflow-hidden">
       <div className="flex justify-between rounded-lg bg-white px-3 dark:bg-gray-800">
         <ToolBar onFormat={applyFormatting} />
         <button
@@ -187,7 +152,7 @@ export default function NoteEditor() {
         placeholder="Note title..."
       />
       <AnimatePresence>
-        <div className="prose flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto">
           <AnimatePresence mode="wait">
             {previewMode ? (
               <motion.div

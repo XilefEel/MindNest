@@ -25,7 +25,10 @@ export default function ToolBar({
   onFormat: (type: string) => void;
 }) {
   return (
-    <ToggleGroup type="multiple" className="flex">
+    <ToggleGroup
+      type="multiple"
+      className="flex w-5/6 overflow-x-scroll md:overflow-x-hidden"
+    >
       <ToolBarItem type="undo" onFormat={onFormat} Icon={Undo2} label="Undo" />
       <ToolBarItem type="redo" onFormat={onFormat} Icon={Redo2} label="Redo" />
       <ToolBarItem type="bold" onFormat={onFormat} Icon={Bold} label="Bold" />

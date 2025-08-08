@@ -5,10 +5,19 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function debounce(fn: (...args: any[]) => void, delay: number) {
+export function debounce<T extends (...args: any[]) => any>(
+  fn: T,
+  delay: number,
+) {
   let timer: ReturnType<typeof setTimeout> | null;
-  return (...args: any[]) => {
+  const debounced = (...args: any[]) => {
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => fn(...args), delay);
   };
+
+  debounced.cancel = () => {
+    if (timer) clearTimeout(timer);
+  };
+
+  return debounced as T & { cancel: () => void };
 }
