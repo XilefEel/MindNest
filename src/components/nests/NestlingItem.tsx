@@ -22,11 +22,9 @@ const iconMap: Record<string, LucideIcon> = {
 export default function NestlingItem({
   nestling,
   setIsSidebarOpen,
-  onContextMenu,
 }: {
   nestling: Nestling;
   setIsSidebarOpen: (isOpen: boolean) => void;
-  onContextMenu?: (e: React.MouseEvent) => void;
 }) {
   const activeNestling = useNestlingTreeStore((s) => s.activeNestling);
   const setActiveNestling = useNestlingTreeStore((s) => s.setActiveNestling);
@@ -62,7 +60,6 @@ export default function NestlingItem({
         setIsSidebarOpen(false);
       }}
       style={style}
-      onContextMenu={onContextMenu}
     >
       <div className="flex items-center gap-1">
         <Icon className="size-4" />

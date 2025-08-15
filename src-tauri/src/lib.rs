@@ -16,8 +16,18 @@ use handler::nestling::get_nestlings;
 use handler::nestling::get_folders;
 use handler::nestling::update_folder;
 use handler::nestling::edit_note;
+use handler::nestling::delete_nestling;
+use handler::nestling::delete_folder;
+use handler::nestling::create_board_column;
+use handler::nestling::update_board_column;
+use handler::nestling::delete_board_column;
+use handler::nestling::create_board_card;
+use handler::nestling::update_board_card;
+use handler::nestling::delete_board_card;
+use handler::nestling::get_board_data;
 
 use utils::user::init_db;
+
 
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -39,7 +49,16 @@ pub fn run() {
             get_nestlings,
             get_folders,
             update_folder,
-            edit_note]
+            edit_note,
+            delete_nestling,
+            delete_folder,
+            create_board_column,
+            update_board_column,
+            delete_board_column,
+            create_board_card,
+            update_board_card,
+            delete_board_card,
+            get_board_data,]
         )
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

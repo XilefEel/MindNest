@@ -1,4 +1,3 @@
-import TextareaAutosize from "react-textarea-autosize";
 import ReactMarkdown from "react-markdown";
 import ToolBar from "./ToolBar";
 import BottomBar from "./BottomBar";
@@ -10,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNoteStore } from "@/stores/useNoteStore";
 import { useHotkeys } from "react-hotkeys-hook";
 import useAutoSaveNote from "@/hooks/useAutoSaveNote";
+import NestlingTitle from "./NestlingTitle";
 
 export default function NoteEditor() {
   const nestling = useNestlingTreeStore((s) => s.activeNestling);
@@ -145,14 +145,9 @@ export default function NoteEditor() {
         </button>
       </div>
 
-      <TextareaAutosize
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="w-full resize-none bg-transparent text-3xl font-bold outline-none"
-        placeholder="Note title..."
-      />
+      <NestlingTitle title={title} setTitle={setTitle} />
       <AnimatePresence>
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1">
           <AnimatePresence mode="wait">
             {previewMode ? (
               <motion.div

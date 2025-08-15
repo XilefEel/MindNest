@@ -1,19 +1,16 @@
-import { Home } from "lucide-react";
+import { FilePlus, FolderPlus, Home } from "lucide-react";
 import FolderTree from "./FolderTree";
 import NestlingItem from "./NestlingItem";
-import SidebarContextMenu from "../context-menu/SidebarContextMenu";
-
+import { FolderContextMenu } from "../context-menu/FolderContextMenu";
+import { NestlingContextMenu } from "../context-menu/NestlingContextMenu";
 import { DndContext, closestCenter } from "@dnd-kit/core";
-
 import LooseNestlings from "./LooseNestlings";
-import { useEffect, useMemo, useState } from "react";
-
+import { useEffect, useMemo } from "react";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
-
-export type ContextTarget =
-  | { type: "folder"; id: number }
-  | { type: "nestling"; id: number }
-  | null;
+import AddNestlingModal from "../modals/AddNestlingModal";
+import AddFolderModal from "../modals/AddFolderModal";
+import { ToolBarItem } from "../editors/ToolBarItem";
+import { SidebarContextMenu } from "../context-menu/SidebarContextMenu";
 
 export default function Sidebar({
   nestId,
@@ -23,8 +20,6 @@ export default function Sidebar({
   isSidebarOpen: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
-  const [contextTarget, setContextTarget] = useState<ContextTarget>(null);
-
   const folders = useNestlingTreeStore((s) => s.folders);
   const nestlings = useNestlingTreeStore((s) => s.nestlings);
 
@@ -55,14 +50,22 @@ export default function Sidebar({
   }, [nestId]);
 
   return (
-    <SidebarContextMenu
-      contextTarget={contextTarget}
-      setContextTarget={setContextTarget}
-    >
-      <aside className="flex h-full w-72 flex-col overflow-x-hidden overflow-y-auto rounded-tr-2xl rounded-br-2xl border border-gray-200 bg-white p-5 shadow-xl md:rounded-xl dark:border-gray-700 dark:bg-gray-800">
+    <SidebarContextMenu nestId={nestId}>
+      <aside className="flex h-full w-72 flex-col overflow-x-hidden overflow-y-auto rounded-tr-2xl rounded-br-2xl border border-gray-200 bg-white p-5 shadow-lg md:rounded-xl dark:border-gray-700 dark:bg-gray-800">
+        <div className="flex items-center">
+          <AddNestlingModal nestId={nestId}>
+            <ToolBarItem Icon={FilePlus} label="New Nestling" />
+          </AddNestlingModal>
+          <AddFolderModal nestId={nestId}>
+            <ToolBarItem Icon={FolderPlus} label="New Folder" />
+          </AddFolderModal>
+        </div>
         <div
           className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
-          onClick={() => setActiveNestling(null)}
+          onClick={() => {
+            setActiveNestling(null);
+            setIsSidebarOpen(false);
+          }}
         >
           <Home className="size-4" />
           <span>Home</span>
@@ -74,35 +77,30 @@ export default function Sidebar({
           onDragEnd={handleDragEnd}
         >
           {folderGroups.map((folder) => (
-            <FolderTree
-              key={folder.id}
-              folder={folder}
-              nestlings={folder.nestlings}
-              isOpen={openFolders[folder.id] || false}
-              setIsSidebarOpen={setIsSidebarOpen}
-              onToggle={() => toggleFolder(folder.id)}
-              setContextTarget={setContextTarget}
-              onContextMenu={(e) => {
-                e.preventDefault();
-                alert("Folder context menu");
-                setContextTarget({ type: "folder", id: folder.id });
-              }}
-            />
+            <FolderContextMenu folderId={folder.id} key={folder.id}>
+              <div>
+                <FolderTree
+                  folder={folder}
+                  nestlings={folder.nestlings}
+                  isOpen={openFolders[folder.id] || false}
+                  setIsSidebarOpen={setIsSidebarOpen}
+                  onToggle={() => toggleFolder(folder.id)}
+                />
+              </div>
+            </FolderContextMenu>
           ))}
 
           <LooseNestlings>
             <div>
               {looseNestlings.map((nestling) => (
-                <NestlingItem
-                  key={nestling.id}
-                  nestling={nestling}
-                  setIsSidebarOpen={setIsSidebarOpen}
-                  onContextMenu={(e) => {
-                    e.preventDefault();
-                    alert("Nestling context menu");
-                    setContextTarget({ type: "nestling", id: nestling.id });
-                  }}
-                />
+                <NestlingContextMenu nestlingId={nestling.id} key={nestling.id}>
+                  <div>
+                    <NestlingItem
+                      nestling={nestling}
+                      setIsSidebarOpen={setIsSidebarOpen}
+                    />
+                  </div>
+                </NestlingContextMenu>
               ))}
             </div>
           </LooseNestlings>

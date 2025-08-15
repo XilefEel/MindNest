@@ -1,5 +1,13 @@
 import { invoke } from "@tauri-apps/api/core";
-import { NewNestling, NewFolder } from "./types";
+import {
+  NewNestling,
+  NewFolder,
+  NewBoardColumn,
+  NewBoardCard,
+  BoardData,
+  BoardCard,
+  BoardColumn,
+} from "./types";
 
 /*
 Functions to create, get, update, and delete nestlings from the database using Tauri
@@ -11,6 +19,10 @@ export async function createNestling(data: NewNestling) {
 
 export async function getNestlings(nestId: number) {
   return await invoke("get_nestlings", { nestId });
+}
+
+export async function deleteNestling(nestlingId: number) {
+  return await invoke("delete_nestling", { id: nestlingId });
 }
 
 export async function createFolder(data: NewFolder) {
@@ -31,6 +43,10 @@ export async function updateNestlingFolder(
   });
 }
 
+export async function deleteFolder(folderId: number) {
+  return await invoke("delete_folder", { id: folderId });
+}
+
 export async function editNote(
   nestlingId: number,
   title: string | null,
@@ -41,4 +57,58 @@ export async function editNote(
     title,
     content,
   });
+}
+
+export async function createBoardColumn(data: NewBoardColumn) {
+  return await invoke<BoardColumn>("create_board_column", data);
+}
+
+export async function updateBoardColumn({
+  id,
+  title,
+  order_index,
+}: {
+  id: number;
+  title: string;
+  order_index: number;
+}) {
+  return await invoke("update_board_column", {
+    id,
+    title,
+    order_index,
+  });
+}
+
+export async function deleteBoardColumn(id: number) {
+  return await invoke("delete_board_column", { id });
+}
+
+export async function createBoardCard(data: NewBoardCard) {
+  return await invoke<BoardCard>("create_board_card", data);
+}
+
+export async function updateBoardCard({
+  id,
+  title,
+  description,
+  order_index,
+}: {
+  id: number;
+  title: string;
+  description: string | null;
+  order_index: number;
+}) {
+  return await invoke("update_board_card", {
+    id,
+    title,
+    description,
+    order_index,
+  });
+}
+export async function deleteBoardCard(id: number) {
+  return await invoke("delete_board_card", { id });
+}
+
+export async function getBoard(nestlingId: number) {
+  return await invoke<BoardData>("get_board_data", { nestlingId });
 }

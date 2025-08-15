@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { act, useEffect, useState } from "react";
 import { getNestFromId } from "@/lib/nests";
 import { Nest } from "@/lib/types";
 
@@ -11,6 +11,7 @@ import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { getLastNestling, saveLastNestId } from "@/lib/session";
 import LoadingScreen from "@/components/LoadingScreen";
 import { cn } from "@/lib/utils";
+import BoardEditor from "@/components/editors/BoardEditor";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -93,6 +94,8 @@ export default function NestDashboardPage() {
         >
           {activeNestling && activeNestling.nestling_type === "note" ? (
             <NoteEditor />
+          ) : activeNestling && activeNestling?.nestling_type === "board" ? (
+            <BoardEditor />
           ) : (
             <Home nestId={nest.id} />
           )}

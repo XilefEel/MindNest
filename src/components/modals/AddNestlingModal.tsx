@@ -12,7 +12,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import {
   Select,
@@ -25,7 +24,13 @@ import {
 } from "../ui/select";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 
-export default function AddNestModal({ nestId }: { nestId: number }) {
+export default function AddNestlingModal({
+  nestId,
+  children,
+}: {
+  nestId: number;
+  children: React.ReactNode;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [nestlingType, setNestlingType] = useState("note");
@@ -44,7 +49,10 @@ export default function AddNestModal({ nestId }: { nestId: number }) {
   };
 
   const handleCreateNestling = async () => {
-    if (!title.trim()) return;
+    if (!title.trim()) {
+      setError("Title is required");
+      return;
+    }
     setLoading(true);
     try {
       await createNestling({
@@ -66,9 +74,7 @@ export default function AddNestModal({ nestId }: { nestId: number }) {
   return (
     <div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger className="flex cursor-pointer items-center rounded-lg bg-black p-2 px-3 text-sm font-semibold text-white transition hover:scale-105 dark:bg-white dark:text-black">
-          <Plus className="mr-1 size-4" /> Create Nest
-        </DialogTrigger>
+        <DialogTrigger className="w-full">{children}</DialogTrigger>
         <DialogContent className="rounded-2xl border-0 bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
           <DialogHeader className="justify-between">
             <DialogTitle className="text-xl font-bold text-black dark:text-white">
@@ -81,12 +87,12 @@ export default function AddNestModal({ nestId }: { nestId: number }) {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Nest Title
+              Nestling Name
             </label>
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Personal, Work, School"
+              placeholder="e.g. My First Note, My Journal, My Board"
               className="text-sm text-black dark:text-gray-100"
             />
           </div>

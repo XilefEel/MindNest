@@ -58,6 +58,28 @@ pub fn init_db() -> Result<(), String> {
             FOREIGN KEY (nest_id) REFERENCES nests(id) ON DELETE CASCADE,
             FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE SET NULL
         );
+
+        CREATE TABLE IF NOT EXISTS board_columns (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nestling_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            order_index INTEGER NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            FOREIGN KEY(nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS board_cards (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            column_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            description TEXT,
+            order_index INTEGER NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            FOREIGN KEY(column_id) REFERENCES board_columns(id) ON DELETE CASCADE
+        );
+
         "
     ).map_err(|e| e.to_string())?;
     Ok(())
