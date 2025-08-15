@@ -2,6 +2,7 @@ import {
   createBoardCard,
   createBoardColumn,
   deleteBoardCard,
+  deleteBoardColumn,
   getBoard,
   updateBoardCard,
   updateBoardColumn,
@@ -11,7 +12,6 @@ import { create } from "zustand";
 
 type BoardState = {
   boardData: BoardData | null; // The current board data
-  loading: boolean; // Loading state for the board data
   error: string | null; // Error state for the board data
 
   fetchBoard: (nestlingId: number) => void; // Action to set the board data
@@ -36,16 +36,15 @@ type BoardState = {
 
 export const useBoardStore = create<BoardState>((set, get) => ({
   boardData: null,
-  loading: false,
   error: null,
 
   fetchBoard: async (nestlingId) => {
-    set({ loading: true, error: null });
+    set({ error: null });
     try {
       const data = await getBoard(nestlingId);
-      set({ boardData: data, loading: false });
+      set({ boardData: data });
     } catch (err) {
-      set({ error: String(err), loading: false });
+      set({ error: String(err) });
     }
   },
 
@@ -77,7 +76,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
           boardData: {
             ...state.boardData!,
             columns: state.boardData!.columns.map((col) =>
-              col.column.id === id ? { ...col, title, order_index } : col,
+              col.column.id === id
+                ? { ...col, column: { ...col.column, title, order_index } }
+                : col,
             ),
           },
         }));
@@ -99,8 +100,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
           },
         }));
       }
-      await deleteBoardCard(columnId);
-    } catch (error) {}
+      await deleteBoardColumn(columnId);
+    } catch (error) {
+      set({ error: String(error) });
+    }
   },
   addCard: async (card) => {
     try {
