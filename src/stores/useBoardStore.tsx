@@ -7,7 +7,7 @@ import {
   updateBoardCard,
   updateBoardColumn,
 } from "@/lib/nestlings";
-import { BoardCard, BoardData, NewBoardColumn } from "@/lib/types";
+import { BoardData, NewBoardCard, NewBoardColumn } from "@/lib/types";
 import { create } from "zustand";
 
 type BoardState = {
@@ -24,13 +24,13 @@ type BoardState = {
   ) => Promise<void>; // Action to update a column
   removeColumn: (columnId: number) => void; // Action to remove a column
 
-  addCard: (card: BoardCard) => void; // Action to add a new
+  addCard: (card: NewBoardCard) => void; // Action to add a new
   updateCard: (
     id: number,
     title: string,
     description: string | null,
     order_index: number,
-  ) => void; // Action to update a card
+  ) => Promise<void>; // Action to update a card
   removeCard: (cardId: number) => void; // Action to remove a card
 };
 
@@ -45,6 +45,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       set({ boardData: data });
     } catch (err) {
       set({ error: String(err) });
+      console.error("Failed to fetch board data:", err);
     }
   },
 
@@ -65,6 +66,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       }));
     } catch (err) {
       set({ error: String(err) });
+      console.error("Failed to add column:", err);
     }
   },
 
@@ -108,18 +110,23 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   addCard: async (card) => {
     try {
       const newCard = await createBoardCard(card);
-      if (get().boardData) {
-        set((state) => ({
-          boardData: {
-            ...state.boardData!,
-            columns: state.boardData!.columns.map((col) =>
-              col.column.id === card.column_id
-                ? { ...col, cards: [...col.cards, newCard] }
-                : col,
-            ),
-          },
-        }));
+
+      const currentState = get();
+      if (!currentState.boardData) {
+        set({ error: "Board data not loaded" });
+        return;
       }
+
+      set((state) => ({
+        boardData: {
+          ...state.boardData!,
+          columns: state.boardData!.columns.map((col) =>
+            col.column.id === card.column_id
+              ? { ...col, cards: [...col.cards, newCard] }
+              : col,
+          ),
+        },
+      }));
     } catch (err) {
       set({ error: String(err) });
     }

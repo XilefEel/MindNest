@@ -92,6 +92,7 @@ export type NewBoardCard = {
   column_id: number;
   title: string;
   description: string | null;
+  order_index: number;
 };
 
 export type BoardData = {

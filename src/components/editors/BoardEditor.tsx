@@ -1,6 +1,9 @@
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NestlingTitle from "./NestlingTitle";
+import { useBoardStore } from "@/stores/useBoardStore";
+import Column from "./Column";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function BoardEditor() {
   const nestling = useNestlingTreeStore((s) => s.activeNestling);
@@ -8,47 +11,63 @@ export default function BoardEditor() {
     return <div className="p-4 text-gray-500">No note selected</div>;
 
   const [title, setTitle] = useState(nestling.title);
-  const columns = [
-    { id: 1, title: "To Do", cards: ["Task 1", "Task 2"] },
-    { id: 2, title: "In Progress", cards: ["Task 3"] },
-    { id: 3, title: "Done", cards: ["Task 4", "Task 5", "Task 6"] },
-  ];
+  const { boardData, fetchBoard, addColumn } = useBoardStore();
+
+  useEffect(() => {
+    fetchBoard(nestling.id);
+  }, [fetchBoard, nestling.id]);
+
+  const columns = boardData?.columns || [];
+
+  if (!boardData) {
+    return <div>Board data not loaded yet...</div>;
+  }
+
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col gap-3">
       <NestlingTitle title={title} setTitle={setTitle} />
 
       {/* Board content */}
       <div className="flex-1 overflow-x-auto">
         <div className="flex flex-col items-start gap-4 md:flex-row">
-          {columns.map((col) => (
-            <div
-              key={col.id}
-              className="flex w-72 flex-shrink-0 flex-col rounded-lg bg-gray-100"
-            >
-              {/* Column header */}
-              <div className="border-b p-3 font-semibold">{col.title}</div>
+          <AnimatePresence>
+            {columns.map((col) => (
+              <motion.div
+                key={col.column.id}
+                layout="position"
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.8,
+                  transition: { duration: 0.2 },
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 250,
+                  damping: 25,
+                }}
+              >
+                <Column key={col.column.id} {...col} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
 
-              {/* Cards */}
-              <div className="flex flex-1 flex-col gap-3 p-3">
-                {col.cards.map((card, idx) => (
-                  <div
-                    key={idx}
-                    className="rounded bg-white p-3 shadow-sm hover:shadow"
-                  >
-                    {card}
-                  </div>
-                ))}
-              </div>
+          <button
+            onClick={() => {
+              if (!boardData) {
+                console.log("Board data not loaded yet");
+                return;
+              }
 
-              {/* Add card */}
-              <button className="p-3 text-sm text-gray-500 hover:text-gray-700">
-                + Add card
-              </button>
-            </div>
-          ))}
-
-          {/* Add column button */}
-          <button className="w-72 flex-shrink-0 rounded-lg border border-dashed bg-gray-50 p-3 text-gray-500 hover:bg-gray-100">
+              addColumn({
+                nestling_id: nestling.id,
+                title: "New Column",
+                order_index: boardData.columns.length + 1,
+              });
+            }}
+            className="w-72 flex-shrink-0 cursor-pointer rounded-lg border border-dashed bg-gray-50 p-3 text-gray-500 transition duration-200 hover:bg-gray-100"
+          >
             + Add column
           </button>
         </div>

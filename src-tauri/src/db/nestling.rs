@@ -58,7 +58,7 @@ pub fn get_nestlings_by_nest(nest_id: i32) -> Result<Vec<Nestling>, String> {
 pub fn get_nestling_by_id(nestling_id: i64) -> Result<Nestling, String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
     let mut statement = connection.prepare(
-        "SELECT id, nest_id, title, type, created_at, updated_at
+        "SELECT id, nest_id, folder_id, title, type, content, created_at, updated_at
          FROM nestlings
          WHERE id = ?1"
     ).map_err(|e| e.to_string())?;
@@ -214,12 +214,14 @@ pub fn insert_board_column_into_db(data: NewBoardColumn) -> Result<BoardColumn, 
 }
 
 pub fn update_board_column_in_db(id: i64, title: String, order_index: i64) -> Result<(), String> {
+    print!("hi!");
     let connection = get_connection().map_err(|e| e.to_string())?;
     
     connection.execute(
         "UPDATE board_columns SET title = ?1, order_index = ?2, updated_at = CURRENT_TIMESTAMP WHERE id = ?3",
         params![title, order_index, id],
     ).map_err(|e| e.to_string())?;
+    print!("Updated board column with ID: {}\n", id);
     Ok(())
 }
 
@@ -348,11 +350,8 @@ fn get_all_cards_by_nestling(nestling_id: i64) -> Result<Vec<BoardCard>, String>
 pub fn get_board_data_from_db(nestling_id: i64) -> Result<BoardData, String> {
     let nestling = get_nestling_by_id(nestling_id)?;
     let columns = get_board_columns_by_nestling(nestling_id)?;
-    
-    // NEW: Get all cards in one query instead of N queries
     let all_cards = get_all_cards_by_nestling(nestling_id)?;
-    
-    // NEW: Group cards by column_id in memory
+
     let mut cards_by_column: HashMap<i64, Vec<BoardCard>> = HashMap::new();
     for card in all_cards {
         cards_by_column

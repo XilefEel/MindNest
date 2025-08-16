@@ -50,6 +50,8 @@ pub fn create_board_column(data: NewBoardColumn) -> Result<BoardColumn, String> 
 
 #[tauri::command]
 pub fn update_board_column(id: i64, title: String, order_index: i64) -> Result<(), String> {
+    println!("=== TAURI COMMAND CALLED ===");
+    println!("ID: {}, Title: {}, Order: {}", id, title, order_index);
     update_board_column_in_db(id, title, order_index)
 }
 

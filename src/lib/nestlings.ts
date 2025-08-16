@@ -60,7 +60,7 @@ export async function editNote(
 }
 
 export async function createBoardColumn(data: NewBoardColumn) {
-  return await invoke<BoardColumn>("create_board_column", data);
+  return await invoke<BoardColumn>("create_board_column", { data });
 }
 
 export async function updateBoardColumn({
@@ -72,11 +72,21 @@ export async function updateBoardColumn({
   title: string;
   order_index: number;
 }) {
-  return await invoke("update_board_column", {
-    id,
-    title,
-    order_index,
-  });
+  console.log("Frontend function called!"); // Add this
+  console.log("Updating board column:", { id, title, order_index });
+
+  try {
+    const result = await invoke("update_board_column", {
+      id,
+      title,
+      orderIndex: order_index,
+    });
+    console.log("Invoke successful:", result);
+    return result;
+  } catch (error) {
+    console.error("Invoke failed:", error);
+    throw error;
+  }
 }
 
 export async function deleteBoardColumn(id: number) {
@@ -84,7 +94,7 @@ export async function deleteBoardColumn(id: number) {
 }
 
 export async function createBoardCard(data: NewBoardCard) {
-  return await invoke<BoardCard>("create_board_card", data);
+  return await invoke<BoardCard>("create_board_card", { data });
 }
 
 export async function updateBoardCard({
@@ -102,7 +112,7 @@ export async function updateBoardCard({
     id,
     title,
     description,
-    order_index,
+    orderIndex: order_index,
   });
 }
 export async function deleteBoardCard(id: number) {

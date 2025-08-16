@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import WelcomePage from "../pages/Welcome";
 import LoginPage from "../pages/Login";
 import SignupPage from "../pages/Signup";
-import DashboardPage from "../pages/Dashboard";
+import DashboardPage from "../pages/UserDashboard";
 import ProtectedRoute from "./ProtectedRoutes";
 import NestDashboard from "@/pages/NestDashboard";
 
