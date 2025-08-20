@@ -4,7 +4,7 @@ import { Nestling } from "@/lib/types";
 import { debounce } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 
-export default function useAutoSaveNote({
+export default function useAutoSave({
   nestling,
   title,
   content,

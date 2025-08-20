@@ -3,6 +3,8 @@ import { Button } from "../ui/button";
 import { BoardCard } from "@/lib/types";
 import { useBoardStore } from "@/stores/useBoardStore";
 import { useEffect, useRef, useState } from "react";
+import { CSS } from "@dnd-kit/utilities";
+import { useSortable } from "@dnd-kit/sortable";
 
 export default function ColumnCard(card: BoardCard) {
   const { updateCard, removeCard } = useBoardStore();
@@ -13,6 +15,23 @@ export default function ColumnCard(card: BoardCard) {
 
   const titleRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLInputElement>(null);
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: `card-${card.id}-column-${card.column_id}`,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
 
   useEffect(() => {
     if (isEditingTitle && titleRef.current) {
@@ -32,25 +51,37 @@ export default function ColumnCard(card: BoardCard) {
     const newTitle = title.trim();
     const newDescription = description.trim();
 
-    // Update if either changed
     if (
       (newTitle && newTitle !== card.title) ||
       newDescription !== (card.description || "")
     ) {
       try {
-        await updateCard(card.id, newTitle, newDescription, card.order_index);
+        await updateCard(
+          card.id,
+          newTitle,
+          newDescription,
+          card.order_index,
+          card.column_id,
+        );
       } catch (err) {
         console.error("Failed to update card:", err);
       }
     }
-
     setIsEditingTitle(false);
     setIsEditingDescription(false);
   };
 
   return (
-    <div className="flex items-center justify-between rounded bg-white p-3 shadow-sm hover:shadow">
-      <div>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center justify-between rounded bg-white p-3 shadow-sm hover:shadow dark:bg-gray-700"
+    >
+      <div
+        {...attributes}
+        {...listeners}
+        className="flex-1 cursor-grab active:cursor-grabbing"
+      >
         {isEditingTitle ? (
           <input
             ref={titleRef}
@@ -92,11 +123,11 @@ export default function ColumnCard(card: BoardCard) {
           />
         ) : (
           <p
-            className="mt-1 cursor-pointer text-sm text-gray-600"
+            className="mt-1 cursor-pointer text-sm text-gray-600 dark:text-gray-300"
             onClick={() => setIsEditingDescription(true)}
           >
             {description || (
-              <span className="text-gray-400">Add description…</span>
+              <span className="text-gray-300">Add description…</span>
             )}
           </p>
         )}
@@ -104,7 +135,7 @@ export default function ColumnCard(card: BoardCard) {
       <Button
         variant={"ghost"}
         onClick={() => removeCard(card.id)}
-        className="cursor-pointer rounded-lg p-1 text-red-500 transition duration-200 hover:bg-red-100 focus-visible:ring-red-400"
+        className="cursor-pointer rounded-lg p-1 text-red-500 transition duration-200 hover:bg-red-100 focus-visible:ring-red-400 dark:hover:bg-red-200"
       >
         <Trash />
       </Button>

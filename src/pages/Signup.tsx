@@ -1,6 +1,6 @@
 import AuthForm from "@/components/AuthForm";
 import { Link } from "react-router-dom";
-import { signupUser } from "@/lib/authService";
+import { signupUser } from "@/lib/user";
 import { SignupData, LoginData } from "../lib/types";
 
 export default function SignupPage() {

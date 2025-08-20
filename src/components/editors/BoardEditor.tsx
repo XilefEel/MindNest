@@ -4,6 +4,19 @@ import NestlingTitle from "./NestlingTitle";
 import { useBoardStore } from "@/stores/useBoardStore";
 import Column from "./Column";
 import { AnimatePresence, motion } from "framer-motion";
+import useAutoSave from "@/hooks/useAutoSave";
+
+import {
+  DndContext,
+  rectIntersection,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 export default function BoardEditor() {
   const nestling = useNestlingTreeStore((s) => s.activeNestling);
@@ -11,13 +24,42 @@ export default function BoardEditor() {
     return <div className="p-4 text-gray-500">No note selected</div>;
 
   const [title, setTitle] = useState(nestling.title);
-  const { boardData, fetchBoard, addColumn } = useBoardStore();
+  const {
+    boardData,
+    fetchBoard,
+    addColumn,
+    handleDragStart,
+    handleDragEnd,
+    activeDraggingId,
+  } = useBoardStore();
+  const { refreshData, updateNestling } = useNestlingTreeStore();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+  );
 
   useEffect(() => {
     fetchBoard(nestling.id);
   }, [fetchBoard, nestling.id]);
 
+  useEffect(() => {
+    setTitle(nestling.title);
+  }, [nestling.title]);
+
+  const { autoSaveStatus } = useAutoSave({
+    nestling,
+    title,
+    content: "",
+    updateNestling,
+    refreshData,
+  });
+
   const columns = boardData?.columns || [];
+  const columnIds = columns.map((col) => `column-${col.column.id}`);
 
   if (!boardData) {
     return <div>Board data not loaded yet...</div>;
@@ -27,50 +69,61 @@ export default function BoardEditor() {
     <div className="flex h-full flex-col gap-3">
       <NestlingTitle title={title} setTitle={setTitle} />
 
-      {/* Board content */}
-      <div className="flex-1 overflow-x-auto">
-        <div className="flex flex-col items-start gap-4 md:flex-row">
-          <AnimatePresence>
-            {columns.map((col) => (
-              <motion.div
-                key={col.column.id}
-                layout="position"
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{
-                  opacity: 0,
-                  scale: 0.8,
-                  transition: { duration: 0.2 },
-                }}
-                transition={{
-                  type: "spring",
-                  stiffness: 250,
-                  damping: 25,
-                }}
-              >
-                <Column key={col.column.id} {...col} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-
-          <button
-            onClick={() => {
-              if (!boardData) {
-                console.log("Board data not loaded yet");
-                return;
-              }
-
-              addColumn({
-                nestling_id: nestling.id,
-                title: "New Column",
-                order_index: boardData.columns.length + 1,
-              });
-            }}
-            className="w-72 flex-shrink-0 cursor-pointer rounded-lg border border-dashed bg-gray-50 p-3 text-gray-500 transition duration-200 hover:bg-gray-100"
+      <div className="flex-1 overflow-x-auto overflow-y-visible">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={rectIntersection}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={columnIds}
+            strategy={horizontalListSortingStrategy}
           >
-            + Add column
-          </button>
-        </div>
+            <div className="flex flex-row items-start gap-4">
+              <AnimatePresence>
+                {columns.map((col) => (
+                  <motion.div
+                    key={col.column.id}
+                    layout={activeDraggingId == null}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{
+                      opacity: 0,
+                      y: 30,
+                      transition: { duration: 0.2 },
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 250,
+                      damping: 25,
+                    }}
+                  >
+                    <Column key={col.column.id} {...col} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+
+              <button
+                onClick={() => {
+                  if (!boardData) {
+                    console.log("Board data not loaded yet");
+                    return;
+                  }
+
+                  addColumn({
+                    nestling_id: nestling.id,
+                    title: "New Column",
+                    order_index: boardData.columns.length + 1,
+                  });
+                }}
+                className="w-72 flex-shrink-0 cursor-pointer rounded-lg border border-dashed bg-gray-50 p-3 text-gray-500 transition duration-200 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700"
+              >
+                + Add column
+              </button>
+            </div>
+          </SortableContext>
+        </DndContext>
       </div>
     </div>
   );

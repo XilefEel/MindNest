@@ -5,16 +5,16 @@ import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useDraggable } from "@dnd-kit/core";
 import {
   FileText,
-  List,
   Calendar,
   FileImage,
   GripVertical,
   LucideIcon,
+  KanbanSquare,
 } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
   note: FileText,
-  board: List,
+  board: KanbanSquare,
   journal: Calendar,
   gallery: FileImage,
 };
@@ -26,8 +26,8 @@ export default function NestlingItem({
   nestling: Nestling;
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
-  const activeNestling = useNestlingTreeStore((s) => s.activeNestling);
-  const setActiveNestling = useNestlingTreeStore((s) => s.setActiveNestling);
+  const { activeNestling, setActiveFolderId, setActiveNestling } =
+    useNestlingTreeStore();
 
   const handleSelect = () => {
     setActiveNestling(nestling);
@@ -51,12 +51,13 @@ export default function NestlingItem({
   return (
     <div
       className={cn(
-        "flex w-full max-w-full cursor-pointer items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-700",
+        "flex w-full max-w-full cursor-pointer items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition-colors duration-200 hover:bg-teal-100 dark:hover:bg-teal-400",
         nestling.id === activeNestling?.id &&
-          "bg-gray-100 font-bold dark:bg-gray-700",
+          "bg-teal-100 font-bold dark:bg-teal-500",
       )}
       onClick={() => {
         handleSelect();
+        setActiveFolderId(nestling.folder_id || null);
         setIsSidebarOpen(false);
       }}
       style={style}
@@ -73,7 +74,7 @@ export default function NestlingItem({
         onClick={(e) => e.stopPropagation()}
         className="cursor-grab p-1"
       >
-        <GripVertical className="h-4 w-4 text-gray-500" />
+        <GripVertical className="h-4 w-4 text-gray-500 dark:text-gray-200" />
       </div>
     </div>
   );

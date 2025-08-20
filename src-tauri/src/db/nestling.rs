@@ -214,14 +214,12 @@ pub fn insert_board_column_into_db(data: NewBoardColumn) -> Result<BoardColumn, 
 }
 
 pub fn update_board_column_in_db(id: i64, title: String, order_index: i64) -> Result<(), String> {
-    print!("hi!");
     let connection = get_connection().map_err(|e| e.to_string())?;
     
     connection.execute(
         "UPDATE board_columns SET title = ?1, order_index = ?2, updated_at = CURRENT_TIMESTAMP WHERE id = ?3",
         params![title, order_index, id],
     ).map_err(|e| e.to_string())?;
-    print!("Updated board column with ID: {}\n", id);
     Ok(())
 }
 
@@ -272,15 +270,25 @@ pub fn insert_board_card_into_db(data: NewBoardCard) -> Result<BoardCard, String
     Ok(card)
 }
 
-pub fn update_board_card_in_db(id: i64, title: String, description: Option<String>, order_index: i64) -> Result<(), String> {
+pub fn update_board_card_in_db(
+    id: i64,
+    title: String,
+    description: Option<String>,
+    order_index: i64,
+    column_id: i64,
+) -> Result<(), String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
     
     connection.execute(
-        "UPDATE board_cards SET title = ?1, description = ?2, order_index = ?3, updated_at = CURRENT_TIMESTAMP WHERE id = ?4",
-        params![title, description, order_index, id],
+        "UPDATE board_cards 
+         SET title = ?1, description = ?2, order_index = ?3, column_id = ?4, updated_at = CURRENT_TIMESTAMP 
+         WHERE id = ?5",
+        params![title, description, order_index, column_id, id],
     ).map_err(|e| e.to_string())?;
+    
     Ok(())
 }
+
 
 pub fn delete_board_card_from_db(id: i64) -> Result<(), String> {
     let connection = get_connection().map_err(|e| e.to_string())?;

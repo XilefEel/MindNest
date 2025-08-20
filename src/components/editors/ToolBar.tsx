@@ -17,7 +17,7 @@ import {
   Undo2,
 } from "lucide-react";
 import { ToggleGroup } from "../ui/toggle-group";
-import { ToolBarItem } from "./ToolBarItem";
+import ToolBarItem from "./ToolBarItem";
 
 export default function ToolBar({
   onFormat,

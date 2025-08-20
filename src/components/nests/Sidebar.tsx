@@ -1,16 +1,17 @@
 import { FilePlus, FolderPlus, Home } from "lucide-react";
 import FolderTree from "./FolderTree";
 import NestlingItem from "./NestlingItem";
-import { FolderContextMenu } from "../context-menu/FolderContextMenu";
-import { NestlingContextMenu } from "../context-menu/NestlingContextMenu";
-import { DndContext, closestCenter } from "@dnd-kit/core";
+import FolderContextMenu from "../context-menu/FolderContextMenu";
+import NestlingContextMenu from "../context-menu/NestlingContextMenu";
+import { DndContext, rectIntersection } from "@dnd-kit/core";
 import LooseNestlings from "./LooseNestlings";
 import { useEffect, useMemo } from "react";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import AddNestlingModal from "../modals/AddNestlingModal";
 import AddFolderModal from "../modals/AddFolderModal";
-import { ToolBarItem } from "../editors/ToolBarItem";
+import ToolBarItem from "../editors/ToolBarItem";
 import { SidebarContextMenu } from "../context-menu/SidebarContextMenu";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Sidebar({
   nestId,
@@ -20,8 +21,17 @@ export default function Sidebar({
   isSidebarOpen: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
-  const folders = useNestlingTreeStore((s) => s.folders);
-  const nestlings = useNestlingTreeStore((s) => s.nestlings);
+  const {
+    openFolders,
+    toggleFolder,
+    handleDragStart,
+    handleDragEnd,
+    refreshData,
+    setNestId,
+    setActiveNestling,
+    folders,
+    nestlings,
+  } = useNestlingTreeStore();
 
   const folderGroups = useMemo(() => {
     return folders.map((folder) => ({
@@ -34,14 +44,6 @@ export default function Sidebar({
     return nestlings.filter((n) => n.folder_id === null);
   }, [nestlings]);
 
-  const openFolders = useNestlingTreeStore((s) => s.openFolders);
-  const toggleFolder = useNestlingTreeStore((s) => s.toggleFolder);
-  const handleDragStart = useNestlingTreeStore((s) => s.handleDragStart);
-  const handleDragEnd = useNestlingTreeStore((s) => s.handleDragEnd);
-  const refreshData = useNestlingTreeStore((s) => s.refreshData);
-  const setNestId = useNestlingTreeStore((s) => s.setNestId);
-  const setActiveNestling = useNestlingTreeStore((s) => s.setActiveNestling);
-
   useEffect(() => {
     if (nestId) {
       setNestId(Number(nestId));
@@ -51,7 +53,7 @@ export default function Sidebar({
 
   return (
     <SidebarContextMenu nestId={nestId}>
-      <aside className="flex h-full w-72 flex-col overflow-x-hidden overflow-y-auto rounded-tr-2xl rounded-br-2xl border border-gray-200 bg-white p-5 shadow-lg md:rounded-xl dark:border-gray-700 dark:bg-gray-800">
+      <aside className="flex h-full w-72 flex-col overflow-x-hidden overflow-y-auto rounded-tr-2xl rounded-br-2xl border border-gray-200 bg-white p-5 md:rounded-xl dark:border-gray-700 dark:bg-gray-800">
         <div className="flex items-center">
           <AddNestlingModal nestId={nestId}>
             <ToolBarItem Icon={FilePlus} label="New Nestling" />
@@ -71,40 +73,69 @@ export default function Sidebar({
           <span>Home</span>
         </div>
 
-        <DndContext
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        >
-          {folderGroups.map((folder) => (
-            <FolderContextMenu folderId={folder.id} key={folder.id}>
-              <div>
-                <FolderTree
-                  folder={folder}
-                  nestlings={folder.nestlings}
-                  isOpen={openFolders[folder.id] || false}
-                  setIsSidebarOpen={setIsSidebarOpen}
-                  onToggle={() => toggleFolder(folder.id)}
-                />
-              </div>
-            </FolderContextMenu>
-          ))}
-
-          <LooseNestlings>
-            <div>
-              {looseNestlings.map((nestling) => (
-                <NestlingContextMenu nestlingId={nestling.id} key={nestling.id}>
+        <AnimatePresence mode="popLayout">
+          <DndContext
+            collisionDetection={rectIntersection}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            {folderGroups.map((folder) => (
+              <motion.div
+                key={folder.id}
+                layout="position"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                transition={{
+                  type: "spring",
+                  stiffness: 250,
+                  damping: 25,
+                }}
+              >
+                <FolderContextMenu folderId={folder.id} key={folder.id}>
                   <div>
-                    <NestlingItem
-                      nestling={nestling}
+                    <FolderTree
+                      folder={folder}
+                      nestlings={folder.nestlings}
+                      isOpen={openFolders[folder.id] || false}
                       setIsSidebarOpen={setIsSidebarOpen}
+                      onToggle={() => toggleFolder(folder.id)}
                     />
                   </div>
-                </NestlingContextMenu>
+                </FolderContextMenu>
+              </motion.div>
+            ))}
+
+            <LooseNestlings>
+              {looseNestlings.map((nestling) => (
+                <motion.div
+                  key={nestling.id}
+                  layout="position"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 250,
+                    damping: 25,
+                  }}
+                >
+                  <NestlingContextMenu
+                    nestlingId={nestling.id}
+                    key={nestling.id}
+                  >
+                    <div>
+                      <NestlingItem
+                        nestling={nestling}
+                        setIsSidebarOpen={setIsSidebarOpen}
+                      />
+                    </div>
+                  </NestlingContextMenu>
+                </motion.div>
               ))}
-            </div>
-          </LooseNestlings>
-        </DndContext>
+            </LooseNestlings>
+          </DndContext>
+        </AnimatePresence>
       </aside>
     </SidebarContextMenu>
   );

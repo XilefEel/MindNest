@@ -38,7 +38,8 @@ export default function AddNestlingModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const refreshData = useNestlingTreeStore((s) => s.refreshData);
+  const { refreshData, setActiveNestling, activeFolderId } =
+    useNestlingTreeStore();
 
   const handleExit = async () => {
     await refreshData();
@@ -57,7 +58,7 @@ export default function AddNestlingModal({
     try {
       await createNestling({
         nest_id: nestId,
-        folder_id: null,
+        folder_id: activeFolderId,
         nestling_type: nestlingType,
         title,
         content,

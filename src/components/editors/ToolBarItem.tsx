@@ -1,6 +1,6 @@
 import * as Tooltip from "@radix-ui/react-tooltip";
 
-export function ToolBarItem({
+export default function ToolBarItem({
   type,
   onFormat,
   Icon,
@@ -18,7 +18,7 @@ export function ToolBarItem({
           <button
             value={type}
             aria-label={label}
-            className="cursor-pointer p-2 transition-all duration-200 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
+            className="cursor-pointer p-2 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300"
             onClick={() => onFormat?.(type || "")}
           >
             <Icon className="size-4" />

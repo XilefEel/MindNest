@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { act, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getNestFromId } from "@/lib/nests";
 import { Nest } from "@/lib/types";
 

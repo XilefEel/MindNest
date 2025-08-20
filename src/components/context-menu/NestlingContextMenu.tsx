@@ -2,7 +2,7 @@ import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, Trash2, Copy, Star, Archive } from "lucide-react";
 import DeleteModal from "../modals/DeleteModal";
 
-export function NestlingContextMenu({
+export default function NestlingContextMenu({
   nestlingId,
   children,
 }: {

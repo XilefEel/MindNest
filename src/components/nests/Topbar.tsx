@@ -33,14 +33,14 @@ export default function Topbar({
       <div className="flex items-center gap-3">
         <Button
           variant="ghost"
-          className="hidden cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 md:block dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
+          className="hidden cursor-pointer hover:bg-teal-100 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 md:block dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
           onClick={() => handleExit()}
         >
           <ArrowLeft className="size-4 sm:size-5" />
         </Button>
         <Button
           variant="ghost"
-          className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 md:hidden dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
+          className="cursor-pointer hover:bg-teal-100 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 md:hidden dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         >
           <Menu />
@@ -50,7 +50,7 @@ export default function Topbar({
         </span>
         <Button
           variant="ghost"
-          className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
+          className="cursor-pointer hover:bg-teal-100 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
         >
           <Pencil className="size-4 sm:size-5" />
         </Button>
@@ -58,14 +58,14 @@ export default function Topbar({
       <div className="flex items-center sm:gap-2">
         <Button
           variant="ghost"
-          className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
+          className="cursor-pointer hover:bg-teal-100 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
         >
           <Link className="size-4 sm:size-5" />
         </Button>
         <SettingsModal>
           <Button
             variant="ghost"
-            className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
+            className="cursor-pointer hover:bg-teal-100 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
           >
             <Settings className="size-4 sm:size-5" />
           </Button>
@@ -73,7 +73,7 @@ export default function Topbar({
 
         <Button
           variant="ghost"
-          className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
+          className="cursor-pointer hover:bg-teal-100 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
         >
           <CircleUserRound className="size-4 sm:size-5" />
         </Button>

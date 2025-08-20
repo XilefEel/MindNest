@@ -7,7 +7,7 @@ export default function LooseNestlings({
   children: React.ReactNode;
 }) {
   const { setNodeRef, isOver } = useDroppable({
-    id: "loose-null", // Unique ID for the "loose" drop zone
+    id: "loose-null",
   });
 
   return (
@@ -15,7 +15,7 @@ export default function LooseNestlings({
       ref={setNodeRef}
       className={cn(
         "flex h-full cursor-pointer flex-col gap-1 rounded px-2 py-1 font-medium",
-        isOver && "bg-gray-200 dark:bg-gray-700",
+        isOver && "bg-teal-100 dark:bg-teal-500",
       )}
     >
       {children}

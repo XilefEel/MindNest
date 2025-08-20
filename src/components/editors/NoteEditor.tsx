@@ -8,7 +8,7 @@ import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNoteStore } from "@/stores/useNoteStore";
 import { useHotkeys } from "react-hotkeys-hook";
-import useAutoSaveNote from "@/hooks/useAutoSaveNote";
+import useAutoSave from "@/hooks/useAutoSave";
 import NestlingTitle from "./NestlingTitle";
 
 export default function NoteEditor() {
@@ -25,7 +25,7 @@ export default function NoteEditor() {
   const content = useNoteStore((s) => s.present);
   const { updateNote, undo, redo } = useNoteStore();
 
-  const { autoSaveStatus } = useAutoSaveNote({
+  const { autoSaveStatus } = useAutoSave({
     nestling,
     title,
     content,
@@ -135,7 +135,7 @@ export default function NoteEditor() {
         <ToolBar onFormat={applyFormatting} />
         <button
           onClick={() => setPreviewMode(!previewMode)}
-          className="cursor-pointer transition-all duration-200 hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-blue-300"
+          className="cursor-pointer transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300"
         >
           {previewMode ? (
             <Pencil className="size-4" />
@@ -155,7 +155,7 @@ export default function NoteEditor() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.15 }}
+                transition={{ duration: 0.2 }}
                 className="prose dark:prose-invert max-w-none"
               >
                 <ReactMarkdown>
@@ -168,7 +168,7 @@ export default function NoteEditor() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.15 }}
+                transition={{ duration: 0.2 }}
                 value={content}
                 onChange={(e) => updateNote(e.target.value)}
                 ref={textareaRef}

@@ -14,10 +14,12 @@ type NestlingTreeState = {
   nestlings: Nestling[]; // Lists of Nestlings in the current nest, regardless of folder
   openFolders: Record<number, boolean>; // Keeps track of which folders are open (true) or closed (false)
   activeNestling: Nestling | null; // The currently selected or opened Nestling
+  activeFolderId: number | null;
   activeDraggingNestlingId: number | null; // The ID of the Nestling currently being dragged
 
   // Actions
   setActiveNestling: (nestling: Nestling | null) => void; // Sets the currently selected or opened Nestling
+  setActiveFolderId: (folder: number | null) => void;
   setNestId: (nestId: number) => void; // Sets the ID of the current nest
   setFolderOpen: (folder_ids: number, isOpen: boolean) => void; // Sets the open/closed state of a folder
 
@@ -38,6 +40,7 @@ export const useNestlingTreeStore = create<NestlingTreeState>((set, get) => ({
   nestlings: [],
   openFolders: {},
   activeNestling: null,
+  activeFolderId: null,
   activeDraggingNestlingId: null,
 
   // Actions
@@ -59,6 +62,8 @@ export const useNestlingTreeStore = create<NestlingTreeState>((set, get) => ({
         [folderId]: isOpen,
       },
     })),
+
+  setActiveFolderId: (folderId) => set({ activeFolderId: folderId }),
 
   // Helpers
   refreshData: async () => {

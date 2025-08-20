@@ -1,6 +1,6 @@
 import AuthForm from "@/components/AuthForm";
 import { Link } from "react-router-dom";
-import { loginUser } from "@/lib/authService";
+import { loginUser } from "@/lib/user";
 import { SignupData, LoginData } from "../lib/types";
 
 import { useNavigate } from "react-router-dom";
@@ -21,10 +21,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-background">
-      <div className="w-full max-w-md border border-muted bg-card rounded-2xl shadow-xl p-10">
-        <div className="mb-6 text-center space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+    <div className="bg-background flex min-h-screen items-center justify-center px-6">
+      <div className="border-muted bg-card w-full max-w-md rounded-2xl border p-10 shadow-xl">
+        <div className="mb-6 space-y-2 text-center">
+          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
             Welcome back to MindNest
           </h1>
           <p className="text-muted-foreground text-sm">
@@ -35,9 +35,9 @@ export default function LoginPage() {
 
         <AuthForm type="login" onSubmit={handleLogin} />
 
-        <p className="mt-6 text-sm text-muted-foreground text-center">
+        <p className="text-muted-foreground mt-6 text-center text-sm">
           Don't have an account?{" "}
-          <Link to="/signup" className="underline hover:text-primary">
+          <Link to="/signup" className="hover:text-primary underline">
             Sign up
           </Link>
         </p>

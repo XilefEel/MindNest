@@ -102,17 +102,20 @@ export async function updateBoardCard({
   title,
   description,
   order_index,
+  column_id,
 }: {
   id: number;
   title: string;
   description: string | null;
   order_index: number;
+  column_id: number;
 }) {
   return await invoke("update_board_card", {
     id,
     title,
     description,
     orderIndex: order_index,
+    columnId: column_id,
   });
 }
 export async function deleteBoardCard(id: number) {

@@ -73,7 +73,10 @@ export default function DeleteModal({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <div className="flex items-center gap-2">
-              <Button className="mr-auto cursor-pointer rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50">
+              <Button
+                onClick={() => setIsOpen(false)}
+                className="mr-auto cursor-pointer rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
+              >
                 Cancel
               </Button>
 

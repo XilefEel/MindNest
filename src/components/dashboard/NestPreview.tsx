@@ -29,6 +29,7 @@ export default function NestPreview({
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {nests.slice(0, 3).map((nest: Nest) => (
             <NestCard
+              key={nest.id}
               nest={nest}
               setActiveNest={setActiveNest}
               refresh={refresh}
