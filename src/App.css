@@ -4,6 +4,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@layer base {
+  @font-face {
+    font-family: "PlusJakartaSans";
+    src: url("./assets/fonts/PlusJakartaSans.ttf") format("truetype");
+  }
+
+  body {
+    font-family: "PlusJakartaSans", sans-serif;
+  }
+}
+
 /* For WebKit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   width: 6px; /* thinner scrollbar */

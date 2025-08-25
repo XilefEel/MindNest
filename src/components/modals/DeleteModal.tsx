@@ -33,6 +33,7 @@ export default function DeleteModal({
     await refreshData();
     setIsOpen(false);
     setError(null);
+    console.error(error);
     setActiveNestling(null);
   };
 

@@ -99,7 +99,7 @@ export default function AddNestModal({
             <Button
               onClick={handleCreateNest}
               disabled={loading}
-              className="cursor-pointer rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+              className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
             >
               {loading ? "Creating..." : "Create"}
             </Button>

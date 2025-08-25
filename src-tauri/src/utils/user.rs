@@ -80,6 +80,21 @@ pub fn init_db() -> Result<(), String> {
             FOREIGN KEY(column_id) REFERENCES board_columns(id) ON DELETE CASCADE
         );
 
+        CREATE TABLE IF NOT EXISTS planner_events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nestling_id INTEGER NOT NULL,
+            date TEXT NOT NULL,
+            title TEXT NOT NULL,
+            description TEXT,
+            start_time INTEGER NOT NULL,
+            duration INTEGER NOT NULL,
+            color TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
+        );
+
+
         "
     ).map_err(|e| e.to_string())?;
     Ok(())

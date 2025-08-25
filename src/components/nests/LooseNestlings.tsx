@@ -15,7 +15,7 @@ export default function LooseNestlings({
       ref={setNodeRef}
       className={cn(
         "flex h-full cursor-pointer flex-col gap-1 rounded px-2 py-1 font-medium",
-        isOver && "bg-teal-100 dark:bg-teal-500",
+        isOver && "bg-teal-100 dark:bg-teal-400",
       )}
     >
       {children}

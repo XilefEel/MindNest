@@ -25,6 +25,8 @@ export default function NestSection({
     );
   }
 
+  console.log(activeNest);
+
   return (
     <section>
       <h2 className="mb-8 text-3xl font-bold text-gray-900 dark:text-white">

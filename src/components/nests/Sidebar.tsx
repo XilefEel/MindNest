@@ -9,9 +9,10 @@ import { useEffect, useMemo } from "react";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import AddNestlingModal from "../modals/AddNestlingModal";
 import AddFolderModal from "../modals/AddFolderModal";
-import ToolBarItem from "../editors/ToolBarItem";
+import ToolBarItem from "../editors/note/ToolBarItem";
 import { SidebarContextMenu } from "../context-menu/SidebarContextMenu";
 import { AnimatePresence, motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export default function Sidebar({
   nestId,
@@ -22,6 +23,7 @@ export default function Sidebar({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const {
+    activeNestling,
     openFolders,
     toggleFolder,
     handleDragStart,
@@ -63,7 +65,11 @@ export default function Sidebar({
           </AddFolderModal>
         </div>
         <div
-          className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+          className={cn(
+            "flex cursor-pointer items-center gap-1 rounded px-2 py-1 font-medium transition-colors hover:bg-teal-100 dark:hover:bg-gray-700",
+            activeNestling === null &&
+              "bg-teal-100 font-bold text-teal-900 dark:bg-teal-400 dark:text-white",
+          )}
           onClick={() => {
             setActiveNestling(null);
             setIsSidebarOpen(false);

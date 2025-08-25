@@ -15,7 +15,7 @@ import {
 const iconMap: Record<string, LucideIcon> = {
   note: FileText,
   board: KanbanSquare,
-  journal: Calendar,
+  calendar: Calendar,
   gallery: FileImage,
 };
 
@@ -51,9 +51,9 @@ export default function NestlingItem({
   return (
     <div
       className={cn(
-        "flex w-full max-w-full cursor-pointer items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition-colors duration-200 hover:bg-teal-100 dark:hover:bg-teal-400",
+        "flex w-full max-w-full cursor-pointer items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition-colors duration-200 hover:bg-teal-50 dark:hover:bg-gray-700",
         nestling.id === activeNestling?.id &&
-          "bg-teal-100 font-bold dark:bg-teal-500",
+          "bg-teal-100 font-bold text-teal-900 dark:bg-teal-400 dark:text-white",
       )}
       onClick={() => {
         handleSelect();

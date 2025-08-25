@@ -1,5 +1,5 @@
 import { BoardColumnData } from "@/lib/types";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import { useBoardStore } from "@/stores/useBoardStore";
 import ColumnCard from "./ColumnCard";

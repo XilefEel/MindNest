@@ -25,6 +25,10 @@ use handler::nestling::create_board_card;
 use handler::nestling::update_board_card;
 use handler::nestling::delete_board_card;
 use handler::nestling::get_board_data;
+use handler::nestling::create_event;
+use handler::nestling::update_event;
+use handler::nestling::delete_event;
+use handler::nestling::get_events;
 
 use utils::user::init_db;
 
@@ -58,7 +62,11 @@ pub fn run() {
             create_board_card,
             update_board_card,
             delete_board_card,
-            get_board_data,]
+            get_board_data,
+            create_event,
+            update_event,
+            delete_event,
+            get_events]
         )
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

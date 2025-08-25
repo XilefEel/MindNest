@@ -38,8 +38,7 @@ export default function AddNestlingModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { refreshData, setActiveNestling, activeFolderId } =
-    useNestlingTreeStore();
+  const { refreshData, activeFolderId } = useNestlingTreeStore();
 
   const handleExit = async () => {
     await refreshData();
@@ -111,6 +110,7 @@ export default function AddNestlingModal({
                   <SelectLabel>Nestling Type</SelectLabel>
                   <SelectItem value="note">Note</SelectItem>
                   <SelectItem value="board">Board</SelectItem>
+                  <SelectItem value="calendar">Calendar</SelectItem>
                   <SelectItem value="journal">Journal</SelectItem>
                 </SelectGroup>
               </SelectContent>

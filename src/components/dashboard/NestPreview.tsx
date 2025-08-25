@@ -15,6 +15,7 @@ export default function NestPreview({
   setActiveNest: (nest: Nest | null) => void;
   refresh?: () => void;
 }) {
+  console.log(activeNest);
   return (
     <div className="flex flex-col gap-5 overflow-y-auto rounded-lg bg-white p-6 shadow dark:bg-gray-800">
       <div className="flex items-center justify-between">

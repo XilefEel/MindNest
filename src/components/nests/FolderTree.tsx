@@ -28,12 +28,12 @@ export default function FolderTree({
       ref={setNodeRef}
       className={cn(
         "flex cursor-pointer flex-col gap-1 rounded px-2 py-1 font-medium",
-        isOver && "bg-teal-100 dark:bg-teal-500",
+        isOver && "bg-teal-100 dark:bg-teal-400",
       )}
     >
       <div
         onClick={onToggle}
-        className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 font-medium transition-colors duration-200 hover:bg-teal-100 dark:hover:bg-teal-500"
+        className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 font-medium transition-colors duration-200 hover:bg-teal-50 dark:hover:bg-gray-700"
       >
         <ChevronDown
           className={`size-4 transition-transform duration-200 ${isOpen ? "rotate-0" : "-rotate-90"}`}

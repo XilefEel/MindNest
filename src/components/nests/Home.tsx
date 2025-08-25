@@ -20,12 +20,12 @@ export default function Home({ nestId }: { nestId: number }) {
         </h2>
         <div className="flex flex-wrap gap-3">
           <AddNestlingModal nestId={nestId}>
-            <div className="flex cursor-pointer items-center rounded-lg bg-black p-2 px-3 text-sm font-semibold text-white transition hover:scale-105 dark:bg-white dark:text-black">
+            <div className="flex cursor-pointer items-center rounded-lg bg-black p-2 px-3 text-sm font-semibold text-white transition hover:scale-105 dark:bg-teal-400">
               <Plus className="mr-1 size-4" /> Create Nestling
             </div>
           </AddNestlingModal>
           <AddFolderModal nestId={nestId}>
-            <div className="flex cursor-pointer items-center rounded-lg bg-black p-2 px-3 text-sm font-semibold text-white transition hover:scale-105 dark:bg-white dark:text-black">
+            <div className="flex cursor-pointer items-center rounded-lg bg-black p-2 px-3 text-sm font-semibold text-white transition hover:scale-105 dark:bg-teal-400">
               <Plus className="mr-1 size-4" /> Create Folder
             </div>
           </AddFolderModal>

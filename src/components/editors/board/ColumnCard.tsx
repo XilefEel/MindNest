@@ -1,5 +1,5 @@
 import { Trash } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { BoardCard } from "@/lib/types";
 import { useBoardStore } from "@/stores/useBoardStore";
 import { useEffect, useRef, useState } from "react";

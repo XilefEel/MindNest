@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNoteStore } from "@/stores/useNoteStore";
 import { useHotkeys } from "react-hotkeys-hook";
 import useAutoSave from "@/hooks/useAutoSave";
-import NestlingTitle from "./NestlingTitle";
+import NestlingTitle from "../NestlingTitle";
 
 export default function NoteEditor() {
   const nestling = useNestlingTreeStore((s) => s.activeNestling);

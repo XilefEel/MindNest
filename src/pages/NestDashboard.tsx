@@ -6,12 +6,13 @@ import { Nest } from "@/lib/types";
 import Topbar from "@/components/nests/Topbar";
 import Sidebar from "@/components/nests/Sidebar";
 import Home from "@/components/nests/Home";
-import NoteEditor from "@/components/editors/NoteEditor";
+import NoteEditor from "@/components/editors/note/NoteEditor";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { getLastNestling, saveLastNestId } from "@/lib/session";
 import LoadingScreen from "@/components/LoadingScreen";
 import { cn } from "@/lib/utils";
-import BoardEditor from "@/components/editors/BoardEditor";
+import BoardEditor from "@/components/editors/board/BoardEditor";
+import CalendarEditor from "@/components/editors/calendar/CalendarEditor";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -96,6 +97,8 @@ export default function NestDashboardPage() {
             <NoteEditor />
           ) : activeNestling && activeNestling?.nestling_type === "board" ? (
             <BoardEditor />
+          ) : activeNestling && activeNestling?.nestling_type === "calendar" ? (
+            <CalendarEditor />
           ) : (
             <Home nestId={nest.id} />
           )}

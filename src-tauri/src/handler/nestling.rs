@@ -1,6 +1,6 @@
-use crate::models::nestling::{BoardCard, BoardColumn, BoardData, Folder, Nestling, NewBoardCard, NewBoardColumn, NewFolder, NewNestling};
+use crate::models::nestling::{BoardCard, BoardColumn, BoardData, Folder, Nestling, NewBoardCard, NewBoardColumn, NewFolder, NewNestling, NewPlannerEvent, PlannerEvent};
 use crate::db::nestling::{
-    delete_board_card_from_db, delete_board_column_from_db, delete_folder_from_db, delete_nestling_from_db, get_board_data_from_db, get_folders_by_nest, get_nestlings_by_nest, insert_board_card_into_db, insert_board_column_into_db, insert_folder_into_db, insert_nestling_into_db, update_board_card_in_db, update_board_column_in_db, update_nestling_folder, update_note
+    delete_board_card_from_db, delete_board_column_from_db, delete_folder_from_db, delete_nestling_from_db, delete_planner_event_from_db, get_board_data_from_db, get_folders_by_nest, get_nestlings_by_nest, get_planner_events_for_week, insert_board_card_into_db, insert_board_column_into_db, insert_folder_into_db, insert_nestling_into_db, insert_planner_event_into_db, update_board_card_in_db, update_board_column_in_db, update_nestling_folder, update_note, update_planner_event_in_db
 };
 
 #[tauri::command]
@@ -76,4 +76,31 @@ pub fn delete_board_card(id: i64) -> Result<(), String> {
 #[tauri::command]
 pub fn get_board_data(nestling_id: i64) -> Result<BoardData, String> {
     get_board_data_from_db(nestling_id)
+}
+
+#[tauri::command]
+pub fn create_event(data: NewPlannerEvent) -> Result<PlannerEvent, String>{
+    insert_planner_event_into_db(data)
+}
+
+#[tauri::command]
+pub fn update_event(id: i64,
+    date: String,
+    title: String,
+    description: Option<String>,
+    start_time: i64,
+    duration: i64,
+    color: Option<String>
+) -> Result<(), String>{
+    update_planner_event_in_db(id, date, title, description, start_time, duration, color)
+}
+
+#[tauri::command]
+pub fn delete_event(id: i64) -> Result<(), String>{
+    delete_planner_event_from_db(id)
+}
+
+#[tauri::command]
+pub fn get_events(nestling_id: i64, week_start: String, week_end: String) -> Result<Vec<PlannerEvent>, String> {
+    get_planner_events_for_week(nestling_id, week_start, week_end)
 }

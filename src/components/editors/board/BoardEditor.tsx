@@ -1,8 +1,8 @@
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useEffect, useState } from "react";
-import NestlingTitle from "./NestlingTitle";
+import NestlingTitle from "@/components/editors/NestlingTitle";
 import { useBoardStore } from "@/stores/useBoardStore";
-import Column from "./Column";
+import Column from "@/components/editors/board/Column";
 import { AnimatePresence, motion } from "framer-motion";
 import useAutoSave from "@/hooks/useAutoSave";
 
@@ -64,6 +64,8 @@ export default function BoardEditor() {
   if (!boardData) {
     return <div>Board data not loaded yet...</div>;
   }
+
+  console.log(autoSaveStatus);
 
   return (
     <div className="flex h-full flex-col gap-3">

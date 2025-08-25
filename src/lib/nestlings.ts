@@ -7,6 +7,8 @@ import {
   BoardData,
   BoardCard,
   BoardColumn,
+  PlannerEventType,
+  NewPlannerEventType,
 } from "./types";
 
 /*
@@ -124,4 +126,56 @@ export async function deleteBoardCard(id: number) {
 
 export async function getBoard(nestlingId: number) {
   return await invoke<BoardData>("get_board_data", { nestlingId });
+}
+
+export async function createPlannerEvent(data: NewPlannerEventType) {
+  return await invoke<PlannerEventType>("create_event", { data });
+}
+
+export async function getPlannerEvents({
+  id,
+  weekStart,
+  weekEnd,
+}: {
+  id: number;
+  weekStart: string;
+  weekEnd: string;
+}) {
+  return await invoke<PlannerEventType[]>("get_events", {
+    id,
+    weekStart,
+    weekEnd,
+  });
+}
+
+export async function updatePlannerEvent({
+  id,
+  date,
+  title,
+  description,
+  start_time,
+  duration,
+  color,
+}: {
+  id: number;
+  date: string;
+  title: string;
+  description: string | null;
+  start_time: number;
+  duration: number;
+  color: string | null;
+}) {
+  return await invoke("update_event", {
+    id,
+    date,
+    title,
+    description,
+    startTime: start_time,
+    duration,
+    color,
+  });
+}
+
+export async function deletePlannerEvent(id: number) {
+  return await invoke("delete_event", { id });
 }
