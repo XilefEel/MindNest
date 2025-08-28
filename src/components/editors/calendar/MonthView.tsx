@@ -15,6 +15,9 @@ import {
   subMonths,
 } from "date-fns";
 import { cn } from "@/lib/utils";
+import { usePlannerStore } from "@/stores/usePlannerStore";
+import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { getWeekRange } from "@/lib/utils";
 
 export default function MonthView({
   currentDate,
@@ -39,6 +42,10 @@ export default function MonthView({
   const monthEnd = endOfMonth(currentDate);
   const startDate = startOfWeek(monthStart);
   const endDate = endOfWeek(monthEnd);
+
+  const { activeNestling } = useNestlingTreeStore();
+  if (!activeNestling) return null;
+  const { fetchEvents } = usePlannerStore();
 
   const goToNextMonth = () => {
     setDirection(1);
@@ -152,6 +159,16 @@ export default function MonthView({
                     onClick={() => {
                       setSelectedDate(day);
                       setMode("planner");
+
+                      const { start, end } = getWeekRange(day);
+                      fetchEvents({
+                        nestlingId: activeNestling.id,
+                        weekStart: start,
+                        weekEnd: end,
+                      });
+                      console.log(
+                        `FETCHING EVENTS FROM START ${start} TO END ${end}`,
+                      );
                     }}
                     className={cn(
                       "flex h-16 items-center justify-center rounded-lg transition duration-150 hover:bg-gray-100 dark:hover:bg-gray-800",

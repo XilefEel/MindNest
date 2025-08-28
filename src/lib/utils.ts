@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { endOfWeek, format, startOfWeek } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -22,6 +23,10 @@ export function debounce<T extends (...args: any[]) => any>(
   return debounced as T & { cancel: () => void };
 }
 
+export function getRandomElement<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 export function getDayFromDate(date: string): number {
   return new Date(date).getDay(); // 0 = Sunday, 6 = Saturday
 }
@@ -29,18 +34,31 @@ export function getDayFromDate(date: string): number {
 export function getDateFromWeekDay(baseWeekDate: Date, day: number): string {
   const result = new Date(baseWeekDate);
   result.setDate(baseWeekDate.getDate() + day);
-  return result.toISOString().split("T")[0]; // YYYY-MM-DD
+  return format(result, "yyyy-MM-dd"); // YYYY-MM-DD
+}
+
+export function getWeekRange(selectedDate: Date): {
+  start: string;
+  end: string;
+} {
+  const weekStart = startOfWeek(selectedDate, { weekStartsOn: 0 });
+  const weekEnd = endOfWeek(selectedDate, { weekStartsOn: 0 });
+
+  return {
+    start: format(weekStart, "yyyy-MM-dd"),
+    end: format(weekEnd, "yyyy-MM-dd"),
+  };
 }
 
 export const PLANNER_EVENT_COLORS = [
-  "#14b8a6", // teal-500
-  "#3b82f6", // blue-500
-  "#10b981", // green-500
-  "#f59e0b", // amber-500
-  "#ef4444", // red-500
-  "#8b5cf6", // violet-500
-  "#ec4899", // pink-500
-  "#f43f5e", // rose-500
+  "#2DD4BF", // teal-400
+  "#F87171", // red-400
+  "#60A5FA", // blue-400
+  "#FBBF24", // amber-400
+  "#FB923C", // orange-400
+  "#A78BFA", // violet-400
+  "#FB7185", // rose-400
+  "#E879F9", // fuchsia-400
+  "#34D399", // emerald-400
+  "#F472B6", // pink-400
 ];
-
-export const DEFAULT_EVENT_COLOR = "#14b8a6";

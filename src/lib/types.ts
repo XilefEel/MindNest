@@ -105,7 +105,7 @@ export type BoardColumnData = {
   cards: BoardCard[];
 };
 
-export interface PlannerEventType {
+export type PlannerEventType = {
   id: number;
   nestling_id: number;
   date: string;
@@ -116,9 +116,9 @@ export interface PlannerEventType {
   color: string;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface NewPlannerEventType {
+export type NewPlannerEventType = {
   nestling_id: number;
   date: string;
   title: string;
@@ -126,4 +126,4 @@ export interface NewPlannerEventType {
   start_time: number;
   duration: number;
   color: string;
-}
+};

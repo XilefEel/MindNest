@@ -80,6 +80,7 @@ pub fn get_board_data(nestling_id: i64) -> Result<BoardData, String> {
 
 #[tauri::command]
 pub fn create_event(data: NewPlannerEvent) -> Result<PlannerEvent, String>{
+    println!("Adding event: {:#?}", data);
     insert_planner_event_into_db(data)
 }
 
@@ -102,5 +103,6 @@ pub fn delete_event(id: i64) -> Result<(), String>{
 
 #[tauri::command]
 pub fn get_events(nestling_id: i64, week_start: String, week_end: String) -> Result<Vec<PlannerEvent>, String> {
+    println!("Getting events for nestling {} between {} and {}", nestling_id, week_start, week_end);
     get_planner_events_for_week(nestling_id, week_start, week_end)
 }

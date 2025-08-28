@@ -398,7 +398,7 @@ pub fn insert_planner_event_into_db(data: NewPlannerEvent) -> Result<PlannerEven
 
     let mut statement = connection.prepare(
         "INSERT INTO planner_events 
-         (nestling_id, date, title, description, start_time, duration, created_at, updated_at)
+         (nestling_id, date, title, description, start_time, duration, color, created_at, updated_at)
          VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
          RETURNING id, nestling_id, date, title, description, start_time, duration, color, created_at, updated_at"
     ).map_err(|e| e.to_string())?;
@@ -430,7 +430,8 @@ pub fn insert_planner_event_into_db(data: NewPlannerEvent) -> Result<PlannerEven
             })
         }
     ).map_err(|e| e.to_string())?;
-
+    
+    println!("{:?}", event);
     Ok(event)
 }
 
@@ -495,6 +496,6 @@ pub fn get_planner_events_for_week(nestling_id: i64, week_start: String, week_en
         .map_err(|e| e.to_string())?
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| e.to_string())?;
-
+    println!("{:?}", events);
     Ok(events)
 }

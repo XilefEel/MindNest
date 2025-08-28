@@ -63,6 +63,8 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
         weekStart,
         weekEnd,
       });
+      console.log(`fetching from ${weekStart} to ${weekEnd} `);
+      console.log("Events fetched:", events);
       set({ events, loading: false });
     } catch (e) {
       set({ error: String(e), loading: false });
@@ -71,6 +73,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
 
   addEvent: async (newEvent: NewPlannerEventType) => {
     try {
+      console.log("Adding event:", newEvent); // Debugging print
       const event = await createPlannerEvent(newEvent);
       set({ events: [...get().events, event] });
     } catch (e) {
@@ -95,6 +98,23 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
     duration: number;
     color: string | null;
   }) => {
+    const prevEvent = get().events;
+    set({
+      events: prevEvent.map((e) =>
+        e.id === id
+          ? {
+              ...e,
+              date,
+              title,
+              description: description ?? e.description,
+              start_time,
+              duration,
+              updated_at: new Date().toISOString(),
+              color: color ?? e.color, // keep old color if null
+            }
+          : e,
+      ),
+    });
     try {
       await updatePlannerEvent({
         id,
@@ -107,24 +127,9 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
       });
 
       // Update state manually
-      set({
-        events: get().events.map((e) =>
-          e.id === id
-            ? {
-                ...e,
-                date,
-                title,
-                description: description ?? e.description,
-                start_time,
-                duration,
-                updated_at: new Date().toISOString(),
-                color: color ?? e.color, // keep old color if null
-              }
-            : e,
-        ),
-      });
     } catch (e) {
-      set({ error: String(e) });
+      console.error("Error updating event:", e);
+      set({ events: prevEvent, error: String(e) });
     }
   },
 

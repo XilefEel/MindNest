@@ -19,10 +19,10 @@ export default function NestDashboardPage() {
   const [nest, setNest] = useState<Nest | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  const activeNestling = useNestlingTreeStore((s) => s.activeNestling);
-  const setActiveNestling = useNestlingTreeStore((s) => s.setActiveNestling);
-  const setFolderOpen = useNestlingTreeStore((s) => s.setFolderOpen);
+  const { activeNestling, setActiveNestling, setFolderOpen } =
+    useNestlingTreeStore();
 
   useEffect(() => {
     async function fetchNest() {
@@ -56,8 +56,8 @@ export default function NestDashboardPage() {
   if (!nest) return <p>Nest not found.</p>;
 
   return (
-    <div className="flex h-screen cursor-default flex-col bg-gray-50 pb-3 md:px-6 md:pb-6 dark:bg-gray-900">
-      <div className="shrink-0">
+    <div className="flex h-screen cursor-default flex-col bg-gray-50 pb-3 md:pb-6 dark:bg-gray-900">
+      <div className="shrink-0 md:px-6">
         <Topbar
           nest={nest}
           isSidebarOpen={isSidebarOpen}
@@ -72,22 +72,37 @@ export default function NestDashboardPage() {
           />
         )}
 
-        <aside
+        <div
           className={cn(
-            "fixed top-0 z-40 h-full transition-transform duration-300 ease-in-out md:z-0",
-            isSidebarOpen ? "translate-x-0" : "-translate-x-full",
-            "md:relative md:translate-x-0",
+            "shrink-0 transition-all duration-300 ease-in-out",
+            // Mobile
+            "w-0 md:w-72",
+            // Desktop
+            isSidebarCollapsed ? "md:w-0" : "md:w-72",
           )}
         >
-          <Sidebar
-            nestId={nest.id}
-            isSidebarOpen={isSidebarOpen}
-            setIsSidebarOpen={setIsSidebarOpen}
-          />
-        </aside>
+          <aside
+            className={cn(
+              "w-72 transition-transform duration-300 ease-in-out",
+              // Mobile
+              "fixed top-0 z-40 h-full md:z-0",
+              isSidebarOpen ? "translate-x-0" : "-translate-x-full",
+              // Desktop
+              "md:relative",
+              isSidebarCollapsed ? "md:-translate-x-11/12" : "md:translate-x-0",
+            )}
+            onDoubleClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          >
+            <Sidebar
+              nestId={nest.id}
+              isSidebarOpen={isSidebarOpen}
+              setIsSidebarOpen={setIsSidebarOpen}
+            />
+          </aside>
+        </div>
 
         <main
-          className={`flex-1 px-10 ${
+          className={`flex-1 px-10 md:pr-16 ${
             activeNestling?.nestling_type === "note"
               ? "overflow-hidden"
               : "overflow-y-auto"

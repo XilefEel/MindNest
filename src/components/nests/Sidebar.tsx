@@ -55,7 +55,7 @@ export default function Sidebar({
 
   return (
     <SidebarContextMenu nestId={nestId}>
-      <aside className="flex h-full w-72 flex-col overflow-x-hidden overflow-y-auto rounded-tr-2xl rounded-br-2xl border border-gray-200 bg-white p-5 md:rounded-xl dark:border-gray-700 dark:bg-gray-800">
+      <aside className="flex h-full flex-col overflow-x-hidden overflow-y-auto rounded-tr-2xl rounded-br-2xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
         <div className="flex items-center">
           <AddNestlingModal nestId={nestId}>
             <ToolBarItem Icon={FilePlus} label="New Nestling" />

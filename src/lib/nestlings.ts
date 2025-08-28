@@ -129,6 +129,7 @@ export async function getBoard(nestlingId: number) {
 }
 
 export async function createPlannerEvent(data: NewPlannerEventType) {
+  console.log("createPlannerEvent", data);
   return await invoke<PlannerEventType>("create_event", { data });
 }
 
@@ -141,11 +142,19 @@ export async function getPlannerEvents({
   weekStart: string;
   weekEnd: string;
 }) {
-  return await invoke<PlannerEventType[]>("get_events", {
-    id,
-    weekStart,
-    weekEnd,
-  });
+  console.log("getPlannerEvents", { id, weekStart, weekEnd });
+  try {
+    const result = await invoke<PlannerEventType[]>("get_events", {
+      nestlingId: id,
+      weekStart,
+      weekEnd,
+    });
+    console.log("Success:", result);
+    return result;
+  } catch (error) {
+    console.error("Tauri invoke error:", error);
+    throw error;
+  }
 }
 
 export async function updatePlannerEvent({

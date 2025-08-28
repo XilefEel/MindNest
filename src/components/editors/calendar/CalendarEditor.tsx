@@ -31,7 +31,7 @@ export default function CalendarEditor() {
   };
 
   return (
-    <div className="relative mx-auto max-w-3xl p-4">
+    <div className="relative mx-auto p-4">
       <AnimatePresence mode="sync" initial={false} custom={direction}>
         {mode === "calendar" ? (
           <MonthView

@@ -1,12 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { cn, getDayFromDate } from "@/lib/utils";
+import {
+  cn,
+  getDayFromDate,
+  PLANNER_EVENT_COLORS,
+  getRandomElement,
+} from "@/lib/utils";
 import { addDays, format, startOfWeek } from "date-fns";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import PlannerEvent from "./PlannerEvent";
 import { usePlannerStore } from "@/stores/usePlannerStore";
-import { PlannerEventType, NewPlannerEventType } from "@/lib/types";
+import { NewPlannerEventType } from "@/lib/types";
+import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 
 export type EventType = {
   id: number;
@@ -34,9 +40,31 @@ export default function PlannerView({
     addDays(weekStart, i),
   );
 
-  const { events, addEvent, updateEvent, deleteEvent, fetchEvents } =
-    usePlannerStore();
+  const { activeNestling } = useNestlingTreeStore();
+  if (!activeNestling) return null;
+  const { events, addEvent } = usePlannerStore();
 
+  const handleDoubleClick = ({
+    clickedDate,
+    startHour,
+  }: {
+    clickedDate: Date;
+    startHour: number;
+  }) => {
+    const newEvent: NewPlannerEventType = {
+      nestling_id: activeNestling.id,
+      date: format(clickedDate, "yyyy-MM-dd"),
+      title: format(clickedDate, "yyyy-MM-dd"),
+      description: null,
+      start_time: startHour,
+      duration: 1,
+      color: getRandomElement(PLANNER_EVENT_COLORS),
+    };
+    console.log(newEvent);
+    addEvent(newEvent);
+  };
+
+  useEffect(() => {});
   useEffect(() => {
     if (!colRef.current) return;
 
@@ -95,6 +123,16 @@ export default function PlannerView({
                     "h-16 border-t border-gray-200 dark:border-gray-700",
                     hour % 2 === 0 && "bg-white/50 dark:bg-gray-800/50",
                   )}
+                  onDoubleClick={() => {
+                    handleDoubleClick({
+                      clickedDate: day,
+                      startHour: hour,
+                    });
+                    console.log({
+                      day,
+                      hour,
+                    });
+                  }}
                 >
                   {dayIndex === 0 && (
                     <div className="absolute -mt-2 -ml-12 text-xs text-gray-500 dark:text-white">
@@ -112,7 +150,6 @@ export default function PlannerView({
                   key={event.id}
                   event={event}
                   colWidth={colWidth}
-                  updateEvent={updateEvent}
                 />
               ))}
           </div>
