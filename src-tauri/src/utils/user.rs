@@ -94,6 +94,27 @@ pub fn init_db() -> Result<(), String> {
             FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
         );
 
+        CREATE TABLE IF NOT EXISTS journal_entries (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nestling_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            content TEXT,
+            entry_date TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS journal_templates (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nestling_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            content TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
+        );
+
 
         "
     ).map_err(|e| e.to_string())?;

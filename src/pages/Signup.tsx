@@ -1,9 +1,11 @@
 import AuthForm from "@/components/AuthForm";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signupUser } from "@/lib/user";
 import { SignupData, LoginData } from "../lib/types";
+import { ArrowLeft } from "lucide-react";
 
 export default function SignupPage() {
+  const navigate = useNavigate();
   const handleSignup = async (data: SignupData | LoginData): Promise<void> => {
     try {
       if ("username" in data) {
@@ -16,9 +18,14 @@ export default function SignupPage() {
 
   return (
     <div className="bg-background flex min-h-screen items-center justify-center px-6 py-12">
+      <ArrowLeft
+        className="text-muted-foreground absolute top-6 left-6 cursor-pointer transition-colors hover:text-teal-600"
+        onClick={() => navigate("/")}
+      />
+
       <div className="border-muted bg-card w-full max-w-md rounded-2xl border p-10 shadow-xl">
         <div className="mb-6 space-y-2 text-center">
-          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight text-teal-600 md:text-4xl">
             Create your MindNest account
           </h1>
           <p className="text-muted-foreground text-sm">
@@ -29,7 +36,10 @@ export default function SignupPage() {
         <AuthForm type="signup" onSubmit={handleSignup} />
         <p className="text-muted-foreground mt-6 text-center text-sm">
           Already have an account?{" "}
-          <Link to="/login" className="hover:text-primary underline">
+          <Link
+            to="/login"
+            className="underline transition-all duration-100 hover:text-teal-600"
+          >
             Log in
           </Link>
         </p>

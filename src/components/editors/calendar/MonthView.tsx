@@ -163,8 +163,8 @@ export default function MonthView({
                       const { start, end } = getWeekRange(day);
                       fetchEvents({
                         nestlingId: activeNestling.id,
-                        weekStart: start,
-                        weekEnd: end,
+                        start,
+                        end,
                       });
                       console.log(
                         `FETCHING EVENTS FROM START ${start} TO END ${end}`,

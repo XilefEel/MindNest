@@ -77,7 +77,7 @@ export default function EditNestModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Personal, Work, School"
-              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-black focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-black focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
             />
           </div>
 
@@ -103,7 +103,7 @@ export default function EditNestModal({
 
               <Button
                 onClick={handleEdit}
-                className="cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
+                className="cursor-pointer rounded-lg bg-teal-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-700 disabled:opacity-50"
               >
                 Save
               </Button>

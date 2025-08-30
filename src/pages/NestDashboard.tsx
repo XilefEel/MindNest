@@ -2,17 +2,17 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getNestFromId } from "@/lib/nests";
 import { Nest } from "@/lib/types";
-
+import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { getLastNestling, saveLastNestId } from "@/lib/session";
+import { cn } from "@/lib/utils";
 import Topbar from "@/components/nests/Topbar";
 import Sidebar from "@/components/nests/Sidebar";
 import Home from "@/components/nests/Home";
-import NoteEditor from "@/components/editors/note/NoteEditor";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
-import { getLastNestling, saveLastNestId } from "@/lib/session";
 import LoadingScreen from "@/components/LoadingScreen";
-import { cn } from "@/lib/utils";
+import NoteEditor from "@/components/editors/note/NoteEditor";
 import BoardEditor from "@/components/editors/board/BoardEditor";
 import CalendarEditor from "@/components/editors/calendar/CalendarEditor";
+import JournalEditor from "@/components/editors/journal/JournalEditor";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -109,11 +109,13 @@ export default function NestDashboardPage() {
           }`}
         >
           {activeNestling && activeNestling.nestling_type === "note" ? (
-            <NoteEditor />
+            <NoteEditor key={activeNestling.id} />
           ) : activeNestling && activeNestling?.nestling_type === "board" ? (
-            <BoardEditor />
+            <BoardEditor key={activeNestling.id} />
           ) : activeNestling && activeNestling?.nestling_type === "calendar" ? (
-            <CalendarEditor />
+            <CalendarEditor key={activeNestling.id} />
+          ) : activeNestling && activeNestling?.nestling_type === "journal" ? (
+            <JournalEditor key={activeNestling.id} />
           ) : (
             <Home nestId={nest.id} />
           )}

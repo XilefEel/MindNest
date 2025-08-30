@@ -74,9 +74,6 @@ export async function updateBoardColumn({
   title: string;
   order_index: number;
 }) {
-  console.log("Frontend function called!"); // Add this
-  console.log("Updating board column:", { id, title, order_index });
-
   try {
     const result = await invoke("update_board_column", {
       id,
@@ -135,19 +132,19 @@ export async function createPlannerEvent(data: NewPlannerEventType) {
 
 export async function getPlannerEvents({
   id,
-  weekStart,
-  weekEnd,
+  start,
+  end,
 }: {
   id: number;
-  weekStart: string;
-  weekEnd: string;
+  start: string;
+  end: string;
 }) {
-  console.log("getPlannerEvents", { id, weekStart, weekEnd });
+  console.log("getPlannerEvents", { id, start, end });
   try {
     const result = await invoke<PlannerEventType[]>("get_events", {
       nestlingId: id,
-      weekStart,
-      weekEnd,
+      start,
+      end,
     });
     console.log("Success:", result);
     return result;

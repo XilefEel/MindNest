@@ -2,7 +2,7 @@ import { PlannerEventType } from "@/lib/types";
 import { PLANNER_EVENT_COLORS } from "@/lib/utils";
 import { usePlannerStore } from "@/stores/usePlannerStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
-import { Copy, Archive, Trash, Check, Palette } from "lucide-react";
+import { Copy, Trash, Check, Palette } from "lucide-react";
 
 export default function PlannerEventContextMenu({
   event,
@@ -30,14 +30,6 @@ export default function PlannerEventContextMenu({
           >
             <Copy className="h-4 w-4" />
             <span>Duplicate Event</span>
-          </ContextMenu.Item>
-
-          <ContextMenu.Item
-            onClick={() => deleteEvent(event.id)}
-            className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors duration-200 outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Archive className="h-4 w-4" />
-            <span>Delete Event</span>
           </ContextMenu.Item>
 
           <ContextMenu.Sub>

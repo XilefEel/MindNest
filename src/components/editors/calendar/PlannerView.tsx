@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   cn,
   getDayFromDate,
@@ -7,7 +6,6 @@ import {
 } from "@/lib/utils";
 import { addDays, format, startOfWeek } from "date-fns";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import PlannerEvent from "./PlannerEvent";
 import { usePlannerStore } from "@/stores/usePlannerStore";
@@ -24,13 +22,9 @@ export type EventType = {
 export default function PlannerView({
   selectedDate,
   variants,
-  setMode,
-  setDirection,
 }: {
   selectedDate: Date;
   variants: any;
-  setMode: (mode: "calendar" | "planner") => void;
-  setDirection: (direction: number) => void;
 }) {
   const colRef = useRef<HTMLDivElement>(null);
   const [colWidth, setColWidth] = useState(1);
@@ -88,19 +82,8 @@ export default function PlannerView({
       animate="plannerCenter"
       exit="plannerExit"
       transition={{ duration: 0.4, ease: "easeInOut" }}
-      className="absolute h-full w-full p-6"
+      className="absolute h-full w-full px-6"
     >
-      <div className="flex items-center justify-between py-1">
-        <Button
-          onClick={() => {
-            setMode("calendar");
-            setDirection(1);
-          }}
-        >
-          <ArrowLeft />
-        </Button>
-      </div>
-
       {/* Planner Grid */}
       <div ref={colRef} className="grid h-full grid-cols-7">
         {weekDaysWithDates.map((day) => (

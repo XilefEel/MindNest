@@ -127,3 +127,35 @@ export type NewPlannerEventType = {
   duration: number;
   color: string;
 };
+
+export type JournalEntry = {
+  id: number;
+  nestling_id: number;
+  date: string;
+  title: string;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type NewJournalEntry = {
+  nestling_id: number;
+  date: string;
+  title: string;
+  description: string | null;
+};
+
+export type JournalTemplate = {
+  id: number;
+  nestling_id: number;
+  name: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type NewJournalTemplate = {
+  nestling_id: number;
+  name: string;
+  content: string;
+};

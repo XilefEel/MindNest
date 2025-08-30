@@ -19,7 +19,7 @@ export default function NestlingContextMenu({
             onSelect={() => console.log("Rename note", nestlingId)}
           >
             <Edit3 className="h-4 w-4" />
-            <span>Rename Note</span>
+            <span>Rename</span>
           </ContextMenu.Item>
 
           <ContextMenu.Item
@@ -27,7 +27,7 @@ export default function NestlingContextMenu({
             onSelect={() => console.log("Duplicate note", nestlingId)}
           >
             <Copy className="h-4 w-4" />
-            <span>Duplicate Note</span>
+            <span>Duplicate</span>
           </ContextMenu.Item>
 
           <ContextMenu.Item
@@ -45,7 +45,7 @@ export default function NestlingContextMenu({
             onSelect={() => console.log("Archive note", nestlingId)}
           >
             <Archive className="h-4 w-4" />
-            <span>Archive Note</span>
+            <span>Archive</span>
           </ContextMenu.Item>
 
           <DeleteModal type="nestling" nestlingId={nestlingId}>
@@ -54,7 +54,7 @@ export default function NestlingContextMenu({
               onSelect={() => console.log("Delete folder", nestlingId)}
             >
               <Trash2 className="h-4 w-4" />
-              <span>Delete Nestling</span>
+              <span>Delete</span>
             </div>
           </DeleteModal>
         </ContextMenu.Content>

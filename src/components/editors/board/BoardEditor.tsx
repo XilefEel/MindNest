@@ -50,7 +50,7 @@ export default function BoardEditor() {
     setTitle(nestling.title);
   }, [nestling.title]);
 
-  const { autoSaveStatus } = useAutoSave({
+  useAutoSave({
     nestling,
     title,
     content: "",
@@ -64,8 +64,6 @@ export default function BoardEditor() {
   if (!boardData) {
     return <div>Board data not loaded yet...</div>;
   }
-
-  console.log(autoSaveStatus);
 
   return (
     <div className="flex h-full flex-col gap-3">

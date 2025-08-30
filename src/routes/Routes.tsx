@@ -7,7 +7,7 @@ import DashboardPage from "../pages/UserDashboard";
 import ProtectedRoute from "./ProtectedRoutes";
 import NestDashboard from "@/pages/NestDashboard";
 
-const AppRoutes = () => {
+export default function AppRoutes() {
   const { user, loading } = useAuth();
 
   if (loading) return <div>Loading...</div>;
@@ -43,6 +43,4 @@ const AppRoutes = () => {
       />
     </Routes>
   );
-};
-
-export default AppRoutes;
+}

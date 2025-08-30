@@ -80,7 +80,7 @@ export default function AddNestModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Personal, Work, School"
-              className="text-sm text-black dark:text-gray-100"
+              className="text-sm text-black focus:border-teal-500 focus:ring-teal-500 dark:text-gray-100"
             />
           </div>
 

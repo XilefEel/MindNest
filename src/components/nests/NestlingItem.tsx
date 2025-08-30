@@ -10,12 +10,14 @@ import {
   GripVertical,
   LucideIcon,
   KanbanSquare,
+  Notebook,
 } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
   note: FileText,
   board: KanbanSquare,
   calendar: Calendar,
+  journal: Notebook,
   gallery: FileImage,
 };
 

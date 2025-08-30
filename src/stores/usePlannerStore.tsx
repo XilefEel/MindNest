@@ -15,12 +15,12 @@ interface PlannerState {
   addEvent: (event: NewPlannerEventType) => Promise<void>;
   fetchEvents: ({
     nestlingId,
-    weekStart,
-    weekEnd,
+    start,
+    end,
   }: {
     nestlingId: number;
-    weekStart: string;
-    weekEnd: string;
+    start: string;
+    end: string;
   }) => Promise<void>;
   updateEvent: ({
     id,
@@ -49,21 +49,21 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
 
   fetchEvents: async ({
     nestlingId,
-    weekStart,
-    weekEnd,
+    start,
+    end,
   }: {
     nestlingId: number;
-    weekStart: string;
-    weekEnd: string;
+    start: string;
+    end: string;
   }) => {
     set({ loading: true, error: null });
     try {
       const events = await getPlannerEvents({
         id: nestlingId,
-        weekStart,
-        weekEnd,
+        start,
+        end,
       });
-      console.log(`fetching from ${weekStart} to ${weekEnd} `);
+      console.log(`fetching from ${start} to ${end} `);
       console.log("Events fetched:", events);
       set({ events, loading: false });
     } catch (e) {

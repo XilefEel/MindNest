@@ -59,6 +59,7 @@ export default function AuthForm({ type, onSubmit }: AuthFormProps) {
             autoComplete="off"
             required
             placeholder="Your username"
+            className="focus:border-teal-500 focus:ring-teal-500"
           />
         </div>
       )}
@@ -73,6 +74,7 @@ export default function AuthForm({ type, onSubmit }: AuthFormProps) {
           autoComplete="off"
           required
           placeholder="Your email address"
+          className="focus:border-teal-500 focus:ring-teal-500"
         />
       </div>
 
@@ -86,6 +88,7 @@ export default function AuthForm({ type, onSubmit }: AuthFormProps) {
           autoComplete="off"
           required
           placeholder="At least 6 characters"
+          className="focus:border-teal-500 focus:ring-teal-500"
         />
       </div>
 
@@ -93,7 +96,7 @@ export default function AuthForm({ type, onSubmit }: AuthFormProps) {
 
       <Button
         type="submit"
-        className="mt-2 w-full bg-black text-white transition-transform hover:scale-105 dark:bg-white dark:text-black"
+        className="mt-2 w-full bg-teal-500 text-white transition-transform hover:scale-105 dark:bg-white dark:text-black"
         disabled={loading}
       >
         {loading
