@@ -11,7 +11,7 @@ export default function NestlingTitle({
       value={title}
       onChange={(e) => setTitle(e.target.value)}
       className="w-full resize-none bg-transparent text-3xl font-bold outline-none"
-      placeholder="Note title..."
+      placeholder="Title..."
     />
   );
 }

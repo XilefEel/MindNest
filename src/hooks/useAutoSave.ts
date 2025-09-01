@@ -1,73 +1,94 @@
-import { editNote } from "@/lib/nestlings";
 import { saveLastNestling } from "@/lib/session";
 import { Nestling } from "@/lib/types";
 import { debounce } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-export default function useAutoSave({
+type AutoSaveStatus = "idle" | "saving" | "saved" | "error";
+
+export default function useAutoSave<T = any>({
   nestling,
-  title,
-  content,
-  updateNestling,
-  refreshData,
+  currentData,
+  saveFunction,
+  context,
 }: {
   nestling: Nestling;
-  title: string;
-  content: string;
-  updateNestling: (id: number, data: Partial<Nestling>) => void;
-  refreshData: () => void;
+  currentData: Record<string, any>;
+  saveFunction: (
+    id: number,
+    data: Record<string, any>,
+    context?: T,
+  ) => Promise<void>;
+  context?: T;
 }) {
-  const [autoSaveStatus, setAutoSaveStatus] = useState<
-    "idle" | "saving" | "saved" | "error"
-  >("idle");
+  const [autoSaveStatus, setAutoSaveStatus] = useState<AutoSaveStatus>("idle");
   const latestNestlingRef = useRef(nestling);
-  const latestTitleRef = useRef(title);
-  const latestContentRef = useRef(content);
+  const latestDataRef = useRef(currentData);
+  const latestContextRef = useRef(context);
+
+  const { refreshData, updateNestling } = useNestlingTreeStore();
 
   const debouncedSave = useRef(
-    debounce(() => {
+    debounce(async () => {
       const currentNestling = latestNestlingRef.current;
-      const currentTitle = latestTitleRef.current;
-      const currentContent = latestContentRef.current;
+      const currentFields = latestDataRef.current;
+      const currentContext = latestContextRef.current;
 
-      const updated = {
-        title: currentTitle,
-        content: currentContent,
+      const updatedData = {
+        ...currentFields,
         updated_at: new Date().toISOString(),
       };
 
-      updateNestling(currentNestling.id, updated);
+      updateNestling(currentNestling.id, updatedData);
 
-      editNote(currentNestling.id, currentTitle, currentContent)
-        .then(() => {
-          setAutoSaveStatus("saved");
-          setTimeout(() => setAutoSaveStatus("idle"), 1000);
-          refreshData?.();
-          saveLastNestling({ ...currentNestling, ...updated });
-        })
-        .catch((err) => {
-          console.error("Failed to save note", err);
-          setAutoSaveStatus("error");
-        });
-    }, 500),
+      try {
+        await saveFunction(currentNestling.id, currentFields, currentContext);
+        setAutoSaveStatus("saved");
+        setTimeout(() => setAutoSaveStatus("idle"), 1000);
+        refreshData?.();
+        saveLastNestling({ ...currentNestling, ...updatedData });
+      } catch (err) {
+        console.error("Failed to save nestling", err);
+        setAutoSaveStatus("error");
+      }
+    }, 400),
   ).current;
 
+  // Update refs on every render
   useEffect(() => {
     latestNestlingRef.current = nestling;
-    latestTitleRef.current = title;
-    latestContentRef.current = content;
-  }, [nestling, title, content]);
+    latestDataRef.current = currentData;
+    latestContextRef.current = context;
+  }, [nestling, currentData, context]);
 
+  // Cancel debounced save on nestling id change
   useEffect(() => {
     debouncedSave.cancel();
   }, [nestling?.id]);
 
+  // Memoize keys to avoid recalculating on every render
+  const dataKeys = useMemo(() => Object.keys(currentData), [currentData]);
+
+  // Track previous data to avoid unnecessary re-renders
+  const prevDataRef = useRef<string>();
+
   useEffect(() => {
     if (!nestling) return;
-    if (title === nestling.title && content === nestling.content) return;
+
+    // Only proceed if data actually changed
+    const currentDataStr = JSON.stringify(currentData);
+    if (currentDataStr === prevDataRef.current) return;
+
+    const hasChanges = dataKeys.some((key) => {
+      return currentData[key] !== (nestling as any)[key];
+    });
+
+    if (!hasChanges) return;
+
+    prevDataRef.current = currentDataStr;
     setAutoSaveStatus("saving");
     debouncedSave();
-  }, [title, content, nestling?.id]);
+  }, [currentData, nestling?.id]);
 
   return { autoSaveStatus, debouncedSave };
 }

@@ -1,5 +1,5 @@
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import NestlingTitle from "@/components/editors/NestlingTitle";
 import { useBoardStore } from "@/stores/useBoardStore";
 import Column from "@/components/editors/board/Column";
@@ -17,6 +17,7 @@ import {
   SortableContext,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { editNote } from "@/lib/nestlings";
 
 export default function BoardEditor() {
   const nestling = useNestlingTreeStore((s) => s.activeNestling);
@@ -32,7 +33,6 @@ export default function BoardEditor() {
     handleDragEnd,
     activeDraggingId,
   } = useBoardStore();
-  const { refreshData, updateNestling } = useNestlingTreeStore();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -52,10 +52,8 @@ export default function BoardEditor() {
 
   useAutoSave({
     nestling,
-    title,
-    content: "",
-    updateNestling,
-    refreshData,
+    currentData: useMemo(() => ({ title }), [title]),
+    saveFunction: (id, data) => editNote(id, data.title, ""),
   });
 
   const columns = boardData?.columns || [];

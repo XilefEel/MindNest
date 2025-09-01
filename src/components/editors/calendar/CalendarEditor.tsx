@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
 import MonthView from "./MonthView";
@@ -9,6 +9,7 @@ import useAutoSave from "@/hooks/useAutoSave";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { editNote } from "@/lib/nestlings";
 
 export default function CalendarEditor() {
   const { activeNestling } = useNestlingTreeStore();
@@ -20,14 +21,10 @@ export default function CalendarEditor() {
   const [direction, setDirection] = useState(1);
   const [mode, setMode] = useState<"calendar" | "planner">("calendar");
 
-  const { refreshData, updateNestling } = useNestlingTreeStore();
-
   useAutoSave({
     nestling: activeNestling,
-    title,
-    content: "",
-    updateNestling,
-    refreshData,
+    currentData: useMemo(() => ({ title }), [title]),
+    saveFunction: (id, data) => editNote(id, data.title, ""),
   });
 
   const viewVariants = {

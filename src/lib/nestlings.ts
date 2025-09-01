@@ -9,6 +9,10 @@ import {
   BoardColumn,
   PlannerEventType,
   NewPlannerEventType,
+  NewJournalEntry,
+  JournalEntry,
+  NewJournalTemplate,
+  JournalTemplate,
 } from "./types";
 
 /*
@@ -54,7 +58,7 @@ export async function editNote(
   title: string | null,
   content: string | null,
 ) {
-  return await invoke("edit_note", {
+  return await invoke<void>("edit_note", {
     id: nestlingId,
     title,
     content,
@@ -184,4 +188,52 @@ export async function updatePlannerEvent({
 
 export async function deletePlannerEvent(id: number) {
   return await invoke("delete_event", { id });
+}
+
+export async function createJournalEntry(data: NewJournalEntry) {
+  return await invoke<JournalEntry>("insert_journal_entry", { data });
+}
+
+export async function getJournalEntries(nestlingId: number) {
+  return await invoke<JournalEntry[]>("get_journal_entries", { nestlingId });
+}
+
+export async function updateJournalEntry(
+  id: number,
+  title: string,
+  content: string,
+  entryDate: string,
+) {
+  return await invoke("update_journal_entry", {
+    id,
+    title,
+    content,
+    entryDate,
+  });
+}
+
+export async function deleteJournalEntry(id: number) {
+  return await invoke("delete_journal_entry", { id });
+}
+
+export async function createJournalTemplate(data: NewJournalTemplate) {
+  return await invoke<JournalTemplate>("create_journal_template", { data });
+}
+
+export async function getJournalTemplates(nestlingId: number) {
+  return await invoke<JournalTemplate[]>("get_journal_templates", {
+    nestlingId,
+  });
+}
+
+export async function updateJournalTemplate(
+  id: number,
+  name: string,
+  content: string,
+) {
+  return await invoke("update_journal_template", { id, name, content });
+}
+
+export async function deleteJournalTemplate(id: number) {
+  return await invoke("delete_journal_template", { id });
 }

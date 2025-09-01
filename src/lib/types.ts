@@ -128,34 +128,34 @@ export type NewPlannerEventType = {
   color: string;
 };
 
-export type JournalEntry = {
+export interface JournalEntry {
   id: number;
   nestling_id: number;
-  date: string;
   title: string;
-  description: string | null;
+  content: string;
+  entry_date: string;
   created_at: string;
   updated_at: string;
-};
+}
 
-export type NewJournalEntry = {
+export interface NewJournalEntry {
   nestling_id: number;
-  date: string;
   title: string;
-  description: string | null;
-};
+  content: string;
+  entry_date: string;
+}
 
-export type JournalTemplate = {
+export interface JournalTemplate {
   id: number;
   nestling_id: number;
   name: string;
   content: string;
   created_at: string;
   updated_at: string;
-};
+}
 
-export type NewJournalTemplate = {
+export interface NewJournalTemplate {
   nestling_id: number;
   name: string;
   content: string;
-};
+}

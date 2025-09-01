@@ -2,7 +2,7 @@ import ReactMarkdown from "react-markdown";
 import ToolBar from "./ToolBar";
 import BottomBar from "./BottomBar";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BookOpen, Pencil } from "lucide-react";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,6 +10,7 @@ import { useNoteStore } from "@/stores/useNoteStore";
 import { useHotkeys } from "react-hotkeys-hook";
 import useAutoSave from "@/hooks/useAutoSave";
 import NestlingTitle from "../NestlingTitle";
+import { editNote } from "@/lib/nestlings";
 
 export default function NoteEditor() {
   const nestling = useNestlingTreeStore((s) => s.activeNestling);
@@ -19,18 +20,13 @@ export default function NoteEditor() {
   const [title, setTitle] = useState(nestling.title);
   const [previewMode, setPreviewMode] = useState(false);
 
-  const refreshData = useNestlingTreeStore((s) => s.refreshData);
-  const updateNestling = useNestlingTreeStore((s) => s.updateNestling);
-
   const content = useNoteStore((s) => s.present);
   const { updateNote, undo, redo } = useNoteStore();
 
   const { autoSaveStatus } = useAutoSave({
     nestling,
-    title,
-    content,
-    updateNestling,
-    refreshData,
+    currentData: useMemo(() => ({ title, content }), [title, content]),
+    saveFunction: (id, data) => editNote(id, data.title, data.content),
   });
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
