@@ -217,7 +217,7 @@ export async function deleteJournalEntry(id: number) {
 }
 
 export async function createJournalTemplate(data: NewJournalTemplate) {
-  return await invoke<JournalTemplate>("create_journal_template", { data });
+  return await invoke<JournalTemplate>("insert_journal_template", { data });
 }
 
 export async function getJournalTemplates(nestlingId: number) {

@@ -1,0 +1,106 @@
+import AddJournalEntryModal from "@/components/modals/AddJournalEntryModal";
+import AddTemplateModal from "@/components/modals/AddTemplateModal";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { JournalTemplate } from "@/lib/types";
+import { useJournalStore } from "@/stores/useJournalStore";
+import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { Plus, ChevronDown, Trash } from "lucide-react";
+import { useEffect } from "react";
+
+export function NewEntryButton({
+  setIsEntryOpen,
+}: {
+  setIsEntryOpen: (isOpen: boolean) => void;
+}) {
+  const { activeNestling } = useNestlingTreeStore();
+  if (!activeNestling) return null;
+  const { templates, useTemplate, fetchTemplates, deleteTemplate } =
+    useJournalStore();
+
+  const handleDeleteTemplate = async (id: number) => {
+    try {
+      await deleteTemplate(id);
+      console.log("Entry deleted!");
+    } catch (error) {
+      console.error("Failed to delete entry:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTemplates(activeNestling.id);
+  }, [fetchTemplates, activeNestling.id]);
+  return (
+    <div className="flex rounded-lg bg-teal-500 shadow-sm">
+      {/* Left button (blank entry) */}
+      <AddJournalEntryModal
+        setActiveEntry={() => {
+          setIsEntryOpen(true);
+        }}
+      >
+        <Button className="flex items-center gap-1 rounded-l-lg rounded-r-none hover:bg-teal-600">
+          <Plus className="size-4" />
+          New Entry
+        </Button>
+      </AddJournalEntryModal>
+
+      {/* Right button (dropdown trigger) */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="rounded-l-none rounded-r-lg px-2 hover:bg-teal-600">
+            <ChevronDown className="size-4" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56 bg-white" align="start">
+          <DropdownMenuLabel>Templates</DropdownMenuLabel>
+          <DropdownMenuGroup>
+            <DropdownMenuItem className="transition duration-200 hover:bg-teal-100">
+              MindNest Template
+            </DropdownMenuItem>
+            {templates.map((template: JournalTemplate) => (
+              <DropdownMenuItem
+                key={template.id}
+                onClick={() => {
+                  setIsEntryOpen(true);
+                  useTemplate(activeNestling.id, template);
+                }}
+                className="justify-between px-3 transition duration-200 hover:bg-teal-100"
+              >
+                {template.name}
+                <div
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDeleteTemplate(template.id);
+                  }}
+                  className="rounded-lg p-2 transition-colors hover:bg-red-100 hover:text-red-500"
+                >
+                  <Trash className="size-4" />
+                </div>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator className="mx-2 bg-slate-200" />
+          <AddTemplateModal>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault(); // Prevent dropdown from closing
+              }}
+              className="text-gray-500 transition duration-200 hover:bg-teal-100"
+            >
+              <Plus className="size-4" /> New Template
+            </DropdownMenuItem>
+          </AddTemplateModal>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}

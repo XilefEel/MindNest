@@ -1,8 +1,12 @@
 import {
   createJournalEntry,
+  createJournalTemplate,
   deleteJournalEntry,
+  deleteJournalTemplate,
   getJournalEntries,
+  getJournalTemplates,
   updateJournalEntry,
+  updateJournalTemplate,
 } from "@/lib/nestlings";
 import {
   JournalEntry,
@@ -27,13 +31,17 @@ type JournalState = {
   deleteEntry: (id: number) => Promise<void>;
 
   // Template Actions
-  //   addTemplate: (template: NewJournalTemplate) => Promise<JournalTemplate>;
-  //   fetchTemplates: (nestlingId: number) => Promise<void>;
-  //   updateTemplate: (template: JournalTemplate) => Promise<JournalTemplate>;
-  //   deleteTemplate: (id: number) => Promise<void>;
+  addTemplate: (template: NewJournalTemplate) => Promise<JournalTemplate>;
+  useTemplate: (
+    nestlingId: number,
+    template: JournalTemplate,
+  ) => Promise<JournalEntry>;
+  fetchTemplates: (nestlingId: number) => Promise<void>;
+  updateTemplate: (template: JournalTemplate) => Promise<JournalTemplate>;
+  deleteTemplate: (id: number) => Promise<void>;
 };
 
-export const useJournalStore = create<JournalState>((set, get) => ({
+export const useJournalStore = create<JournalState>((set) => ({
   activeEntry: null,
   entries: [],
   templates: [],
@@ -47,8 +55,10 @@ export const useJournalStore = create<JournalState>((set, get) => ({
       const newEntry = await createJournalEntry(entry);
       set((state) => ({
         entries: [...state.entries, newEntry],
+        activeEntry: newEntry,
         loading: false,
       }));
+
       return newEntry;
     } catch (error) {
       set({ error: String(error) });
@@ -109,8 +119,85 @@ export const useJournalStore = create<JournalState>((set, get) => ({
     }
   },
 
-  //   addTemplate: async (template: NewJournalTemplate) => {},
-  //   fetchTemplates: async (nestlingId: number) => {},
-  //   updateTemplate: async (template: JournalTemplate) => {},
-  //   deleteTemplate: async (id: number) => {},
+  addTemplate: async (template: NewJournalTemplate) => {
+    set({ loading: true, error: null });
+    try {
+      const newTemplate = await createJournalTemplate(template);
+      set((state) => ({
+        templates: [...state.templates, newTemplate],
+        loading: false,
+      }));
+      return newTemplate;
+    } catch (error) {
+      set({ error: String(error) });
+      throw error;
+    }
+  },
+
+  useTemplate: async (nestlingId: number, template: JournalTemplate) => {
+    set({ loading: true, error: null });
+    try {
+      const newEntry = await createJournalEntry({
+        nestling_id: nestlingId,
+        title: template.name,
+        content: template.content,
+        entry_date: new Date().toISOString().split("T")[0],
+      });
+      set((state) => ({
+        entries: [...state.entries, newEntry],
+        activeEntry: newEntry,
+        loading: false,
+      }));
+      return newEntry;
+    } catch (error) {
+      set({ error: String(error) });
+      throw error;
+    }
+  },
+  fetchTemplates: async (nestlingId: number) => {
+    set({ loading: true, error: null });
+    try {
+      const templates = await getJournalTemplates(nestlingId);
+      console.log("templates fetched:", templates);
+      set({ templates, loading: false });
+    } catch (error) {
+      set({ error: String(error) });
+      throw error;
+    }
+  },
+  updateTemplate: async (template: JournalTemplate) => {
+    set({ loading: true, error: null });
+    try {
+      await updateJournalTemplate(template.id, template.name, template.content);
+      const updatedTemplates = {
+        ...template,
+        updated_at: new Date().toISOString(),
+      };
+
+      set((state) => ({
+        templates: state.templates.map((t) =>
+          t.id === template.id ? updatedTemplates : t,
+        ),
+        loading: false,
+      }));
+
+      return updatedTemplates;
+    } catch (error) {
+      set({ error: String(error) });
+      throw error;
+    }
+  },
+  deleteTemplate: async (id: number) => {
+    set({ loading: true, error: null });
+    try {
+      await deleteJournalTemplate(id);
+      set((state) => ({
+        templates: state.templates.filter((e) => e.id !== id),
+        loading: false,
+      }));
+    } catch (error) {
+      set({ error: String(error) });
+      throw error;
+    }
+  },
 }));

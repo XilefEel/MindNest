@@ -46,7 +46,9 @@ export default function useAutoSave<T = any>({
         setAutoSaveStatus("saved");
         setTimeout(() => setAutoSaveStatus("idle"), 1000);
         refreshData?.();
-        saveLastNestling({ ...currentNestling, ...updatedData });
+        if (currentData.nestling_type) {
+          saveLastNestling({ ...currentNestling, ...updatedData });
+        }
       } catch (err) {
         console.error("Failed to save nestling", err);
         setAutoSaveStatus("error");

@@ -53,7 +53,11 @@ export default function JournalSidebar({
               <div className="mb-2 flex items-center justify-between">
                 <h3 className="font-medium transition-colors">{entry.title}</h3>
                 <div
-                  onClick={() => handleDeleteEntry(entry.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDeleteEntry(entry.id);
+                  }}
                   className="rounded-lg p-2 transition-colors hover:bg-red-100 hover:text-red-500"
                 >
                   <Trash className="size-4" />

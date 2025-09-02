@@ -1,30 +1,27 @@
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Laptop } from "lucide-react";
-import { useState, useEffect } from "react";
 
 export function ThemeToggle() {
-  const { setTheme, resolvedTheme } = useTheme();
-  const [current, setCurrent] = useState("system");
-
-  useEffect(() => {
-    setCurrent(resolvedTheme || "system");
-  }, [resolvedTheme]);
+  const { setTheme, theme } = useTheme();
 
   const cycleTheme = () => {
-    if (current === "light") {
+    const currentTheme = theme || "system";
+
+    if (currentTheme === "light") {
       setTheme("dark");
-    } else if (current === "dark") {
+    } else if (currentTheme === "dark") {
       setTheme("system");
     } else {
       setTheme("light");
     }
   };
 
+  const currentTheme = theme || "system";
   const icon =
-    current === "light" ? (
+    currentTheme === "light" ? (
       <Sun className="h-4 w-4" />
-    ) : current === "dark" ? (
+    ) : currentTheme === "dark" ? (
       <Moon className="h-4 w-4" />
     ) : (
       <Laptop className="h-4 w-4" />
