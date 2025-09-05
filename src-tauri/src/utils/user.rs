@@ -115,6 +115,30 @@ pub fn init_db() -> Result<(), String> {
             FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
         );
 
+        CREATE TABLE IF NOT EXISTS gallery_albums (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nestling_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            description TEXT,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS gallery_images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            album_id INTEGER,
+            nestling_id INTEGER NOT NULL,
+            file_path TEXT NOT NULL,
+            title TEXT,
+            description TEXT,
+            tags TEXT,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            FOREIGN KEY (album_id) REFERENCES gallery_albums(id) ON DELETE SET NULL,
+            FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
+        );
+
 
         "
     ).map_err(|e| e.to_string())?;

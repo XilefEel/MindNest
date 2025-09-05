@@ -6,11 +6,13 @@ import { useDraggable } from "@dnd-kit/core";
 import {
   FileText,
   Calendar,
-  FileImage,
+  Images,
   GripVertical,
   LucideIcon,
   KanbanSquare,
   Notebook,
+  Table2,
+  Network,
 } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -18,7 +20,9 @@ const iconMap: Record<string, LucideIcon> = {
   board: KanbanSquare,
   calendar: Calendar,
   journal: Notebook,
-  gallery: FileImage,
+  gallery: Images,
+  mindmap: Table2,
+  database: Network,
 };
 
 export default function NestlingItem({

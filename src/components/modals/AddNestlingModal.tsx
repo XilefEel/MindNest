@@ -112,6 +112,9 @@ export default function AddNestlingModal({
                   <SelectItem value="board">Board</SelectItem>
                   <SelectItem value="calendar">Calendar</SelectItem>
                   <SelectItem value="journal">Journal</SelectItem>
+                  <SelectItem value="gallery">Gallery</SelectItem>
+                  <SelectItem value="mindmap">Mindmap</SelectItem>
+                  <SelectItem value="database">Database</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -132,7 +135,7 @@ export default function AddNestlingModal({
             <Button
               onClick={handleCreateNestling}
               disabled={loading}
-              className="cursor-pointer rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+              className="cursor-pointer rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50"
             >
               {loading ? "Creating..." : "Create"}
             </Button>

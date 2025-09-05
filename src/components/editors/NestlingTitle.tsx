@@ -9,7 +9,7 @@ export default function NestlingTitle({
     <input
       value={title}
       onChange={(e) => setTitle(e.target.value)}
-      className="w-full resize-none bg-transparent text-3xl font-bold outline-none"
+      className="w-full min-w-0 resize-none bg-transparent text-3xl font-bold outline-none"
       placeholder="Title..."
     />
   );

@@ -57,12 +57,12 @@ export default function AddJournalEntryModal({
     <div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger className="w-full">{children}</DialogTrigger>
-        <DialogContent className="w-full rounded-2xl border-0 bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
+        <DialogContent className="w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-xl transition-all ease-in-out dark:border-gray-700 dark:bg-gray-800">
           <DialogHeader className="justify-between">
             <DialogTitle className="text-xl font-bold text-black dark:text-white">
               Create a New Journal Entry
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-gray-600 dark:text-gray-400">
               Start writing your journal entry.
             </DialogDescription>
           </DialogHeader>
@@ -75,11 +75,13 @@ export default function AddJournalEntryModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. My First Journal Entry"
-              className="text-sm text-black focus:border-teal-500 focus:ring-teal-500 dark:text-gray-100"
+              className="border-gray-300 bg-white text-sm text-black placeholder-gray-400 focus:border-teal-500 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:border-teal-400 dark:focus:ring-teal-400"
             />
           </div>
 
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && (
+            <p className="text-sm text-red-500 dark:text-red-400">{error}</p>
+          )}
 
           <DialogFooter className="flex justify-end gap-2">
             <DialogClose asChild>
@@ -94,7 +96,7 @@ export default function AddJournalEntryModal({
             <Button
               onClick={createNewEntry}
               disabled={loading}
-              className="cursor-pointer rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50"
+              className="cursor-pointer rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50 dark:bg-teal-600 dark:hover:bg-teal-700"
             >
               {loading ? "Creating..." : "Create"}
             </Button>

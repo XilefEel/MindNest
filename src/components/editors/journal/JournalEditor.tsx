@@ -54,11 +54,10 @@ export default function JournalingApp() {
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
     setCurrentContent(newContent);
+  };
 
-    const words = newContent
-      .trim()
-      .split(/\s+/)
-      .filter((word) => word.length > 0);
+  const calculateWordCount = (content: string) => {
+    const words = content.trim().split(/\s+/).filter(Boolean);
     setWordCount(words.length);
   };
 
@@ -72,11 +71,17 @@ export default function JournalingApp() {
     if (activeEntry) {
       setCurrentTitle(activeEntry.title);
       setCurrentContent(activeEntry.content);
+      calculateWordCount(activeEntry.content);
     } else {
       setCurrentTitle("");
       setCurrentContent("");
+      setWordCount(0);
     }
   }, [activeEntry]);
+
+  useEffect(() => {
+    setWordCount(0);
+  }, [activeNestling?.id]);
 
   return (
     <div className="flex h-full gap-5">
@@ -84,8 +89,8 @@ export default function JournalingApp() {
       <div className="flex flex-1 flex-col">
         {/* Header */}
         <header className="rounded-lg px-6 py-3">
-          <div className="items-center justify-between sm:flex">
-            <div className="flex items-center">
+          <div className="items-center justify-between gap-y-4 sm:flex">
+            <div className="min-w-0 flex-1">
               <NestlingTitle title={title} setTitle={setTitle} />
             </div>
             <div className="flex items-center justify-between gap-3">
@@ -99,10 +104,10 @@ export default function JournalingApp() {
 
         {isEntryOpen && activeEntry ? (
           <div className="flex-1 py-2">
-            <div className="flex h-full flex-col rounded-xl bg-white">
+            <div className="flex h-full flex-col rounded-xl bg-white dark:bg-gray-800">
               {/* Entry Header */}
-              <div className="border-b border-slate-100 p-5">
-                <div className="mb-3 flex items-center justify-between gap-4 text-sm text-slate-500">
+              <div className="border-b border-slate-100 p-5 dark:border-slate-700">
+                <div className="mb-3 flex items-center justify-between gap-4 text-sm text-slate-500 dark:text-gray-200">
                   <div className="flex items-center gap-2">
                     <Calendar className="size-4" />
                     {new Date().toLocaleDateString("en-US", {
@@ -118,7 +123,7 @@ export default function JournalingApp() {
                   value={currentTitle}
                   onChange={(e) => setCurrentTitle(e.target.value)}
                   placeholder="Give your entry a title..."
-                  className="w-full border-none bg-transparent text-2xl font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                  className="w-full border-none bg-transparent text-2xl font-semibold placeholder:text-slate-400 focus:outline-none"
                 />
               </div>
 
@@ -128,7 +133,7 @@ export default function JournalingApp() {
                   value={currentContent}
                   onChange={handleContentChange}
                   placeholder="What's on your mind today? Start writing your thoughts, experiences, or reflections..."
-                  className="h-full w-full resize-none border-none bg-transparent text-base leading-relaxed text-slate-700 placeholder:text-slate-400 focus:outline-none"
+                  className="h-full w-full resize-none border-none bg-transparent text-base leading-relaxed placeholder:text-slate-400 focus:outline-none"
                 />
               </div>
             </div>
