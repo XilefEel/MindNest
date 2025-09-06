@@ -160,10 +160,38 @@ export type NewJournalTemplate = {
   content: string;
 };
 
-export type GalleryAlbum = {};
+export type GalleryAlbum = {
+  id: number;
+  nestling_id: number;
+  name: string;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+};
 
-export type NewGalleryAlbum = {};
+export type NewGalleryAlbum = {
+  nestling_id: number;
+  name: string;
+  description: string | null;
+};
 
-export type GalleryImage = {};
+export type GalleryImage = {
+  id: number;
+  album_id: number | null;
+  nestling_id: number;
+  file_path: string;
+  title: string | null;
+  description: string | null;
+  tags: string | null;
+  created_at: string;
+  updated_at: string;
+};
 
-export type NewGalleryImage = {};
+export type NewGalleryImage = {
+  album_id: number | null;
+  nestling_id: number;
+  file_path: string;
+  title: string | null;
+  description: string | null;
+  tags: string | null;
+};

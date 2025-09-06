@@ -13,6 +13,7 @@ import NoteEditor from "@/components/editors/note/NoteEditor";
 import BoardEditor from "@/components/editors/board/BoardEditor";
 import CalendarEditor from "@/components/editors/calendar/CalendarEditor";
 import JournalEditor from "@/components/editors/journal/JournalEditor";
+import GalleryEditor from "@/components/editors/gallery/GalleryEditor";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -116,6 +117,8 @@ export default function NestDashboardPage() {
             <CalendarEditor key={activeNestling.id} />
           ) : activeNestling && activeNestling?.nestling_type === "journal" ? (
             <JournalEditor key={activeNestling.id} />
+          ) : activeNestling && activeNestling?.nestling_type === "gallery" ? (
+            <GalleryEditor key={activeNestling.id} />
           ) : (
             <Home nestId={nest.id} />
           )}

@@ -13,11 +13,10 @@ import {
   JournalEntry,
   NewJournalTemplate,
   JournalTemplate,
+  GalleryAlbum,
+  NewGalleryAlbum,
+  GalleryImage,
 } from "./types";
-
-/*
-Functions to create, get, update, and delete nestlings from the database using Tauri
- */
 
 export async function createNestling(data: NewNestling) {
   return await invoke("create_nestling", { data });
@@ -236,4 +235,52 @@ export async function updateJournalTemplate(
 
 export async function deleteJournalTemplate(id: number) {
   return await invoke("delete_journal_template", { id });
+}
+
+export async function importImage(nestlingId: number, filePath: string) {
+  return await invoke<GalleryImage>("import_image", { nestlingId, filePath });
+}
+
+export async function getImages(nestlingId: number) {
+  return await invoke<GalleryImage[]>("get_images", { nestlingId });
+}
+
+export async function updateImage(
+  id: number,
+  albumId: number | null,
+  title: string | null,
+  description: string | null,
+  tags: string | null,
+) {
+  return await invoke<void>("update_image", {
+    id,
+    albumId,
+    title,
+    description,
+    tags,
+  });
+}
+
+export async function deleteImage(id: number) {
+  return await invoke<void>("delete_image", { id });
+}
+
+export async function createAlbum(data: NewGalleryAlbum) {
+  return await invoke<GalleryAlbum>("create_album", { data });
+}
+
+export async function getAlbums(nestlingId: number) {
+  return await invoke<GalleryAlbum[]>("get_albums", { nestlingId });
+}
+
+export async function updateAlbum(
+  id: number,
+  name: string | null,
+  description: string | null,
+) {
+  return await invoke<void>("update_album", { id, name, description });
+}
+
+export async function deleteAlbum(id: number) {
+  return await invoke<void>("delete_album", { id });
 }
