@@ -1,6 +1,6 @@
 // handlers/user.rs
-use crate::models::user::{SignupData, LoginData, User};
-use crate::db::user::{create_user, authenticate_user};
+use crate::db::user::{authenticate_user, create_user};
+use crate::models::user::{LoginData, SignupData, User};
 
 #[tauri::command]
 pub fn signup_user(data: SignupData) -> Result<(), String> {

@@ -1,58 +1,144 @@
-type DummyImage = {
-  id: number;
-  file_path: string;
-  width: number;
-  height: number;
-  title: string;
-};
-
-const aspectRatios = [
-  [16, 9],
-  [4, 3],
-  [3, 2],
-  [3, 4],
-  [2, 3],
-  [9, 16],
-  [1, 1],
-];
-
-export const generateDummyImages = (count: number): DummyImage[] => {
-  return Array.from({ length: count }).map((_, i) => {
-    const [wRatio, hRatio] =
-      aspectRatios[Math.floor(Math.random() * aspectRatios.length)];
-    const base = 400 + Math.floor(Math.random() * 200);
-    const width = base;
-    const height = Math.round((base * hRatio) / wRatio);
-
-    return {
-      id: i,
-      file_path: `https://picsum.photos/seed/${i}/${width}/${height}`,
-      width,
-      height,
-      title: `Image ${i + 1}`,
-    };
-  });
-};
-
-const dummyImages = generateDummyImages(20);
+import { useEffect, useMemo, useState } from "react";
+import { open } from "@tauri-apps/plugin-dialog";
+import { convertFileSrc } from "@tauri-apps/api/core";
+import { RowsPhotoAlbum } from "react-photo-album";
+import "react-photo-album/rows.css";
+import { Lightbox } from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
+import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
+import NestlingTitle from "../NestlingTitle";
+import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useGalleryStore } from "@/stores/useGalleryStore";
+import useAutoSave from "@/hooks/useAutoSave";
+import { editNote } from "@/lib/nestlings";
+import { Plus, Trash2 } from "lucide-react";
 
 export default function GalleryEditor() {
-  return (
-    <div className="p-4">
-      <h1 className="mb-4 text-xl font-bold">Gallery View</h1>
+  const { activeNestling } = useNestlingTreeStore();
+  if (!activeNestling) return null;
 
-      <div className="columns-2 gap-4 sm:columns-3 md:columns-4 lg:columns-5">
-        {dummyImages.map((img) => (
-          <div key={img.id} className="mb-4 break-inside-avoid">
-            <img
-              src={img.file_path}
-              alt={img.title}
-              className="w-full rounded-lg shadow-md transition hover:opacity-90"
-            />
-            <p className="mt-1 text-sm text-gray-600">{img.title}</p>
-          </div>
-        ))}
-      </div>
+  const [title, setTitle] = useState(activeNestling.title);
+
+  useEffect(() => {
+    setTitle(activeNestling.title);
+  }, [activeNestling.title]);
+
+  const { images, fetchImages, uploadImage, removeImage } = useGalleryStore();
+
+  useAutoSave({
+    target: activeNestling,
+    currentData: useMemo(() => ({ title }), [title]),
+    saveFunction: (id, data) => editNote(id, data.title, ""),
+  });
+
+  useEffect(() => {
+    fetchImages(activeNestling.id);
+    console.log("Fetching images for nestling:", activeNestling.id);
+  }, [fetchImages, activeNestling.id]);
+
+  const photos = useMemo(
+    () =>
+      images.map((img) => ({
+        id: img.id,
+        src: convertFileSrc(img.file_path),
+        width: img.width,
+        height: img.height,
+        title: img.title ?? "Untitled",
+        description: img.description ?? "",
+      })),
+    [images],
+  );
+
+  const [index, setIndex] = useState(-1);
+
+  const handleImageSelect = async () => {
+    try {
+      const selected = await open({
+        multiple: false,
+        filters: [
+          {
+            name: "Image",
+            extensions: ["png", "jpeg", "jpg", "gif", "webp", "bmp"],
+          },
+        ],
+      });
+
+      if (selected && typeof selected === "string") {
+        await uploadImage(activeNestling.id, selected);
+        console.log(activeNestling);
+      }
+    } catch (error) {
+      console.error("Failed to select file:", error);
+    }
+  };
+
+  const handleImageDelete = async (id: number) => {
+    try {
+      await removeImage(id);
+    } catch (error) {
+      console.error("Failed to delete image:", error);
+    }
+  };
+
+  return (
+    <div className="space-y-4 p-4">
+      <NestlingTitle title={title} setTitle={setTitle} />
+
+      <button
+        onClick={handleImageSelect}
+        className="flex items-center gap-2 rounded-lg bg-teal-500 px-4 py-2 text-white shadow transition hover:bg-teal-700"
+      >
+        <Plus className="h-5 w-5" />
+        <span>Add Image</span>
+      </button>
+
+      <RowsPhotoAlbum
+        photos={photos}
+        onClick={({ index: current }) => setIndex(current)}
+        render={{
+          image: (imageProps, { photo }) => (
+            <div className="group relative overflow-hidden rounded-xl shadow-md transition duration-300 hover:shadow-lg">
+              <img
+                {...imageProps}
+                className="h-full w-full transition-transform duration-300 group-hover:scale-105"
+              />
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent opacity-0 transition-all duration-200 group-hover:opacity-100">
+                <div className="absolute top-2 right-2">
+                  <button
+                    className="rounded-full bg-red-500 p-1.5 text-white shadow transition hover:bg-red-600"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log("Removing image:", photo.id);
+                      handleImageDelete(photo.id);
+                    }}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+                <div className="absolute right-2 bottom-2 left-2 truncate text-sm text-white">
+                  {photo.title}
+                </div>
+              </div>
+            </div>
+          ),
+        }}
+      />
+
+      <Lightbox
+        index={index}
+        slides={photos}
+        plugins={[Fullscreen]}
+        open={index >= 0}
+        close={() => setIndex(-1)}
+        render={{
+          slideFooter: ({ slide }: { slide: any }) => (
+            <div className="absolute inset-x-0 bottom-0 bg-black/50 p-3 text-center">
+              <p className="text-sm text-white">{slide.title}</p>
+            </div>
+          ),
+        }}
+      />
     </div>
   );
 }

@@ -51,7 +51,7 @@ export default function BoardEditor() {
   }, [nestling.title]);
 
   useAutoSave({
-    nestling,
+    target: nestling,
     currentData: useMemo(() => ({ title }), [title]),
     saveFunction: (id, data) => editNote(id, data.title, ""),
   });

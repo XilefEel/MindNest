@@ -7,12 +7,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 type AutoSaveStatus = "idle" | "saving" | "saved" | "error";
 
 export default function useAutoSave<T = any>({
-  nestling,
+  target,
   currentData,
   saveFunction,
   context,
 }: {
-  nestling: Nestling;
+  target: { id: number } & Record<string, any>;
   currentData: Record<string, any>;
   saveFunction: (
     id: number,
@@ -22,7 +22,7 @@ export default function useAutoSave<T = any>({
   context?: T;
 }) {
   const [autoSaveStatus, setAutoSaveStatus] = useState<AutoSaveStatus>("idle");
-  const latestNestlingRef = useRef(nestling);
+  const latestTargetRef = useRef(target);
   const latestDataRef = useRef(currentData);
   const latestContextRef = useRef(context);
 
@@ -30,7 +30,7 @@ export default function useAutoSave<T = any>({
 
   const debouncedSave = useRef(
     debounce(async () => {
-      const currentNestling = latestNestlingRef.current;
+      const currentTarget = latestTargetRef.current;
       const currentFields = latestDataRef.current;
       const currentContext = latestContextRef.current;
 
@@ -39,18 +39,17 @@ export default function useAutoSave<T = any>({
         updated_at: new Date().toISOString(),
       };
 
-      updateNestling(currentNestling.id, updatedData);
-
       try {
-        await saveFunction(currentNestling.id, currentFields, currentContext);
+        await saveFunction(currentTarget.id, currentFields, currentContext);
         setAutoSaveStatus("saved");
         setTimeout(() => setAutoSaveStatus("idle"), 1000);
         refreshData?.();
-        if (currentData.nestling_type) {
-          saveLastNestling({ ...currentNestling, ...updatedData });
+        if ((currentTarget as Nestling).nestling_type) {
+          saveLastNestling({ ...(currentTarget as Nestling), ...updatedData });
+          updateNestling(currentTarget.id, updatedData);
         }
       } catch (err) {
-        console.error("Failed to save nestling", err);
+        console.error("Failed to autosave: ", err);
         setAutoSaveStatus("error");
       }
     }, 400),
@@ -58,15 +57,15 @@ export default function useAutoSave<T = any>({
 
   // Update refs on every render
   useEffect(() => {
-    latestNestlingRef.current = nestling;
+    latestTargetRef.current = target;
     latestDataRef.current = currentData;
     latestContextRef.current = context;
-  }, [nestling, currentData, context]);
+  }, [target, currentData, context]);
 
   // Cancel debounced save on nestling id change
   useEffect(() => {
     debouncedSave.cancel();
-  }, [nestling?.id]);
+  }, [target?.id]);
 
   // Memoize keys to avoid recalculating on every render
   const dataKeys = useMemo(() => Object.keys(currentData), [currentData]);
@@ -75,14 +74,14 @@ export default function useAutoSave<T = any>({
   const prevDataRef = useRef<string>();
 
   useEffect(() => {
-    if (!nestling) return;
+    if (!target) return;
 
     // Only proceed if data actually changed
     const currentDataStr = JSON.stringify(currentData);
     if (currentDataStr === prevDataRef.current) return;
 
     const hasChanges = dataKeys.some((key) => {
-      return currentData[key] !== (nestling as any)[key];
+      return currentData[key] !== (target as any)[key];
     });
 
     if (!hasChanges) return;
@@ -90,7 +89,7 @@ export default function useAutoSave<T = any>({
     prevDataRef.current = currentDataStr;
     setAutoSaveStatus("saving");
     debouncedSave();
-  }, [currentData, nestling?.id]);
+  }, [currentData, target?.id]);
 
   return { autoSaveStatus, debouncedSave };
 }

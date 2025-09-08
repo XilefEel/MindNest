@@ -1,8 +1,15 @@
-use crate::models::nestling::{GalleryImage, GalleryAlbum, NewGalleryAlbum};
-use crate::db::gallery::{import_image_into_app, get_images_from_db, update_image_in_db, delete_image_from_app, add_album_to_db,get_albums_from_db, update_album_in_db, delete_album_from_db};
+use crate::db::gallery::{
+    add_album_to_db, delete_album_from_db, delete_image_from_app, get_albums_from_db,
+    get_images_from_db, import_image_into_app, update_album_in_db, update_image_in_db,
+};
+use crate::models::nestling::{GalleryAlbum, GalleryImage, NewGalleryAlbum};
 
 #[tauri::command]
-pub fn import_image(app_handle: tauri::AppHandle, nestling_id: i64, file_path: String) -> Result<GalleryImage, String> {
+pub fn import_image(
+    app_handle: tauri::AppHandle,
+    nestling_id: i64,
+    file_path: String,
+) -> Result<GalleryImage, String> {
     import_image_into_app(app_handle, nestling_id, file_path)
 }
 
@@ -12,7 +19,13 @@ pub fn get_images(nestling_id: i64) -> Result<Vec<GalleryImage>, String> {
 }
 
 #[tauri::command]
-pub fn update_image(id: i64, album_id: Option<i64>, title: Option<String>, description: Option<String>, tags: Option<String>) -> Result<(), String> {
+pub fn update_image(
+    id: i64,
+    album_id: Option<i64>,
+    title: Option<String>,
+    description: Option<String>,
+    tags: Option<String>,
+) -> Result<(), String> {
     update_image_in_db(id, album_id, title, description, tags)
 }
 
@@ -32,7 +45,11 @@ pub fn get_albums(nestling_id: i64) -> Result<Vec<GalleryAlbum>, String> {
 }
 
 #[tauri::command]
-pub fn update_album(id: i64, name: Option<String>, description: Option<String>) -> Result<(), String> {
+pub fn update_album(
+    id: i64,
+    name: Option<String>,
+    description: Option<String>,
+) -> Result<(), String> {
     update_album_in_db(id, name, description)
 }
 

@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewNestling {
@@ -129,7 +129,7 @@ pub struct NewJournalEntry {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct JournalTemplate{
+pub struct JournalTemplate {
     pub id: i64,
     pub nestling_id: i64,
     pub name: String,
@@ -139,7 +139,7 @@ pub struct JournalTemplate{
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct NewJournalTemplate{
+pub struct NewJournalTemplate {
     pub nestling_id: i64,
     pub name: String,
     pub content: String,
@@ -164,13 +164,15 @@ pub struct NewGalleryAlbum {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct GalleryImage {
-    pub id: i64,                
+    pub id: i64,
     pub album_id: Option<i64>,
     pub nestling_id: i64,
     pub file_path: String,
     pub title: Option<String>,
     pub description: Option<String>,
     pub tags: Option<String>,
+    pub width: i64,
+    pub height: i64,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -182,5 +184,7 @@ pub struct NewGalleryImage {
     pub file_path: String,
     pub title: Option<String>,
     pub description: Option<String>,
-    pub tags: Option<String>, 
+    pub tags: Option<String>,
+    pub width: i64,
+    pub height: i64,
 }

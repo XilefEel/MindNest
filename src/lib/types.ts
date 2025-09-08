@@ -183,6 +183,8 @@ export type GalleryImage = {
   title: string | null;
   description: string | null;
   tags: string | null;
+  width: number;
+  height: number;
   created_at: string;
   updated_at: string;
 };
@@ -194,4 +196,6 @@ export type NewGalleryImage = {
   title: string | null;
   description: string | null;
   tags: string | null;
+  width: number;
+  height: number;
 };

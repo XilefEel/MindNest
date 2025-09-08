@@ -1,7 +1,7 @@
-use crate::models::user::{SignupData, LoginData, User};
+use crate::models::user::{LoginData, SignupData, User};
 
-use crate::utils::user::{get_connection, verify_password, hash_password};
-use rusqlite::{params};
+use crate::utils::user::{get_connection, hash_password, verify_password};
+use rusqlite::params;
 
 pub fn create_user(data: SignupData) -> Result<(), String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
@@ -9,17 +9,20 @@ pub fn create_user(data: SignupData) -> Result<(), String> {
     let mut stmt = connection
         .prepare("SELECT COUNT(*) FROM users WHERE email = ?1")
         .map_err(|e| e.to_string())?;
-    let count: i64 = stmt.query_row(params![data.email], |row| row.get(0)).unwrap_or(0);
+    let count: i64 = stmt
+        .query_row(params![data.email], |row| row.get(0))
+        .unwrap_or(0);
     if count > 0 {
         return Err("Email already exists.".into());
     }
 
     let hashed = hash_password(&data.password)?;
-    connection.execute(
-        "INSERT INTO users (username, email, password) VALUES (?1, ?2, ?3)",
-        params![data.username, data.email, hashed],
-    )
-    .map_err(|e| e.to_string())?;
+    connection
+        .execute(
+            "INSERT INTO users (username, email, password) VALUES (?1, ?2, ?3)",
+            params![data.username, data.email, hashed],
+        )
+        .map_err(|e| e.to_string())?;
 
     Ok(())
 }
@@ -40,7 +43,11 @@ pub fn authenticate_user(data: LoginData) -> Result<User, String> {
         let hashed_password: String = row.get(3).unwrap_or_default();
 
         if verify_password(&hashed_password, &data.password) {
-            Ok(User { id, username, email })
+            Ok(User {
+                id,
+                username,
+                email,
+            })
         } else {
             Err("Invalid password.".into())
         }

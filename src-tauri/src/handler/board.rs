@@ -1,5 +1,9 @@
+use crate::db::board::{
+    delete_board_card_from_db, delete_board_column_from_db, get_board_data_from_db,
+    insert_board_card_into_db, insert_board_column_into_db, update_board_card_in_db,
+    update_board_column_in_db,
+};
 use crate::models::nestling::{BoardCard, BoardColumn, BoardData, NewBoardCard, NewBoardColumn};
-use crate::db::board::{get_board_data_from_db, insert_board_column_into_db, insert_board_card_into_db, update_board_column_in_db, update_board_card_in_db, delete_board_column_from_db, delete_board_card_from_db};
 
 #[tauri::command]
 pub fn create_board_column(data: NewBoardColumn) -> Result<BoardColumn, String> {
@@ -22,7 +26,13 @@ pub fn create_board_card(data: NewBoardCard) -> Result<BoardCard, String> {
 }
 
 #[tauri::command]
-pub fn update_board_card(id: i64, title: String, description: Option<String>, order_index: i64, column_id: i64) -> Result<(), String> {
+pub fn update_board_card(
+    id: i64,
+    title: String,
+    description: Option<String>,
+    order_index: i64,
+    column_id: i64,
+) -> Result<(), String> {
     update_board_card_in_db(id, title, description, order_index, column_id)
 }
 

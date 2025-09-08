@@ -26,6 +26,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.11",
     "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2.4.0",
     "@tauri-apps/plugin-opener": "^2",
     "@tauri-apps/plugin-sql": "^2.3.0",
     "@tauri-apps/plugin-store": "^2.3.0",
@@ -41,6 +42,7 @@
     "react-hotkeys-hook": "^5.1.0",
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
+    "react-photo-album": "^3.1.0",
     "react-rnd": "^10.5.2",
     "react-router-dom": "^7.7.0",
     "react-textarea-autosize": "^8.5.9",
@@ -51,6 +53,7 @@
     "tailwindcss": "^4.1.11",
     "textarea-autosize": "^1.0.0",
     "vaul": "^1.1.2",
+    "yet-another-react-lightbox": "^3.25.0",
     "zustand": "^5.0.7"
   },
   "devDependencies": {

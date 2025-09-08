@@ -1,12 +1,7 @@
-use rusqlite::{Connection, Error};
-use rand::rngs::OsRng;
 use argon2::password_hash::SaltString;
-use argon2::{
-    password_hash::{
-        PasswordHasher
-    },
-    Argon2
-};
+use argon2::{password_hash::PasswordHasher, Argon2};
+use rand::rngs::OsRng;
+use rusqlite::{Connection, Error};
 pub fn get_connection() -> Result<Connection, Error> {
     let path = "test.db";
     println!("Opening DB at: {}", path);
@@ -16,12 +11,13 @@ pub fn get_connection() -> Result<Connection, Error> {
 pub fn init_db() -> Result<(), String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
 
-    connection.execute("PRAGMA foreign_keys = ON;", [])
+    connection
+        .execute("PRAGMA foreign_keys = ON;", [])
         .map_err(|e| e.to_string())?;
 
     connection
         .execute_batch(
-        "
+            "
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL,
@@ -133,6 +129,8 @@ pub fn init_db() -> Result<(), String> {
             title TEXT,
             description TEXT,
             tags TEXT,
+            width INTEGER NOT NULL,
+            height INTEGER NOT NULL,
             created_at TEXT NOT NULL,
             updated_at TEXT NOT NULL,
             FOREIGN KEY (album_id) REFERENCES gallery_albums(id) ON DELETE SET NULL,
@@ -140,8 +138,9 @@ pub fn init_db() -> Result<(), String> {
         );
 
 
-        "
-    ).map_err(|e| e.to_string())?;
+        ",
+        )
+        .map_err(|e| e.to_string())?;
     Ok(())
 }
 
@@ -156,7 +155,9 @@ pub fn hash_password(password: &str) -> Result<String, String> {
 pub fn verify_password(hash: &str, password: &str) -> bool {
     use argon2::password_hash::{PasswordHash, PasswordVerifier};
     if let Ok(parsed_hash) = PasswordHash::new(hash) {
-        Argon2::default().verify_password(password.as_bytes(), &parsed_hash).is_ok()
+        Argon2::default()
+            .verify_password(password.as_bytes(), &parsed_hash)
+            .is_ok()
     } else {
         false
     }

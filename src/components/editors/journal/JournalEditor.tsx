@@ -21,13 +21,13 @@ export default function JournalingApp() {
   const [isEntryOpen, setIsEntryOpen] = useState(false);
 
   useAutoSave({
-    nestling: activeNestling,
+    target: activeNestling,
     currentData: useMemo(() => ({ title }), [title]),
     saveFunction: (id, data) => editNote(id, data.title, ""),
   });
 
   useAutoSave({
-    nestling: activeEntry as any,
+    target: activeEntry as any,
     currentData: useMemo(() => {
       const data = {
         title: currentTitle,

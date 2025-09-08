@@ -24,7 +24,7 @@ export default function NoteEditor() {
   const { updateNote, undo, redo } = useNoteStore();
 
   const { autoSaveStatus } = useAutoSave({
-    nestling,
+    target: nestling,
     currentData: useMemo(() => ({ title, content }), [title, content]),
     saveFunction: (id, data) => editNote(id, data.title, data.content),
   });

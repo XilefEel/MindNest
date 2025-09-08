@@ -1,11 +1,7 @@
-use crate::models::nest::{Nest, NewNest};
 use crate::db::nest::{
-    create_nest_in_db,
-    get_nests_by_user,
-    update_nest_title,
-    delete_nest_from_db,
-    get_nest_data
+    create_nest_in_db, delete_nest_from_db, get_nest_data, get_nests_by_user, update_nest_title,
 };
+use crate::models::nest::{Nest, NewNest};
 
 #[tauri::command]
 pub fn create_nest(data: NewNest) -> Result<(), String> {
