@@ -32,7 +32,8 @@ pub fn get_nestlings_by_nest(nest_id: i32) -> Result<Vec<Nestling>, String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
 
     let mut statement = connection
-        .prepare("
+        .prepare(
+            "
         SELECT id, nest_id, folder_id, type, title, content, created_at, updated_at 
         FROM nestlings 
         WHERE nest_id = ?1 

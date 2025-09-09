@@ -9,6 +9,7 @@ import {
   getAlbums,
   updateAlbum,
   deleteAlbum,
+  importImageData,
 } from "@/lib/nestlings";
 
 type GalleryState = {
@@ -18,7 +19,14 @@ type GalleryState = {
   error: string | null;
 
   fetchImages: (nestlingId: number) => Promise<void>;
-  uploadImage: (nestlingId: number, filePath: string) => Promise<void>;
+  uploadImage: (
+    nestlingId: number,
+    file: {
+      path?: string;
+      name?: string;
+      data?: Uint8Array;
+    },
+  ) => Promise<void>;
   editImage: ({
     id,
     albumId,
@@ -74,10 +82,49 @@ export const useGalleryStore = create<GalleryState>((set) => ({
     }
   },
 
-  uploadImage: async (nestlingId: number, filePath: string) => {
+  uploadImage: async (
+    nestlingId: number,
+    file: {
+      path?: string;
+      name?: string;
+      data?: Uint8Array;
+    },
+  ) => {
     set({ loading: true, error: null });
     try {
-      const newImage = await importImage(nestlingId, filePath);
+      let newImage;
+      if (file.path) {
+        newImage = await importImage(nestlingId, file.path);
+      } else {
+        newImage = await importImageData(
+          nestlingId,
+          file.name!,
+          Array.from(file.data!),
+        );
+      }
+      set((state) => ({
+        images: [...state.images, newImage],
+        loading: false,
+      }));
+    } catch (error) {
+      set({ error: String(error), loading: false });
+      throw error;
+    }
+  },
+
+  uploadImageData: async (
+    nestlingId: number,
+    name: string,
+    data: Uint8Array,
+  ) => {
+    // Add this for drag & drop
+    set({ loading: true, error: null });
+    try {
+      const newImage = await importImageData(
+        nestlingId,
+        name,
+        Array.from(data),
+      );
       set((state) => ({
         images: [...state.images, newImage],
         loading: false,

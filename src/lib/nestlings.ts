@@ -241,6 +241,18 @@ export async function importImage(nestlingId: number, filePath: string) {
   return await invoke<GalleryImage>("import_image", { nestlingId, filePath });
 }
 
+export async function importImageData(
+  nestlingId: number,
+  fileName: string,
+  fileData: number[],
+) {
+  return await invoke<GalleryImage>("import_image_data", {
+    nestlingId,
+    fileName,
+    fileData,
+  });
+}
+
 export async function getImages(nestlingId: number) {
   return await invoke<GalleryImage[]>("get_images", { nestlingId });
 }

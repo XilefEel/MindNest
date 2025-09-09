@@ -119,6 +119,46 @@ pub fn import_image_into_app(
     Ok(saved_image)
 }
 
+pub fn import_image_data_into_app(
+    app_handle: tauri::AppHandle,
+    nestling_id: i64,
+    file_name: String,
+    file_data: Vec<u8>,
+) -> Result<GalleryImage, String> {
+    // Write data directly to app gallery directory
+    let app_dir = app_handle
+        .path()
+        .app_data_dir()
+        .map_err(|e| e.to_string())?;
+    
+    let images_dir = app_dir.join("gallery");
+    fs::create_dir_all(&images_dir).map_err(|e| e.to_string())?;
+
+    let timestamp = Local::now().timestamp_millis();
+    let new_filename = format!("{}_{}", timestamp, file_name);
+    let destination = images_dir.join(&new_filename);
+    
+    // Write bytes directly - no copying needed
+    fs::write(&destination, file_data).map_err(|e| e.to_string())?;
+    
+    let destination_str = destination.to_string_lossy().to_string();
+    let (width, height) = get_image_dimensions(&destination_str)?;
+
+    let new_image = NewGalleryImage {
+        album_id: None,
+        nestling_id,
+        file_path: destination_str,
+        title: None,
+        description: None,
+        tags: None,
+        width: width,
+        height: height,
+    };
+
+    let saved_image = add_image_into_db(new_image).map_err(|e| e.to_string())?;
+    Ok(saved_image)
+}
+
 pub fn get_images_from_db(nestling_id: i64) -> Result<Vec<GalleryImage>, String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
     let mut statement = connection.prepare("

@@ -23,8 +23,8 @@ use handler::journal::{
 };
 
 use handler::gallery::{
-    create_album, delete_album, delete_image, get_albums, get_images, import_image, update_album,
-    update_image,
+    create_album, delete_album, delete_image, get_albums,
+    get_images, import_image, import_image_data, update_album, update_image,
 };
 
 use utils::user::init_db;
@@ -33,6 +33,7 @@ use utils::user::init_db;
 pub fn run() {
     init_db().expect("Failed to initialize DB");
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::default().build())
@@ -72,6 +73,7 @@ pub fn run() {
             update_journal_template,
             delete_journal_template,
             import_image,
+            import_image_data,
             get_images,
             update_image,
             delete_image,

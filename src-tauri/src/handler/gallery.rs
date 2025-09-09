@@ -1,6 +1,6 @@
 use crate::db::gallery::{
     add_album_to_db, delete_album_from_db, delete_image_from_app, get_albums_from_db,
-    get_images_from_db, import_image_into_app, update_album_in_db, update_image_in_db,
+    get_images_from_db, import_image_into_app, import_image_data_into_app, update_album_in_db, update_image_in_db,
 };
 use crate::models::nestling::{GalleryAlbum, GalleryImage, NewGalleryAlbum};
 
@@ -11,6 +11,16 @@ pub fn import_image(
     file_path: String,
 ) -> Result<GalleryImage, String> {
     import_image_into_app(app_handle, nestling_id, file_path)
+}
+
+#[tauri::command]
+pub fn import_image_data(
+    app_handle: tauri::AppHandle,
+    nestling_id: i64,
+    file_name: String,
+    file_data: Vec<u8>,
+) -> Result<GalleryImage, String> {
+    import_image_data_into_app(app_handle, nestling_id, file_name, file_data)
 }
 
 #[tauri::command]
