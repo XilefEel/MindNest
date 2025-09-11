@@ -11,10 +11,12 @@ import {
   deleteAlbum,
   importImageData,
 } from "@/lib/nestlings";
+import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 
 type GalleryState = {
   images: GalleryImage[];
   albums: GalleryAlbum[];
+  activeDraggingImageId: string | null;
   loading: boolean;
   error: string | null;
 
@@ -62,10 +64,14 @@ type GalleryState = {
     description: string | null;
   }) => Promise<void>;
   removeAlbum: (id: number) => Promise<void>;
+
+  handleDragStart: (event: DragStartEvent) => void;
+  handleDragEnd: (event: DragEndEvent) => Promise<void>;
 };
 
-export const useGalleryStore = create<GalleryState>((set) => ({
+export const useGalleryStore = create<GalleryState>((set, get) => ({
   images: [],
+  activeDraggingImageId: null,
   albums: [],
   loading: false,
   error: null,
@@ -102,29 +108,6 @@ export const useGalleryStore = create<GalleryState>((set) => ({
           Array.from(file.data!),
         );
       }
-      set((state) => ({
-        images: [...state.images, newImage],
-        loading: false,
-      }));
-    } catch (error) {
-      set({ error: String(error), loading: false });
-      throw error;
-    }
-  },
-
-  uploadImageData: async (
-    nestlingId: number,
-    name: string,
-    data: Uint8Array,
-  ) => {
-    // Add this for drag & drop
-    set({ loading: true, error: null });
-    try {
-      const newImage = await importImageData(
-        nestlingId,
-        name,
-        Array.from(data),
-      );
       set((state) => ({
         images: [...state.images, newImage],
         loading: false,
@@ -254,6 +237,49 @@ export const useGalleryStore = create<GalleryState>((set) => ({
     } catch (error) {
       set({ error: String(error), loading: false });
       throw error;
+    }
+  },
+
+  handleDragStart: (event: DragStartEvent) => {
+    set({ activeDraggingImageId: event.active.id as string });
+    console.log("DRAG START");
+  },
+  handleDragEnd: async (event: DragEndEvent) => {
+    const { active, over } = event;
+    set({ activeDraggingImageId: null });
+    if (!over || active.id === over.id) return;
+
+    const activeImage = active.data.current;
+    const overAlbum = over.data.current;
+
+    // Handle dropping an image onto an album
+    if (activeImage?.type === "image" && overAlbum?.type === "album") {
+      const imageId = parseInt(active.id as string, 10);
+      const albumId = parseInt(over.id as string, 10);
+
+      try {
+        const { images } = get();
+        const image = images.find((img) => img.id === imageId);
+
+        if (!image) {
+          set({ error: "Image not found" });
+          return;
+        }
+        if (image.album_id === albumId) {
+          return;
+        }
+
+        get().editImage({
+          id: imageId,
+          albumId,
+          title: image.title,
+          description: image.description,
+          tags: image.tags,
+        });
+        get().fetchImages(image.nestling_id);
+      } catch (error) {
+        set({ error: String(error) });
+      }
     }
   },
 }));

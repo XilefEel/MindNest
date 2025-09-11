@@ -3,7 +3,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import AppRoutes from "./routes/Routes";
 import { Toaster } from "sonner";
 
-function App() {
+export default function App() {
   return (
     <ThemeProvider>
       <AppRoutes />
@@ -11,5 +11,3 @@ function App() {
     </ThemeProvider>
   );
 }
-
-export default App;

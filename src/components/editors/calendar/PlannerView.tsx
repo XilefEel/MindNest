@@ -58,7 +58,6 @@ export default function PlannerView({
     addEvent(newEvent);
   };
 
-  useEffect(() => {});
   useEffect(() => {
     if (!colRef.current) return;
 

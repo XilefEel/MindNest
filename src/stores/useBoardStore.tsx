@@ -12,30 +12,30 @@ import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { create } from "zustand";
 
 type BoardState = {
-  boardData: BoardData | null; // The current board data
-  error: string | null; // Error state for the board data
+  boardData: BoardData | null;
+  error: string | null;
   activeDraggingId: string | null;
 
-  fetchBoard: (nestlingId: number) => void; // Action to set the board data
+  fetchBoard: (nestlingId: number) => void;
 
-  addColumn: (column: NewBoardColumn) => void; // Action to add a new column
+  addColumn: (column: NewBoardColumn) => void;
   updateColumn: (
     id: number,
     title: string,
     order_index: number,
-  ) => Promise<void>; // Action to update a column
-  removeColumn: (columnId: number) => void; // Action to remove a column
+  ) => Promise<void>;
+  removeColumn: (columnId: number) => void;
   reorderColumn: (activeColumnId: number, targetColumnId: number) => void;
 
-  addCard: (card: NewBoardCard) => void; // Action to add a new
+  addCard: (card: NewBoardCard) => void;
   updateCard: (
     id: number,
     title: string,
     description: string | null,
     order_index: number,
     column_id: number,
-  ) => Promise<void>; // Action to update a card
-  removeCard: (cardId: number) => void; // Action to remove a card
+  ) => Promise<void>;
+  removeCard: (cardId: number) => void;
   reorderCard: (
     activeCardId: number,
     targetCardId: number | null,
@@ -363,7 +363,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
   handleDragStart: (event) => {
     set({ activeDraggingId: event.active.id as string });
-    console.log("🚀 DRAG START:", {
+    console.log("DRAG START:", {
       activeId: event.active.id,
       activeType: String(event.active.id).split("-")[0],
     });
@@ -372,7 +372,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   handleDragEnd: async (event) => {
     const { active, over } = event;
 
-    console.log("🎯 DRAG END:", {
+    console.log("DRAG END:", {
       activeId: active.id,
       overId: over?.id,
       hasOver: !!over,
@@ -380,7 +380,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
     set({ activeDraggingId: null });
     if (!over || active.id === over.id) {
-      console.log("❌ No valid drop target or same position");
+      console.log("No valid drop target or same position");
       return;
     }
 
@@ -390,14 +390,6 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     const activeType = activeParts[0];
     const targetType = targetParts[0];
 
-    console.log("🔍 DRAG ANALYSIS:", {
-      activeParts,
-      targetParts,
-      activeType,
-      targetType,
-    });
-
-    // Handle column reordering
     if (activeType === "column") {
       let targetColumnId: number;
 
@@ -418,7 +410,6 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
       const activeColumnId = Number(activeParts[1]);
       console.log("📋 COLUMN REORDER:", { activeColumnId, targetColumnId });
-      get().reorderColumn(activeColumnId, targetColumnId);
       return;
     }
 
@@ -429,15 +420,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       if (targetType === "card") {
         const targetCardId = Number(targetParts[1]);
         const targetColumnId = Number(targetParts[3]);
-        console.log("🃏 CARD TO CARD:", {
-          activeCardId,
-          targetCardId,
-          targetColumnId,
-        });
         get().reorderCard(activeCardId, targetCardId, targetColumnId);
       } else if (targetType === "column") {
         const targetColumnId = Number(targetParts[1]);
-        console.log("🃏 CARD TO COLUMN:", { activeCardId, targetColumnId });
         get().reorderCard(activeCardId, null, targetColumnId);
       }
     }

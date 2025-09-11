@@ -110,7 +110,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
               start_time,
               duration,
               updated_at: new Date().toISOString(),
-              color: color ?? e.color, // keep old color if null
+              color: color ?? e.color,
             }
           : e,
       ),
@@ -125,8 +125,6 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
         duration,
         color,
       });
-
-      // Update state manually
     } catch (e) {
       console.error("Error updating event:", e);
       set({ events: prevEvent, error: String(e) });
