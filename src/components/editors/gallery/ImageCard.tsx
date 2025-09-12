@@ -1,6 +1,7 @@
 import { Trash2 } from "lucide-react";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+import ImageContextMenu from "@/components/context-menu/ImageContextMenu";
 
 export default function ImageCard({
   imageProps,
@@ -31,35 +32,37 @@ export default function ImageCard({
     opacity: isDragging ? 0 : 1,
   };
   return (
-    <div
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
-      style={style}
-      className="group relative cursor-grab overflow-hidden rounded-xl shadow-md hover:shadow-lg active:cursor-grabbing"
-    >
-      <img
-        {...imageProps}
-        className="h-full w-full transition-transform duration-300 group-hover:scale-105"
-      />
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent opacity-0 transition-all duration-200 group-hover:opacity-100">
-        <div className="absolute top-2 right-2">
-          <button
-            className="rounded-full bg-red-500 p-1.5 text-white shadow transition hover:bg-red-600"
-            onClick={(e) => {
-              e.stopPropagation();
-              console.log("Removing image:", photo.id);
-              handleImageDelete(photo.id);
-            }}
-          >
-            <Trash2 size={16} />
-          </button>
-        </div>
-        <div className="absolute right-2 bottom-2 left-2 truncate text-sm text-white">
-          {photo.title}
+    <ImageContextMenu imageId={photo.id}>
+      <div
+        ref={setNodeRef}
+        {...listeners}
+        {...attributes}
+        style={style}
+        className="group relative cursor-grab overflow-hidden rounded-xl shadow-md hover:shadow-lg active:cursor-grabbing"
+      >
+        <img
+          {...imageProps}
+          className="h-full w-full transition-transform duration-300 group-hover:scale-105"
+        />
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent opacity-0 transition-all duration-200 group-hover:opacity-100">
+          <div className="absolute top-2 right-2">
+            <button
+              className="rounded-full bg-red-500 p-1.5 text-white shadow transition hover:bg-red-600"
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("Removing image:", photo.id);
+                handleImageDelete(photo.id);
+              }}
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
+          <div className="absolute right-2 bottom-2 left-2 truncate text-sm text-white">
+            {photo.title}
+          </div>
         </div>
       </div>
-    </div>
+    </ImageContextMenu>
   );
 }

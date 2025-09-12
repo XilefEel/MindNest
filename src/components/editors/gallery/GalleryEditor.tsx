@@ -12,6 +12,7 @@ import "yet-another-react-lightbox/styles.css";
 import MainView from "./MainView";
 import AlbumView from "./AlbumView";
 import { cn } from "@/lib/utils";
+import AddAlbumModal from "@/components/modals/AddAlbumModal";
 
 export default function GalleryEditor() {
   const { activeNestling } = useNestlingTreeStore();
@@ -37,7 +38,7 @@ export default function GalleryEditor() {
     setTitle(activeNestling.title);
   }, [activeNestling.title]);
 
-  const { fetchImages, fetchAlbums, uploadImage, addAlbum } = useGalleryStore();
+  const { fetchImages, fetchAlbums, uploadImage } = useGalleryStore();
 
   useAutoSave({
     target: activeNestling,
@@ -77,18 +78,6 @@ export default function GalleryEditor() {
     }
   };
 
-  const handleAddAlbum = async () => {
-    try {
-      await addAlbum({
-        nestling_id: activeNestling.id,
-        name: "New Album",
-        description: "",
-      });
-    } catch (error) {
-      console.error("Failed to add album:", error);
-    }
-  };
-
   return (
     <div className="relative space-y-4 p-4">
       <div className="flex items-center justify-between gap-2">
@@ -120,16 +109,17 @@ export default function GalleryEditor() {
             )}
             <span>{isUploading ? "Uploading..." : "Add Images"}</span>
           </button>
-          <button
-            onClick={handleAddAlbum}
-            className={cn(
-              "flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-white transition-colors hover:bg-teal-600",
-              albumId !== null ? "hidden" : "",
-            )}
-          >
-            <Plus className="size-4" />
-            Create Album
-          </button>
+          <AddAlbumModal nestling_id={activeNestling.id}>
+            <button
+              className={cn(
+                "flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-white transition-colors hover:bg-teal-600",
+                albumId !== null ? "hidden" : "",
+              )}
+            >
+              <Plus className="size-4" />
+              Create Album
+            </button>
+          </AddAlbumModal>
         </div>
       </div>
 

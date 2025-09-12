@@ -228,7 +228,7 @@ export default function MainView({
             <img
               src={convertFileSrc(draggingImage.file_path)}
               alt={draggingImage.title || "Image"}
-              className="size-32 rounded-lg shadow-lg"
+              className="rounded-lg shadow-lg"
             />
           </div>
         )}

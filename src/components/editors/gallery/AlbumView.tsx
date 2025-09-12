@@ -114,7 +114,7 @@ export default function AlbumView({ album_id }: { album_id: number | null }) {
     <>
       <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold">
         <Image size={20} />
-        Unsorted Images ({photos.length})
+        Images ({photos.length})
       </h2>
 
       <div
