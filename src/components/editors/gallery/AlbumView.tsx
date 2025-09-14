@@ -4,7 +4,6 @@ import { RowsPhotoAlbum } from "react-photo-album";
 import { Lightbox } from "yet-another-react-lightbox";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
-import { editNote } from "@/lib/nestlings";
 import { Image, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
@@ -12,36 +11,24 @@ import useAutoSave from "@/hooks/useAutoSave";
 import "react-photo-album/rows.css";
 import "yet-another-react-lightbox/styles.css";
 import ImageCard from "./ImageCard";
+import { GalleryAlbum } from "@/lib/types";
 
-export default function AlbumView({ album_id }: { album_id: number | null }) {
+export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
   const { activeNestling } = useNestlingTreeStore();
-  if (!activeNestling) return null;
+  if (!activeNestling || !album) return null;
 
-  const [title, setTitle] = useState(activeNestling.title);
+  const [title, setTitle] = useState(album.name);
+  const [description, setDescription] = useState(album.description ?? "");
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
-  useEffect(() => {
-    setTitle(activeNestling.title);
-  }, [activeNestling.title]);
-
-  const { images, fetchImages, uploadImage, removeImage } = useGalleryStore();
-
-  useAutoSave({
-    target: activeNestling,
-    currentData: useMemo(() => ({ title }), [title]),
-    saveFunction: (id, data) => editNote(id, data.title, ""),
-  });
-
-  useEffect(() => {
-    fetchImages(activeNestling.id);
-    console.log("Fetching images for nestling:", activeNestling.id);
-  }, [fetchImages, activeNestling.id]);
+  const { images, fetchImages, uploadImage, editAlbum, removeImage } =
+    useGalleryStore();
 
   const photos = useMemo(
     () =>
       images
-        .filter((img) => img.album_id === album_id)
+        .filter((img) => img.album_id === album.id)
         .map((img) => ({
           id: img.id,
           src: convertFileSrc(img.file_path),
@@ -89,6 +76,7 @@ export default function AlbumView({ album_id }: { album_id: number | null }) {
           name: file.name,
           data: uint8Array,
         });
+        fetchImages(activeNestling.id);
       }
     } catch (error) {
       console.error("Upload failed:", error);
@@ -110,8 +98,46 @@ export default function AlbumView({ album_id }: { album_id: number | null }) {
       setIsDragOver(false);
     }
   };
+
+  useAutoSave({
+    target: album,
+    currentData: useMemo(
+      () => ({
+        name: title,
+        description,
+      }),
+      [title, description],
+    ),
+    saveFunction: async (id, data) => {
+      await editAlbum({
+        id,
+        name: data.name,
+        description: data.description,
+      });
+    },
+  });
+
+  useEffect(() => {
+    setTitle(album.name);
+    setDescription(album.description ?? "");
+  }, [album]);
+
   return (
-    <>
+    <div>
+      <input
+        type="text"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Give your entry a title..."
+        className="w-full border-none bg-transparent text-2xl font-bold placeholder:text-slate-400 focus:outline-none"
+      />
+      <input
+        type="text"
+        value={description ?? ""}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="Give your entry a title..."
+        className="mb-3 w-full border-none bg-transparent placeholder:text-slate-400 focus:outline-none"
+      />
       <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold">
         <Image size={20} />
         Images ({photos.length})
@@ -168,6 +194,6 @@ export default function AlbumView({ album_id }: { album_id: number | null }) {
           }}
         />
       </div>
-    </>
+    </div>
   );
 }

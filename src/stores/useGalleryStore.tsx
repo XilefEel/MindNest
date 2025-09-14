@@ -12,6 +12,7 @@ import {
   importImageData,
 } from "@/lib/nestlings";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { open } from "@tauri-apps/plugin-dialog";
 
 type GalleryState = {
   images: GalleryImage[];
@@ -28,7 +29,9 @@ type GalleryState = {
       name?: string;
       data?: Uint8Array;
     },
+    album_id?: number | null,
   ) => Promise<void>;
+  selectImages: (nestlingId: number, albumId?: number | null) => Promise<void>;
   editImage: ({
     id,
     albumId,
@@ -88,6 +91,31 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     }
   },
 
+  selectImages: async (nestlingId: number, albumId?: number | null) => {
+    try {
+      const selected = await open({
+        multiple: true,
+        filters: [
+          {
+            name: "Image",
+            extensions: ["png", "jpeg", "jpg", "gif", "webp", "bmp"],
+          },
+        ],
+      });
+      if (!selected) return;
+
+      const files = Array.isArray(selected) ? selected : [selected];
+
+      for (const filePath of files) {
+        await get().uploadImage(nestlingId, { path: filePath }, albumId);
+      }
+      await get().fetchImages(nestlingId);
+    } catch (error) {
+      console.error("Failed to select files:", error);
+      set({ error: String(error) });
+    }
+  },
+
   uploadImage: async (
     nestlingId: number,
     file: {
@@ -95,17 +123,19 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       name?: string;
       data?: Uint8Array;
     },
+    album_id?: number | null,
   ) => {
     set({ loading: true, error: null });
     try {
       let newImage;
       if (file.path) {
-        newImage = await importImage(nestlingId, file.path);
+        newImage = await importImage(nestlingId, file.path, album_id);
       } else {
         newImage = await importImageData(
           nestlingId,
           file.name!,
           Array.from(file.data!),
+          album_id,
         );
       }
       set((state) => ({
@@ -133,13 +163,12 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   }) => {
     set({ loading: true, error: null });
     try {
-      await updateImage(id, albumId, title, description, tags);
       set((state) => ({
         images: state.images.map((img) =>
           img.id === id
             ? {
                 ...img,
-                albumId,
+                album_id: albumId,
                 title,
                 description,
                 tags,
@@ -148,6 +177,8 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
             : img,
         ),
       }));
+      await updateImage(id, albumId, title, description, tags);
+
       set({ loading: false });
     } catch (error) {
       set({ error: String(error), loading: false });
@@ -269,14 +300,13 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
           return;
         }
 
-        get().editImage({
+        await get().editImage({
           id: imageId,
           albumId,
           title: image.title,
           description: image.description,
           tags: image.tags,
         });
-        get().fetchImages(image.nestling_id);
       } catch (error) {
         set({ error: String(error) });
       }

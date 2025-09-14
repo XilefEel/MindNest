@@ -237,17 +237,27 @@ export async function deleteJournalTemplate(id: number) {
   return await invoke("delete_journal_template", { id });
 }
 
-export async function importImage(nestlingId: number, filePath: string) {
-  return await invoke<GalleryImage>("import_image", { nestlingId, filePath });
+export async function importImage(
+  nestlingId: number,
+  filePath: string,
+  albumId?: number | null,
+) {
+  return await invoke<GalleryImage>("import_image", {
+    nestlingId,
+    albumId,
+    filePath,
+  });
 }
 
 export async function importImageData(
   nestlingId: number,
   fileName: string,
   fileData: number[],
+  albumId?: number | null,
 ) {
   return await invoke<GalleryImage>("import_image_data", {
     nestlingId,
+    albumId,
     fileName,
     fileData,
   });

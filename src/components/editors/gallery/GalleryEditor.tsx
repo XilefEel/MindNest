@@ -17,11 +17,13 @@ import AddAlbumModal from "@/components/modals/AddAlbumModal";
 export default function GalleryEditor() {
   const { activeNestling } = useNestlingTreeStore();
   if (!activeNestling) return null;
+  const { albums } = useGalleryStore();
 
   const [title, setTitle] = useState(activeNestling.title);
   const [isUploading, setIsUploading] = useState(false);
   const [currentView, setCurrentView] = useState<"main" | "album">("main");
   const [albumId, setAlbumId] = useState<number | null>(null);
+  const currentAlbum = albums.find((album) => album.id === albumId) ?? null;
 
   const direction = currentView === "album" ? 1 : -1;
   const viewVariants = {
@@ -38,7 +40,7 @@ export default function GalleryEditor() {
     setTitle(activeNestling.title);
   }, [activeNestling.title]);
 
-  const { fetchImages, fetchAlbums, uploadImage } = useGalleryStore();
+  const { fetchImages, fetchAlbums, selectImages } = useGalleryStore();
 
   useAutoSave({
     target: activeNestling,
@@ -51,32 +53,6 @@ export default function GalleryEditor() {
     fetchImages(activeNestling.id);
     console.log("Fetching images for nestling:", activeNestling.id);
   }, [fetchImages, activeNestling.id]);
-
-  const handleImageSelect = async () => {
-    setIsUploading(true);
-    try {
-      const selected = await open({
-        multiple: true,
-        filters: [
-          {
-            name: "Image",
-            extensions: ["png", "jpeg", "jpg", "gif", "webp", "bmp"],
-          },
-        ],
-      });
-
-      if (selected) {
-        const files = Array.isArray(selected) ? selected : [selected];
-        for (const filePath of files) {
-          await uploadImage(activeNestling.id, { path: filePath });
-        }
-      }
-    } catch (error) {
-      console.error("Failed to select file:", error);
-    } finally {
-      setIsUploading(false);
-    }
-  };
 
   return (
     <div className="relative space-y-4 p-4">
@@ -98,7 +74,9 @@ export default function GalleryEditor() {
 
         <div className="flex gap-3 text-sm">
           <button
-            onClick={handleImageSelect}
+            onClick={() => {
+              selectImages(activeNestling.id, albumId);
+            }}
             disabled={isUploading}
             className="flex items-center gap-2 rounded-lg bg-blue-500 px-3 py-1.5 text-white transition-colors hover:bg-blue-600"
           >
@@ -107,7 +85,9 @@ export default function GalleryEditor() {
             ) : (
               <Upload className="size-4" />
             )}
-            <span>{isUploading ? "Uploading..." : "Add Images"}</span>
+            <span className="hidden md:block">
+              {isUploading ? "Uploading..." : "Add Images"}
+            </span>
           </button>
           <AddAlbumModal nestling_id={activeNestling.id}>
             <button
@@ -117,7 +97,7 @@ export default function GalleryEditor() {
               )}
             >
               <Plus className="size-4" />
-              Create Album
+              <span className="hidden md:block">Add Album</span>
             </button>
           </AddAlbumModal>
         </div>
@@ -148,7 +128,7 @@ export default function GalleryEditor() {
             transition={{ duration: 0.3 }}
             className="absolute w-full"
           >
-            <AlbumView album_id={albumId} />
+            <AlbumView album={currentAlbum} />
           </motion.div>
         )}
       </AnimatePresence>

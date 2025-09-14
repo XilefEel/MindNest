@@ -99,13 +99,14 @@ fn copy_image_to_app_dir(
 pub fn import_image_into_app(
     app_handle: tauri::AppHandle,
     nestling_id: i64,
+    album_id: Option<i64>,
     file_path: String,
 ) -> Result<GalleryImage, String> {
     let new_path = copy_image_to_app_dir(&app_handle, file_path.clone())?;
     let (width, height) = get_image_dimensions(&new_path).map_err(|e| e.to_string())?;
 
     let new_image = NewGalleryImage {
-        album_id: None,
+        album_id: album_id,
         nestling_id,
         file_path: new_path,
         title: None,
@@ -122,6 +123,7 @@ pub fn import_image_into_app(
 pub fn import_image_data_into_app(
     app_handle: tauri::AppHandle,
     nestling_id: i64,
+    album_id: Option<i64>,
     file_name: String,
     file_data: Vec<u8>,
 ) -> Result<GalleryImage, String> {
@@ -145,7 +147,7 @@ pub fn import_image_data_into_app(
     let (width, height) = get_image_dimensions(&destination_str)?;
 
     let new_image = NewGalleryImage {
-        album_id: None,
+        album_id: album_id,
         nestling_id,
         file_path: destination_str,
         title: None,

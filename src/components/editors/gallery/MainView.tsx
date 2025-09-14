@@ -5,7 +5,7 @@ import { Lightbox } from "yet-another-react-lightbox";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { editNote } from "@/lib/nestlings";
-import { Folder, Image, Upload } from "lucide-react";
+import { Folder, Grid, Image, List, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import useAutoSave from "@/hooks/useAutoSave";
@@ -35,6 +35,7 @@ export default function MainView({
   const [title, setTitle] = useState(activeNestling.title);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   useEffect(() => {
     setTitle(activeNestling.title);
@@ -59,16 +60,14 @@ export default function MainView({
 
   const photos = useMemo(
     () =>
-      images
-        .filter((img) => img.album_id === null)
-        .map((img) => ({
-          id: img.id,
-          src: convertFileSrc(img.file_path),
-          width: img.width,
-          height: img.height,
-          title: img.title ?? "Untitled",
-          description: img.description ?? "",
-        })),
+      images.map((img) => ({
+        id: img.id,
+        src: convertFileSrc(img.file_path),
+        width: img.width,
+        height: img.height,
+        title: img.title ?? "Untitled",
+        description: img.description ?? "",
+      })),
     [images],
   );
 
@@ -108,6 +107,7 @@ export default function MainView({
           name: file.name,
           data: uint8Array,
         });
+        fetchImages(activeNestling.id);
       }
     } catch (error) {
       console.error("Upload failed:", error);
@@ -116,13 +116,13 @@ export default function MainView({
     }
   };
 
-  const handleImageDragOver = (e: React.DragEvent) => {
+  const handleDropOver = (e: React.DragEvent) => {
     e.preventDefault();
     console.log("Dragging over drop zone");
     setIsDragOver(true);
   };
 
-  const handleImageDragLeave = (e: React.DragEvent) => {
+  const handleDropLeave = (e: React.DragEvent) => {
     e.preventDefault();
     console.log("Left drop zone");
     if (!dropZoneRef.current?.contains(e.relatedTarget as Node)) {
@@ -149,33 +149,74 @@ export default function MainView({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <h2 className="flex items-center gap-2 text-lg font-semibold">
-        <Folder size={20} />
-        Albums ({albums.length})
+      <h2 className="flex items-center justify-between gap-2 text-lg font-semibold">
+        <div className="flex items-center gap-2">
+          <Folder size={20} />
+          Albums ({albums.length})
+        </div>
+
+        <div className="p-3rounded-lg flex rounded border border-gray-200 bg-gray-100 p-1 dark:border-gray-700 dark:bg-gray-800">
+          <button
+            onClick={() => setViewMode("grid")}
+            className={cn(
+              "rounded p-2 transition duration-100",
+              viewMode === "grid"
+                ? "bg-white text-teal-600 shadow-sm dark:bg-gray-900 dark:text-teal-400"
+                : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+            )}
+          >
+            <Grid size={18} />
+          </button>
+
+          <button
+            onClick={() => setViewMode("list")}
+            className={cn(
+              "rounded p-2 transition duration-100",
+              viewMode === "list"
+                ? "bg-white text-teal-600 shadow-sm dark:bg-gray-900 dark:text-teal-400"
+                : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+            )}
+          >
+            <List size={18} />
+          </button>
+        </div>
       </h2>
-      {albums.length > 0 && (
-        <div className="mb-8 flex gap-4 overflow-x-auto p-3 pb-5">
+      {albums.length > 0 ? (
+        <div
+          className={cn(
+            "mb-8 overflow-x-auto p-1",
+            viewMode === "grid" ? "flex gap-4 pb-5" : "flex flex-col space-y-4",
+          )}
+        >
           {albums.map((album) => (
             <AlbumCard
               key={album.id}
               album={album}
+              viewMode={viewMode}
               setCurrentView={setCurrentView}
               setAlbumId={setAlbumId}
             />
           ))}
         </div>
+      ) : (
+        <div className="text-sm text-gray-500 dark:text-gray-400">
+          <div className="flex h-48 flex-col items-center justify-center text-gray-500">
+            <p className="text-lg font-medium">No Albums yet</p>
+            <p className="text-sm">click "Add Album" to create a new album</p>
+          </div>
+        </div>
       )}
 
       <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold">
         <Image size={20} />
-        Unsorted Images ({photos.length})
+        All Images ({photos.length})
       </h2>
 
       <div
         ref={dropZoneRef}
         onDrop={handleDrop}
-        onDragOver={handleImageDragOver}
-        onDragLeave={handleImageDragLeave}
+        onDragOver={handleDropOver}
+        onDragLeave={handleDropLeave}
         className={cn(
           isDragOver
             ? "inset-0 border-4 border-dashed border-teal-400 bg-teal-100/80"
@@ -216,7 +257,10 @@ export default function MainView({
           render={{
             slideFooter: ({ slide }: { slide: any }) => (
               <div className="absolute inset-x-0 bottom-0 bg-black/50 p-3 text-center">
-                <p className="text-sm text-white">{slide.title}</p>
+                <p className="text-sm font-semibold text-white">
+                  {slide.title}
+                </p>
+                <p className="text-xs text-white">{slide.description}</p>
               </div>
             ),
           }}
@@ -224,7 +268,7 @@ export default function MainView({
       </div>
       <DragOverlay>
         {draggingImage && (
-          <div className="pointer-events-none opacity-90">
+          <div className="pointer-events-none max-w-64 opacity-90">
             <img
               src={convertFileSrc(draggingImage.file_path)}
               alt={draggingImage.title || "Image"}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,19 +14,23 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { AlertCircle } from "lucide-react";
+import { GalleryAlbum } from "@/lib/types";
 
 export default function AddAlbumModal({
   nestling_id,
   children,
+  album,
 }: {
   nestling_id: number;
   children: React.ReactNode;
+  album?: GalleryAlbum | null;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { addAlbum } = useGalleryStore();
+  const { addAlbum, editAlbum } = useGalleryStore();
 
   const handleExit = async () => {
     setTitle("");
@@ -34,20 +38,43 @@ export default function AddAlbumModal({
     setError(null);
   };
 
-  const handleAddAlbum = async () => {
+  const handleSaveAlbum = async () => {
     try {
-      await addAlbum({
-        nestling_id,
-        name: title,
-        description: "",
-      });
+      if (album) {
+        await editAlbum({
+          ...album,
+          name: title,
+          description,
+        });
+      } else {
+        await addAlbum({
+          nestling_id,
+          name: title,
+          description,
+        });
+      }
     } catch (error) {
       console.error("Failed to add album:", error);
     } finally {
       handleExit();
-      toast.success("Album created");
+      setLoading(false);
+      if (album) {
+        toast.success("Album updated");
+      } else {
+        toast.success("Album created");
+      }
     }
   };
+
+  useEffect(() => {
+    if (isOpen && album) {
+      setTitle(album.name || "");
+      setDescription(album.description || "");
+    } else if (isOpen && !album) {
+      setTitle("");
+      setDescription("");
+    }
+  }, [album, isOpen]);
 
   return (
     <div>
@@ -56,10 +83,12 @@ export default function AddAlbumModal({
         <DialogContent className="w-full rounded-2xl border-0 bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
           <DialogHeader className="justify-between">
             <DialogTitle className="text-xl font-bold text-black dark:text-white">
-              Create a New Album
+              {album ? "Edit Album" : "Create a New Album"}
             </DialogTitle>
             <DialogDescription>
-              Create a new album to organize your pictures.
+              {album
+                ? "Update the details of your album"
+                : "Create a new album to organize your pictures"}
             </DialogDescription>
           </DialogHeader>
 
@@ -72,6 +101,18 @@ export default function AddAlbumModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Family, Vacation, Work"
+              className="text-sm text-black dark:text-gray-100"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Album Description
+            </label>
+            <Input
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="e.g. Photos from my trip to Italy"
               className="text-sm text-black dark:text-gray-100"
             />
           </div>
@@ -94,11 +135,11 @@ export default function AddAlbumModal({
             </DialogClose>
 
             <Button
-              onClick={handleAddAlbum}
+              onClick={handleSaveAlbum}
               disabled={loading || !title.trim()}
               className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
             >
-              {loading ? "Creating..." : "Create"}
+              {loading ? "Saving..." : album ? "Update Album" : "Create Album"}
             </Button>
           </DialogFooter>
         </DialogContent>

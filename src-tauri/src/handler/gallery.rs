@@ -8,19 +8,21 @@ use crate::models::nestling::{GalleryAlbum, GalleryImage, NewGalleryAlbum};
 pub fn import_image(
     app_handle: tauri::AppHandle,
     nestling_id: i64,
+    album_id: Option<i64>,
     file_path: String,
 ) -> Result<GalleryImage, String> {
-    import_image_into_app(app_handle, nestling_id, file_path)
+    import_image_into_app(app_handle, nestling_id, album_id, file_path)
 }
 
 #[tauri::command]
 pub fn import_image_data(
     app_handle: tauri::AppHandle,
     nestling_id: i64,
+    album_id: Option<i64>,
     file_name: String,
     file_data: Vec<u8>,
 ) -> Result<GalleryImage, String> {
-    import_image_data_into_app(app_handle, nestling_id, file_name, file_data)
+    import_image_data_into_app(app_handle, nestling_id, album_id, file_name, file_data)
 }
 
 #[tauri::command]

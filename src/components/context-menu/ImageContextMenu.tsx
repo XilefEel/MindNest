@@ -1,15 +1,6 @@
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
-import {
-  Edit3,
-  Copy,
-  Star,
-  Folder,
-  Tag,
-  Archive,
-  Download,
-  Trash2,
-} from "lucide-react";
+import { Edit3, Copy, Star, Folder, Tag, Download, Trash2 } from "lucide-react";
 
 export default function ImageContextMenu({
   imageId,
@@ -24,7 +15,6 @@ export default function ImageContextMenu({
       <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>
       <ContextMenu.Portal>
         <ContextMenu.Content className="animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
-          {/* Core actions */}
           <ContextMenu.Item
             className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
             onSelect={(e) => {
@@ -61,14 +51,13 @@ export default function ImageContextMenu({
             Add to Favorites
           </ContextMenu.Item>
 
-          {/* Submenu for albums */}
           <ContextMenu.Sub>
             <ContextMenu.SubTrigger className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700">
               <Folder className="h-4 w-4" />
               Move to Album
             </ContextMenu.SubTrigger>
             <ContextMenu.Portal>
-              <ContextMenu.SubContent className="min-w-[180px] rounded-md border border-gray-200 bg-white p-1 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+              <ContextMenu.SubContent className="animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
                 {albums.length === 0 ? (
                   <ContextMenu.Item
                     disabled
@@ -109,21 +98,6 @@ export default function ImageContextMenu({
             Edit Tags
           </ContextMenu.Item>
 
-          <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
-
-          {/* Secondary actions */}
-          <ContextMenu.Item
-            className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
-            onSelect={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              console.log("Archive image", imageId);
-            }}
-          >
-            <Archive className="h-4 w-4" />
-            Archive
-          </ContextMenu.Item>
-
           <ContextMenu.Item
             className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
             onSelect={(e) => {
@@ -138,7 +112,6 @@ export default function ImageContextMenu({
 
           <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
 
-          {/* Destructive */}
           <ContextMenu.Item
             className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm text-red-600 transition-colors outline-none hover:bg-red-50 dark:hover:bg-red-900/40"
             onSelect={(e) => {
