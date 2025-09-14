@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { open } from "@tauri-apps/plugin-dialog";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { editNote } from "@/lib/nestlings";
@@ -103,35 +102,40 @@ export default function GalleryEditor() {
         </div>
       </div>
 
-      <AnimatePresence mode="sync" initial={false} custom={direction}>
-        {currentView === "main" ? (
-          <motion.div
-            key="main"
-            variants={viewVariants}
-            custom={direction}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.3 }}
-            className="absolute w-full"
-          >
-            <MainView setCurrentView={setCurrentView} setAlbumId={setAlbumId} />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="album"
-            variants={viewVariants}
-            custom={direction}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.3 }}
-            className="absolute w-full"
-          >
-            <AlbumView album={currentAlbum} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className="relative">
+        <AnimatePresence mode="sync" initial={false} custom={direction}>
+          {currentView === "main" ? (
+            <motion.div
+              key="main"
+              variants={viewVariants}
+              custom={direction}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.3 }}
+              className=""
+            >
+              <MainView
+                setCurrentView={setCurrentView}
+                setAlbumId={setAlbumId}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="album"
+              variants={viewVariants}
+              custom={direction}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.3 }}
+              className=""
+            >
+              <AlbumView album={currentAlbum} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

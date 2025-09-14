@@ -38,12 +38,12 @@ export default function AlbumCard({
           <div
             className={cn(
               "w-64 flex-shrink-0 cursor-pointer overflow-hidden rounded-lg border bg-white shadow-sm transition hover:shadow-md",
-              "border-gray-200 dark:border-gray-700 dark:bg-gray-900",
+              "border-gray-200 hover:border-teal-300 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-teal-500",
               isOver && "ring-2 ring-teal-400",
             )}
           >
-            <div className="relative flex aspect-video items-center justify-center bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-800 dark:to-pink-800">
-              <div className="text-4xl opacity-50">📁</div>
+            <div className="relative flex aspect-video items-center justify-center bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-700 dark:to-pink-600">
+              <div className="text-4xl">📁</div>
 
               <div className="absolute top-2 right-2 rounded-full bg-black/70 px-2 py-1 text-xs text-white">
                 {albumImages.length} Photos
@@ -61,13 +61,13 @@ export default function AlbumCard({
         ) : (
           <div
             className={cn(
-              "w-full cursor-pointer overflow-hidden rounded-lg border bg-white shadow-sm transition hover:bg-gray-50 hover:shadow-md dark:hover:bg-gray-800",
-              "border-gray-100 dark:border-gray-700 dark:bg-gray-900",
+              "w-full cursor-pointer overflow-hidden rounded-lg border bg-white shadow-sm transition hover:shadow-md dark:hover:bg-gray-800",
+              "border-gray-100 hover:border-teal-300 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-teal-500",
               isOver && "ring-2 ring-teal-400",
             )}
           >
             <div className="flex items-center gap-3 p-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-purple-100 to-pink-100 text-teal-600 dark:bg-teal-900 dark:from-purple-800 dark:to-pink-800 dark:text-teal-300">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-purple-100 to-pink-100 text-teal-600 dark:bg-teal-900 dark:from-purple-700 dark:to-pink-600 dark:text-teal-300">
                 📁
               </div>
 

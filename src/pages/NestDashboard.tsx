@@ -103,7 +103,7 @@ export default function NestDashboardPage() {
         </div>
 
         <main
-          className={`flex-1 px-10 md:pr-16 ${
+          className={`flex-1 px-2 md:px-10 ${
             activeNestling?.nestling_type === "note"
               ? "overflow-hidden"
               : "overflow-y-auto"

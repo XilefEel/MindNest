@@ -149,19 +149,19 @@ export default function MainView({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <h2 className="flex items-center justify-between gap-2 text-lg font-semibold">
+      <div className="mb-2 flex items-center justify-between gap-2 text-lg font-semibold">
         <div className="flex items-center gap-2">
           <Folder size={20} />
           Albums ({albums.length})
         </div>
 
-        <div className="p-3rounded-lg flex rounded border border-gray-200 bg-gray-100 p-1 dark:border-gray-700 dark:bg-gray-800">
+        <div className="flex rounded border border-gray-200 bg-gray-100 p-1 dark:border-gray-700 dark:bg-gray-800">
           <button
             onClick={() => setViewMode("grid")}
             className={cn(
               "rounded p-2 transition duration-100",
               viewMode === "grid"
-                ? "bg-white text-teal-600 shadow-sm dark:bg-gray-900 dark:text-teal-400"
+                ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
                 : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
             )}
           >
@@ -173,14 +173,14 @@ export default function MainView({
             className={cn(
               "rounded p-2 transition duration-100",
               viewMode === "list"
-                ? "bg-white text-teal-600 shadow-sm dark:bg-gray-900 dark:text-teal-400"
+                ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
                 : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
             )}
           >
             <List size={18} />
           </button>
         </div>
-      </h2>
+      </div>
       {albums.length > 0 ? (
         <div
           className={cn(
@@ -218,8 +218,9 @@ export default function MainView({
         onDragOver={handleDropOver}
         onDragLeave={handleDropLeave}
         className={cn(
+          "p-2",
           isDragOver
-            ? "inset-0 border-4 border-dashed border-teal-400 bg-teal-100/80"
+            ? "inset-0 border-2 border-dashed border-teal-400 bg-teal-100/80 dark:bg-teal-900/80"
             : "",
         )}
       >

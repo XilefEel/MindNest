@@ -4,7 +4,7 @@ import { RowsPhotoAlbum } from "react-photo-album";
 import { Lightbox } from "yet-another-react-lightbox";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
-import { Image, Upload } from "lucide-react";
+import { Folder, Image, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import useAutoSave from "@/hooks/useAutoSave";
@@ -72,10 +72,14 @@ export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
     try {
       for (const file of imageFiles) {
         const uint8Array = new Uint8Array(await file.arrayBuffer());
-        await uploadImage(activeNestling.id, {
-          name: file.name,
-          data: uint8Array,
-        });
+        await uploadImage(
+          activeNestling.id,
+          {
+            name: file.name,
+            data: uint8Array,
+          },
+          album.id,
+        );
         fetchImages(activeNestling.id);
       }
     } catch (error) {
@@ -124,20 +128,26 @@ export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
 
   return (
     <div>
+      <div className="flex items-center gap-2">
+        <Folder size={24} />
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Untitled entry"
+          className="w-full bg-transparent text-2xl font-semibold tracking-tight placeholder:text-slate-400 focus:outline-none"
+        />
+      </div>
+
       <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Give your entry a title..."
-        className="w-full border-none bg-transparent text-2xl font-bold placeholder:text-slate-400 focus:outline-none"
-      />
-      <input
-        type="text"
         value={description ?? ""}
         onChange={(e) => setDescription(e.target.value)}
-        placeholder="Give your entry a title..."
-        className="mb-3 w-full border-none bg-transparent placeholder:text-slate-400 focus:outline-none"
+        placeholder="Add a description..."
+        className="mt-2 w-full resize-none bg-transparent text-base text-slate-600 placeholder:text-slate-400 focus:outline-none dark:text-slate-300"
       />
+
+      <div className="mt-2 mb-6 border-b border-slate-200 dark:border-slate-700" />
+
       <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold">
         <Image size={20} />
         Images ({photos.length})
@@ -149,8 +159,9 @@ export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className={cn(
+          "p-2",
           isDragOver
-            ? "inset-0 border-4 border-dashed border-teal-400 bg-teal-100/80"
+            ? "inset-0 border-2 border-dashed border-teal-400 bg-teal-100/80 dark:bg-teal-900/80"
             : "",
         )}
       >
