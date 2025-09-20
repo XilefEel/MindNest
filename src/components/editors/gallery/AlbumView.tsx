@@ -4,7 +4,7 @@ import { RowsPhotoAlbum } from "react-photo-album";
 import { Lightbox } from "yet-another-react-lightbox";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
-import { Folder, Image, Upload } from "lucide-react";
+import { Download, Folder, Image, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import useAutoSave from "@/hooks/useAutoSave";
@@ -12,6 +12,8 @@ import "react-photo-album/rows.css";
 import "yet-another-react-lightbox/styles.css";
 import ImageCard from "./ImageCard";
 import { GalleryAlbum } from "@/lib/types";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
   const { activeNestling } = useNestlingTreeStore();
@@ -22,8 +24,14 @@ export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
-  const { images, fetchImages, uploadImage, editAlbum, removeImage } =
-    useGalleryStore();
+  const {
+    images,
+    fetchImages,
+    uploadImage,
+    downloadAlbum,
+    editAlbum,
+    removeImage,
+  } = useGalleryStore();
 
   const photos = useMemo(
     () =>
@@ -89,6 +97,11 @@ export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
     }
   };
 
+  const handleDownloadAlbum = async (id: number) => {
+    await downloadAlbum(id);
+    toast.success("Album downloaded successfully!");
+  };
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     console.log("Dragging over drop zone");
@@ -148,10 +161,19 @@ export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
 
       <div className="mt-2 mb-6 border-b border-slate-200 dark:border-slate-700" />
 
-      <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold">
-        <Image size={20} />
-        Images ({photos.length})
-      </h2>
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="flex items-center gap-2 text-lg font-semibold">
+          <Image size={20} />
+          Images ({photos.length})
+        </h2>
+        <Button
+          className="cursor-pointer bg-teal-400 text-white transition duration-200 hover:bg-teal-600"
+          onClick={() => handleDownloadAlbum(album.id)}
+        >
+          <Download />
+          Download All
+        </Button>
+      </div>
 
       <div
         ref={dropZoneRef}

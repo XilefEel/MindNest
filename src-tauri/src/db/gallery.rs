@@ -4,7 +4,9 @@ use rusqlite::params;
 
 use chrono::Local;
 use imagesize::size;
+use zip::ZipWriter;
 use std::fs;
+use std::io::Write;
 use std::path::Path;
 use tauri::Manager;
 
@@ -161,6 +163,7 @@ pub fn import_image_data_into_app(
     Ok(saved_image)
 }
 
+
 pub fn get_images_from_db(nestling_id: i64) -> Result<Vec<GalleryImage>, String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
     let mut statement = connection.prepare("
@@ -192,32 +195,6 @@ pub fn get_images_from_db(nestling_id: i64) -> Result<Vec<GalleryImage>, String>
     Ok(images)
 }
 
-pub fn update_image_in_db(
-    id: i64,
-    album_id: Option<i64>,
-    title: Option<String>,
-    description: Option<String>,
-    tags: Option<String>,
-) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
-    let updated_at = Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
-
-    connection
-        .execute(
-            "
-        UPDATE gallery_images
-        SET album_id = ?1, title = ?2, description = ?3, tags = ?4, updated_at = ?5
-        WHERE id = ?6
-    ",
-            params![album_id, title, description, tags, updated_at, id],
-        )
-        .map_err(|e| e.to_string())?;
-    Ok(())
-}
-
 fn get_image_by_id(id: i64) -> Result<GalleryImage, String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
 
@@ -245,6 +222,113 @@ fn get_image_by_id(id: i64) -> Result<GalleryImage, String> {
         .map_err(|e| e.to_string())?;
 
     Ok(image)
+}
+
+fn get_images_by_album_id(album_id: i64) -> Result<Vec<GalleryImage>, String> {
+    let connection = get_connection().map_err(|e| e.to_string())?;
+    let mut statement = connection.prepare("
+        SELECT id, album_id, nestling_id, file_path, title, description, tags, width, height, created_at, updated_at
+        FROM gallery_images
+        WHERE album_id = ?1
+        ORDER BY created_at DESC
+    ").map_err(|e| e.to_string())?;
+
+    let images = statement
+        .query_map(params![album_id], |row| {
+            Ok(GalleryImage {
+                id: row.get(0)?,
+                album_id: row.get(1)?,
+                nestling_id: row.get(2)?,
+                file_path: row.get(3)?,
+                title: row.get(4)?,
+                description: row.get(5)?,
+                tags: row.get(6)?,
+                width: row.get(7)?,
+                height: row.get(8)?,
+                created_at: row.get(9)?,
+                updated_at: row.get(10)?,
+            })
+        })
+        .map_err(|e| e.to_string())?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| e.to_string())?;
+    Ok(images)
+}
+
+
+pub fn download_image_into_user(image_id: i64, save_path: String) -> Result<(), String> {
+    let image = get_image_by_id(image_id)
+        .map_err(|e| e.to_string())?;
+
+    fs::copy(&image.file_path, &save_path).map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
+pub fn download_album_into_user(album_id: i64, save_path: String) -> Result<(), String> {
+    let images = get_images_by_album_id(album_id)?;
+    if images.is_empty() {
+        return Err("No images found in this album".to_string());
+    }
+
+    let file = fs::File::create(&save_path).map_err(|e| e.to_string())?;
+    let mut zip = ZipWriter::new(file);
+
+    for image in images {
+        if !Path::new(&image.file_path).exists() {
+            continue; 
+        }
+
+        let filename = if let Some(title) = &image.title {
+            let ext = Path::new(&image.file_path)
+                .extension()
+                .map(|e| format!(".{}", e.to_string_lossy()))
+                .unwrap_or_default();
+            format!("{}{}", title, ext)
+        } else {
+            Path::new(&image.file_path)
+                .file_name()
+                .unwrap()
+                .to_string_lossy()
+                .to_string()
+        };
+        zip.start_file(&filename, zip::write::FileOptions::<()>::default()).map_err(|e| e.to_string())?;
+        
+        let image_data = fs::read(&image.file_path).map_err(|e| e.to_string())?;
+        zip.write_all(&image_data).map_err(|e| e.to_string())?;
+    }
+
+    // Finish the zip file
+    zip.finish().map_err(|e| e.to_string())?;
+    
+    Ok(())
+}
+
+
+pub fn update_image_in_db(
+    id: i64,
+    album_id: Option<i64>,
+    title: Option<String>,
+    description: Option<String>,
+    tags: Option<String>,
+) -> Result<(), String> {
+    let connection = get_connection().map_err(|e| e.to_string())?;
+    let updated_at = Local::now()
+        .naive_local()
+        .format("%Y-%m-%d %H:%M:%S")
+        .to_string();
+
+    connection
+        .execute(
+            "
+        UPDATE gallery_images
+        SET album_id = ?1, title = ?2, description = ?3, tags = ?4, updated_at = ?5
+        WHERE id = ?6
+    ",
+            params![album_id, title, description, tags, updated_at, id],
+        )
+        .map_err(|e| e.to_string())?;
+    Ok(())
 }
 
 fn delete_gallery_image_from_db(id: i64) -> Result<(), String> {

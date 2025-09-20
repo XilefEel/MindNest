@@ -3,16 +3,18 @@ import { GalleryImage, GalleryAlbum, NewGalleryAlbum } from "@/lib/types";
 import {
   importImage,
   getImages,
+  downloadImage,
   updateImage,
   deleteImage,
   createAlbum,
   getAlbums,
+  downloadAlbum,
   updateAlbum,
   deleteAlbum,
   importImageData,
 } from "@/lib/nestlings";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
-import { open } from "@tauri-apps/plugin-dialog";
+import { open, save } from "@tauri-apps/plugin-dialog";
 
 type GalleryState = {
   images: GalleryImage[];
@@ -31,6 +33,7 @@ type GalleryState = {
     },
     album_id?: number | null,
   ) => Promise<void>;
+  downloadImage: (id: number) => Promise<void>;
   selectImages: (nestlingId: number, albumId?: number | null) => Promise<void>;
   editImage: ({
     id,
@@ -57,6 +60,7 @@ type GalleryState = {
     name: string;
     description: string | null;
   }) => Promise<void>;
+  downloadAlbum: (id: number) => Promise<void>;
   editAlbum: ({
     id,
     name,
@@ -148,6 +152,31 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     }
   },
 
+  downloadImage: async (id: number) => {
+    set({ loading: true, error: null });
+    try {
+      const filePath = await save({
+        title: "Save Image",
+        defaultPath: `${"image"}.png`,
+        filters: [
+          {
+            name: "Image Files",
+            extensions: ["png", "jpeg", "jpg", "gif", "webp", "bmp"],
+          },
+          { name: "All Files", extensions: ["*"] },
+        ],
+      });
+
+      if (filePath) {
+        await downloadImage(id, filePath);
+      }
+      set({ loading: false });
+    } catch (error) {
+      set({ error: String(error), loading: false });
+      throw error;
+    }
+  },
+
   editImage: async ({
     id,
     albumId,
@@ -220,6 +249,25 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
         albums: [...state.albums, newAlbum],
         loading: false,
       }));
+    } catch (error) {
+      set({ error: String(error), loading: false });
+      throw error;
+    }
+  },
+
+  downloadAlbum: async (id: number) => {
+    set({ loading: true, error: null });
+    try {
+      const filePath = await save({
+        title: "Save Album",
+        defaultPath: `Album_${id}.zip`,
+        filters: [{ name: "Zip Files", extensions: ["zip"] }],
+      });
+
+      if (filePath) {
+        await downloadAlbum(id, filePath);
+      }
+      set({ loading: false });
     } catch (error) {
       set({ error: String(error), loading: false });
       throw error;

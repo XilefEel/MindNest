@@ -4,6 +4,7 @@ import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, PlusSquare, Download, Trash2 } from "lucide-react";
 import AddAlbumModal from "../modals/AddAlbumModal";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { toast } from "sonner";
 
 export default function AlbumContextMenu({
   album,
@@ -14,9 +15,12 @@ export default function AlbumContextMenu({
 }) {
   const { activeNestling } = useNestlingTreeStore();
   if (!activeNestling) return;
-  const { selectImages, removeAlbum } = useGalleryStore();
+  const { downloadAlbum, selectImages, removeAlbum } = useGalleryStore();
 
-  const handleDownloadAlbum = async (album: GalleryAlbum) => {};
+  const handleDownloadAlbum = async (id: number) => {
+    await downloadAlbum(id);
+    toast.success("Album downloaded successfully!");
+  };
 
   return (
     <ContextMenu.Root>
@@ -52,6 +56,7 @@ export default function AlbumContextMenu({
             className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
             onSelect={(e) => {
               e.preventDefault();
+              handleDownloadAlbum(album.id);
               console.log("Download album");
             }}
           >

@@ -267,6 +267,14 @@ export async function getImages(nestlingId: number) {
   return await invoke<GalleryImage[]>("get_images", { nestlingId });
 }
 
+export async function downloadImage(id: number, savePath: string) {
+  return await invoke("download_image", { id, savePath });
+}
+
+export async function downloadAlbum(id: number, savePath: string) {
+  return await invoke("download_album", { id, savePath });
+}
+
 export async function updateImage(
   id: number,
   albumId: number | null,

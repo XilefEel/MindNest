@@ -1,6 +1,7 @@
 use crate::db::gallery::{
     add_album_to_db, delete_album_from_db, delete_image_from_app, get_albums_from_db,
     get_images_from_db, import_image_into_app, import_image_data_into_app, update_album_in_db, update_image_in_db,
+    download_image_into_user, download_album_into_user,
 };
 use crate::models::nestling::{GalleryAlbum, GalleryImage, NewGalleryAlbum};
 
@@ -39,6 +40,16 @@ pub fn update_image(
     tags: Option<String>,
 ) -> Result<(), String> {
     update_image_in_db(id, album_id, title, description, tags)
+}
+
+#[tauri::command]
+pub fn download_image(id: i64, save_path: String) -> Result<(), String> {
+    download_image_into_user(id, save_path)
+}
+
+#[tauri::command]
+pub fn download_album(id: i64, save_path: String) -> Result<(), String> {
+    download_album_into_user(id, save_path)
 }
 
 #[tauri::command]

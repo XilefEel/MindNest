@@ -25,6 +25,7 @@ use handler::journal::{
 use handler::gallery::{
     create_album, delete_album, delete_image, get_albums,
     get_images, import_image, import_image_data, update_album, update_image,
+    download_image, download_album,
 };
 
 use utils::user::init_db;
@@ -74,6 +75,8 @@ pub fn run() {
             delete_journal_template,
             import_image,
             import_image_data,
+            download_image,
+            download_album,
             get_images,
             update_image,
             delete_image,

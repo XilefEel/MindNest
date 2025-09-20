@@ -33,3 +33,4 @@ uuid = {version = "1.17.0", features = ["v4"] }
 imagesize = "0.14.0"
 tauri-plugin-dialog = "2"
 tauri-plugin-fs = "2"
+zip = "5.1.1"
