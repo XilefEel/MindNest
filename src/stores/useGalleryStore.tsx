@@ -41,7 +41,10 @@ type GalleryState = {
     album_id?: number | null,
   ) => Promise<void>;
   downloadImage: (id: number) => Promise<void>;
-  selectImages: (nestlingId: number, albumId?: number | null) => Promise<void>;
+  selectImages: (
+    nestlingId: number,
+    albumId?: number | null,
+  ) => Promise<boolean>;
   editImage: ({
     id,
     albumId,
@@ -113,7 +116,8 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
           },
         ],
       });
-      if (!selected) return;
+
+      if (!selected) return false;
 
       const files = Array.isArray(selected) ? selected : [selected];
 
@@ -121,9 +125,12 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
         await get().uploadImage(nestlingId, { path: filePath }, albumId);
       }
       await get().fetchImages(nestlingId);
+
+      return true; // files were selected and uploaded
     } catch (error) {
       console.error("Failed to select files:", error);
       set({ error: String(error) });
+      return false;
     }
   },
 
@@ -189,9 +196,12 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
         ],
       });
 
-      if (filePath) {
-        await downloadImage(id, filePath);
+      if (!filePath) {
+        set({ loading: false });
+        throw new Error("Download canceled");
       }
+
+      await downloadImage(id, filePath);
       set({ loading: false });
     } catch (error) {
       set({ error: String(error), loading: false });
@@ -286,9 +296,12 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
         filters: [{ name: "Zip Files", extensions: ["zip"] }],
       });
 
-      if (filePath) {
-        await downloadAlbum(id, filePath);
+      if (!filePath) {
+        set({ loading: false });
+        throw new Error("Download canceled");
       }
+
+      await downloadAlbum(id, filePath);
       set({ loading: false });
     } catch (error) {
       set({ error: String(error), loading: false });

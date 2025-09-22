@@ -9,6 +9,7 @@ import useAutoSave from "@/hooks/useAutoSave";
 import "react-photo-album/rows.css";
 import "yet-another-react-lightbox/styles.css";
 import AlbumCard from "./AlbumCard";
+import * as Tooltip from "@radix-ui/react-tooltip";
 
 import {
   DndContext,
@@ -17,8 +18,11 @@ import {
   useSensor,
   useSensors,
   rectIntersection,
+  DragStartEvent,
+  DragEndEvent,
 } from "@dnd-kit/core";
 import ImageLayout from "./ImageLayout";
+import { toast } from "sonner";
 
 export default function MainView({
   setCurrentView,
@@ -59,6 +63,19 @@ export default function MainView({
     }),
   );
 
+  const onDragStart = (event: DragStartEvent) => {
+    handleDragStart(event);
+  };
+
+  const onDragEnd = (event: DragEndEvent) => {
+    try {
+      handleDragEnd(event);
+      toast.success("Image moved successfully!");
+    } catch (error) {
+      toast.error("Failed to move image");
+    }
+  };
+
   const draggingImage = activeDraggingImageId
     ? images.find((img) => img.id === parseInt(activeDraggingImageId))
     : null;
@@ -67,8 +84,8 @@ export default function MainView({
     <DndContext
       sensors={sensors}
       collisionDetection={rectIntersection}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
     >
       <div className="mb-2 flex items-center justify-between gap-2 text-lg font-semibold">
         <div className="flex items-center gap-2">
@@ -77,29 +94,59 @@ export default function MainView({
         </div>
 
         <div className="flex rounded border border-gray-200 bg-gray-100 p-1 dark:border-gray-700 dark:bg-gray-800">
-          <button
-            onClick={() => setViewMode("grid")}
-            className={cn(
-              "rounded p-2 transition duration-100",
-              viewMode === "grid"
-                ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
-                : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-            )}
-          >
-            <Grid size={18} />
-          </button>
+          <Tooltip.Provider>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={cn(
+                    "rounded p-2 transition duration-100",
+                    viewMode === "grid"
+                      ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+                      : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+                  )}
+                >
+                  <Grid size={18} />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  side="top"
+                  sideOffset={8}
+                  className="data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 relative z-50 rounded bg-white px-2 py-1 text-sm text-black shadow-md"
+                >
+                  Grid
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
 
-          <button
-            onClick={() => setViewMode("list")}
-            className={cn(
-              "rounded p-2 transition duration-100",
-              viewMode === "list"
-                ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
-                : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-            )}
-          >
-            <List size={18} />
-          </button>
+          <Tooltip.Provider>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={cn(
+                    "rounded p-2 transition duration-100",
+                    viewMode === "list"
+                      ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+                      : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+                  )}
+                >
+                  <List size={18} />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  side="top"
+                  sideOffset={8}
+                  className="data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 relative z-50 rounded bg-white px-2 py-1 text-sm text-black shadow-md"
+                >
+                  List
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
         </div>
       </div>
       {albums.length > 0 ? (
@@ -134,29 +181,59 @@ export default function MainView({
           All Images ({images.length})
         </h2>
         <div className="flex rounded border border-gray-200 bg-gray-100 p-1 dark:border-gray-700 dark:bg-gray-800">
-          <button
-            onClick={() => setLayoutMode("row")}
-            className={cn(
-              "rounded p-2 transition duration-100",
-              layoutMode === "row"
-                ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
-                : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-            )}
-          >
-            <Rows3 size={18} />
-          </button>
+          <Tooltip.Provider>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button
+                  onClick={() => setLayoutMode("row")}
+                  className={cn(
+                    "rounded p-2 transition duration-100",
+                    layoutMode === "row"
+                      ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+                      : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+                  )}
+                >
+                  <Rows3 size={18} />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  side="top"
+                  sideOffset={8}
+                  className="data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 relative z-50 rounded bg-white px-2 py-1 text-sm text-black shadow-md"
+                >
+                  Row layout
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
 
-          <button
-            onClick={() => setLayoutMode("column")}
-            className={cn(
-              "rounded p-2 transition duration-100",
-              layoutMode === "column"
-                ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
-                : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-            )}
-          >
-            <Columns3 size={18} />
-          </button>
+          <Tooltip.Provider>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button
+                  onClick={() => setLayoutMode("column")}
+                  className={cn(
+                    "rounded p-2 transition duration-100",
+                    layoutMode === "column"
+                      ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+                      : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+                  )}
+                >
+                  <Columns3 size={18} />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  side="top"
+                  sideOffset={8}
+                  className="data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 relative z-50 rounded bg-white px-2 py-1 text-sm text-black shadow-md"
+                >
+                  Column Layout
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
         </div>
       </div>
 

@@ -46,23 +46,21 @@ export default function AddAlbumModal({
           name: title,
           description,
         });
+        toast.success(`Album "${title}" updated successfully!`);
       } else {
         await addAlbum({
           nestling_id,
           name: title,
           description,
         });
+        toast.success(`Album "${title}" created successfully!`);
       }
     } catch (error) {
+      setError(String(error));
       console.error("Failed to add album:", error);
     } finally {
       handleExit();
       setLoading(false);
-      if (album) {
-        toast.success("Album updated");
-      } else {
-        toast.success("Album created");
-      }
     }
   };
 

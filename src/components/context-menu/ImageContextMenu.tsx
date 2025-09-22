@@ -13,15 +13,24 @@ export default function ImageContextMenu({
   const { images, albums, addImage, editImage, removeImage, downloadImage } =
     useGalleryStore();
   const handleDownloadImage = async (id: number) => {
-    await downloadImage(id);
-    toast.success("Image downloaded successfully!");
+    try {
+      await downloadImage(id);
+      toast.success("Album downloaded successfully!");
+    } catch (error) {
+      toast.error("Failed to download image");
+    }
   };
 
   const handleDuplicateImage = (id: number) => {
-    const originalImage = images.find((i) => i.id === id);
-    if (originalImage) {
-      addImage(originalImage);
-      toast.success("Image duplicated successfully!");
+    try {
+      const originalImage = images.find((i) => i.id === id);
+      if (originalImage) {
+        addImage(originalImage);
+        toast.success("Image duplicated successfully!");
+      }
+    } catch (error) {
+      toast.error("Failed to duplicate image");
+      console.error("Failed to duplicate image:", error);
     }
   };
 
@@ -43,8 +52,13 @@ export default function ImageContextMenu({
   };
 
   const handleDeleteImage = async (id: number) => {
-    await removeImage(id);
-    toast.success("Image deleted successfully!");
+    try {
+      await removeImage(id);
+      toast.success("Image deleted successfully!");
+    } catch (error) {
+      toast.error("Failed to delete image");
+      console.error("Failed to delete image:", error);
+    }
   };
 
   return (

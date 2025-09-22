@@ -12,6 +12,7 @@ import "react-photo-album/columns.css";
 import "yet-another-react-lightbox/styles.css";
 import ImageCard from "./ImageCard";
 import { GalleryAlbum } from "@/lib/types";
+import { toast } from "sonner";
 
 export default function ImageLayout({
   album,
@@ -54,7 +55,9 @@ export default function ImageLayout({
     try {
       await removeImage(id);
       await fetchImages(activeNestling.id);
+      toast.success("Image deleted successfully!");
     } catch (error) {
+      toast.error("Failed to delete image");
       console.error("Failed to delete image:", error);
     }
   };
@@ -85,7 +88,9 @@ export default function ImageLayout({
         });
         fetchImages(activeNestling.id);
       }
+      toast.success("Image uploaded successfully!");
     } catch (error) {
+      toast.error("Failed to upload image");
       console.error("Upload failed:", error);
     } finally {
       setIsUploading(false);

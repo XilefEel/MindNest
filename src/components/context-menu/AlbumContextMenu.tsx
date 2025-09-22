@@ -17,9 +17,35 @@ export default function AlbumContextMenu({
   if (!activeNestling) return;
   const { downloadAlbum, selectImages, removeAlbum } = useGalleryStore();
 
+  const handleSelectImage = async (albumId: number) => {
+    try {
+      const selected = await selectImages(activeNestling.id, albumId);
+      if (selected) {
+        toast.success("Image uploaded successfully!");
+      } else {
+        toast.error("No image selected");
+      }
+    } catch (error) {
+      toast.error("Failed to upload image");
+    }
+  };
+
   const handleDownloadAlbum = async (id: number) => {
-    await downloadAlbum(id);
-    toast.success("Album downloaded successfully!");
+    try {
+      await downloadAlbum(id);
+      toast.success("Album downloaded successfully!");
+    } catch (error) {
+      toast.error("Failed to download album");
+    }
+  };
+
+  const handleDeleteAlbum = async (id: number) => {
+    try {
+      await removeAlbum(id);
+      toast.success("Album deleted successfully!");
+    } catch (error) {
+      toast.error("Failed to delete album");
+    }
   };
 
   return (
@@ -44,7 +70,7 @@ export default function AlbumContextMenu({
             className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
             onSelect={(e) => {
               e.preventDefault();
-              selectImages(activeNestling.id, album.id);
+              handleSelectImage(album.id);
               console.log("Add images to album");
             }}
           >
@@ -70,7 +96,7 @@ export default function AlbumContextMenu({
             className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/40"
             onSelect={(e) => {
               e.preventDefault();
-              removeAlbum(album.id);
+              handleDeleteAlbum(album.id);
               console.log("Delete album");
             }}
           >

@@ -12,6 +12,7 @@ import MainView from "./MainView";
 import AlbumView from "./AlbumView";
 import { cn } from "@/lib/utils";
 import AddAlbumModal from "@/components/modals/AddAlbumModal";
+import { toast } from "sonner";
 
 export default function GalleryEditor() {
   const { activeNestling } = useNestlingTreeStore();
@@ -53,6 +54,19 @@ export default function GalleryEditor() {
     console.log("Fetching images for nestling:", activeNestling.id);
   }, [fetchImages, activeNestling.id]);
 
+  const handleSelectImage = async () => {
+    try {
+      const selected = await selectImages(activeNestling.id, albumId); // returns null if user cancels
+      if (selected) {
+        toast.success("Image uploaded successfully!");
+      } else {
+        toast.error("No image selected");
+      }
+    } catch (error) {
+      toast.error("Failed to upload image");
+    }
+  };
+
   return (
     <div className="relative space-y-4 p-4">
       <div className="flex items-center justify-between gap-2">
@@ -74,7 +88,7 @@ export default function GalleryEditor() {
         <div className="flex gap-3 text-sm">
           <button
             onClick={() => {
-              selectImages(activeNestling.id, albumId);
+              handleSelectImage();
             }}
             disabled={isUploading}
             className="flex items-center gap-2 rounded-lg bg-blue-500 px-3 py-1.5 text-white transition-colors hover:bg-blue-600"

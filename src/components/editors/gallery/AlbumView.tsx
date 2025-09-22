@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import ImageLayout from "./ImageLayout";
 import { cn } from "@/lib/utils";
+import * as Tooltip from "@radix-ui/react-tooltip";
 
 export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
   const { activeNestling } = useNestlingTreeStore();
@@ -22,8 +23,12 @@ export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
   const { images, downloadAlbum, editAlbum } = useGalleryStore();
 
   const handleDownloadAlbum = async (id: number) => {
-    await downloadAlbum(id);
-    toast.success("Album downloaded successfully!");
+    try {
+      await downloadAlbum(id);
+      toast.success("Album downloaded successfully!");
+    } catch (error) {
+      toast.error("Failed to download album");
+    }
   };
 
   useAutoSave({
@@ -78,29 +83,59 @@ export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
         </h2>
         <div className="flex items-center gap-2">
           <div className="flex rounded border border-gray-200 bg-gray-100 p-1 dark:border-gray-700 dark:bg-gray-800">
-            <button
-              onClick={() => setLayoutMode("row")}
-              className={cn(
-                "rounded p-2 transition duration-100",
-                layoutMode === "row"
-                  ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
-                  : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-              )}
-            >
-              <Rows3 size={18} />
-            </button>
+            <Tooltip.Provider>
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <button
+                    onClick={() => setLayoutMode("row")}
+                    className={cn(
+                      "rounded p-2 transition duration-100",
+                      layoutMode === "row"
+                        ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+                        : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+                    )}
+                  >
+                    <Rows3 size={18} />
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    side="top"
+                    sideOffset={8}
+                    className="data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 relative z-50 rounded bg-white px-2 py-1 text-sm text-black shadow-md"
+                  >
+                    Row layout
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            </Tooltip.Provider>
 
-            <button
-              onClick={() => setLayoutMode("column")}
-              className={cn(
-                "rounded p-2 transition duration-100",
-                layoutMode === "column"
-                  ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
-                  : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-              )}
-            >
-              <Columns3 size={18} />
-            </button>
+            <Tooltip.Provider>
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <button
+                    onClick={() => setLayoutMode("column")}
+                    className={cn(
+                      "rounded p-2 transition duration-100",
+                      layoutMode === "column"
+                        ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+                        : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+                    )}
+                  >
+                    <Columns3 size={18} />
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    side="top"
+                    sideOffset={8}
+                    className="data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 relative z-50 rounded bg-white px-2 py-1 text-sm text-black shadow-md"
+                  >
+                    Column Layout
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            </Tooltip.Provider>
           </div>
           <Button
             className="cursor-pointer bg-teal-400 text-white transition duration-200 hover:bg-teal-600"
