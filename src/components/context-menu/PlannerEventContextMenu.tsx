@@ -3,6 +3,7 @@ import { PLANNER_EVENT_COLORS } from "@/lib/utils";
 import { usePlannerStore } from "@/stores/usePlannerStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Copy, Trash, Check, Palette } from "lucide-react";
+import ContextMenuItem from "./ContextMenuItem";
 
 export default function PlannerEventContextMenu({
   event,
@@ -24,13 +25,11 @@ export default function PlannerEventContextMenu({
       <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>
       <ContextMenu.Portal>
         <ContextMenu.Content className="animate-in fade-in-0 zoom-in-95 z-50 min-w-[200px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
-          <ContextMenu.Item
-            onClick={onDuplicate}
-            className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors duration-200 outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Copy className="h-4 w-4" />
-            <span>Duplicate Event</span>
-          </ContextMenu.Item>
+          <ContextMenuItem
+            action={onDuplicate}
+            Icon={Copy}
+            text="Duplicate Event"
+          />
 
           <ContextMenu.Sub>
             <ContextMenu.SubTrigger className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors duration-200 outline-none hover:bg-gray-100 data-[state=open]:bg-gray-100 dark:hover:bg-gray-700 dark:data-[state=open]:bg-gray-700">
@@ -66,13 +65,12 @@ export default function PlannerEventContextMenu({
 
           <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
 
-          <ContextMenu.Item
-            onClick={() => deleteEvent(event.id)}
-            className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm text-red-600 transition-colors duration-200 outline-none hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900"
-          >
-            <Trash className="h-4 w-4" />
-            <span>Delete Event</span>
-          </ContextMenu.Item>
+          <ContextMenuItem
+            action={() => deleteEvent(event.id)}
+            Icon={Trash}
+            text="Delete Event"
+            isDelete
+          />
         </ContextMenu.Content>
       </ContextMenu.Portal>
     </ContextMenu.Root>

@@ -5,6 +5,7 @@ import { Edit3, PlusSquare, Download, Trash2 } from "lucide-react";
 import AddAlbumModal from "../modals/AddAlbumModal";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { toast } from "sonner";
+import ContextMenuItem from "./ContextMenuItem";
 
 export default function AlbumContextMenu({
   album,
@@ -54,55 +55,42 @@ export default function AlbumContextMenu({
       <ContextMenu.Portal>
         <ContextMenu.Content className="animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
           <AddAlbumModal nestling_id={activeNestling.id} album={album}>
-            <ContextMenu.Item
-              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-              onSelect={(e) => {
-                e.preventDefault();
-                console.log("Rename album");
-              }}
-            >
-              <Edit3 className="size-4" />
-              Edit
-            </ContextMenu.Item>
+            <ContextMenuItem
+              Icon={Edit3}
+              text="Edit"
+              action={() => console.log("Rename album")}
+            />
           </AddAlbumModal>
 
-          <ContextMenu.Item
-            className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-            onSelect={(e) => {
-              e.preventDefault();
+          <ContextMenuItem
+            Icon={PlusSquare}
+            text="Add Images"
+            action={() => {
               handleSelectImage(album.id);
               console.log("Add images to album");
             }}
-          >
-            <PlusSquare className="size-4" />
-            Add Images
-          </ContextMenu.Item>
+          />
 
-          <ContextMenu.Item
-            className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-            onSelect={(e) => {
-              e.preventDefault();
+          <ContextMenuItem
+            Icon={Download}
+            text="Download All"
+            action={() => {
               handleDownloadAlbum(album.id);
               console.log("Download album");
             }}
-          >
-            <Download className="size-4" />
-            Download All
-          </ContextMenu.Item>
+          />
 
           <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
 
-          <ContextMenu.Item
-            className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/40"
-            onSelect={(e) => {
-              e.preventDefault();
+          <ContextMenuItem
+            Icon={Trash2}
+            text="Delete Album"
+            isDelete
+            action={() => {
               handleDeleteAlbum(album.id);
               console.log("Delete album");
             }}
-          >
-            <Trash2 className="size-4" />
-            Delete Album
-          </ContextMenu.Item>
+          />
         </ContextMenu.Content>
       </ContextMenu.Portal>
     </ContextMenu.Root>
