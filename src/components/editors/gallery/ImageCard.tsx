@@ -2,6 +2,8 @@ import { Trash2 } from "lucide-react";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import ImageContextMenu from "@/components/context-menu/ImageContextMenu";
+import * as Popover from "@radix-ui/react-popover";
+import { useState } from "react";
 
 export default function ImageCard({
   imageProps,
@@ -31,6 +33,7 @@ export default function ImageCard({
     transform: CSS.Transform.toString(transform),
     opacity: isDragging ? 0 : 1,
   };
+
   return (
     <ImageContextMenu imageId={photo.id}>
       <div
@@ -44,7 +47,7 @@ export default function ImageCard({
           {...imageProps}
           className="h-full w-full transition-transform duration-300 group-hover:scale-105"
         />
-        {/* Overlay */}
+
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent opacity-0 transition-all duration-200 group-hover:opacity-100">
           <div className="absolute top-2 right-2">
             <button

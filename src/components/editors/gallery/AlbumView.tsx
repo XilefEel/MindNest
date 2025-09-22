@@ -1,19 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { convertFileSrc } from "@tauri-apps/api/core";
-import { RowsPhotoAlbum } from "react-photo-album";
-import { Lightbox } from "yet-another-react-lightbox";
+import { useEffect, useMemo, useState } from "react";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
-import { Download, Folder, Image, Upload } from "lucide-react";
-import { cn } from "@/lib/utils";
-import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
+import { Columns3, Download, Folder, Image, Rows3 } from "lucide-react";
 import useAutoSave from "@/hooks/useAutoSave";
 import "react-photo-album/rows.css";
 import "yet-another-react-lightbox/styles.css";
-import ImageCard from "./ImageCard";
 import { GalleryAlbum } from "@/lib/types";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import ImageLayout from "./ImageLayout";
+import { cn } from "@/lib/utils";
 
 export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
   const { activeNestling } = useNestlingTreeStore();
@@ -21,99 +17,13 @@ export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
 
   const [title, setTitle] = useState(album.name);
   const [description, setDescription] = useState(album.description ?? "");
-  const [isDragOver, setIsDragOver] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const [layoutMode, setLayoutMode] = useState<"row" | "column">("row");
 
-  const {
-    images,
-    fetchImages,
-    uploadImage,
-    downloadAlbum,
-    editAlbum,
-    removeImage,
-  } = useGalleryStore();
-
-  const photos = useMemo(
-    () =>
-      images
-        .filter((img) => img.album_id === album.id)
-        .map((img) => ({
-          id: img.id,
-          src: convertFileSrc(img.file_path),
-          width: img.width,
-          height: img.height,
-          title: img.title ?? "Untitled",
-          description: img.description ?? "",
-        })),
-    [images],
-  );
-
-  const [index, setIndex] = useState(-1);
-  const dropZoneRef = useRef<HTMLDivElement>(null);
-
-  const handleImageDelete = async (id: number) => {
-    try {
-      await removeImage(id);
-      await fetchImages(activeNestling.id);
-    } catch (error) {
-      console.error("Failed to delete image:", error);
-    }
-  };
-
-  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragOver(false);
-
-    if (isUploading) return;
-
-    const files = Array.from(e.dataTransfer.files);
-    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
-
-    if (imageFiles.length === 0) {
-      alert("Please drop image files only");
-      return;
-    }
-
-    setIsUploading(true);
-
-    try {
-      for (const file of imageFiles) {
-        const uint8Array = new Uint8Array(await file.arrayBuffer());
-        await uploadImage(
-          activeNestling.id,
-          {
-            name: file.name,
-            data: uint8Array,
-          },
-          album.id,
-        );
-        fetchImages(activeNestling.id);
-      }
-    } catch (error) {
-      console.error("Upload failed:", error);
-    } finally {
-      setIsUploading(false);
-    }
-  };
+  const { images, downloadAlbum, editAlbum } = useGalleryStore();
 
   const handleDownloadAlbum = async (id: number) => {
     await downloadAlbum(id);
     toast.success("Album downloaded successfully!");
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    console.log("Dragging over drop zone");
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    console.log("Left drop zone");
-    if (!dropZoneRef.current?.contains(e.relatedTarget as Node)) {
-      setIsDragOver(false);
-    }
   };
 
   useAutoSave({
@@ -164,69 +74,44 @@ export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
       <div className="mb-3 flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
           <Image size={20} />
-          Images ({photos.length})
+          Images ({images.length})
         </h2>
-        <Button
-          className="cursor-pointer bg-teal-400 text-white transition duration-200 hover:bg-teal-600"
-          onClick={() => handleDownloadAlbum(album.id)}
-        >
-          <Download />
-          Download All
-        </Button>
-      </div>
+        <div className="flex items-center gap-2">
+          <div className="flex rounded border border-gray-200 bg-gray-100 p-1 dark:border-gray-700 dark:bg-gray-800">
+            <button
+              onClick={() => setLayoutMode("row")}
+              className={cn(
+                "rounded p-2 transition duration-100",
+                layoutMode === "row"
+                  ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+                  : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+              )}
+            >
+              <Rows3 size={18} />
+            </button>
 
-      <div
-        ref={dropZoneRef}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        className={cn(
-          "p-2",
-          isDragOver
-            ? "inset-0 border-2 border-dashed border-teal-400 bg-teal-100/80 dark:bg-teal-900/80"
-            : "",
-        )}
-      >
-        {photos.length === 0 && !isUploading ? (
-          <div className="flex h-48 flex-col items-center justify-center text-gray-500">
-            <Upload className="mb-4 size-16" />
-            <p className="text-lg font-medium">No images yet</p>
-            <p className="text-sm">
-              Drag & drop images here or click "Add Images"
-            </p>
+            <button
+              onClick={() => setLayoutMode("column")}
+              className={cn(
+                "rounded p-2 transition duration-100",
+                layoutMode === "column"
+                  ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+                  : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+              )}
+            >
+              <Columns3 size={18} />
+            </button>
           </div>
-        ) : (
-          <RowsPhotoAlbum
-            photos={photos}
-            onClick={({ index: current }) => setIndex(current)}
-            render={{
-              image: (imageProps, { photo }) => (
-                <ImageCard
-                  key={photo.id}
-                  imageProps={imageProps}
-                  photo={photo}
-                  handleImageDelete={handleImageDelete}
-                />
-              ),
-            }}
-          />
-        )}
-
-        <Lightbox
-          index={index}
-          slides={photos}
-          plugins={[Fullscreen]}
-          open={index >= 0}
-          close={() => setIndex(-1)}
-          render={{
-            slideFooter: ({ slide }: { slide: any }) => (
-              <div className="absolute inset-x-0 bottom-0 bg-black/50 p-3 text-center">
-                <p className="text-sm text-white">{slide.title}</p>
-              </div>
-            ),
-          }}
-        />
+          <Button
+            className="cursor-pointer bg-teal-400 text-white transition duration-200 hover:bg-teal-600"
+            onClick={() => handleDownloadAlbum(album.id)}
+          >
+            <Download />
+            Download All
+          </Button>
+        </div>
       </div>
+      <ImageLayout album={album} layoutMode={layoutMode} />
     </div>
   );
 }

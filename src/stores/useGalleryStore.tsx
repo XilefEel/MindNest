@@ -1,5 +1,10 @@
 import { create } from "zustand";
-import { GalleryImage, GalleryAlbum, NewGalleryAlbum } from "@/lib/types";
+import {
+  GalleryImage,
+  GalleryAlbum,
+  NewGalleryAlbum,
+  NewGalleryImage,
+} from "@/lib/types";
 import {
   importImage,
   getImages,
@@ -12,6 +17,7 @@ import {
   updateAlbum,
   deleteAlbum,
   importImageData,
+  addImage,
 } from "@/lib/nestlings";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
@@ -24,6 +30,7 @@ type GalleryState = {
   error: string | null;
 
   fetchImages: (nestlingId: number) => Promise<void>;
+  addImage: (data: NewGalleryImage) => Promise<GalleryImage>;
   uploadImage: (
     nestlingId: number,
     file: {
@@ -117,6 +124,21 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     } catch (error) {
       console.error("Failed to select files:", error);
       set({ error: String(error) });
+    }
+  },
+
+  addImage: async (data: NewGalleryImage) => {
+    set({ loading: true, error: null });
+    try {
+      const image = await addImage(data);
+      set((state) => ({
+        images: [...state.images, image],
+        loading: false,
+      }));
+      return image;
+    } catch (error) {
+      set({ error: String(error), loading: false });
+      throw error;
     }
   },
 

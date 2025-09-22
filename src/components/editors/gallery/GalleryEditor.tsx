@@ -113,7 +113,7 @@ export default function GalleryEditor() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.3 }}
-              className=""
+              className="absolute inset-0"
             >
               <MainView
                 setCurrentView={setCurrentView}
@@ -129,7 +129,7 @@ export default function GalleryEditor() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.3 }}
-              className=""
+              className="absolute inset-0"
             >
               <AlbumView album={currentAlbum} />
             </motion.div>

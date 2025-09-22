@@ -16,6 +16,7 @@ import {
   GalleryAlbum,
   NewGalleryAlbum,
   GalleryImage,
+  NewGalleryImage,
 } from "./types";
 
 export async function createNestling(data: NewNestling) {
@@ -235,6 +236,10 @@ export async function updateJournalTemplate(
 
 export async function deleteJournalTemplate(id: number) {
   return await invoke("delete_journal_template", { id });
+}
+
+export async function addImage(data: NewGalleryImage) {
+  return await invoke<GalleryImage>("add_image", { data });
 }
 
 export async function importImage(

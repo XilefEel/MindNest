@@ -10,7 +10,7 @@ use std::io::Write;
 use std::path::Path;
 use tauri::Manager;
 
-fn add_image_into_db(data: NewGalleryImage) -> Result<GalleryImage, String> {
+pub fn add_image_into_db(data: NewGalleryImage) -> Result<GalleryImage, String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
     let created_at = Local::now()
         .naive_local()
