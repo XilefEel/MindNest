@@ -11,8 +11,14 @@ export default function ImageContextMenu({
   imageId: number;
   children: React.ReactNode;
 }) {
-  const { images, albums, addImage, editImage, removeImage, downloadImage } =
-    useGalleryStore();
+  const {
+    images,
+    albums,
+    duplicateImage,
+    editImage,
+    removeImage,
+    downloadImage,
+  } = useGalleryStore();
   const handleDownloadImage = async (id: number) => {
     try {
       await downloadImage(id);
@@ -22,13 +28,10 @@ export default function ImageContextMenu({
     }
   };
 
-  const handleDuplicateImage = (id: number) => {
+  const handleDuplicateImage = async (id: number) => {
     try {
-      const originalImage = images.find((i) => i.id === id);
-      if (originalImage) {
-        addImage(originalImage);
-        toast.success("Image duplicated successfully!");
-      }
+      await duplicateImage(id);
+      toast.success("Image duplicated successfully!");
     } catch (error) {
       toast.error("Failed to duplicate image");
       console.error("Failed to duplicate image:", error);

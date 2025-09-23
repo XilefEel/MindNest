@@ -259,13 +259,23 @@ export async function importImageData(
   fileName: string,
   fileData: number[],
   albumId?: number | null,
+  title?: string | null,
+  description?: string | null,
+  tags?: string | null,
 ) {
   return await invoke<GalleryImage>("import_image_data", {
     nestlingId,
     albumId,
     fileName,
     fileData,
+    title,
+    description,
+    tags,
   });
+}
+
+export async function duplicateImage(id: number) {
+  return await invoke<GalleryImage>("duplicate_image", { originalImageId: id });
 }
 
 export async function getImages(nestlingId: number) {

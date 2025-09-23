@@ -60,7 +60,6 @@ export default function AddTemplateModal({
       setCurrentTitle(template.name || "");
       setCurrentContent(template.content || "");
     } else if (isOpen && !template) {
-      // Clear form for new template
       setCurrentTitle("");
       setCurrentContent("");
     }

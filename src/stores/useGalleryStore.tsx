@@ -18,6 +18,7 @@ import {
   deleteAlbum,
   importImageData,
   addImage,
+  duplicateImage,
 } from "@/lib/nestlings";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
@@ -31,6 +32,7 @@ type GalleryState = {
 
   fetchImages: (nestlingId: number) => Promise<void>;
   addImage: (data: NewGalleryImage) => Promise<GalleryImage>;
+  duplicateImage: (id: number) => Promise<GalleryImage>;
   uploadImage: (
     nestlingId: number,
     file: {
@@ -138,6 +140,21 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const image = await addImage(data);
+      set((state) => ({
+        images: [...state.images, image],
+        loading: false,
+      }));
+      return image;
+    } catch (error) {
+      set({ error: String(error), loading: false });
+      throw error;
+    }
+  },
+
+  duplicateImage: async (id: number) => {
+    set({ loading: true, error: null });
+    try {
+      const image = await duplicateImage(id);
       set((state) => ({
         images: [...state.images, image],
         loading: false,
