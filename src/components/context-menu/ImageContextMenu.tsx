@@ -94,35 +94,25 @@ export default function ImageContextMenu({
               className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <Folder className="h-4 w-4" />
-              Move to Album
+              <span>Move to Album</span>
             </ContextMenu.SubTrigger>
+
             <ContextMenu.Portal>
               <ContextMenu.SubContent className="animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
                 {albums.length === 0 ? (
-                  <ContextMenu.Item
-                    disabled
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                    className="rounded px-3 py-2 text-sm text-gray-500 dark:text-gray-400"
-                  >
-                    No albums
-                  </ContextMenu.Item>
+                  <ContextMenuItem
+                    action={() => {}}
+                    Icon={Star}
+                    text="No Albums"
+                  />
                 ) : (
                   albums.map((album) => (
-                    <ContextMenu.Item
+                    <ContextMenuItem
                       key={album.id}
-                      className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleMoveImage(album.id);
-                      }}
-                    >
-                      <Folder className="h-4 w-4" />
-                      {album.name}
-                    </ContextMenu.Item>
+                      action={() => handleMoveImage(album.id)}
+                      Icon={Folder}
+                      text={album.name}
+                    />
                   ))
                 )}
               </ContextMenu.SubContent>

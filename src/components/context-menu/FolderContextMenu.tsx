@@ -44,12 +44,18 @@ export default function FolderContextMenu({
           <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
 
           <DeleteModal type="folder" folderId={folderId}>
-            <ContextMenuItem
-              action={() => console.log("Delete folder", folderId)}
-              Icon={Trash2}
-              text="Delete Folder"
-              isDelete
-            />
+            {/* Using ContextMenu.Item instead of ContextMenuItem
+              because modal triggers don't work with custom ContextMenuItem component*/}
+            <ContextMenu.Item
+              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm text-red-600 transition-colors duration-200 outline-none hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/40"
+              onSelect={(e) => {
+                e.preventDefault();
+                console.log("Delete folder", folderId);
+              }}
+            >
+              <Trash2 className="h-4 w-4" />
+              <span>Delete Folder</span>
+            </ContextMenu.Item>
           </DeleteModal>
         </ContextMenu.Content>
       </ContextMenu.Portal>

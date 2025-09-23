@@ -42,12 +42,18 @@ export default function NestlingContextMenu({
           />
 
           <DeleteModal type="nestling" nestlingId={nestlingId}>
-            <ContextMenuItem
-              Icon={Trash2}
-              text="Delete"
-              isDelete
-              action={() => console.log("Delete note", nestlingId)}
-            />
+            {/* Using ContextMenu.Item instead of ContextMenuItem
+              because modal triggers don't work with custom ContextMenuItem component*/}
+            <ContextMenu.Item
+              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm text-red-600 transition-colors duration-200 outline-none hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/40"
+              onSelect={(e) => {
+                e.preventDefault();
+                console.log("Delete folder", nestlingId);
+              }}
+            >
+              <Trash2 className="h-4 w-4" />
+              <span>Delete</span>
+            </ContextMenu.Item>
           </DeleteModal>
         </ContextMenu.Content>
       </ContextMenu.Portal>

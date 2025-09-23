@@ -54,12 +54,19 @@ export default function AlbumContextMenu({
       <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>
       <ContextMenu.Portal>
         <ContextMenu.Content className="animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+          {/* Using ContextMenu.Item instead of ContextMenuItem
+              because modal triggers don't work with custom ContextMenuItem component*/}
           <AddAlbumModal nestling_id={activeNestling.id} album={album}>
-            <ContextMenuItem
-              Icon={Edit3}
-              text="Edit"
-              action={() => console.log("Rename album")}
-            />
+            <ContextMenu.Item
+              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
+              onSelect={(e) => {
+                e.preventDefault();
+                console.log("Rename album");
+              }}
+            >
+              <Edit3 className="size-4" />
+              Edit
+            </ContextMenu.Item>
           </AddAlbumModal>
 
           <ContextMenuItem

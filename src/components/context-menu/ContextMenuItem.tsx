@@ -2,21 +2,19 @@ import { cn } from "@/lib/utils";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { ElementType, ReactNode } from "react";
 
-type ContextMenuItemProps = {
-  action: () => void;
-  Icon: ElementType;
-  text?: string;
-  isDelete?: boolean;
-  children?: ReactNode;
-};
-
 export default function ContextMenuItem({
   action,
   Icon,
   text,
   isDelete,
   children,
-}: ContextMenuItemProps) {
+}: {
+  action?: () => void;
+  Icon: ElementType;
+  text?: string;
+  isDelete?: boolean;
+  children?: ReactNode;
+}) {
   return (
     <ContextMenu.Item
       className={cn(
@@ -27,7 +25,7 @@ export default function ContextMenuItem({
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        action();
+        action?.();
       }}
     >
       <Icon className="h-4 w-4" />

@@ -1,12 +1,12 @@
 import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
 import { useState } from "react";
@@ -53,45 +53,41 @@ export default function DeleteModal({
     }
   };
   return (
-    <div>
-      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-        <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
-        <AlertDialogContent
-          onContextMenu={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-          className="space-y-2 rounded-2xl bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800"
-        >
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Are you sure you want to delete?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete this{" "}
-              {type} and all its contents.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={() => setIsOpen(false)}
-                className="mr-auto cursor-pointer rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
-              >
-                Cancel
-              </Button>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent
+        onContextMenu={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        className="space-y-2 rounded-2xl bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800"
+      >
+        <DialogHeader>
+          <DialogTitle>Are you sure you want to delete?</DialogTitle>
+          <DialogDescription>
+            This action cannot be undone. This will permanently delete this{" "}
+            {type} and all its contents.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => setIsOpen(false)}
+              className="mr-auto cursor-pointer rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
+            >
+              Cancel
+            </Button>
 
-              <Button
-                onClick={() => handleDelete(type)}
-                className="mr-auto cursor-pointer rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
-              >
-                <Trash size={14} />
-                Delete
-              </Button>
-            </div>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
+            <Button
+              onClick={() => handleDelete(type)}
+              className="mr-auto cursor-pointer rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
+            >
+              <Trash size={14} />
+              Delete
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
