@@ -1,0 +1,77 @@
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+export default function RenameImageModal({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <div onClick={(e) => e.stopPropagation()}>{children}</div>
+      </DialogTrigger>
+      <DialogContent
+        onClick={(e) => e.stopPropagation()}
+        className="w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-xl transition-all ease-in-out dark:border-gray-700 dark:bg-gray-800"
+      >
+        <DialogHeader className="justify-between">
+          <DialogTitle className="text-xl font-bold text-black dark:text-white">
+            Edit Image
+          </DialogTitle>
+          <DialogDescription className="text-gray-600 dark:text-gray-400">
+            Update your image title and description.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Image Title
+            </label>
+            <Input
+              placeholder="Enter image title"
+              className="border-gray-300 bg-white text-sm text-black placeholder-gray-400 focus:border-teal-500 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:border-teal-400 dark:focus:ring-teal-400"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Description
+            </label>
+            <textarea
+              rows={3}
+              placeholder="Enter description..."
+              className="w-full resize-none rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-black placeholder-gray-400 focus:border-teal-500 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:border-teal-400 dark:focus:ring-teal-400"
+            />
+          </div>
+        </div>
+
+        <DialogFooter className="flex justify-end gap-2">
+          <DialogClose asChild>
+            <Button
+              variant="ghost"
+              className="cursor-pointer rounded-lg bg-gray-200 text-black hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+            >
+              Cancel
+            </Button>
+          </DialogClose>
+
+          <Button className="cursor-pointer rounded-lg bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-600 dark:hover:bg-teal-700">
+            Save
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

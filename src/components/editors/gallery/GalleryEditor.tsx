@@ -13,6 +13,7 @@ import AlbumView from "./AlbumView";
 import { cn } from "@/lib/utils";
 import AddAlbumModal from "@/components/modals/AddAlbumModal";
 import { toast } from "sonner";
+import * as Popover from "@radix-ui/react-popover";
 
 export default function GalleryEditor() {
   const { activeNestling } = useNestlingTreeStore();
@@ -56,7 +57,7 @@ export default function GalleryEditor() {
 
   const handleSelectImage = async () => {
     try {
-      const selected = await selectImages(activeNestling.id, albumId); // returns null if user cancels
+      const selected = await selectImages(activeNestling.id, albumId);
       if (selected) {
         toast.success("Image uploaded successfully!");
       } else {

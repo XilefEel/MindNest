@@ -2,8 +2,6 @@ import { Trash2 } from "lucide-react";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import ImageContextMenu from "@/components/context-menu/ImageContextMenu";
-import * as Popover from "@radix-ui/react-popover";
-import { useState } from "react";
 
 export default function ImageCard({
   imageProps,

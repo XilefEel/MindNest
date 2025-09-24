@@ -29,6 +29,8 @@ type GalleryState = {
   activeDraggingImageId: string | null;
   loading: boolean;
   error: string | null;
+  isPopoverOpen: boolean;
+  setIsPopoverOpen: (isOpen: boolean) => void;
 
   fetchImages: (nestlingId: number) => Promise<void>;
   addImage: (data: NewGalleryImage) => Promise<GalleryImage>;
@@ -94,6 +96,9 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   albums: [],
   loading: false,
   error: null,
+  isPopoverOpen: false,
+
+  setIsPopoverOpen: (isOpen: boolean) => set({ isPopoverOpen: isOpen }),
 
   fetchImages: async (nestlingId: number) => {
     set({ loading: true, error: null });
@@ -128,7 +133,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       }
       await get().fetchImages(nestlingId);
 
-      return true; // files were selected and uploaded
+      return true;
     } catch (error) {
       console.error("Failed to select files:", error);
       set({ error: String(error) });
