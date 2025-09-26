@@ -170,7 +170,7 @@ pub struct GalleryImage {
     pub file_path: String,
     pub title: Option<String>,
     pub description: Option<String>,
-    pub tags: Option<String>,
+    pub is_favorite: bool,
     pub width: i64,
     pub height: i64,
     pub created_at: String,
@@ -184,7 +184,8 @@ pub struct NewGalleryImage {
     pub file_path: String,
     pub title: Option<String>,
     pub description: Option<String>,
-    pub tags: Option<String>,
+    pub is_favorite: bool,
     pub width: i64,
     pub height: i64,
 }
+

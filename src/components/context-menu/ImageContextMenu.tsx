@@ -1,9 +1,10 @@
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
-import { Edit3, Copy, Star, Folder, Tag, Download, Trash2 } from "lucide-react";
+import { Edit3, Copy, Star, Folder, Download, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import ContextMenuItem from "./ContextMenuItem";
 import RenameImageModal from "../modals/RenameImageModal";
+import { GalleryImage } from "@/lib/types";
 export default function ImageContextMenu({
   imageId,
   children,
@@ -11,14 +12,42 @@ export default function ImageContextMenu({
   imageId: number;
   children: React.ReactNode;
 }) {
-  const { albums, duplicateImage, editImage, removeImage, downloadImage } =
-    useGalleryStore();
+  const {
+    albums,
+    images,
+    duplicateImage,
+    editImage,
+    removeImage,
+    downloadImage,
+  } = useGalleryStore();
+
+  const currentImage = images.find((i) => i.id === imageId);
+
   const handleDownloadImage = async (id: number) => {
     try {
       await downloadImage(id);
       toast.success("Album downloaded successfully!");
     } catch (error) {
       toast.error("Failed to download image");
+    }
+  };
+
+  const handleAddToFavorites = async (image: GalleryImage) => {
+    try {
+      const newFavoriteState = !image.is_favorite;
+      await editImage({
+        id: imageId,
+        albumId: image.album_id,
+        title: image.title,
+        description: image.description,
+        is_favorite: newFavoriteState,
+      });
+      newFavoriteState
+        ? toast.success("Image added to favorites!")
+        : toast.success("Image removed from favorites!");
+    } catch (error) {
+      toast.error("Failed to add image to favorites");
+      console.error("Failed to add image to favorites:", error);
     }
   };
 
@@ -38,7 +67,7 @@ export default function ImageContextMenu({
       albumId: id,
       title: null,
       description: null,
-      tags: null,
+      is_favorite: currentImage?.is_favorite || false,
     });
     toast.success(
       `Image moved to album "${albums.find((a) => a.id === id)?.name}"!`,
@@ -79,7 +108,7 @@ export default function ImageContextMenu({
             text="Duplicate"
           />
           <ContextMenuItem
-            action={() => console.log("Toggle favorite", imageId)}
+            action={() => handleAddToFavorites(currentImage!)}
             Icon={Star}
             text="Add to Favorites"
           />
@@ -116,11 +145,11 @@ export default function ImageContextMenu({
               </ContextMenu.SubContent>
             </ContextMenu.Portal>
           </ContextMenu.Sub>
-          <ContextMenuItem
+          {/* <ContextMenuItem
             action={() => console.log("Manage tags for image", imageId)}
             Icon={Tag}
             text="Edit Tags"
-          />
+          /> */}
           <ContextMenuItem
             action={() => handleDownloadImage(imageId)}
             Icon={Download}

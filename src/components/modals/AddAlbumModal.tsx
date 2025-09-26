@@ -93,7 +93,7 @@ export default function AddAlbumModal({
           <div className="space-y-4">
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Image Title
+                Album Title
               </label>
               <Input
                 placeholder="e.g. Family, Vacation, Work"

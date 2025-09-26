@@ -128,7 +128,7 @@ pub fn init_db() -> Result<(), String> {
             file_path TEXT NOT NULL,
             title TEXT,
             description TEXT,
-            tags TEXT,
+            is_favorite BOOLEAN NOT NULL DEFAULT 0,
             width INTEGER NOT NULL,
             height INTEGER NOT NULL,
             created_at TEXT NOT NULL,
@@ -136,8 +136,6 @@ pub fn init_db() -> Result<(), String> {
             FOREIGN KEY (album_id) REFERENCES gallery_albums(id) ON DELETE SET NULL,
             FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
         );
-
-
         ",
         )
         .map_err(|e| e.to_string())?;

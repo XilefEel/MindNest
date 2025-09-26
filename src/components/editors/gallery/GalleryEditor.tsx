@@ -13,7 +13,6 @@ import AlbumView from "./AlbumView";
 import { cn } from "@/lib/utils";
 import AddAlbumModal from "@/components/modals/AddAlbumModal";
 import { toast } from "sonner";
-import * as Popover from "@radix-ui/react-popover";
 
 export default function GalleryEditor() {
   const { activeNestling } = useNestlingTreeStore();

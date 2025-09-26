@@ -182,7 +182,7 @@ export type GalleryImage = {
   file_path: string;
   title: string | null;
   description: string | null;
-  tags: string | null;
+  is_favorite: boolean;
   width: number;
   height: number;
   created_at: string;
@@ -195,7 +195,7 @@ export type NewGalleryImage = {
   file_path: string;
   title: string | null;
   description: string | null;
-  tags: string | null;
+  is_favorite?: boolean;
   width: number;
   height: number;
 };

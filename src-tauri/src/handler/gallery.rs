@@ -29,9 +29,9 @@ pub fn import_image_data(
     file_data: Vec<u8>,
     title: Option<String>,
     description: Option<String>,
-    tags: Option<String>,
+    is_favorite: Option<bool>,
 ) -> Result<GalleryImage, String> {
-    import_image_data_into_app(app_handle, nestling_id, album_id, file_name, file_data, title, description, tags)
+    import_image_data_into_app(app_handle, nestling_id, album_id, file_name, file_data, title, description, is_favorite)
 }
 
 #[tauri::command]
@@ -50,9 +50,9 @@ pub fn update_image(
     album_id: Option<i64>,
     title: Option<String>,
     description: Option<String>,
-    tags: Option<String>,
+    is_favorite: bool,
 ) -> Result<(), String> {
-    update_image_in_db(id, album_id, title, description, tags)
+    update_image_in_db(id, album_id, title, description, is_favorite)
 }
 
 #[tauri::command]

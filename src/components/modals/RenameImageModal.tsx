@@ -37,7 +37,7 @@ export default function RenameImageModal({
         albumId: currentImage?.album_id ?? null,
         title,
         description,
-        tags: currentImage?.tags ?? null,
+        is_favorite: currentImage?.is_favorite ?? false,
       });
       setIsOpen(false);
       toast.success("Image updated successfully!");

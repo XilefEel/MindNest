@@ -4,7 +4,7 @@ import { RowsPhotoAlbum, ColumnsPhotoAlbum } from "react-photo-album";
 import { Lightbox } from "yet-another-react-lightbox";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
-import { Upload, Image, Grid, List } from "lucide-react";
+import { Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import "react-photo-album/rows.css";
@@ -23,7 +23,8 @@ export default function ImageLayout({
 }) {
   const { activeNestling } = useNestlingTreeStore();
   if (!activeNestling) return null;
-  const { images, fetchImages, uploadImage, removeImage } = useGalleryStore();
+  const { images, fetchImages, editImage, uploadImage, removeImage } =
+    useGalleryStore();
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -34,19 +35,34 @@ export default function ImageLayout({
   const PhotoLayout = layoutMode === "row" ? RowsPhotoAlbum : ColumnsPhotoAlbum;
 
   const photos = useMemo(() => {
+    // Filter images by album (if album is selected)
     const filtered = album
       ? images.filter((img) => img.album_id == album.id)
       : images;
 
+    // Map images into the format required by the photo album
     const mapped = filtered.map((img) => ({
       id: img.id,
+      album_id: img.album_id,
       src: convertFileSrc(img.file_path),
-      width: img.width,
-      height: img.height,
       title: img.title ?? "Untitled",
       description: img.description ?? "No Description",
+      is_favorite: img.is_favorite,
+      width: img.width,
+      height: img.height,
       created_at: img.created_at,
     }));
+
+    // Sort by favorite and then by date
+    mapped.sort((a, b) => {
+      if (a.is_favorite === b.is_favorite) {
+        return (
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+      } else {
+        return b.is_favorite ? 1 : -1;
+      }
+    });
 
     return mapped;
   }, [images, album]);
@@ -59,6 +75,27 @@ export default function ImageLayout({
     } catch (error) {
       toast.error("Failed to delete image");
       console.error("Failed to delete image:", error);
+    }
+  };
+
+  const handleAddToFavorites = async (photo: any) => {
+    try {
+      const newFavoriteState = !photo.is_favorite;
+      console.log(photo);
+      await editImage({
+        id: photo.id,
+        albumId: photo.album_id,
+        title: photo.title,
+        description: photo.description,
+        is_favorite: newFavoriteState,
+      });
+
+      newFavoriteState
+        ? toast.success("Image added to favorites!")
+        : toast.success("Image removed from favorites!");
+    } catch (error) {
+      toast.error("Failed to add image to favorites");
+      console.error("Failed to add image to favorites:", error);
     }
   };
 
@@ -144,6 +181,7 @@ export default function ImageLayout({
                 imageProps={imageProps}
                 photo={photo}
                 handleImageDelete={handleImageDelete}
+                handleAddToFavorites={handleAddToFavorites}
               />
             ),
           }}

@@ -261,7 +261,7 @@ export async function importImageData(
   albumId?: number | null,
   title?: string | null,
   description?: string | null,
-  tags?: string | null,
+  isFavorite?: boolean,
 ) {
   return await invoke<GalleryImage>("import_image_data", {
     nestlingId,
@@ -270,7 +270,7 @@ export async function importImageData(
     fileData,
     title,
     description,
-    tags,
+    isFavorite,
   });
 }
 
@@ -295,14 +295,15 @@ export async function updateImage(
   albumId: number | null,
   title: string | null,
   description: string | null,
-  tags: string | null,
+  isFavorite: boolean,
 ) {
+  console.log("updateImage", { id, albumId, title, description, isFavorite });
   return await invoke<void>("update_image", {
     id,
     albumId,
     title,
     description,
-    tags,
+    isFavorite,
   });
 }
 

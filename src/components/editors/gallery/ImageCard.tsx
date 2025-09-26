@@ -1,4 +1,4 @@
-import { Trash2 } from "lucide-react";
+import { Star, Trash2 } from "lucide-react";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import ImageContextMenu from "@/components/context-menu/ImageContextMenu";
@@ -7,6 +7,7 @@ export default function ImageCard({
   imageProps,
   photo,
   handleImageDelete,
+  handleAddToFavorites,
 }: {
   imageProps: React.ImgHTMLAttributes<HTMLImageElement>;
   photo: {
@@ -15,8 +16,10 @@ export default function ImageCard({
     src: string;
     width: number;
     height: number;
+    is_favorite: boolean;
   };
   handleImageDelete: (id: number) => Promise<void>;
+  handleAddToFavorites: (photo: any) => Promise<void>;
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
@@ -47,6 +50,24 @@ export default function ImageCard({
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent opacity-0 transition-all duration-200 group-hover:opacity-100">
+          <div className="absolute top-2 left-2">
+            <button
+              className={`rounded-full p-1.5 shadow transition ${
+                photo.is_favorite
+                  ? "bg-yellow-400 text-white hover:bg-yellow-500"
+                  : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAddToFavorites(photo);
+              }}
+            >
+              <Star
+                size={16}
+                fill={photo.is_favorite ? "currentColor" : "none"}
+              />
+            </button>
+          </div>
           <div className="absolute top-2 right-2">
             <button
               className="rounded-full bg-red-500 p-1.5 text-white shadow transition hover:bg-red-600"

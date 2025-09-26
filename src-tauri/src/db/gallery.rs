@@ -18,44 +18,46 @@ pub fn add_image_into_db(data: NewGalleryImage) -> Result<GalleryImage, String> 
         .to_string();
 
     let mut statement = connection.prepare("
-        INSERT INTO gallery_images (album_id, nestling_id, file_path, title, description, tags, width, height, created_at, updated_at)
+        INSERT INTO gallery_images (
+            album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
+        )
         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
-        RETURNING id, album_id, nestling_id, file_path, title, description, tags, width, height, created_at, updated_at
+        RETURNING id, album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
     ").map_err(|e| e.to_string())?;
 
-    let image = statement
-        .query_row(
-            params![
-                data.album_id,
-                data.nestling_id,
-                data.file_path,
-                data.title,
-                data.description,
-                data.tags,
-                data.width,
-                data.height,
-                created_at,
-                created_at
-            ],
-            |row| {
-                Ok(GalleryImage {
-                    id: row.get(0)?,
-                    album_id: row.get(1)?,
-                    nestling_id: row.get(2)?,
-                    file_path: row.get(3)?,
-                    title: row.get(4)?,
-                    description: row.get(5)?,
-                    tags: row.get(6)?,
-                    width: row.get(7)?,
-                    height: row.get(8)?,
-                    created_at: row.get(9)?,
-                    updated_at: row.get(10)?,
-                })
-            },
-        )
-        .map_err(|e| e.to_string())?;
+    let image = statement.query_row(
+        params![
+            data.album_id,
+            data.nestling_id,
+            data.file_path,
+            data.title,
+            data.description,
+            data.is_favorite,
+            data.width,
+            data.height,
+            created_at,
+            created_at
+        ],
+        |row| {
+            Ok(GalleryImage {
+                id: row.get(0)?,
+                album_id: row.get(1)?,
+                nestling_id: row.get(2)?,
+                file_path: row.get(3)?,
+                title: row.get(4)?,
+                description: row.get(5)?,
+                is_favorite: row.get(6)?,
+                width: row.get(7)?,
+                height: row.get(8)?,
+                created_at: row.get(9)?,
+                updated_at: row.get(10)?,
+            })
+        },
+    ).map_err(|e| e.to_string())?;
+
     Ok(image)
 }
+
 
 fn get_image_dimensions(path: &str) -> Result<(i64, i64), String> {
     let dim = size(path).map_err(|e| e.to_string())?;
@@ -113,7 +115,7 @@ pub fn import_image_into_app(
         file_path: new_path,
         title: None,
         description: None,
-        tags: None,
+        is_favorite: false,
         width: width,
         height: height,
     };
@@ -130,9 +132,8 @@ pub fn import_image_data_into_app(
     file_data: Vec<u8>,
     title: Option<String>,  
     description: Option<String>,
-    tags: Option<String>,
+    is_favorite: Option<bool>,
 ) -> Result<GalleryImage, String> {
-
     let app_dir = app_handle
         .path()
         .app_data_dir()
@@ -151,19 +152,20 @@ pub fn import_image_data_into_app(
     let (width, height) = get_image_dimensions(&destination_str)?;
 
     let new_image = NewGalleryImage {
-        album_id: album_id,
+        album_id,
         nestling_id,
         file_path: destination_str,
-        title: title,
-        description: description,
-        tags: tags,
-        width: width,
-        height: height,
+        title,
+        description,
+        is_favorite: is_favorite.unwrap_or(false),
+        width,
+        height,
     };
 
     let saved_image = add_image_into_db(new_image).map_err(|e| e.to_string())?;
     Ok(saved_image)
 }
+
 
 pub fn duplicate_image_from_image(app_handle: tauri::AppHandle, original_image_id: i64) -> Result<GalleryImage, String>{
     let original_image = get_image_by_id(original_image_id)
@@ -190,7 +192,7 @@ pub fn duplicate_image_from_image(app_handle: tauri::AppHandle, original_image_i
         image_data,
         original_image.title.clone(),
         original_image.description.clone(),
-        original_image.tags.clone(),
+        Some(original_image.is_favorite),
     )?;
     
     Ok(duplicated_image)
@@ -199,7 +201,7 @@ pub fn duplicate_image_from_image(app_handle: tauri::AppHandle, original_image_i
 pub fn get_images_from_db(nestling_id: i64) -> Result<Vec<GalleryImage>, String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
     let mut statement = connection.prepare("
-        SELECT id, album_id, nestling_id, file_path, title, description, tags, width, height, created_at, updated_at
+        SELECT id, album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
         FROM gallery_images
         WHERE nestling_id = ?1
         ORDER BY created_at DESC
@@ -214,7 +216,7 @@ pub fn get_images_from_db(nestling_id: i64) -> Result<Vec<GalleryImage>, String>
                 file_path: row.get(3)?,
                 title: row.get(4)?,
                 description: row.get(5)?,
-                tags: row.get(6)?,
+                is_favorite: row.get(6)?,
                 width: row.get(7)?,
                 height: row.get(8)?,
                 created_at: row.get(9)?,
@@ -227,11 +229,12 @@ pub fn get_images_from_db(nestling_id: i64) -> Result<Vec<GalleryImage>, String>
     Ok(images)
 }
 
+
 fn get_image_by_id(id: i64) -> Result<GalleryImage, String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
 
     let mut statement = connection.prepare("
-        SELECT id, album_id, nestling_id, file_path, title, description, tags, width, height, created_at, updated_at
+        SELECT id, album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
         FROM gallery_images WHERE id = ?1
     ").map_err(|e| e.to_string())?;
 
@@ -244,7 +247,7 @@ fn get_image_by_id(id: i64) -> Result<GalleryImage, String> {
                 file_path: row.get(3)?,
                 title: row.get(4)?,
                 description: row.get(5)?,
-                tags: row.get(6)?,
+                is_favorite: row.get(6)?, // ✅ updated
                 width: row.get(7)?,
                 height: row.get(8)?,
                 created_at: row.get(9)?,
@@ -259,7 +262,7 @@ fn get_image_by_id(id: i64) -> Result<GalleryImage, String> {
 fn get_images_by_album_id(album_id: i64) -> Result<Vec<GalleryImage>, String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
     let mut statement = connection.prepare("
-        SELECT id, album_id, nestling_id, file_path, title, description, tags, width, height, created_at, updated_at
+        SELECT id, album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
         FROM gallery_images
         WHERE album_id = ?1
         ORDER BY created_at DESC
@@ -274,7 +277,7 @@ fn get_images_by_album_id(album_id: i64) -> Result<Vec<GalleryImage>, String> {
                 file_path: row.get(3)?,
                 title: row.get(4)?,
                 description: row.get(5)?,
-                tags: row.get(6)?,
+                is_favorite: row.get(6)?, // ✅ updated
                 width: row.get(7)?,
                 height: row.get(8)?,
                 created_at: row.get(9)?,
@@ -286,6 +289,7 @@ fn get_images_by_album_id(album_id: i64) -> Result<Vec<GalleryImage>, String> {
         .map_err(|e| e.to_string())?;
     Ok(images)
 }
+
 
 
 pub fn download_image_into_user(image_id: i64, save_path: String) -> Result<(), String> {
@@ -342,7 +346,7 @@ pub fn update_image_in_db(
     album_id: Option<i64>,
     title: Option<String>,
     description: Option<String>,
-    tags: Option<String>,
+    is_favorite: bool,
 ) -> Result<(), String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
     let updated_at = Local::now()
@@ -350,16 +354,16 @@ pub fn update_image_in_db(
         .format("%Y-%m-%d %H:%M:%S")
         .to_string();
 
-    connection
-        .execute(
-            "
+    connection.execute(
+        "
         UPDATE gallery_images
-        SET album_id = ?1, title = ?2, description = ?3, tags = ?4, updated_at = ?5
+        SET album_id = ?1, title = ?2, description = ?3, is_favorite = ?4, updated_at = ?5
         WHERE id = ?6
-    ",
-            params![album_id, title, description, tags, updated_at, id],
-        )
-        .map_err(|e| e.to_string())?;
+        ",
+        params![album_id, title, description, is_favorite, updated_at, id],
+    )
+    .map_err(|e| e.to_string())?;
+
     Ok(())
 }
 

@@ -29,8 +29,6 @@ type GalleryState = {
   activeDraggingImageId: string | null;
   loading: boolean;
   error: string | null;
-  isPopoverOpen: boolean;
-  setIsPopoverOpen: (isOpen: boolean) => void;
 
   fetchImages: (nestlingId: number) => Promise<void>;
   addImage: (data: NewGalleryImage) => Promise<GalleryImage>;
@@ -54,13 +52,13 @@ type GalleryState = {
     albumId,
     title,
     description,
-    tags,
+    is_favorite,
   }: {
     id: number;
     albumId: number | null;
     title: string | null;
     description: string | null;
-    tags: string | null;
+    is_favorite: boolean;
   }) => Promise<void>;
   removeImage: (id: number) => Promise<void>;
 
@@ -96,9 +94,6 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   albums: [],
   loading: false,
   error: null,
-  isPopoverOpen: false,
-
-  setIsPopoverOpen: (isOpen: boolean) => set({ isPopoverOpen: isOpen }),
 
   fetchImages: async (nestlingId: number) => {
     set({ loading: true, error: null });
@@ -236,13 +231,13 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     albumId,
     title,
     description,
-    tags,
+    is_favorite,
   }: {
     id: number;
     albumId: number | null;
     title: string | null;
     description: string | null;
-    tags: string | null;
+    is_favorite: boolean;
   }) => {
     set({ loading: true, error: null });
     try {
@@ -254,13 +249,13 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
                 album_id: albumId,
                 title,
                 description,
-                tags,
+                is_favorite,
                 updated_at: new Date().toISOString(),
               }
             : img,
         ),
       }));
-      await updateImage(id, albumId, title, description, tags);
+      await updateImage(id, albumId, title, description, is_favorite);
 
       set({ loading: false });
     } catch (error) {
@@ -410,7 +405,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
           albumId,
           title: image.title,
           description: image.description,
-          tags: image.tags,
+          is_favorite: image.is_favorite,
         });
       } catch (error) {
         set({ error: String(error) });
