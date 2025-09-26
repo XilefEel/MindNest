@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getNestFromId } from "@/lib/nests";
-import { Nest } from "@/lib/types";
+import { getNestFromId } from "@/lib/api/nests";
+import { Nest } from "@/lib/types/nests";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
-import { getLastNestling, saveLastNestId } from "@/lib/session";
-import { cn } from "@/lib/utils";
+import { getLastNestling, saveLastNestId } from "@/lib/storage/session";
+import { cn } from "@/lib/utils/general";
 import Topbar from "@/components/nests/Topbar";
 import Sidebar from "@/components/nests/Sidebar";
 import Home from "@/components/nests/Home";

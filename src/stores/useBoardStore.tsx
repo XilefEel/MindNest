@@ -6,8 +6,8 @@ import {
   getBoard,
   updateBoardCard,
   updateBoardColumn,
-} from "@/lib/nestlings";
-import { BoardData, NewBoardCard, NewBoardColumn } from "@/lib/types";
+} from "@/lib/api/board";
+import { BoardData, NewBoardCard, NewBoardColumn } from "@/lib/types/board";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { create } from "zustand";
 

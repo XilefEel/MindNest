@@ -1,5 +1,5 @@
-import { updateNest, deleteNest } from "@/lib/nests";
-import { Nest } from "@/lib/types";
+import { updateNest, deleteNest } from "@/lib/api/nests";
+import { Nest } from "@/lib/types/nests";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Pencil, Trash } from "lucide-react";

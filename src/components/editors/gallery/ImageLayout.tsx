@@ -5,13 +5,13 @@ import { Lightbox } from "yet-another-react-lightbox";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { Upload } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/general";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import "react-photo-album/rows.css";
 import "react-photo-album/columns.css";
 import "yet-another-react-lightbox/styles.css";
 import ImageCard from "./ImageCard";
-import { GalleryAlbum } from "@/lib/types";
+import { GalleryAlbum } from "@/lib/types/gallery";
 import { toast } from "sonner";
 
 export default function ImageLayout({

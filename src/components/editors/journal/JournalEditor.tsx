@@ -5,7 +5,7 @@ import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useJournalStore } from "@/stores/useJournalStore";
 import JournalSidebar from "./JournalSidebar";
 import useAutoSave from "@/hooks/useAutoSave";
-import { editNote } from "@/lib/nestlings";
+import { editNote } from "@/lib/api/note";
 import { NewEntryButton } from "./NewEntryButton";
 
 export default function JournalingApp() {

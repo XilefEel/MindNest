@@ -4,7 +4,7 @@ import { Edit3, Copy, Star, Folder, Download, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import ContextMenuItem from "./ContextMenuItem";
 import RenameImageModal from "../modals/RenameImageModal";
-import { GalleryImage } from "@/lib/types";
+import { GalleryImage } from "@/lib/types/gallery";
 export default function ImageContextMenu({
   imageId,
   children,

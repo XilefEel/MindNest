@@ -1,8 +1,9 @@
-import { Folder, Nestling } from "@/lib/types";
+import { Folder } from "@/lib/types/folders";
+import { Nestling } from "@/lib/types/nestlings";
 import { ChevronDown, Folder as LucideFolder } from "lucide-react";
 import NestlingItem from "./NestlingItem";
 import { useDroppable } from "@dnd-kit/core";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/general";
 import NestlingContextMenu from "../context-menu/NestlingContextMenu";
 import { motion } from "framer-motion";
 

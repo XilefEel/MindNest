@@ -1,6 +1,6 @@
 import { Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { BoardCard } from "@/lib/types";
+import { BoardCard } from "@/lib/types/board";
 import { useBoardStore } from "@/stores/useBoardStore";
 import { useEffect, useRef, useState } from "react";
 import { CSS } from "@dnd-kit/utilities";

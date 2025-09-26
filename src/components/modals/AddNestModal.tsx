@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createNest } from "@/lib/nests";
+import { createNest } from "@/lib/api/nests";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { User } from "@/lib/types";
+import { User } from "@/lib/types/user";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 

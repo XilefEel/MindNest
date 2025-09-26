@@ -1,4 +1,4 @@
-import { Nest } from "@/lib/types";
+import { Nest } from "@/lib/types/nests";
 import { Button } from "../ui/button";
 import {
   Settings,
@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SettingsModal from "../modals/SettingsModal";
-import { clearLastNestId, clearLastNestling } from "@/lib/session";
+import { clearLastNestId, clearLastNestling } from "@/lib/storage/session";
 
 export default function Topbar({
   nest,

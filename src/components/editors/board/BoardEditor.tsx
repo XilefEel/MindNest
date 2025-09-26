@@ -17,7 +17,7 @@ import {
   SortableContext,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { editNote } from "@/lib/nestlings";
+import { editNote } from "@/lib/api/note";
 
 export default function BoardEditor() {
   const nestling = useNestlingTreeStore((s) => s.activeNestling);

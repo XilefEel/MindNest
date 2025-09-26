@@ -1,4 +1,4 @@
-import { BoardColumnData } from "@/lib/types";
+import { BoardColumnData } from "@/lib/types/board";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import { useBoardStore } from "@/stores/useBoardStore";

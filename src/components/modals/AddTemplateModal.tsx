@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useJournalStore } from "@/stores/useJournalStore";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
-import { JournalTemplate } from "@/lib/types";
+import { JournalTemplate } from "@/lib/types/journal";
 
 export default function AddTemplateModal({
   children,

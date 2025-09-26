@@ -1,15 +1,11 @@
-import {
-  cn,
-  getDayFromDate,
-  PLANNER_EVENT_COLORS,
-  getRandomElement,
-} from "@/lib/utils";
+import { getDayFromDate, PLANNER_EVENT_COLORS } from "@/lib/utils/date";
+import { cn, getRandomElement } from "@/lib/utils/general";
 import { addDays, format, startOfWeek } from "date-fns";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import PlannerEvent from "./PlannerEvent";
 import { usePlannerStore } from "@/stores/usePlannerStore";
-import { NewPlannerEventType } from "@/lib/types";
+import { NewPlannerEventType } from "@/lib/types/calendar";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 
 export type EventType = {

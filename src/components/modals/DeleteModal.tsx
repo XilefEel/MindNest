@@ -10,7 +10,8 @@ import {
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
 import { useState } from "react";
-import { deleteFolder, deleteNestling } from "@/lib/nestlings";
+import { deleteNestling } from "@/lib/api/nestlings";
+import { deleteFolder } from "@/lib/api/folders";
 import { toast } from "sonner";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 export default function DeleteModal({

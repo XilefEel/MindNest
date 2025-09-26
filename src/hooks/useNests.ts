@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
-import { getUserNests } from "@/lib/nests";
-import { Nest } from "@/lib/types";
+import { getUserNests } from "@/lib/api/nests";
+import { Nest } from "@/lib/types/nests";
 
 export default function useNests(userId: number) {
   const [nests, setNests] = useState<Nest[]>([]);

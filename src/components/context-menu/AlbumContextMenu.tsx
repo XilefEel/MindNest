@@ -1,4 +1,4 @@
-import { GalleryAlbum } from "@/lib/types";
+import { GalleryAlbum } from "@/lib/types/gallery";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, PlusSquare, Download, Trash2 } from "lucide-react";

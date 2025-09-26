@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { JournalTemplate } from "@/lib/types";
+import { JournalTemplate } from "@/lib/types/journal";
 import { useJournalStore } from "@/stores/useJournalStore";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { Plus, ChevronDown, Trash, Pencil } from "lucide-react";

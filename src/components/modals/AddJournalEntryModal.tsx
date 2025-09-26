@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useJournalStore } from "@/stores/useJournalStore";
-import { JournalEntry } from "@/lib/types";
+import { JournalEntry } from "@/lib/types/journal";
 
 export default function AddJournalEntryModal({
   setActiveEntry,

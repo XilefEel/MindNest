@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SignupData, LoginData } from "@/lib/types";
+import { SignupData, LoginData } from "@/lib/types/user";
 
 interface AuthFormProps {
   type: "signup" | "login";

@@ -6,10 +6,10 @@ import ExploreSection from "@/components/dashboard/DiscoverSection";
 
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/general";
 import { useAuth } from "@/context/AuthContext";
 import useNests from "@/hooks/useNests";
-import { Nest } from "@/lib/types";
+import { Nest } from "@/lib/types/nests";
 
 export default function DashboardPage() {
   const [activeSection, setActiveSection] = useState<

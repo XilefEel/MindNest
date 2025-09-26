@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/general";
 import { useDroppable } from "@dnd-kit/core";
 
 export default function LooseNestlings({

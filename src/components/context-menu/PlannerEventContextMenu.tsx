@@ -1,5 +1,5 @@
-import { PlannerEventType } from "@/lib/types";
-import { PLANNER_EVENT_COLORS } from "@/lib/utils";
+import { PlannerEventType } from "@/lib/types/calendar";
+import { PLANNER_EVENT_COLORS } from "@/lib/utils/date";
 import { usePlannerStore } from "@/stores/usePlannerStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Copy, Trash, Check, Palette } from "lucide-react";

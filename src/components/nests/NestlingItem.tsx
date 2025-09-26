@@ -1,6 +1,6 @@
-import { saveLastNestling } from "@/lib/session";
-import { Nestling } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { saveLastNestling } from "@/lib/storage/session";
+import { Nestling } from "@/lib/types/nestlings";
+import { cn } from "@/lib/utils/general";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useDraggable } from "@dnd-kit/core";
 import {

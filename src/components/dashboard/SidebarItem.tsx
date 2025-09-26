@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"; // optional
+import { cn } from "@/lib/utils/general";
 
 export default function SidebarItem({
   icon,

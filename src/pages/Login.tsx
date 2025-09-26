@@ -1,7 +1,7 @@
 import AuthForm from "@/components/AuthForm";
 import { Link } from "react-router-dom";
-import { loginUser } from "@/lib/user";
-import { SignupData, LoginData } from "../lib/types";
+import { loginUser } from "@/lib/api/user";
+import { SignupData, LoginData } from "../lib/types/user";
 
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";

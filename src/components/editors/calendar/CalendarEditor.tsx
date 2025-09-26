@@ -8,8 +8,8 @@ import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import useAutoSave from "@/hooks/useAutoSave";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { editNote } from "@/lib/nestlings";
+import { cn } from "@/lib/utils/general";
+import { editNote } from "@/lib/api/note";
 
 export default function CalendarEditor() {
   const { activeNestling } = useNestlingTreeStore();

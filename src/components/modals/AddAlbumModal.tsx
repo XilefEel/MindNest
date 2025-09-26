@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { AlertCircle } from "lucide-react";
-import { GalleryAlbum } from "@/lib/types";
+import { GalleryAlbum } from "@/lib/types/gallery";
 
 export default function AddAlbumModal({
   nestling_id,

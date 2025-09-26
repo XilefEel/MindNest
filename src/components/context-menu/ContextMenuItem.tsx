@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/general";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { ElementType, ReactNode } from "react";
 

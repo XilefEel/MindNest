@@ -1,4 +1,4 @@
-import { JournalEntry } from "@/lib/types";
+import { JournalEntry } from "@/lib/types/journal";
 import { useJournalStore } from "@/stores/useJournalStore";
 import { Clock, Search, Trash } from "lucide-react";
 import { useMemo, useState } from "react";

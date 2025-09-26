@@ -4,7 +4,7 @@ import {
   GalleryAlbum,
   NewGalleryAlbum,
   NewGalleryImage,
-} from "@/lib/types";
+} from "@/lib/types/gallery";
 import {
   importImage,
   getImages,
@@ -19,7 +19,7 @@ import {
   importImageData,
   addImage,
   duplicateImage,
-} from "@/lib/nestlings";
+} from "@/lib/api/gallery";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
 

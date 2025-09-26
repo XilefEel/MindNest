@@ -1,6 +1,6 @@
-import { GalleryAlbum } from "@/lib/types";
+import { GalleryAlbum } from "@/lib/types/gallery";
 import { useDroppable } from "@dnd-kit/core";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/general";
 import AlbumContextMenu from "@/components/context-menu/AlbumContextMenu";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 

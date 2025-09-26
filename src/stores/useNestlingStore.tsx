@@ -1,10 +1,8 @@
 import { create } from "zustand";
-import {
-  getFolders,
-  getNestlings,
-  updateNestlingFolder,
-} from "@/lib/nestlings";
-import { Folder, Nestling, FolderWithNestlings } from "@/lib/types";
+import { getNestlings } from "@/lib/api/nestlings";
+import { getFolders, updateNestlingFolder } from "@/lib/api/folders";
+import { Folder, FolderWithNestlings } from "@/lib/types/folders";
+import { Nestling } from "@/lib/types/nestlings";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 
 type NestlingTreeState = {

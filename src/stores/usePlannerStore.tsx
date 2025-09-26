@@ -1,11 +1,14 @@
 import { create } from "zustand";
-import type { PlannerEventType, NewPlannerEventType } from "@/lib/types";
+import type {
+  PlannerEventType,
+  NewPlannerEventType,
+} from "@/lib/types/calendar";
 import {
   createPlannerEvent,
   deletePlannerEvent,
   getPlannerEvents,
   updatePlannerEvent,
-} from "@/lib/nestlings";
+} from "@/lib/api/calendar";
 
 interface PlannerState {
   events: PlannerEventType[];

@@ -1,4 +1,5 @@
-import { Nest, User } from "@/lib/types";
+import { Nest } from "@/lib/types/nests";
+import { User } from "@/lib/types/user";
 import NestCard from "../NestCard";
 
 export default function NestSection({

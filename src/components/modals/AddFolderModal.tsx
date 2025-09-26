@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFolder } from "@/lib/nestlings";
+import { createFolder } from "@/lib/api/folders";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

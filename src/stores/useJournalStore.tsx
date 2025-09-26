@@ -7,13 +7,13 @@ import {
   getJournalTemplates,
   updateJournalEntry,
   updateJournalTemplate,
-} from "@/lib/nestlings";
+} from "@/lib/api/journal";
 import {
   JournalEntry,
   JournalTemplate,
   NewJournalEntry,
   NewJournalTemplate,
-} from "@/lib/types";
+} from "@/lib/types/journal";
 import { create } from "zustand";
 
 type JournalState = {

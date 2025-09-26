@@ -1,8 +1,8 @@
 import { Rnd } from "react-rnd";
 
-import { PlannerEventType } from "@/lib/types";
+import { PlannerEventType } from "@/lib/types/calendar";
 import { startOfWeek } from "date-fns";
-import { getDateFromWeekDay, getDayFromDate } from "@/lib/utils";
+import { getDateFromWeekDay, getDayFromDate } from "@/lib/utils/date";
 import PlannerEventContextMenu from "@/components/context-menu/PlannerEventContextMenu";
 import { useRef, useState } from "react";
 import { usePlannerStore } from "@/stores/usePlannerStore";

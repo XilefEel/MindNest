@@ -3,8 +3,8 @@ import {
   getUserSession,
   clearUserSession,
   saveUserSession,
-} from "../lib/session";
-import { User } from "@/lib/types";
+} from "../lib/storage/session";
+import { User } from "@/lib/types/user";
 import LoadingScreen from "@/components/LoadingScreen";
 
 // Define the shape of the auth context

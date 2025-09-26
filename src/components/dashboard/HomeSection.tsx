@@ -2,7 +2,8 @@ import NestPreview from "./NestPreview";
 import SharedPreview from "./SharedPreview";
 import DiscoverPreview from "./DiscoverPreview";
 import { useEffect, useState } from "react";
-import { Nest, User } from "@/lib/types";
+import { Nest } from "@/lib/types/nests";
+import { User } from "@/lib/types/user";
 
 function getGreeting(hour: number) {
   if (hour < 12) return "Good Morning 🌅";

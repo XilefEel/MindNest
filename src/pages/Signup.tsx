@@ -1,7 +1,7 @@
 import AuthForm from "@/components/AuthForm";
 import { Link, useNavigate } from "react-router-dom";
-import { signupUser } from "@/lib/user";
-import { SignupData, LoginData } from "../lib/types";
+import { signupUser } from "@/lib/api/user";
+import { SignupData, LoginData } from "../lib/types/user";
 import { ArrowLeft } from "lucide-react";
 
 export default function SignupPage() {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
-import { editNote } from "@/lib/nestlings";
+import { editNote } from "@/lib/api/note";
 import { ArrowLeft, Plus, Upload } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import NestlingTitle from "../NestlingTitle";
@@ -10,7 +10,7 @@ import "react-photo-album/rows.css";
 import "yet-another-react-lightbox/styles.css";
 import MainView from "./MainView";
 import AlbumView from "./AlbumView";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/general";
 import AddAlbumModal from "@/components/modals/AddAlbumModal";
 import { toast } from "sonner";
 

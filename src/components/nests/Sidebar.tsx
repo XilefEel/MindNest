@@ -12,7 +12,7 @@ import AddFolderModal from "../modals/AddFolderModal";
 import ToolBarItem from "../editors/note/ToolBarItem";
 import { SidebarContextMenu } from "../context-menu/SidebarContextMenu";
 import { AnimatePresence, motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/general";
 
 export default function Sidebar({
   nestId,
