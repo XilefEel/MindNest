@@ -6,7 +6,7 @@ export async function signupUser(
   email: string,
   password: string,
 ) {
-  await invoke<void>("signup_user", {
+  invoke<void>("signup_user", {
     data: {
       username,
       email,

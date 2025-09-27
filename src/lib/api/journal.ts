@@ -20,7 +20,7 @@ export async function updateJournalEntry(
   content: string,
   entryDate: string,
 ) {
-  return await invoke<void>("update_journal_entry", {
+  await invoke<void>("update_journal_entry", {
     id,
     title,
     content,
@@ -29,7 +29,7 @@ export async function updateJournalEntry(
 }
 
 export async function deleteJournalEntry(id: number) {
-  return await invoke<void>("delete_journal_entry", { id });
+  await invoke<void>("delete_journal_entry", { id });
 }
 
 export async function createJournalTemplate(data: NewJournalTemplate) {
@@ -47,9 +47,9 @@ export async function updateJournalTemplate(
   name: string,
   content: string,
 ) {
-  return await invoke<void>("update_journal_template", { id, name, content });
+  await invoke<void>("update_journal_template", { id, name, content });
 }
 
 export async function deleteJournalTemplate(id: number) {
-  return await invoke<void>("delete_journal_template", { id });
+  await invoke<void>("delete_journal_template", { id });
 }

@@ -20,7 +20,7 @@ export async function updateBoardColumn({
   title: string;
   order_index: number;
 }) {
-  return await invoke<void>("update_board_column", {
+  await invoke<void>("update_board_column", {
     id,
     title,
     orderIndex: order_index,
@@ -28,7 +28,7 @@ export async function updateBoardColumn({
 }
 
 export async function deleteBoardColumn(id: number) {
-  return await invoke<void>("delete_board_column", { id });
+  await invoke<void>("delete_board_column", { id });
 }
 
 export async function createBoardCard(data: NewBoardCard) {
@@ -48,7 +48,7 @@ export async function updateBoardCard({
   order_index: number;
   column_id: number;
 }) {
-  return await invoke<void>("update_board_card", {
+  await invoke<void>("update_board_card", {
     id,
     title,
     description,
@@ -57,7 +57,7 @@ export async function updateBoardCard({
   });
 }
 export async function deleteBoardCard(id: number) {
-  return await invoke<void>("delete_board_card", { id });
+  await invoke<void>("delete_board_card", { id });
 }
 
 export async function getBoard(nestlingId: number) {

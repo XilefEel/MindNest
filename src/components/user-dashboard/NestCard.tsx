@@ -1,18 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import DashboardCard from "./DashboardCard";
-import EditNestModal from "./modals/EditNestModal";
-import { Button } from "./ui/button";
+import EditNestModal from "../modals/EditNestModal";
+import { Button } from "../ui/button";
 import { Nest } from "@/lib/types/nests";
+import { useNestStore } from "@/stores/useNestStore";
 
-export default function NestCard({
-  nest,
-  setActiveNest,
-  refresh,
-}: {
-  nest: Nest;
-  setActiveNest: (nest: Nest | null) => void;
-  refresh?: () => void;
-}) {
+export default function NestCard({ nest }: { nest: Nest }) {
+  const { setActiveNestId } = useNestStore();
   const navigate = useNavigate();
   const handleNavigate = (nestId: number) => {
     navigate(`/nest/${nestId}`);
@@ -31,8 +25,8 @@ export default function NestCard({
             </h3>
           </div>
         </div>
-        <Button onClick={() => setActiveNest(nest)} variant={"ghost"}>
-          <EditNestModal nest={nest} refresh={refresh} />
+        <Button onClick={() => setActiveNestId(nest.id)} variant={"ghost"}>
+          <EditNestModal nest={nest} />
         </Button>
       </div>
 

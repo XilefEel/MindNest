@@ -9,21 +9,18 @@ import LoadingScreen from "@/components/LoadingScreen";
 
 // Define the shape of the auth context
 type AuthContextType = {
-  user: User | null; // Logged-in user info, or null if not logged in
-  login: (user: User) => Promise<void>; // Logs in a user
-  logout: () => Promise<void>; // Logs out the user
-  loading: boolean; // Whether session is being restored on app load
+  user: User | null;
+  login: (user: User) => Promise<void>;
+  logout: () => Promise<void>;
+  loading: boolean;
 };
 
-// Create the actual context object
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// Provider component that wraps the app and provides auth state
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Save user session and update state
   const login = async (user: User) => {
     try {
       await saveUserSession(user);
@@ -33,7 +30,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // Clear session and reset user
   const logout = async () => {
     try {
       await clearUserSession();
@@ -43,7 +39,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // On first load, restore session if available
   useEffect(() => {
     const restoreSession = async () => {
       const userSession = await getUserSession();
@@ -56,7 +51,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   if (loading) return <LoadingScreen />;
 
-  // Provide auth state and actions to children
   return (
     <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}

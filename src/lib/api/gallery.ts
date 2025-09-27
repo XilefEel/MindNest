@@ -51,11 +51,11 @@ export async function getImages(nestlingId: number) {
 }
 
 export async function downloadImage(id: number, savePath: string) {
-  return await invoke("download_image", { id, savePath });
+  await invoke<void>("download_image", { id, savePath });
 }
 
 export async function downloadAlbum(id: number, savePath: string) {
-  return await invoke("download_album", { id, savePath });
+  await invoke<void>("download_album", { id, savePath });
 }
 
 export async function updateImage(
@@ -65,8 +65,7 @@ export async function updateImage(
   description: string | null,
   isFavorite: boolean,
 ) {
-  console.log("updateImage", { id, albumId, title, description, isFavorite });
-  return await invoke<void>("update_image", {
+  await invoke<void>("update_image", {
     id,
     albumId,
     title,
@@ -76,7 +75,7 @@ export async function updateImage(
 }
 
 export async function deleteImage(id: number) {
-  return await invoke<void>("delete_image", { id });
+  await invoke<void>("delete_image", { id });
 }
 
 export async function createAlbum(data: NewGalleryAlbum) {
@@ -92,9 +91,9 @@ export async function updateAlbum(
   name: string | null,
   description: string | null,
 ) {
-  return await invoke<void>("update_album", { id, name, description });
+  await invoke<void>("update_album", { id, name, description });
 }
 
 export async function deleteAlbum(id: number) {
-  return await invoke<void>("delete_album", { id });
+  await invoke<void>("delete_album", { id });
 }

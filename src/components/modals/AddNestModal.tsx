@@ -12,24 +12,20 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { User } from "@/lib/types/user";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
+import { useNestStore } from "@/stores/useNestStore";
 
-export default function AddNestModal({
-  user,
-  refresh,
-}: {
-  user: User | null;
-  refresh?: () => void;
-}) {
+export default function AddNestModal({ userId }: { userId: number }) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { fetchNests } = useNestStore();
+
   const handleExit = () => {
-    refresh?.();
+    fetchNests(userId);
     setTitle("");
     setIsOpen(false);
     setError(null);
@@ -40,8 +36,6 @@ export default function AddNestModal({
       toast.warning("Title is required");
       return;
     }
-
-    const userId = user?.id;
     if (!userId) return alert("User not logged in");
 
     setLoading(true);

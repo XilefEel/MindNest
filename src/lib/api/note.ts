@@ -5,7 +5,7 @@ export async function editNote(
   title: string | null,
   content: string | null,
 ) {
-  return await invoke<void>("edit_note", {
+  await invoke<void>("edit_note", {
     id: nestlingId,
     title,
     content,

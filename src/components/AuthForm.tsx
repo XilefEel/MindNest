@@ -4,12 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SignupData, LoginData } from "@/lib/types/user";
 
-interface AuthFormProps {
+export default function AuthForm({
+  type,
+  onSubmit,
+}: {
   type: "signup" | "login";
   onSubmit: (data: SignupData | LoginData) => Promise<void>;
-}
-
-export default function AuthForm({ type, onSubmit }: AuthFormProps) {
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");

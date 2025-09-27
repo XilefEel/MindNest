@@ -1,4 +1,4 @@
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/components/settings/theme-toggle";
 import logo from "@/assets/logo.svg";
 import logo_dark from "@/assets/logo-dark.svg";
 

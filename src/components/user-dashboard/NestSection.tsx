@@ -1,22 +1,19 @@
 import { Nest } from "@/lib/types/nests";
-import { User } from "@/lib/types/user";
-import NestCard from "../NestCard";
+import NestCard from "./NestCard";
+import { useNestStore } from "@/stores/useNestStore";
+import { useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
 
-export default function NestSection({
-  user,
-  nests,
-  activeNest,
-  setActiveNest,
-  refresh,
-}: {
-  user: User | null;
-  nests: Nest[];
-  activeNest: Nest | null;
-  setActiveNest: (nest: Nest | null) => void;
-  refresh?: () => void;
-}) {
+export default function NestSection() {
+  const { user } = useAuth();
   const userId = user?.id;
-  if (!userId) return null;
+
+  const { nests, fetchNests } = useNestStore();
+
+  useEffect(() => {
+    if (!userId) return;
+    fetchNests(userId);
+  }, [fetchNests, userId]);
 
   if (nests.length === 0) {
     return (
@@ -26,8 +23,6 @@ export default function NestSection({
     );
   }
 
-  console.log(activeNest);
-
   return (
     <section>
       <h2 className="mb-8 text-3xl font-bold text-gray-900 dark:text-white">
@@ -36,11 +31,7 @@ export default function NestSection({
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {nests.map((nest: Nest) => (
-          <NestCard
-            nest={nest}
-            setActiveNest={setActiveNest}
-            refresh={refresh}
-          />
+          <NestCard nest={nest} />
         ))}
       </div>
     </section>

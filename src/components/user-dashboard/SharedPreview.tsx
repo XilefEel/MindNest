@@ -1,4 +1,4 @@
-import DashboardCard from "../DashboardCard";
+import DashboardCard from "./DashboardCard";
 
 export default function SharedPreview() {
   return (

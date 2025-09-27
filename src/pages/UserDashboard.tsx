@@ -1,51 +1,25 @@
-import Sidebar from "@/components/dashboard/Sidebar";
-import HomeSection from "@/components/dashboard/HomeSection";
-import NestSection from "@/components/dashboard/NestSection";
-import SharedSection from "@/components/dashboard/SharedSection";
-import ExploreSection from "@/components/dashboard/DiscoverSection";
+import Sidebar from "@/components/user-dashboard/Sidebar";
+import HomeSection from "@/components/user-dashboard/HomeSection";
+import NestSection from "@/components/user-dashboard/NestSection";
+import SharedSection from "@/components/user-dashboard/SharedSection";
+import ExploreSection from "@/components/user-dashboard/DiscoverSection";
 
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils/general";
-import { useAuth } from "@/context/AuthContext";
-import useNests from "@/hooks/useNests";
-import { Nest } from "@/lib/types/nests";
 
 export default function DashboardPage() {
   const [activeSection, setActiveSection] = useState<
     "home" | "nests" | "shared" | "explore"
   >("home");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeNest, setActiveNest] = useState<Nest | null>(null);
-
-  const { user } = useAuth();
-  const userId = user?.id;
-  if (!userId) return null;
-
-  const { nests, refetch } = useNests(userId);
 
   function renderSection() {
     switch (activeSection) {
       case "home":
-        return (
-          <HomeSection
-            user={user}
-            nests={nests}
-            activeNest={activeNest}
-            setActiveNest={setActiveNest}
-            refresh={refetch}
-          />
-        );
+        return <HomeSection />;
       case "nests":
-        return (
-          <NestSection
-            user={user}
-            nests={nests}
-            activeNest={activeNest}
-            setActiveNest={setActiveNest}
-            refresh={refetch}
-          />
-        );
+        return <NestSection />;
       case "shared":
         return <SharedSection />;
       case "explore":

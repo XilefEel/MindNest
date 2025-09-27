@@ -15,17 +15,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
+import { useNestStore } from "@/stores/useNestStore";
 
-export default function EditNestModal({
-  nest,
-  refresh,
-}: {
-  nest: Nest | null;
-  refresh?: () => void;
-}) {
+export default function EditNestModal({ nest }: { nest: Nest | null }) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState(nest?.title ?? "");
   const [error, setError] = useState<string | null>(null);
+
+  const { nests, activeNestId, fetchNests } = useNestStore();
+  const currentNest = nests.find((n) => n.id === activeNestId);
 
   const handleEdit = async () => {
     if (!nest) return setError("Nest not found");
@@ -46,7 +44,7 @@ export default function EditNestModal({
   };
 
   const handleExit = () => {
-    refresh?.();
+    fetchNests(currentNest?.user_id ?? 0);
     setTitle("");
     setIsOpen(false);
     setError(null);

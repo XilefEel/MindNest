@@ -10,8 +10,7 @@ export default function SessionRestorer() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const setActiveNestling = useNestlingTreeStore((s) => s.setActiveNestling);
-  const setFolderOpen = useNestlingTreeStore((s) => s.setFolderOpen);
+  const { setActiveNestling, setFolderOpen } = useNestlingTreeStore();
 
   const hasRestoredRef = useRef(false);
 

@@ -1,5 +1,5 @@
 import { Button } from "../ui/button";
-import DashboardCard from "../DashboardCard";
+import DashboardCard from "./DashboardCard";
 
 export default function DiscoverPreview() {
   return (

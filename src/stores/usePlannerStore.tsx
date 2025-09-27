@@ -66,8 +66,6 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
         start,
         end,
       });
-      console.log(`fetching from ${start} to ${end} `);
-      console.log("Events fetched:", events);
       set({ events, loading: false });
     } catch (e) {
       set({ error: String(e), loading: false });

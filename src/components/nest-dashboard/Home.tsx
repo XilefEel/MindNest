@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import DashboardCard from "../DashboardCard";
+import DashboardCard from "../user-dashboard/DashboardCard";
 import AddNestlingModal from "../modals/AddNestlingModal";
 import AddFolderModal from "../modals/AddFolderModal";
 import { Plus } from "lucide-react";

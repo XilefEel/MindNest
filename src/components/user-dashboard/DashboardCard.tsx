@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
-import { Card, CardContent } from "./ui/card";
+import { Card, CardContent } from "../ui/card";
 
-interface DashboardCardProps {
+type DashboardCardProps = {
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
   children: ReactNode;
-}
+};
 export default function DashboardCard({
   onClick,
   children,

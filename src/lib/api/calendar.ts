@@ -38,7 +38,7 @@ export async function updatePlannerEvent({
   duration: number;
   color: string | null;
 }) {
-  return await invoke<void>("update_event", {
+  await invoke<void>("update_event", {
     id,
     date,
     title,
@@ -50,5 +50,5 @@ export async function updatePlannerEvent({
 }
 
 export async function deletePlannerEvent(id: number) {
-  return await invoke<void>("delete_event", { id });
+  await invoke<void>("delete_event", { id });
 }

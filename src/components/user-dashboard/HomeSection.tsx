@@ -2,8 +2,8 @@ import NestPreview from "./NestPreview";
 import SharedPreview from "./SharedPreview";
 import DiscoverPreview from "./DiscoverPreview";
 import { useEffect, useState } from "react";
-import { Nest } from "@/lib/types/nests";
 import { User } from "@/lib/types/user";
+import { useAuth } from "@/context/AuthContext";
 
 function getGreeting(hour: number) {
   if (hour < 12) return "Good Morning 🌅";
@@ -11,19 +11,9 @@ function getGreeting(hour: number) {
   return "Good Evening 🌙";
 }
 
-export default function HomeSection({
-  user,
-  nests,
-  activeNest,
-  setActiveNest,
-  refresh,
-}: {
-  user: User | null;
-  nests: Nest[];
-  activeNest: Nest | null;
-  setActiveNest: (nest: Nest | null) => void;
-  refresh?: () => void;
-}) {
+export default function HomeSection() {
+  const { user } = useAuth();
+
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -64,13 +54,7 @@ export default function HomeSection({
           </div>
         </div>
       </div>
-      <NestPreview
-        user={user}
-        nests={nests}
-        activeNest={activeNest}
-        setActiveNest={setActiveNest}
-        refresh={refresh}
-      />
+      <NestPreview />
       <SharedPreview />
       <DiscoverPreview />
     </section>
