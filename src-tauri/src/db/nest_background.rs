@@ -5,6 +5,7 @@ use chrono::Local;
 use imagesize::size;
 use rusqlite::params;
 use std::fs;
+use std::path::Path;
 use tauri::Manager;
 
 pub fn add_background_into_db(data: NewBackgroundImage) -> Result<BackgroundImage, String> {
@@ -54,40 +55,60 @@ fn get_image_dimensions(path: &str) -> Result<(i64, i64), String> {
     Ok((dim.width as i64, dim.height as i64))
 }
 
-pub fn import_background_data_into_app(
-    app_handle: tauri::AppHandle,
-    nest_id: i64,
-    file_name: String,
-    file_data: Vec<u8>,
-    is_selected: Option<bool>,
-) -> Result<BackgroundImage, String> {
+fn copy_background_to_app_dir(
+    app_handle: &tauri::AppHandle,
+    file_path: String,
+) -> Result<String, String> {
+    if !Path::new(&file_path).exists() {
+        return Err("File does not exist".to_string());
+    }
+
     let app_dir = app_handle
         .path()
         .app_data_dir()
         .map_err(|e| e.to_string())?;
-    
-    let images_dir = app_dir.join("backgrounds");
-    fs::create_dir_all(&images_dir).map_err(|e| e.to_string())?;
 
+    let backgrounds_dir = app_dir.join("backgrounds");
+
+    fs::create_dir_all(&backgrounds_dir).map_err(|e| e.to_string())?;
+
+    let filename = Path::new(&file_path)
+        .file_name()
+        .ok_or("Could not get filename")?
+        .to_string_lossy();
+
+    // Add timestamp (milliseconds) to filename to avoid collisions
     let timestamp = Local::now().timestamp_millis();
-    let new_filename = format!("{}_{}", timestamp, file_name);
-    let destination = images_dir.join(&new_filename);
-    
-    fs::write(&destination, file_data).map_err(|e| e.to_string())?;
-    
-    let destination_str = destination.to_string_lossy().to_string();
-    let (width, height) = get_image_dimensions(&destination_str)?;
+    let new_filename = format!("{}_{}", timestamp, filename);
 
-    let new_image = NewBackgroundImage {
+    // Create destination path
+    let destination = backgrounds_dir.join(&new_filename);
+    let destination_str = destination.to_string_lossy().to_string();
+
+    // Copy the file
+    fs::copy(file_path, &destination).map_err(|e| format!("Failed to copy file: {}", e))?;
+
+    Ok(destination_str)
+}
+
+pub fn import_background_into_app(
+    app_handle: tauri::AppHandle,
+    nest_id: i64,
+    file_path: String,
+) -> Result<BackgroundImage, String> {
+    let new_path = copy_background_to_app_dir(&app_handle, file_path.clone())?;
+    let (width, height) = get_image_dimensions(&new_path).map_err(|e| e.to_string())?;
+
+    let new_background = NewBackgroundImage {
         nest_id,
-        file_path: destination_str,
-        is_selected: is_selected.unwrap_or(false),
+        file_path: new_path,
+        is_selected: false,
         width,
         height,
     };
 
-    let saved_image = add_background_into_db(new_image).map_err(|e| e.to_string())?;
-    Ok(saved_image)
+    let saved_background = add_background_into_db(new_background).map_err(|e| e.to_string())?;
+    Ok(saved_background)
 }
 
 pub fn get_backgrounds_from_db(nest_id: i64) -> Result<Vec<BackgroundImage>, String> {
