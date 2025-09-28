@@ -55,6 +55,18 @@ pub fn init_db() -> Result<(), String> {
             FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE SET NULL
         );
 
+        CREATE TABLE IF NOT EXISTS background_images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nest_id INTEGER NOT NULL,
+            file_path TEXT NOT NULL,
+            is_selected BOOLEAN NOT NULL DEFAULT 0,
+            width INTEGER NOT NULL,
+            height INTEGER NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            FOREIGN KEY (nest_id) REFERENCES nests(id) ON DELETE CASCADE
+        );
+
         CREATE TABLE IF NOT EXISTS board_columns (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nestling_id INTEGER NOT NULL,

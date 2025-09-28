@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { createNest } from "@/lib/api/nests";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,32 +21,26 @@ export default function AddNestModal({ userId }: { userId: number }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { fetchNests } = useNestStore();
+  const { createNest } = useNestStore();
 
   const handleExit = () => {
-    fetchNests(userId);
     setTitle("");
     setIsOpen(false);
     setError(null);
   };
 
   const handleCreateNest = async () => {
-    if (title.trim() == "") {
-      toast.warning("Title is required");
-      return;
-    }
-    if (!userId) return alert("User not logged in");
-
+    if (!title.trim()) return;
     setLoading(true);
     try {
-      await createNest(userId, title.trim());
+      await createNest(userId, title);
       handleExit();
+      toast.success(`Nest "${title}" created successfully!`);
     } catch (err) {
-      console.error(err);
+      toast.error("Failed to create Nest");
     } finally {
       setLoading(false);
     }
-    toast.success("Nest created");
   };
 
   return (

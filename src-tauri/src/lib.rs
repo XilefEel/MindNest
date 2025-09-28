@@ -28,6 +28,11 @@ use handler::gallery::{
     download_image, download_album, duplicate_image
 };
 
+use handler::nest_background::{
+    add_background, import_background, get_backgrounds,
+    set_background, delete_background,
+};
+
 use utils::user::init_db;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -39,13 +44,18 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
+            // Auth
             signup_user,
             login_user,
+            
+            // Nests
             create_nest,
             get_user_nests,
             update_nest,
             delete_nest,
             get_nest_by_id,
+            
+            // Nestlings & Folders
             create_nestling,
             create_folder,
             get_nestlings,
@@ -53,7 +63,11 @@ pub fn run() {
             update_folder,
             delete_nestling,
             delete_folder,
+
+            // Notes
             edit_note,
+            
+            // Board
             create_board_column,
             update_board_column,
             delete_board_column,
@@ -61,10 +75,14 @@ pub fn run() {
             update_board_card,
             delete_board_card,
             get_board_data,
+            
+            // Calendar
             create_event,
             update_event,
             delete_event,
             get_events,
+            
+            // Journal
             insert_journal_entry,
             get_journal_entries,
             update_journal_entry,
@@ -73,6 +91,8 @@ pub fn run() {
             get_journal_templates,
             update_journal_template,
             delete_journal_template,
+            
+            // Gallery
             add_image,
             import_image,
             import_image_data,
@@ -85,7 +105,14 @@ pub fn run() {
             create_album,
             get_albums,
             update_album,
-            delete_album
+            delete_album,
+            
+            // Background Images
+            import_background,
+            add_background,
+            get_backgrounds,
+            set_background,
+            delete_background,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

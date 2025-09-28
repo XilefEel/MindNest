@@ -1,5 +1,4 @@
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
-import { ThemeToggle } from "../settings/theme-toggle";
 import {
   Dialog,
   DialogContent,
@@ -8,6 +7,9 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { useState } from "react";
+import GeneralSettings from "../settings/GeneralSettings";
+import NestSettings from "../settings/NestSettings";
+import { cn } from "@/lib/utils/general";
 
 export default function SettingsModal({
   children,
@@ -40,11 +42,12 @@ export default function SettingsModal({
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 rounded-t-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  className={cn(
+                    "flex-1 rounded-t-lg px-4 py-2 text-sm font-medium transition-colors",
                     activeTab === tab.id
                       ? "border-b-2 border-teal-600 bg-teal-50 text-teal-600 dark:border-teal-400 dark:bg-teal-900/20 dark:text-teal-400"
-                      : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                  }`}
+                      : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300",
+                  )}
                 >
                   {tab.label}
                 </button>
@@ -52,58 +55,12 @@ export default function SettingsModal({
             </div>
           )}
 
-          <div className="py-8">
-            {activeTab === "general" && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                      Theme
-                    </label>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Choose your preferred theme
-                    </p>
-                  </div>
-                  <ThemeToggle />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                      Reset Settings
-                    </label>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Restore all settings to defaults
-                    </p>
-                  </div>
-                  <button className="rounded-md bg-red-600 px-3 py-1 text-sm text-white transition-colors hover:bg-red-700">
-                    Reset
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {activeTab === "nest" && (
-              <div className="space-y-4">
-                <div className="py-8 text-center">
-                  <p className="text-gray-500 dark:text-gray-400">
-                    Nest settings will be configured here
-                  </p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                      Reset Settings
-                    </label>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Restore all settings to defaults
-                    </p>
-                  </div>
-                  <button className="rounded-md bg-red-600 px-3 py-1 text-sm text-white transition-colors hover:bg-red-700">
-                    Reset
-                  </button>
-                </div>
-              </div>
-            )}
+          <div className="pt-4 pb-8">
+            {activeTab === "general" ? (
+              <GeneralSettings />
+            ) : activeTab === "nest" ? (
+              <NestSettings />
+            ) : null}
           </div>
         </DialogContent>
       </Dialog>

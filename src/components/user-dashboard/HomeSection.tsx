@@ -2,7 +2,6 @@ import NestPreview from "./NestPreview";
 import SharedPreview from "./SharedPreview";
 import DiscoverPreview from "./DiscoverPreview";
 import { useEffect, useState } from "react";
-import { User } from "@/lib/types/user";
 import { useAuth } from "@/context/AuthContext";
 
 function getGreeting(hour: number) {

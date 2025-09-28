@@ -1,4 +1,3 @@
-import { updateNest, deleteNest } from "@/lib/api/nests";
 import { Nest } from "@/lib/types/nests";
 import { useState } from "react";
 import { Button } from "../ui/button";
@@ -22,29 +21,32 @@ export default function EditNestModal({ nest }: { nest: Nest | null }) {
   const [title, setTitle] = useState(nest?.title ?? "");
   const [error, setError] = useState<string | null>(null);
 
-  const { nests, activeNestId, fetchNests } = useNestStore();
-  const currentNest = nests.find((n) => n.id === activeNestId);
+  const { updateNest, deleteNest } = useNestStore();
 
   const handleEdit = async () => {
     if (!nest) return setError("Nest not found");
-    if (title.trim() == "") {
-      toast.warning("Title is required");
-      return;
+    try {
+      await updateNest(nest.id, title);
+      handleExit();
+      toast.success("Nest updated");
+    } catch (error) {
+      setError(String(error));
+      console.error("Failed to update nest:", error);
     }
-
-    await updateNest(nest.id, title);
-    handleExit();
-    toast.info("Nest title updated");
   };
   const handleDelete = async () => {
     if (!nest) return setError("Nest not found");
-    await deleteNest(nest.id);
-    handleExit();
-    toast.error("Nest deleted");
+    try {
+      await deleteNest(nest.id);
+      handleExit();
+      toast.success("Nest deleted");
+    } catch (error) {
+      setError(String(error));
+      console.error("Failed to delete nest:", error);
+    }
   };
 
   const handleExit = () => {
-    fetchNests(currentNest?.user_id ?? 0);
     setTitle("");
     setIsOpen(false);
     setError(null);
