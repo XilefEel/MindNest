@@ -144,7 +144,45 @@ pub fn get_backgrounds_from_db(nest_id: i64) -> Result<Vec<BackgroundImage>, Str
     Ok(result)
 }
 
+fn get_background_by_id(id: i64) -> Result<BackgroundImage, String> {
+    let connection = get_connection().map_err(|e| e.to_string())?;
+
+    let mut statement = connection
+        .prepare("
+        SELECT id, nest_id, file_path, is_selected, width, height, created_at, updated_at 
+        FROM background_images 
+        WHERE id = ?1",
+        )
+        .map_err(|e| e.to_string())?;
+
+    let image = statement
+        .query_row([id], |row| {
+            Ok(BackgroundImage {
+                id: row.get(0)?,
+                nest_id: row.get(1)?,
+                file_path: row.get(2)?,
+                is_selected: row.get(3)?,
+                width: row.get(4)?,
+                height: row.get(5)?,
+                created_at: row.get(6)?,
+                updated_at: row.get(7)?,
+            })
+        })
+        .map_err(|e| e.to_string())?;
+
+    Ok(image)
+}
+
 pub fn delete_background_from_db(id: i64) -> Result<(), String> {
+
+    let background_image = get_background_by_id(id).map_err(|e| e.to_string())?;
+
+    if let Err(err) = fs::remove_file(&background_image.file_path) {
+        if err.kind() != std::io::ErrorKind::NotFound {
+            return Err(format!("Failed to delete file: {}", err));
+        }
+    }
+
     let connection = get_connection().map_err(|e| e.to_string())?;
     connection
         .execute("DELETE FROM background_images WHERE id = ?1", params![id],

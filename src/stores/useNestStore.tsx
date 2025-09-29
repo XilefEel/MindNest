@@ -14,7 +14,10 @@ import {
 } from "@/lib/api/nest-background";
 import { BackgroundImage } from "@/lib/types/nest_backgrounds";
 import { open } from "@tauri-apps/plugin-dialog";
-import { saveLastBackgroundImage } from "@/lib/storage/session";
+import {
+  saveLastBackgroundImage,
+  clearLastBackgroundImage,
+} from "@/lib/storage/session";
 
 type NestState = {
   nests: Nest[];
@@ -88,13 +91,13 @@ export const useNestStore = create<NestState>((set, get) => ({
   updateNest: async (nestId, newTitle) => {
     set({ loading: true, error: null });
     try {
+      set((state) => ({
+        nests: state.nests.map((n) =>
+          n.id === nestId ? { ...n, title: newTitle } : n,
+        ),
+      }));
+
       await updateNest(nestId, newTitle);
-
-      const updatedNests = get().nests.map((n) =>
-        n.id === nestId ? { ...n, title: newTitle } : n,
-      );
-
-      set({ nests: updatedNests });
     } catch (err) {
       set({ error: String(err) });
       console.error(err);
@@ -110,6 +113,7 @@ export const useNestStore = create<NestState>((set, get) => ({
       set((state) => ({
         nests: state.nests.filter((n) => n.id !== nestId),
       }));
+
       if (get().activeNestId === nestId) set({ activeNestId: null });
     } catch (err) {
       set({ error: String(err) });
@@ -170,9 +174,13 @@ export const useNestStore = create<NestState>((set, get) => ({
       const files = Array.isArray(selected) ? selected : [selected];
 
       for (const filePath of files) {
-        await get().uploadBackground(nestId, filePath);
+        const newBackground = await get().uploadBackground(nestId, filePath);
+        if (newBackground) {
+          set((state) => ({
+            backgrounds: [newBackground, ...state.backgrounds],
+          }));
+        }
       }
-      await get().fetchBackgrounds(nestId);
 
       return true;
     } catch (error) {
@@ -195,10 +203,19 @@ export const useNestStore = create<NestState>((set, get) => ({
     }
   },
 
-  deleteBackground: async (id: number) => {
+  deleteBackground: async (backgroundId: number) => {
     set({ loading: true, error: null });
     try {
-      await deleteBackground(id);
+      const activeNestId = get().activeNestId;
+
+      await Promise.all([
+        deleteBackground(backgroundId),
+        clearLastBackgroundImage(activeNestId!),
+      ]);
+
+      set((state) => ({
+        backgrounds: state.backgrounds.filter((b) => b.id !== backgroundId),
+      }));
     } catch (err) {
       set({ error: String(err) });
       console.error(err);

@@ -3,12 +3,18 @@ import { useNestStore } from "@/stores/useNestStore";
 import { useState } from "react";
 import { toast } from "sonner";
 import { convertFileSrc } from "@tauri-apps/api/core";
+import { Trash2 } from "lucide-react";
 
 export default function NestSettings() {
   const [activeBackground, setActiveBackground] = useState(0);
 
-  const { activeNestId, backgrounds, setActiveBackgroundId, selectBackground } =
-    useNestStore();
+  const {
+    activeNestId,
+    backgrounds,
+    setActiveBackgroundId,
+    selectBackground,
+    deleteBackground,
+  } = useNestStore();
 
   const handleUploadBackground = async () => {
     try {
@@ -33,14 +39,23 @@ export default function NestSettings() {
     }
   };
 
+  const handleDeleteBackground = async (id: number) => {
+    try {
+      await deleteBackground(id);
+      toast.success("Image deleted successfully!");
+    } catch (error) {
+      toast.error("Failed to delete image");
+    }
+  };
+
   return (
-    <div className="space-y-4">
-      <div className="space-y-4">
+    <div className="space-y-6">
+      <div className="space-y-3">
         <h1 className="text-sm font-medium text-gray-900 dark:text-gray-100">
           Background
         </h1>
 
-        <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+        <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400">
           Recent Images
         </h3>
         <div className="grid grid-cols-3 gap-3">
@@ -55,25 +70,35 @@ export default function NestSettings() {
               )}
               onClick={() => handleSelectBackground(image.id, index)}
             >
-              <img
-                src={convertFileSrc(image.file_path)}
-                alt={`Background ${index + 1}`}
-                className="h-full w-full object-cover"
-              />
+              <div className="relative">
+                <img
+                  src={convertFileSrc(image.file_path)}
+                  alt={`Background ${index + 1}`}
+                  className="h-full w-full rounded-lg object-cover"
+                />
+                <button
+                  className="absolute top-1 right-1 cursor-pointer rounded-full bg-red-500 p-1.5 text-white shadow transition hover:bg-red-600"
+                  onClick={(e) => {
+                    e.stopPropagation;
+                    handleDeleteBackground(image.id);
+                  }}
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
 
-        <div></div>
         <div className="flex items-center justify-between space-y-2">
           <p className="text-sm text-gray-700 dark:text-gray-300">
             Choose a Photo
           </p>
           <button
             onClick={handleUploadBackground}
-            className="rounded-lg border border-gray-300 bg-gray-100 px-4 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+            className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-teal-600 focus:ring-2 focus:ring-teal-400 focus:outline-none"
           >
-            Browse Photo
+            Browse
           </button>
         </div>
       </div>
