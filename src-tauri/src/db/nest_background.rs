@@ -117,7 +117,7 @@ pub fn get_backgrounds_from_db(nest_id: i64) -> Result<Vec<BackgroundImage>, Str
     let mut statement = connection
         .prepare("
         SELECT id, nest_id, file_path, is_selected, width, height, created_at, updated_at 
-        FROM nest_background_images 
+        FROM background_images 
         WHERE nest_id = ?1 
         ORDER BY created_at DESC",
         )
@@ -142,34 +142,6 @@ pub fn get_backgrounds_from_db(nest_id: i64) -> Result<Vec<BackgroundImage>, Str
         .collect::<Result<Vec<BackgroundImage>, _>>()
         .map_err(|e| e.to_string())?;
     Ok(result)
-}
-
-pub fn set_selected_background(nest_id: i64, background_id: i64) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
-    let updated_at = Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
-
-    connection
-        .execute(
-            "UPDATE nest_background_images SET is_selected = 0, updated_at = ?1 WHERE nest_id = ?2",
-            params![updated_at, nest_id],
-        )
-        .map_err(|e| e.to_string())?;
-
-    let rows_affected = connection
-        .execute(
-            "UPDATE nest_background_images SET is_selected = 1, updated_at = ?1 WHERE id = ?2 AND nest_id = ?3",
-            params![updated_at, background_id, nest_id],
-        )
-        .map_err(|e| e.to_string())?;
-
-    if rows_affected == 0 {
-        return Err("Background not found or doesn't belong to this nest".to_string());
-    }
-
-    Ok(())
 }
 
 pub fn delete_background_from_db(id: i64) -> Result<(), String> {

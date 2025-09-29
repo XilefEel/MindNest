@@ -6,11 +6,10 @@ export async function addBackground(data: NewBackgroundImage) {
 }
 
 export async function importBackground(nestId: number, filePath: string) {
-  await invoke<void>("import_background", { nestId, filePath });
-}
-
-export async function setBackground(nestId: number, backgroundId: number) {
-  await invoke<void>("set_background", { nestId, backgroundId });
+  return await invoke<BackgroundImage>("import_background", {
+    nestId,
+    filePath,
+  });
 }
 
 export async function getBackgrounds(nestId: number) {

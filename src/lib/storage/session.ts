@@ -4,6 +4,8 @@ import { User } from "@/lib/types/user";
 
 let storePromise: Promise<Store> | null = null;
 
+type LastBackgroundImages = Record<string, number>;
+
 function getStore() {
   if (!storePromise) {
     storePromise = Store.load(".mindnest-auth.dat");
@@ -28,7 +30,6 @@ async function deleteItem(key: string) {
   await store.save();
 }
 
-// Save the user info to the store
 export async function saveUserSession(user: User) {
   return setItem("user", user);
 }
@@ -63,4 +64,30 @@ export async function getLastNestling(): Promise<Nestling | null> {
 
 export async function clearLastNestling() {
   return deleteItem("lastNestling");
+}
+
+export async function saveLastBackgroundImage(
+  nestId: number,
+  backgroundId: number,
+) {
+  const current =
+    (await getItem<LastBackgroundImages>("lastBackgroundImage")) || {};
+  current[nestId.toString()] = backgroundId;
+  await setItem<LastBackgroundImages>("lastBackgroundImage", current);
+}
+
+export async function getLastBackgroundImage(
+  nestId: number | null,
+): Promise<number | null> {
+  if (nestId == null) return null;
+  const current =
+    (await getItem<LastBackgroundImages>("lastBackgroundImage")) || {};
+  return current[nestId.toString()] ?? null;
+}
+
+export async function clearLastBackgroundImage(nestId: number) {
+  const current =
+    (await getItem<LastBackgroundImages>("lastBackgroundImage")) || {};
+  delete current[nestId.toString()];
+  await setItem<LastBackgroundImages>("lastBackgroundImage", current);
 }

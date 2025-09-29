@@ -11,32 +11,34 @@ import {
   importBackground,
   deleteBackground,
   getBackgrounds,
-  setBackground,
 } from "@/lib/api/nest-background";
 import { BackgroundImage } from "@/lib/types/nest_backgrounds";
 import { open } from "@tauri-apps/plugin-dialog";
+import { saveLastBackgroundImage } from "@/lib/storage/session";
 
 type NestState = {
   nests: Nest[];
   backgrounds: BackgroundImage[];
   activeNestId: number | null;
+  activeBackgroundId: number | null;
   loading: boolean;
   error: string | null;
 
   setActiveNestId: (nest: number | null) => void;
+  setActiveBackgroundId: (backgroundId: number) => Promise<void>;
+
   fetchNests: (userId: number) => Promise<void>;
   createNest: (userId: number, title: string) => Promise<void>;
   updateNest: (nestId: number, newTitle: string) => Promise<void>;
   deleteNest: (nestId: number) => Promise<void>;
   refreshNest: () => Promise<void>;
 
-  selectBackground: (nestId: number) => void;
-  uploadBackground: (nestId: number, filePath: string) => Promise<void>;
-  fetchBackgrounds: (nestId: number) => Promise<void>;
-  setSelectedBackground: (
+  selectBackground: (nestId: number) => Promise<boolean>;
+  uploadBackground: (
     nestId: number,
-    backgroundId: number,
-  ) => Promise<void>;
+    filePath: string,
+  ) => Promise<BackgroundImage>;
+  fetchBackgrounds: (nestId: number) => Promise<void>;
   deleteBackground: (id: number) => Promise<void>;
 };
 
@@ -44,10 +46,18 @@ export const useNestStore = create<NestState>((set, get) => ({
   nests: [],
   backgrounds: [],
   activeNestId: null,
+  activeBackgroundId: null,
   error: null,
   loading: false,
 
-  setActiveNestId: (nestId) => set({ activeNestId: nestId }),
+  setActiveNestId: (nestId) => {
+    set({ activeNestId: nestId });
+  },
+
+  setActiveBackgroundId: async (backgroundId) => {
+    await saveLastBackgroundImage(get().activeNestId!, backgroundId);
+    set({ activeBackgroundId: backgroundId });
+  },
 
   fetchNests: async (userId) => {
     set({ loading: true, error: null });
@@ -132,10 +142,12 @@ export const useNestStore = create<NestState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const background = await importBackground(nestId, filePath);
+      get().setActiveBackgroundId(background.id);
       return background;
     } catch (err) {
       set({ error: String(err) });
       console.error(err);
+      throw err;
     } finally {
       set({ loading: false });
     }
@@ -175,18 +187,6 @@ export const useNestStore = create<NestState>((set, get) => ({
     try {
       const backgrounds = await getBackgrounds(nestId);
       set({ backgrounds });
-    } catch (err) {
-      set({ error: String(err) });
-      console.error(err);
-    } finally {
-      set({ loading: false });
-    }
-  },
-
-  setSelectedBackground: async (nestId: number, backgroundId: number) => {
-    set({ loading: true, error: null });
-    try {
-      await setBackground(nestId, backgroundId);
     } catch (err) {
       set({ error: String(err) });
       console.error(err);

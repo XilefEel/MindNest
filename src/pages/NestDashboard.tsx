@@ -14,6 +14,9 @@ import BoardEditor from "@/components/editors/board/BoardEditor";
 import CalendarEditor from "@/components/editors/calendar/CalendarEditor";
 import JournalEditor from "@/components/editors/journal/JournalEditor";
 import GalleryEditor from "@/components/editors/gallery/GalleryEditor";
+import { useNestStore } from "@/stores/useNestStore";
+import { convertFileSrc } from "@tauri-apps/api/core";
+import { getLastBackgroundImage } from "@/lib/storage/session";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -24,25 +27,53 @@ export default function NestDashboardPage() {
 
   const { activeNestling, setActiveNestling, setFolderOpen } =
     useNestlingTreeStore();
+  const {
+    activeNestId,
+    activeBackgroundId,
+    backgrounds,
+    setActiveNestId,
+    setActiveBackgroundId,
+    fetchBackgrounds,
+  } = useNestStore();
+
+  const activeBackgroundImage = backgrounds.find(
+    (background) => background.id === activeBackgroundId,
+  );
+
+  const backgroundUrl = activeBackgroundImage
+    ? convertFileSrc(activeBackgroundImage.file_path)
+    : null;
 
   useEffect(() => {
     async function fetchNest() {
-      const restoreLastNestling = async () => {
-        const lastNestling = await getLastNestling();
+      setLoading(true);
+
+      try {
+        //fetch last nest
+        const lastNest = await getNestFromId(Number(id));
+        setNest(lastNest);
+        setActiveNestId(lastNest.id);
+        await saveLastNestId(lastNest.id);
+
+        // fetch last nestling
+        const [lastNestling, lastBackgroundImage] = await Promise.all([
+          getLastNestling(),
+          getLastBackgroundImage(lastNest.id),
+        ]);
+
+        if (lastBackgroundImage != null) {
+          setActiveBackgroundId(lastBackgroundImage);
+        }
+
         if (lastNestling && Number(id) === lastNestling.nest_id) {
           setActiveNestling(lastNestling);
           if (lastNestling.folder_id) {
             setFolderOpen(lastNestling.folder_id, true);
           }
         }
-      };
 
-      restoreLastNestling();
-
-      try {
-        const data = await getNestFromId(Number(id));
-        setNest(data);
-        saveLastNestId(data.id);
+        // fetch all backgrounds for this nest
+        await fetchBackgrounds(lastNest.id);
       } catch (error) {
         console.error("Failed to fetch nest", error);
       } finally {
@@ -53,11 +84,22 @@ export default function NestDashboardPage() {
     fetchNest();
   }, [id]);
 
+  useEffect(() => {
+    fetchBackgrounds(activeNestId!);
+  }, [activeNestId]);
+
   if (loading) return <LoadingScreen />;
   if (!nest) return <p>Nest not found.</p>;
 
   return (
-    <div className="flex h-screen cursor-default flex-col bg-gray-50 pb-3 md:pb-6 dark:bg-gray-900">
+    <div
+      style={{
+        backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : "none",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+      className="flex h-screen cursor-default flex-col bg-gray-50 pb-3 md:pb-6 dark:bg-gray-900"
+    >
       <div className="shrink-0 md:px-6">
         <Topbar
           nest={nest}

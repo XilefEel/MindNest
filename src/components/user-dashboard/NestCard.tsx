@@ -9,8 +9,10 @@ export default function NestCard({ nest }: { nest: Nest }) {
   const { setActiveNestId } = useNestStore();
   const navigate = useNavigate();
   const handleNavigate = (nestId: number) => {
+    setActiveNestId(nestId);
     navigate(`/nest/${nestId}`);
   };
+
   return (
     <DashboardCard>
       <div className="flex justify-between">
@@ -25,7 +27,7 @@ export default function NestCard({ nest }: { nest: Nest }) {
             </h3>
           </div>
         </div>
-        <Button onClick={() => setActiveNestId(nest.id)} variant={"ghost"}>
+        <Button variant={"ghost"}>
           <EditNestModal nest={nest} />
         </Button>
       </div>

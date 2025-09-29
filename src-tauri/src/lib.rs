@@ -30,7 +30,7 @@ use handler::gallery::{
 
 use handler::nest_background::{
     add_background, import_background, get_backgrounds,
-    set_background, delete_background,
+    delete_background,
 };
 
 use utils::user::init_db;
@@ -111,7 +111,6 @@ pub fn run() {
             import_background,
             add_background,
             get_backgrounds,
-            set_background,
             delete_background,
         ])
         .run(tauri::generate_context!())

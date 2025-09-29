@@ -1,15 +1,16 @@
-// src/components/SessionRestorer.tsx
 import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { getLastNestId, getLastNestling } from "@/lib/storage/session";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function SessionRestorer() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { setActiveNestId } = useNestStore();
   const { setActiveNestling, setFolderOpen } = useNestlingTreeStore();
 
   const hasRestoredRef = useRef(false);
@@ -27,7 +28,9 @@ export default function SessionRestorer() {
       const lastNestling = await getLastNestling();
 
       if (lastNestId) {
+        setActiveNestId(lastNestId);
         navigate(`/nest/${lastNestId}`);
+
         if (lastNestling) {
           setActiveNestling(lastNestling);
           if (lastNestling.folder_id) {
@@ -45,6 +48,7 @@ export default function SessionRestorer() {
     loading,
     location.pathname,
     navigate,
+    setActiveNestId,
     setActiveNestling,
     setFolderOpen,
   ]);
