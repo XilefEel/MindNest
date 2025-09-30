@@ -212,7 +212,6 @@ export const useNestStore = create<NestState>((set, get) => ({
         deleteBackground(backgroundId),
         clearLastBackgroundImage(activeNestId!),
       ]);
-
       set((state) => ({
         backgrounds: state.backgrounds.filter((b) => b.id !== backgroundId),
       }));

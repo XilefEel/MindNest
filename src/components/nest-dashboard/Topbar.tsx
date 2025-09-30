@@ -11,6 +11,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import SettingsModal from "../modals/SettingsModal";
 import { clearLastNestId, clearLastNestling } from "@/lib/storage/session";
+import { cn } from "@/lib/utils/general";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function Topbar({
   nest,
@@ -22,6 +24,7 @@ export default function Topbar({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const navigate = useNavigate();
+  const { activeBackgroundId } = useNestStore();
 
   const handleExit = () => {
     navigate("/dashboard");
@@ -30,7 +33,14 @@ export default function Topbar({
   };
   return (
     <nav className="flex w-full items-center justify-between border-b p-2 pt-8 sm:p-4 sm:pt-10">
-      <div className="flex items-center gap-3">
+      <div
+        className={cn(
+          "flex items-center gap-3 p-1",
+          activeBackgroundId
+            ? "rounded-xl bg-white/30 backdrop-blur-sm dark:bg-black/30"
+            : "",
+        )}
+      >
         <Button
           variant="ghost"
           className="hidden cursor-pointer hover:bg-teal-100 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 md:block dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300"
@@ -55,7 +65,14 @@ export default function Topbar({
           <Pencil className="size-4 sm:size-5" />
         </Button>
       </div>
-      <div className="flex items-center sm:gap-2">
+      <div
+        className={cn(
+          "flex items-center p-1 sm:gap-2",
+          activeBackgroundId
+            ? "rounded-xl bg-white/30 backdrop-blur-sm dark:bg-black/30"
+            : "",
+        )}
+      >
         <Button
           variant="ghost"
           className="cursor-pointer hover:bg-teal-100 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300"

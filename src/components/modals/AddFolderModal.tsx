@@ -14,6 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { cn } from "@/lib/utils/general";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function AddFolderModal({
   nestId,
@@ -26,6 +28,8 @@ export default function AddFolderModal({
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const { activeBackgroundId } = useNestStore();
   const refreshData = useNestlingTreeStore((s) => s.refreshData);
 
   const handleExit = async () => {
@@ -53,7 +57,14 @@ export default function AddFolderModal({
     <div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger className="w-full">{children}</DialogTrigger>
-        <DialogContent className="w-full rounded-2xl border-0 bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
+        <DialogContent
+          className={cn(
+            "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
+            activeBackgroundId
+              ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
+              : "bg-white dark:bg-gray-800",
+          )}
+        >
           <DialogHeader className="justify-between">
             <DialogTitle className="text-xl font-bold text-black dark:text-white">
               Create a New Folder

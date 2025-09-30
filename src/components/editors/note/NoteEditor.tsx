@@ -11,6 +11,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 import useAutoSave from "@/hooks/useAutoSave";
 import NestlingTitle from "../NestlingTitle";
 import { editNote } from "@/lib/api/note";
+import { cn } from "@/lib/utils/general";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function NoteEditor() {
   const nestling = useNestlingTreeStore((s) => s.activeNestling);
@@ -114,6 +116,8 @@ export default function NoteEditor() {
     }, 0);
   };
 
+  const { activeBackgroundId } = useNestStore();
+
   // Load selected note title and content
   useEffect(() => {
     if (nestling) {
@@ -127,7 +131,14 @@ export default function NoteEditor() {
 
   return (
     <div className="flex h-full w-full flex-col space-y-2 overflow-hidden">
-      <div className="flex justify-between rounded-lg bg-white px-3 dark:bg-gray-800">
+      <div
+        className={cn(
+          "flex justify-between rounded-lg px-3",
+          activeBackgroundId
+            ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
+            : "bg-white dark:bg-gray-800",
+        )}
+      >
         <ToolBar onFormat={applyFormatting} />
         <button
           onClick={() => setPreviewMode(!previewMode)}
@@ -176,7 +187,14 @@ export default function NoteEditor() {
         </div>
       </AnimatePresence>
 
-      <div className="flex justify-between rounded-lg bg-white px-3 dark:bg-gray-800">
+      <div
+        className={cn(
+          "flex justify-between rounded-lg px-3",
+          activeBackgroundId
+            ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
+            : "bg-white dark:bg-gray-800",
+        )}
+      >
         <BottomBar autoSaveStatus={autoSaveStatus} content={content} />
       </div>
     </div>

@@ -1,16 +1,14 @@
 import { cn } from "@/lib/utils/general";
 import { useNestStore } from "@/stores/useNestStore";
-import { useState } from "react";
 import { toast } from "sonner";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { Trash2 } from "lucide-react";
 
 export default function NestSettings() {
-  const [activeBackground, setActiveBackground] = useState(0);
-
   const {
     activeNestId,
     backgrounds,
+    activeBackgroundId,
     setActiveBackgroundId,
     selectBackground,
     deleteBackground,
@@ -29,9 +27,8 @@ export default function NestSettings() {
     }
   };
 
-  const handleSelectBackground = async (id: number, index: number) => {
+  const handleSelectBackground = async (id: number) => {
     try {
-      setActiveBackground(index);
       setActiveBackgroundId(id);
       toast.success("Image selected successfully!");
     } catch (error) {
@@ -64,17 +61,17 @@ export default function NestSettings() {
               key={index}
               className={cn(
                 "aspect-video cursor-pointer overflow-hidden rounded-lg border-2 transition-all",
-                activeBackground === index
+                activeBackgroundId === image.id
                   ? "border-teal-500 dark:ring-teal-800"
                   : "border-gray-200 hover:border-gray-300 dark:border-gray-600 dark:hover:border-gray-500",
               )}
-              onClick={() => handleSelectBackground(image.id, index)}
             >
               <div className="relative">
                 <img
                   src={convertFileSrc(image.file_path)}
                   alt={`Background ${index + 1}`}
                   className="h-full w-full rounded-lg object-cover"
+                  onClick={() => handleSelectBackground(image.id)}
                 />
                 <button
                   className="absolute top-1 right-1 cursor-pointer rounded-full bg-red-500 p-1.5 text-white shadow transition hover:bg-red-600"

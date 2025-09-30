@@ -13,6 +13,7 @@ import ToolBarItem from "../editors/note/ToolBarItem";
 import { SidebarContextMenu } from "../context-menu/SidebarContextMenu";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils/general";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function Sidebar({
   nestId,
@@ -35,6 +36,8 @@ export default function Sidebar({
     nestlings,
   } = useNestlingTreeStore();
 
+  const { activeBackgroundId } = useNestStore();
+
   const folderGroups = useMemo(() => {
     return folders.map((folder) => ({
       ...folder,
@@ -55,7 +58,14 @@ export default function Sidebar({
 
   return (
     <SidebarContextMenu nestId={nestId}>
-      <aside className="flex h-full flex-col overflow-x-hidden overflow-y-auto rounded-tr-2xl rounded-br-2xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
+      <aside
+        className={cn(
+          "flex h-full flex-col overflow-x-hidden overflow-y-auto rounded-tr-2xl rounded-br-2xl p-5",
+          activeBackgroundId
+            ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
+            : "border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800",
+        )}
+      >
         <div className="flex items-center">
           <AddNestlingModal nestId={nestId}>
             <ToolBarItem Icon={FilePlus} label="New Nestling" />

@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useNestStore } from "@/stores/useNestStore";
+import { cn } from "@/lib/utils/general";
 
 export default function AddNestModal({ userId }: { userId: number }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +22,7 @@ export default function AddNestModal({ userId }: { userId: number }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { createNest } = useNestStore();
+  const { createNest, activeBackgroundId } = useNestStore();
 
   const handleExit = () => {
     setTitle("");
@@ -49,7 +50,14 @@ export default function AddNestModal({ userId }: { userId: number }) {
         <DialogTrigger className="flex cursor-pointer items-center rounded-lg bg-black p-2 px-3 text-sm font-semibold text-white transition hover:scale-105 dark:bg-white dark:text-black">
           <Plus className="mr-1 size-4" /> Create Nest
         </DialogTrigger>
-        <DialogContent className="space-y-2 rounded-2xl border-0 bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
+        <DialogContent
+          className={cn(
+            "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
+            activeBackgroundId
+              ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
+              : "bg-white dark:bg-gray-800",
+          )}
+        >
           <DialogHeader className="justify-between">
             <DialogTitle className="text-xl font-bold text-black dark:text-white">
               Create a New Nest

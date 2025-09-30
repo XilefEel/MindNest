@@ -15,13 +15,14 @@ import {
 import { Input } from "../ui/input";
 import { toast } from "sonner";
 import { useNestStore } from "@/stores/useNestStore";
+import { cn } from "@/lib/utils/general";
 
 export default function EditNestModal({ nest }: { nest: Nest | null }) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState(nest?.title ?? "");
   const [error, setError] = useState<string | null>(null);
 
-  const { updateNest, deleteNest } = useNestStore();
+  const { updateNest, deleteNest, activeBackgroundId } = useNestStore();
 
   const handleEdit = async () => {
     if (!nest) return setError("Nest not found");
@@ -58,7 +59,14 @@ export default function EditNestModal({ nest }: { nest: Nest | null }) {
         <DialogTrigger className="flex size-4 cursor-pointer items-center rounded-lg dark:text-white">
           <Pencil className="size-4" />
         </DialogTrigger>
-        <DialogContent className="space-y-2 rounded-2xl bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
+        <DialogContent
+          className={cn(
+            "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
+            activeBackgroundId
+              ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
+              : "bg-white dark:bg-gray-800",
+          )}
+        >
           <DialogHeader className="justify-between">
             <DialogTitle className="text-xl font-bold text-black dark:text-white">
               Edit Nest

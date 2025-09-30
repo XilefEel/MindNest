@@ -15,6 +15,8 @@ import { toast } from "sonner";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { AlertCircle } from "lucide-react";
 import { GalleryAlbum } from "@/lib/types/gallery";
+import { useNestStore } from "@/stores/useNestStore";
+import { cn } from "@/lib/utils/general";
 
 export default function AddAlbumModal({
   nestling_id,
@@ -31,6 +33,8 @@ export default function AddAlbumModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { addAlbum, editAlbum } = useGalleryStore();
+
+  const { activeBackgroundId } = useNestStore();
 
   const handleExit = async () => {
     setTitle("");
@@ -78,7 +82,14 @@ export default function AddAlbumModal({
     <div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger className="w-full">{children}</DialogTrigger>
-        <DialogContent className="w-full rounded-2xl border-0 bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
+        <DialogContent
+          className={cn(
+            "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
+            activeBackgroundId
+              ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
+              : "bg-white dark:bg-gray-800",
+          )}
+        >
           <DialogHeader className="justify-between">
             <DialogTitle className="text-xl font-bold text-black dark:text-white">
               {album ? "Edit Album" : "Create a New Album"}

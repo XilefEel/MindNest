@@ -23,6 +23,8 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { cn } from "@/lib/utils/general";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function AddNestlingModal({
   nestId,
@@ -38,6 +40,7 @@ export default function AddNestlingModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { activeBackgroundId } = useNestStore();
   const { refreshData, activeFolderId } = useNestlingTreeStore();
 
   const handleExit = async () => {
@@ -75,7 +78,14 @@ export default function AddNestlingModal({
     <div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger className="w-full">{children}</DialogTrigger>
-        <DialogContent className="rounded-2xl border-0 bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
+        <DialogContent
+          className={cn(
+            "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
+            activeBackgroundId
+              ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
+              : "bg-white dark:bg-gray-800",
+          )}
+        >
           <DialogHeader className="justify-between">
             <DialogTitle className="text-xl font-bold text-black dark:text-white">
               Create a New Nestling

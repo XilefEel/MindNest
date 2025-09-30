@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { useJournalStore } from "@/stores/useJournalStore";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { JournalTemplate } from "@/lib/types/journal";
+import { useNestStore } from "@/stores/useNestStore";
+import { cn } from "@/lib/utils/general";
 
 export default function AddTemplateModal({
   children,
@@ -25,6 +27,8 @@ export default function AddTemplateModal({
 }) {
   const { activeNestling } = useNestlingTreeStore();
   if (!activeNestling) return null;
+
+  const { activeBackgroundId } = useNestStore();
 
   const [currentTitle, setCurrentTitle] = useState("");
   const [currentContent, setCurrentContent] = useState("");
@@ -68,7 +72,14 @@ export default function AddTemplateModal({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-4xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+      <DialogContent
+        className={cn(
+          "max-w-4xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+          activeBackgroundId
+            ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
+            : "bg-white dark:bg-gray-800",
+        )}
+      >
         <div className="flex h-full flex-col rounded-xl">
           {/* Entry Header */}
           <DialogHeader className="border-b border-slate-100 dark:border-gray-700">

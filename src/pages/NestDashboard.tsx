@@ -145,11 +145,15 @@ export default function NestDashboardPage() {
         </div>
 
         <main
-          className={`flex-1 px-2 md:px-10 ${
+          className={cn(
+            "flex-1 p-5",
             activeNestling?.nestling_type === "note"
               ? "overflow-hidden"
-              : "overflow-y-auto"
-          }`}
+              : "overflow-y-auto",
+            activeBackgroundId
+              ? "mx-8 rounded-2xl bg-white/30 backdrop-blur-sm dark:bg-black/30"
+              : "",
+          )}
         >
           {activeNestling && activeNestling.nestling_type === "note" ? (
             <NoteEditor key={activeNestling.id} />

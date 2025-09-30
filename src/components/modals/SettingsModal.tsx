@@ -10,6 +10,7 @@ import { useState } from "react";
 import GeneralSettings from "../settings/GeneralSettings";
 import NestSettings from "../settings/NestSettings";
 import { cn } from "@/lib/utils/general";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function SettingsModal({
   children,
@@ -19,6 +20,7 @@ export default function SettingsModal({
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
   const { nestId } = useNestlingTreeStore();
+  const { activeBackgroundId } = useNestStore();
 
   const tabs = [
     { id: "general", label: "General Settings" },
@@ -29,7 +31,14 @@ export default function SettingsModal({
     <div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger className="w-full">{children}</DialogTrigger>
-        <DialogContent className="w-full max-w-2xl rounded-2xl border-0 bg-white p-6 shadow-xl transition-all ease-in-out dark:bg-gray-800">
+        <DialogContent
+          className={cn(
+            "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
+            activeBackgroundId
+              ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
+              : "bg-white dark:bg-gray-800",
+          )}
+        >
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-black dark:text-white">
               Settings

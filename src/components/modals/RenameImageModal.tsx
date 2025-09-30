@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils/general";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function RenameImageModal({
   children,
@@ -29,6 +31,8 @@ export default function RenameImageModal({
   const [description, setDescription] = useState(
     currentImage?.description || "",
   );
+
+  const { activeBackgroundId } = useNestStore();
 
   const handleEditImage = () => {
     try {
@@ -59,7 +63,12 @@ export default function RenameImageModal({
       </DialogTrigger>
       <DialogContent
         onClick={(e) => e.stopPropagation()}
-        className="w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-xl transition-all ease-in-out dark:border-gray-700 dark:bg-gray-800"
+        className={cn(
+          "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
+          activeBackgroundId
+            ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
+            : "bg-white dark:bg-gray-800",
+        )}
       >
         <DialogHeader className="justify-between">
           <DialogTitle className="text-xl font-bold text-black dark:text-white">
