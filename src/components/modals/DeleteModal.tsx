@@ -51,24 +51,14 @@ export default function DeleteModal({
       setIsOpen={setIsOpen}
       title="Are you sure you want to delete?"
       description={`This action cannot be undone. This will permanently delete this ${type} and all its contents.`}
-      showCancel={false}
       footer={
-        <div className="flex w-full items-center gap-2">
-          <Button
-            onClick={() => setIsOpen(false)}
-            className="cursor-pointer rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
-          >
-            Cancel
-          </Button>
-
-          <Button
-            onClick={() => handleDelete(type)}
-            className="cursor-pointer rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
-          >
-            <Trash size={14} />
-            Delete
-          </Button>
-        </div>
+        <Button
+          onClick={() => handleDelete(type)}
+          className="cursor-pointer rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
+        >
+          <Trash size={14} />
+          Delete
+        </Button>
       }
     >
       {children}

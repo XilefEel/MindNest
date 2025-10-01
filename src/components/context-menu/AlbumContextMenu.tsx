@@ -6,6 +6,7 @@ import AddAlbumModal from "../modals/AddAlbumModal";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { toast } from "sonner";
 import ContextMenuItem from "./ContextMenuItem";
+import BaseContextMenu from "./BaseContextMenu";
 
 export default function AlbumContextMenu({
   album,
@@ -50,10 +51,9 @@ export default function AlbumContextMenu({
   };
 
   return (
-    <ContextMenu.Root>
-      <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>
-      <ContextMenu.Portal>
-        <ContextMenu.Content className="animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+    <BaseContextMenu
+      content={
+        <>
           {/* Using ContextMenu.Item instead of ContextMenuItem
               because modal triggers don't work with custom ContextMenuItem component*/}
           <AddAlbumModal nestling_id={activeNestling.id} album={album}>
@@ -98,8 +98,10 @@ export default function AlbumContextMenu({
               console.log("Delete album");
             }}
           />
-        </ContextMenu.Content>
-      </ContextMenu.Portal>
-    </ContextMenu.Root>
+        </>
+      }
+    >
+      {children}
+    </BaseContextMenu>
   );
 }

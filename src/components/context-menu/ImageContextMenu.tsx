@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import ContextMenuItem from "./ContextMenuItem";
 import RenameImageModal from "../modals/RenameImageModal";
 import { GalleryImage } from "@/lib/types/gallery";
+import BaseContextMenu from "./BaseContextMenu";
 export default function ImageContextMenu({
   imageId,
   children,
@@ -85,10 +86,9 @@ export default function ImageContextMenu({
   };
 
   return (
-    <ContextMenu.Root>
-      <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>
-      <ContextMenu.Portal>
-        <ContextMenu.Content className="animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+    <BaseContextMenu
+      content={
+        <>
           <RenameImageModal imageId={imageId}>
             <ContextMenu.Item
               className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -145,25 +145,24 @@ export default function ImageContextMenu({
               </ContextMenu.SubContent>
             </ContextMenu.Portal>
           </ContextMenu.Sub>
-          {/* <ContextMenuItem
-            action={() => console.log("Manage tags for image", imageId)}
-            Icon={Tag}
-            text="Edit Tags"
-          /> */}
+
           <ContextMenuItem
             action={() => handleDownloadImage(imageId)}
             Icon={Download}
             text="Download"
           />
           <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
+
           <ContextMenuItem
             action={() => handleDeleteImage(imageId)}
             Icon={Trash2}
             text="Delete"
             isDelete
           />
-        </ContextMenu.Content>
-      </ContextMenu.Portal>
-    </ContextMenu.Root>
+        </>
+      }
+    >
+      {children}
+    </BaseContextMenu>
   );
 }

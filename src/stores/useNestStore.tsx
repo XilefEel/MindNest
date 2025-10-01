@@ -29,6 +29,7 @@ type NestState = {
 
   setActiveNestId: (nest: number | null) => void;
   setActiveBackgroundId: (backgroundId: number) => Promise<void>;
+  clearActiveBackgroundId: () => void;
 
   fetchNests: (userId: number) => Promise<void>;
   createNest: (userId: number, title: string) => Promise<void>;
@@ -60,6 +61,11 @@ export const useNestStore = create<NestState>((set, get) => ({
   setActiveBackgroundId: async (backgroundId) => {
     await saveLastBackgroundImage(get().activeNestId!, backgroundId);
     set({ activeBackgroundId: backgroundId });
+  },
+
+  clearActiveBackgroundId: async () => {
+    await clearLastBackgroundImage(get().activeNestId!);
+    set({ activeBackgroundId: null });
   },
 
   fetchNests: async (userId) => {

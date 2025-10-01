@@ -35,15 +35,13 @@ export default function BaseModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild className="w-full">
-        {children}
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
+        onClick={(e) => e.stopPropagation()}
         className={cn(
           "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
-          activeBackgroundId
-            ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
-            : "bg-white dark:bg-gray-800",
+          "bg-white dark:bg-gray-800",
+          activeBackgroundId && "bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
         <DialogHeader className="justify-between">
@@ -56,7 +54,7 @@ export default function BaseModal({
         <div className="space-y-4">{body}</div>
 
         {(footer || showCancel !== false) && (
-          <DialogFooter className="flex justify-end gap-2">
+          <DialogFooter className="flex justify-between gap-2">
             {showCancel !== false && (
               <DialogClose asChild>
                 <Button

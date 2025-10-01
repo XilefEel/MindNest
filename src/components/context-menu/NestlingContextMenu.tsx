@@ -2,6 +2,7 @@ import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, Trash2, Copy, Star, Archive } from "lucide-react";
 import DeleteModal from "../modals/DeleteModal";
 import ContextMenuItem from "./ContextMenuItem";
+import BaseContextMenu from "./BaseContextMenu";
 
 export default function NestlingContextMenu({
   nestlingId,
@@ -11,10 +12,9 @@ export default function NestlingContextMenu({
   children: React.ReactNode;
 }) {
   return (
-    <ContextMenu.Root>
-      <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>
-      <ContextMenu.Portal>
-        <ContextMenu.Content className="animate-in fade-in-0 zoom-in-95 z-50 min-w-[200px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+    <BaseContextMenu
+      content={
+        <>
           <ContextMenuItem
             Icon={Edit3}
             text="Rename"
@@ -55,8 +55,10 @@ export default function NestlingContextMenu({
               <span>Delete</span>
             </ContextMenu.Item>
           </DeleteModal>
-        </ContextMenu.Content>
-      </ContextMenu.Portal>
-    </ContextMenu.Root>
+        </>
+      }
+    >
+      {children}
+    </BaseContextMenu>
   );
 }

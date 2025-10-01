@@ -4,6 +4,7 @@ import { usePlannerStore } from "@/stores/usePlannerStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Copy, Trash, Check, Palette } from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";
+import BaseContextMenu from "./BaseContextMenu";
 
 export default function PlannerEventContextMenu({
   event,
@@ -21,10 +22,9 @@ export default function PlannerEventContextMenu({
     updateEvent({ ...event, color });
   };
   return (
-    <ContextMenu.Root>
-      <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>
-      <ContextMenu.Portal>
-        <ContextMenu.Content className="animate-in fade-in-0 zoom-in-95 z-50 min-w-[200px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+    <BaseContextMenu
+      content={
+        <>
           <ContextMenuItem
             action={onDuplicate}
             Icon={Copy}
@@ -71,8 +71,10 @@ export default function PlannerEventContextMenu({
             text="Delete Event"
             isDelete
           />
-        </ContextMenu.Content>
-      </ContextMenu.Portal>
-    </ContextMenu.Root>
+        </>
+      }
+    >
+      {children}
+    </BaseContextMenu>
   );
 }

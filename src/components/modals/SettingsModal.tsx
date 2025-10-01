@@ -1,16 +1,8 @@
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
 import { useState } from "react";
 import GeneralSettings from "../settings/GeneralSettings";
 import NestSettings from "../settings/NestSettings";
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
 import BaseModal from "./BaseModal";
 
 export default function SettingsModal({
@@ -42,10 +34,10 @@ export default function SettingsModal({
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "flex-1 rounded-t-lg px-4 py-2 text-sm font-medium transition-colors",
+                    "flex-1 rounded-t-lg px-4 py-2 text-sm font-medium transition duration-200 ease-in-out",
                     activeTab === tab.id
-                      ? "border-b-2 border-teal-600 bg-teal-50 text-teal-600 dark:border-teal-400 dark:bg-teal-900/20 dark:text-teal-400"
-                      : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300",
+                      ? "border-b-2 border-teal-600 bg-teal-300/30 text-teal-700 backdrop-blur-sm dark:border-teal-400 dark:bg-teal-900/40 dark:text-teal-300"
+                      : "text-gray-700 hover:bg-white/50 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-black/30 dark:hover:text-white",
                   )}
                 >
                   {tab.label}
