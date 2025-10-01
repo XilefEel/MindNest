@@ -1,16 +1,6 @@
 import { useState } from "react";
 import { createNestling } from "@/lib/api/nestlings";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import {
@@ -23,8 +13,9 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
-import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import BaseModal from "./BaseModal";
+import { inputBase } from "@/lib/utils/styles";
+import { TextField } from "./TextField";
 
 export default function AddNestlingModal({
   nestId,
@@ -38,9 +29,7 @@ export default function AddNestlingModal({
   const [nestlingType, setNestlingType] = useState("note");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const { activeBackgroundId } = useNestStore();
   const { refreshData, activeFolderId } = useNestlingTreeStore();
 
   const handleExit = async () => {
@@ -48,12 +37,10 @@ export default function AddNestlingModal({
     setTitle("");
     setContent("");
     setIsOpen(false);
-    setError(null);
   };
 
   const handleCreateNestling = async () => {
     if (!title.trim()) {
-      setError("Title is required");
       return;
     }
     setLoading(true);
@@ -76,38 +63,22 @@ export default function AddNestlingModal({
 
   return (
     <div>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger className="w-full">{children}</DialogTrigger>
-        <DialogContent
-          className={cn(
-            "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
-            activeBackgroundId
-              ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
-              : "bg-white dark:bg-gray-800",
-          )}
-        >
-          <DialogHeader className="justify-between">
-            <DialogTitle className="text-xl font-bold text-black dark:text-white">
-              Create a New Nestling
-            </DialogTitle>
-            <DialogDescription>
-              Give your nestling a title. You can always change it later.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Nestling Name
-            </label>
-            <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. My First Note, My Journal, My Board"
-              className="text-sm text-black dark:text-gray-100"
-            />
-          </div>
-
-          <div>
+      <BaseModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title="Create a New Nestling"
+        description="Give your nestling a title. You can always change it later."
+        body={
+          <>
+            <TextField label="Title">
+              <Input
+                value={title}
+                autoFocus
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. My First Note, My Journal, My Board"
+                className={inputBase}
+              />
+            </TextField>
             <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
               Select Nestling Type
             </label>
@@ -128,30 +99,20 @@ export default function AddNestlingModal({
                 </SelectGroup>
               </SelectContent>
             </Select>
-          </div>
-
-          {error && <p className="text-sm text-red-500">{error}</p>}
-
-          <DialogFooter className="flex justify-end gap-2">
-            <DialogClose asChild>
-              <Button
-                variant="ghost"
-                className="cursor-pointer rounded-lg bg-gray-200 text-black hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-              >
-                Cancel
-              </Button>
-            </DialogClose>
-
-            <Button
-              onClick={handleCreateNestling}
-              disabled={loading}
-              className="cursor-pointer rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50"
-            >
-              {loading ? "Creating..." : "Create"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </>
+        }
+        footer={
+          <Button
+            onClick={handleCreateNestling}
+            disabled={loading || !title.trim()}
+            className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
+          >
+            {loading ? "Creating..." : "Create"}
+          </Button>
+        }
+      >
+        {children}
+      </BaseModal>
     </div>
   );
 }

@@ -1,21 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import { useJournalStore } from "@/stores/useJournalStore";
 import { JournalEntry } from "@/lib/types/journal";
-import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import BaseModal from "./BaseModal";
+import { inputBase } from "@/lib/utils/styles";
+import { TextField } from "./TextField";
+import { toast } from "sonner";
 
 export default function AddJournalEntryModal({
   setActiveEntry,
@@ -30,9 +22,7 @@ export default function AddJournalEntryModal({
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const refreshData = useNestlingTreeStore((s) => s.refreshData);
-  const { activeBackgroundId } = useNestStore();
 
   const { addEntry } = useJournalStore();
 
@@ -40,78 +30,52 @@ export default function AddJournalEntryModal({
     await refreshData();
     setTitle("");
     setIsOpen(false);
-    setError(null);
   };
 
   const createNewEntry = async () => {
-    const newEntry = await addEntry({
-      nestling_id: activeNestling.id,
-      title: title,
-      content: "",
-      entry_date: new Date().toISOString().split("T")[0],
-    });
-    setActiveEntry(newEntry);
-    handleExit();
-    console.log("New entry created!");
+    try {
+      const newEntry = await addEntry({
+        nestling_id: activeNestling.id,
+        title: title,
+        content: "",
+        entry_date: new Date().toISOString().split("T")[0],
+      });
+      setActiveEntry(newEntry);
+      toast.success(`Journal entry "${title}" created successfully!`);
+      handleExit();
+    } catch (error) {
+      toast.error("Failed to create a new journal entry.");
+    }
   };
 
   return (
-    <div>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger className="w-full">{children}</DialogTrigger>
-        <DialogContent
-          className={cn(
-            "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
-            activeBackgroundId
-              ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
-              : "bg-white dark:bg-gray-800",
-          )}
+    <BaseModal
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      title="Create a New Journal Entry"
+      description="Start writing your journal entry."
+      body={
+        <TextField label="Entry Title">
+          <Input
+            placeholder="e.g. My First Journal Entry"
+            value={title}
+            autoFocus
+            onChange={(e) => setTitle(e.target.value)}
+            className={inputBase}
+          />
+        </TextField>
+      }
+      footer={
+        <Button
+          onClick={createNewEntry}
+          disabled={loading || !title.trim()}
+          className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
         >
-          <DialogHeader className="justify-between">
-            <DialogTitle className="text-xl font-bold text-black dark:text-white">
-              Create a New Journal Entry
-            </DialogTitle>
-            <DialogDescription className="text-gray-600 dark:text-gray-400">
-              Start writing your journal entry.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Entry Title
-            </label>
-            <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. My First Journal Entry"
-              className="border-gray-300 bg-white text-sm text-black placeholder-gray-400 focus:border-teal-500 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:border-teal-400 dark:focus:ring-teal-400"
-            />
-          </div>
-
-          {error && (
-            <p className="text-sm text-red-500 dark:text-red-400">{error}</p>
-          )}
-
-          <DialogFooter className="flex justify-end gap-2">
-            <DialogClose asChild>
-              <Button
-                variant="ghost"
-                className="cursor-pointer rounded-lg bg-gray-200 text-black hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-              >
-                Cancel
-              </Button>
-            </DialogClose>
-
-            <Button
-              onClick={createNewEntry}
-              disabled={loading}
-              className="cursor-pointer rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50 dark:bg-teal-600 dark:hover:bg-teal-700"
-            >
-              {loading ? "Creating..." : "Create"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+          {loading ? "Creating..." : "Create"}
+        </Button>
+      }
+    >
+      {children}
+    </BaseModal>
   );
 }

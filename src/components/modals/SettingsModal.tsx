@@ -11,6 +11,7 @@ import GeneralSettings from "../settings/GeneralSettings";
 import NestSettings from "../settings/NestSettings";
 import { cn } from "@/lib/utils/general";
 import { useNestStore } from "@/stores/useNestStore";
+import BaseModal from "./BaseModal";
 
 export default function SettingsModal({
   children,
@@ -20,7 +21,6 @@ export default function SettingsModal({
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
   const { nestId } = useNestlingTreeStore();
-  const { activeBackgroundId } = useNestStore();
 
   const tabs = [
     { id: "general", label: "General Settings" },
@@ -28,23 +28,13 @@ export default function SettingsModal({
   ];
 
   return (
-    <div>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger className="w-full">{children}</DialogTrigger>
-        <DialogContent
-          className={cn(
-            "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
-            activeBackgroundId
-              ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
-              : "bg-white dark:bg-gray-800",
-          )}
-        >
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-black dark:text-white">
-              Settings
-            </DialogTitle>
-          </DialogHeader>
-
+    <BaseModal
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      title="Settings"
+      showCancel={false}
+      body={
+        <>
           {nestId && (
             <div className="flex border-b border-gray-200 dark:border-gray-700">
               {tabs.map((tab) => (
@@ -71,8 +61,10 @@ export default function SettingsModal({
               <NestSettings />
             ) : null}
           </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+        </>
+      }
+    >
+      {children}
+    </BaseModal>
   );
 }

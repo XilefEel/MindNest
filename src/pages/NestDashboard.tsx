@@ -146,12 +146,12 @@ export default function NestDashboardPage() {
 
         <main
           className={cn(
-            "flex-1 p-5",
+            "mx-8 flex-1 p-5",
             activeNestling?.nestling_type === "note"
               ? "overflow-hidden"
               : "overflow-y-auto",
             activeBackgroundId
-              ? "mx-8 rounded-2xl bg-white/30 backdrop-blur-sm dark:bg-black/30"
+              ? "rounded-2xl bg-white/30 backdrop-blur-sm dark:bg-black/30"
               : "",
           )}
         >

@@ -1,20 +1,9 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import BaseModal from "./BaseModal";
 
 export default function RenameImageModal({
   children,
@@ -31,8 +20,6 @@ export default function RenameImageModal({
   const [description, setDescription] = useState(
     currentImage?.description || "",
   );
-
-  const { activeBackgroundId } = useNestStore();
 
   const handleEditImage = () => {
     try {
@@ -57,28 +44,12 @@ export default function RenameImageModal({
   }, [currentImage]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <div onClick={(e) => e.stopPropagation()}>{children}</div>
-      </DialogTrigger>
-      <DialogContent
-        onClick={(e) => e.stopPropagation()}
-        className={cn(
-          "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
-          activeBackgroundId
-            ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
-            : "bg-white dark:bg-gray-800",
-        )}
-      >
-        <DialogHeader className="justify-between">
-          <DialogTitle className="text-xl font-bold text-black dark:text-white">
-            Edit Image
-          </DialogTitle>
-          <DialogDescription className="text-gray-600 dark:text-gray-400">
-            Update your image title and description.
-          </DialogDescription>
-        </DialogHeader>
-
+    <BaseModal
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      title="Edit Image"
+      description="Update your image title and description."
+      body={
         <div className="space-y-4">
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -106,25 +77,17 @@ export default function RenameImageModal({
             />
           </div>
         </div>
-
-        <DialogFooter className="flex justify-end gap-2">
-          <DialogClose asChild>
-            <Button
-              variant="ghost"
-              className="cursor-pointer rounded-lg bg-gray-200 text-black hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-            >
-              Cancel
-            </Button>
-          </DialogClose>
-
-          <Button
-            onClick={handleEditImage}
-            className="cursor-pointer rounded-lg bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-600 dark:hover:bg-teal-700"
-          >
-            Save
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      }
+      footer={
+        <Button
+          onClick={handleEditImage}
+          className="cursor-pointer rounded-lg bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-600 dark:hover:bg-teal-700"
+        >
+          Save
+        </Button>
+      }
+    >
+      <div onClick={(e) => e.stopPropagation()}>{children}</div>
+    </BaseModal>
   );
 }
