@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getNestFromId } from "@/lib/api/nests";
 import { Nest } from "@/lib/types/nests";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
-import { getLastNestling, saveLastNestId } from "@/lib/storage/session";
+import { useNestStore } from "@/stores/useNestStore";
+import { convertFileSrc } from "@tauri-apps/api/core";
 import { cn } from "@/lib/utils/general";
 import Topbar from "@/components/nest-dashboard/Topbar";
 import Sidebar from "@/components/nest-dashboard/Sidebar";
@@ -14,9 +14,7 @@ import BoardEditor from "@/components/editors/board/BoardEditor";
 import CalendarEditor from "@/components/editors/calendar/CalendarEditor";
 import JournalEditor from "@/components/editors/journal/JournalEditor";
 import GalleryEditor from "@/components/editors/gallery/GalleryEditor";
-import { useNestStore } from "@/stores/useNestStore";
-import { convertFileSrc } from "@tauri-apps/api/core";
-import { getLastBackgroundImage } from "@/lib/storage/session";
+import useRestore from "@/hooks/useRestore";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -25,16 +23,9 @@ export default function NestDashboardPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  const { activeNestling, setActiveNestling, setFolderOpen } =
-    useNestlingTreeStore();
-  const {
-    activeNestId,
-    activeBackgroundId,
-    backgrounds,
-    setActiveNestId,
-    setActiveBackgroundId,
-    fetchBackgrounds,
-  } = useNestStore();
+  const { activeNestling } = useNestlingTreeStore();
+  const { activeNestId, activeBackgroundId, backgrounds, fetchBackgrounds } =
+    useNestStore();
 
   const activeBackgroundImage = backgrounds.find(
     (background) => background.id === activeBackgroundId,
@@ -44,45 +35,7 @@ export default function NestDashboardPage() {
     ? convertFileSrc(activeBackgroundImage.file_path)
     : null;
 
-  useEffect(() => {
-    async function fetchNest() {
-      setLoading(true);
-
-      try {
-        //fetch last nest
-        const lastNest = await getNestFromId(Number(id));
-        setNest(lastNest);
-        setActiveNestId(lastNest.id);
-        await saveLastNestId(lastNest.id);
-
-        // fetch last nestling
-        const [lastNestling, lastBackgroundImage] = await Promise.all([
-          getLastNestling(),
-          getLastBackgroundImage(lastNest.id),
-        ]);
-
-        if (lastBackgroundImage != null) {
-          setActiveBackgroundId(lastBackgroundImage);
-        }
-
-        if (lastNestling && Number(id) === lastNestling.nest_id) {
-          setActiveNestling(lastNestling);
-          if (lastNestling.folder_id) {
-            setFolderOpen(lastNestling.folder_id, true);
-          }
-        }
-
-        // fetch all backgrounds for this nest
-        await fetchBackgrounds(lastNest.id);
-      } catch (error) {
-        console.error("Failed to fetch nest", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchNest();
-  }, [id]);
+  useRestore({ id, setNest, setLoading });
 
   useEffect(() => {
     fetchBackgrounds(activeNestId!);

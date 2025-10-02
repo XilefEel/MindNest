@@ -60,7 +60,13 @@ export default function BackgroundSection() {
         <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400">
           RECENT IMAGES
         </h3>
+
         <div className="grid max-h-46 grid-cols-2 gap-3 overflow-y-auto p-1.5 md:grid-cols-3">
+          {backgrounds.length === 0 && (
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              No recent images
+            </p>
+          )}
           {backgrounds.map((image, index) => (
             <div
               key={index}

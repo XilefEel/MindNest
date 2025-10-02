@@ -1,14 +1,13 @@
 import { ReactNode } from "react";
 import { Card, CardContent } from "../ui/card";
 
-type DashboardCardProps = {
-  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
-  children: ReactNode;
-};
 export default function DashboardCard({
   onClick,
   children,
-}: DashboardCardProps) {
+}: {
+  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  children: ReactNode;
+}) {
   return (
     <Card
       onClick={onClick}

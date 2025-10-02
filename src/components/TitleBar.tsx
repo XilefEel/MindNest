@@ -14,9 +14,7 @@ export default function Titlebar() {
       <div
         className={cn(
           "ml-auto flex items-center",
-          activeBackgroundId
-            ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
-            : "",
+          activeBackgroundId && "bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
         <div
