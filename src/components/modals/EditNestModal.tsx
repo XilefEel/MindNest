@@ -8,6 +8,7 @@ import { useNestStore } from "@/stores/useNestStore";
 import BaseModal from "./BaseModal";
 import { inputBase } from "@/lib/utils/styles";
 import { TextField } from "./TextField";
+import { clearLastNestling } from "@/lib/storage/session";
 
 export default function EditNestModal({ nest }: { nest: Nest | null }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +31,7 @@ export default function EditNestModal({ nest }: { nest: Nest | null }) {
     if (!nest) return;
     try {
       await deleteNest(nest.id);
+      await clearLastNestling(nest.id);
       handleExit();
       toast.success("Nest deleted");
     } catch (error) {

@@ -4,6 +4,7 @@ import { User } from "@/lib/types/user";
 
 let storePromise: Promise<Store> | null = null;
 
+type LastNestlings = Record<string, Nestling>;
 type LastBackgroundImages = Record<string, number>;
 
 function getStore() {
@@ -54,16 +55,24 @@ export async function clearLastNestId() {
   return deleteItem("lastNestId");
 }
 
-export async function saveLastNestling(nestling: Nestling) {
-  return setItem("lastNestling", nestling);
+export async function saveLastNestling(nestId: number, nestling: Nestling) {
+  const current = (await getItem<LastNestlings>("lastNestlings")) || {};
+  current[nestId.toString()] = nestling;
+  await setItem<LastNestlings>("lastNestlings", current);
 }
 
-export async function getLastNestling(): Promise<Nestling | null> {
-  return getItem<Nestling>("lastNestling");
+export async function getLastNestling(
+  nestId: number | null,
+): Promise<Nestling | null> {
+  if (nestId == null) return null;
+  const current = (await getItem<LastNestlings>("lastNestlings")) || {};
+  return current[nestId.toString()] ?? null;
 }
 
-export async function clearLastNestling() {
-  return deleteItem("lastNestling");
+export async function clearLastNestling(nestId: number) {
+  const current = (await getItem<LastNestlings>("lastNestlings")) || {};
+  delete current[nestId.toString()];
+  await setItem<LastNestlings>("lastNestlings", current);
 }
 
 export async function saveLastBackgroundImage(

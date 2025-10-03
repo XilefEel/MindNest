@@ -2,6 +2,7 @@ import { saveLastNestling } from "@/lib/storage/session";
 import { Nestling } from "@/lib/types/nestlings";
 import { debounce } from "@/lib/utils/general";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestStore } from "@/stores/useNestStore";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type AutoSaveStatus = "idle" | "saving" | "saved" | "error";
@@ -26,7 +27,8 @@ export default function useAutoSave<T = any>({
   const latestDataRef = useRef(currentData);
   const latestContextRef = useRef(context);
 
-  const { refreshData, updateNestling } = useNestlingTreeStore();
+  const { fetchSidebar, updateNestling } = useNestlingTreeStore();
+  const { activeNestId } = useNestStore();
 
   const debouncedSave = useRef(
     debounce(async () => {
@@ -43,9 +45,13 @@ export default function useAutoSave<T = any>({
         await saveFunction(currentTarget.id, currentFields, currentContext);
         setAutoSaveStatus("saved");
         setTimeout(() => setAutoSaveStatus("idle"), 1000);
-        refreshData?.();
+
         if ((currentTarget as Nestling).nestling_type) {
-          saveLastNestling({ ...(currentTarget as Nestling), ...updatedData });
+          saveLastNestling(activeNestId!, {
+            ...(currentTarget as Nestling),
+            ...updatedData,
+          });
+          fetchSidebar(activeNestId!);
           updateNestling(currentTarget.id, updatedData);
         }
       } catch (err) {

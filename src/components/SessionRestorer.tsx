@@ -10,7 +10,7 @@ export default function SessionRestorer() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { setActiveNestId } = useNestStore();
+  const { setActiveNestId, activeNestId } = useNestStore();
   const { setActiveNestling, setFolderOpen } = useNestlingTreeStore();
 
   const hasRestoredRef = useRef(false);
@@ -25,7 +25,7 @@ export default function SessionRestorer() {
 
     const restoreSession = async () => {
       const lastNestId = await getLastNestId();
-      const lastNestling = await getLastNestling();
+      const lastNestling = await getLastNestling(activeNestId!);
 
       if (lastNestId) {
         setActiveNestId(lastNestId);

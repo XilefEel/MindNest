@@ -7,7 +7,6 @@ import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 
 type NestlingTreeState = {
   // State
-  nestId: number | null; // The ID of the current nest
   folders: Folder[]; // Lists of Folders in the current nest
   nestlings: Nestling[]; // Lists of Nestlings in the current nest, regardless of folder
   openFolders: Record<number, boolean>; // Keeps track of which folders are open (true) or closed (false)
@@ -18,14 +17,13 @@ type NestlingTreeState = {
   // Actions
   setActiveNestling: (nestling: Nestling | null) => void; // Sets the currently selected or opened Nestling
   setActiveFolderId: (folder: number | null) => void;
-  setNestId: (nestId: number) => void; // Sets the ID of the current nest
   setFolderOpen: (folder_ids: number, isOpen: boolean) => void; // Sets the open/closed state of a folder
 
   // Helpers
-  refreshData: () => Promise<void>; // Re-fetches the folders + nestlings from the backend/database
+  fetchSidebar: (nestId: number) => Promise<void>; // Re-fetches the folders + nestlings from the backend/database
   toggleFolder: (folderId: number) => void; // Expands/collapses a folder in the sidebar
   handleDragStart: (event: DragStartEvent) => void; // Triggered when a drag begins.
-  handleDragEnd: (event: DragEndEvent) => Promise<void>; // Triggered when a drag ends.
+  handleDragEnd: (event: DragEndEvent, nestId: number) => Promise<void>; // Triggered when a drag ends.
   folderGroups: () => FolderWithNestlings[]; // Groups folders with their nestlings
   looseNestlings: () => Nestling[]; // Returns all nestlings that are not in a folder
   updateNestling: (id: number, updates: Partial<Nestling>) => void; // Updates a nestling
@@ -64,13 +62,12 @@ export const useNestlingTreeStore = create<NestlingTreeState>((set, get) => ({
   setActiveFolderId: (folderId) => set({ activeFolderId: folderId }),
 
   // Helpers
-  refreshData: async () => {
-    const { nestId } = get();
-    if (!nestId) return;
-
+  fetchSidebar: async (nestId) => {
     try {
-      const fetchedFolders = (await getFolders(nestId)) as Folder[];
-      const fetchedNestlings = (await getNestlings(nestId)) as Nestling[];
+      const [fetchedFolders, fetchedNestlings] = await Promise.all([
+        getFolders(nestId),
+        getNestlings(nestId),
+      ]);
 
       const sortedFolders = [...fetchedFolders].sort((a, b) =>
         a.name.localeCompare(b.name),
@@ -101,7 +98,7 @@ export const useNestlingTreeStore = create<NestlingTreeState>((set, get) => ({
     set({ activeDraggingNestlingId: event.active.id as number });
   },
 
-  handleDragEnd: async (event) => {
+  handleDragEnd: async (event, nestId) => {
     const { active, over } = event;
     set({ activeDraggingNestlingId: null });
 
@@ -123,7 +120,7 @@ export const useNestlingTreeStore = create<NestlingTreeState>((set, get) => ({
     } catch (err) {
       console.error("Failed to update folder:", err);
     } finally {
-      await get().refreshData();
+      await get().fetchSidebar(nestId);
     }
   },
 

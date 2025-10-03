@@ -6,6 +6,7 @@ import { deleteFolder } from "@/lib/api/folders";
 import { toast } from "sonner";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
+import { useNestStore } from "@/stores/useNestStore";
 export default function DeleteModal({
   type,
   nestlingId,
@@ -18,12 +19,13 @@ export default function DeleteModal({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const refreshData = useNestlingTreeStore((s) => s.refreshData);
-  const setActiveNestling = useNestlingTreeStore((s) => s.setActiveNestling);
   const [error, setError] = useState<string | null>(null);
 
+  const { activeNestId } = useNestStore();
+  const { fetchSidebar, setActiveNestling } = useNestlingTreeStore();
+
   const handleExit = async () => {
-    await refreshData();
+    await fetchSidebar(activeNestId!);
     setIsOpen(false);
     setError(null);
     console.error(error);

@@ -2,6 +2,7 @@ import { saveLastNestling } from "@/lib/storage/session";
 import { Nestling } from "@/lib/types/nestlings";
 import { cn } from "@/lib/utils/general";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestStore } from "@/stores/useNestStore";
 import { useDraggable } from "@dnd-kit/core";
 import {
   FileText,
@@ -34,10 +35,11 @@ export default function NestlingItem({
 }) {
   const { activeNestling, setActiveFolderId, setActiveNestling } =
     useNestlingTreeStore();
+  const { activeNestId } = useNestStore();
 
   const handleSelect = () => {
     setActiveNestling(nestling);
-    saveLastNestling(nestling);
+    saveLastNestling(activeNestId!, nestling);
   };
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =

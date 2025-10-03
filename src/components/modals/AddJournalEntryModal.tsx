@@ -8,6 +8,7 @@ import BaseModal from "./BaseModal";
 import { inputBase } from "@/lib/utils/styles";
 import { TextField } from "./TextField";
 import { toast } from "sonner";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function AddJournalEntryModal({
   setActiveEntry,
@@ -22,12 +23,14 @@ export default function AddJournalEntryModal({
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
-  const refreshData = useNestlingTreeStore((s) => s.refreshData);
+
+  const { activeNestId } = useNestStore();
+  const { fetchSidebar } = useNestlingTreeStore();
 
   const { addEntry } = useJournalStore();
 
   const handleExit = async () => {
-    await refreshData();
+    await fetchSidebar(activeNestId!);
     setTitle("");
     setIsOpen(false);
   };

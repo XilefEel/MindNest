@@ -37,7 +37,7 @@ export default function useRestore({
 
         // fetch last nestling and background
         const [lastNestling, lastBackgroundImage] = await Promise.all([
-          getLastNestling(),
+          getLastNestling(lastNest.id),
           getLastBackgroundImage(lastNest.id),
           fetchBackgrounds(lastNest.id),
         ]);

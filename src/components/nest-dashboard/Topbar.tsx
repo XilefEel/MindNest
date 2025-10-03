@@ -10,9 +10,10 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SettingsModal from "../modals/SettingsModal";
-import { clearLastNestId, clearLastNestling } from "@/lib/storage/session";
+import { clearLastNestId } from "@/lib/storage/session";
 import { cn } from "@/lib/utils/general";
 import { useNestStore } from "@/stores/useNestStore";
+import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 
 export default function Topbar({
   nest,
@@ -24,21 +25,22 @@ export default function Topbar({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const navigate = useNavigate();
-  const { activeBackgroundId } = useNestStore();
+  const { setActiveNestling } = useNestlingTreeStore();
+  const { activeBackgroundId, setActiveBackgroundId } = useNestStore();
 
   const handleExit = () => {
     navigate("/dashboard");
     clearLastNestId();
-    clearLastNestling();
+    setActiveBackgroundId(null);
+    setActiveNestling(null);
   };
   return (
     <nav className="flex w-full items-center justify-between border-b p-2 pt-8 sm:p-4 sm:pt-10">
       <div
         className={cn(
           "flex items-center gap-3 p-1",
-          activeBackgroundId
-            ? "rounded-xl bg-white/30 backdrop-blur-sm dark:bg-black/30"
-            : "",
+          activeBackgroundId &&
+            "rounded-xl bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
         <Button
@@ -68,9 +70,8 @@ export default function Topbar({
       <div
         className={cn(
           "flex items-center p-1 sm:gap-2",
-          activeBackgroundId
-            ? "rounded-xl bg-white/30 backdrop-blur-sm dark:bg-black/30"
-            : "",
+          activeBackgroundId &&
+            "rounded-xl bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
         <Button

@@ -16,6 +16,7 @@ import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { inputBase } from "@/lib/utils/styles";
 import { TextField } from "./TextField";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function AddNestlingModal({
   nestId,
@@ -30,10 +31,11 @@ export default function AddNestlingModal({
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { refreshData, activeFolderId } = useNestlingTreeStore();
+  const { fetchSidebar, activeFolderId } = useNestlingTreeStore();
+  const { activeNestId } = useNestStore();
 
   const handleExit = async () => {
-    await refreshData();
+    await fetchSidebar(activeNestId!);
     setTitle("");
     setContent("");
     setIsOpen(false);

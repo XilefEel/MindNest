@@ -14,6 +14,7 @@ import { SidebarContextMenu } from "../context-menu/SidebarContextMenu";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils/general";
 import { useNestStore } from "@/stores/useNestStore";
+import { clearLastNestling } from "@/lib/storage/session";
 
 export default function Sidebar({
   nestId,
@@ -26,14 +27,13 @@ export default function Sidebar({
   const {
     activeNestling,
     openFolders,
+    folders,
+    nestlings,
     toggleFolder,
     handleDragStart,
     handleDragEnd,
-    refreshData,
-    setNestId,
+    fetchSidebar,
     setActiveNestling,
-    folders,
-    nestlings,
   } = useNestlingTreeStore();
 
   const { activeBackgroundId } = useNestStore();
@@ -51,8 +51,7 @@ export default function Sidebar({
 
   useEffect(() => {
     if (nestId) {
-      setNestId(Number(nestId));
-      refreshData();
+      fetchSidebar(nestId);
     }
   }, [nestId]);
 
@@ -66,7 +65,7 @@ export default function Sidebar({
             : "border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800",
         )}
       >
-        <div className="flex items-center">
+        <div className="mb-2.5 flex items-center border-b dark:border-white">
           <AddNestlingModal nestId={nestId}>
             <ToolBarItem Icon={FilePlus} label="New Nestling" />
           </AddNestlingModal>
@@ -74,6 +73,7 @@ export default function Sidebar({
             <ToolBarItem Icon={FolderPlus} label="New Folder" />
           </AddFolderModal>
         </div>
+
         <div
           className={cn(
             "flex cursor-pointer items-center gap-1 rounded px-2 py-1 font-medium transition-colors hover:bg-teal-100 dark:hover:bg-gray-700",
@@ -83,6 +83,7 @@ export default function Sidebar({
           onClick={() => {
             setActiveNestling(null);
             setIsSidebarOpen(false);
+            clearLastNestling(nestId);
           }}
         >
           <Home className="size-4" />
@@ -93,7 +94,7 @@ export default function Sidebar({
           <DndContext
             collisionDetection={rectIntersection}
             onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
+            onDragEnd={(e) => handleDragEnd(e, nestId)}
           >
             {folderGroups.map((folder) => (
               <motion.div
