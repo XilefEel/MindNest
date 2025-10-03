@@ -7,8 +7,11 @@ import JournalSidebar from "./JournalSidebar";
 import useAutoSave from "@/hooks/useAutoSave";
 import { editNote } from "@/lib/api/note";
 import { NewEntryButton } from "./NewEntryButton";
+import { useNestStore } from "@/stores/useNestStore";
+import { cn } from "@/lib/utils/general";
 
 export default function JournalingApp() {
+  const { activeBackgroundId } = useNestStore();
   const { activeEntry, entries, fetchEntries, updateEntry } = useJournalStore();
 
   const { activeNestling } = useNestlingTreeStore();
@@ -63,7 +66,6 @@ export default function JournalingApp() {
 
   useEffect(() => {
     fetchEntries(activeNestling.id);
-    console.log("Fetching entries for nestling:", activeNestling.id);
   }, [fetchEntries, activeNestling.id]);
 
   // Add this useEffect
@@ -104,9 +106,20 @@ export default function JournalingApp() {
 
         {isEntryOpen && activeEntry ? (
           <div className="flex-1 py-2">
-            <div className="flex h-full flex-col rounded-xl bg-white dark:bg-gray-800">
-              {/* Entry Header */}
-              <div className="border-b border-slate-100 p-5 dark:border-slate-700">
+            <div
+              className={cn(
+                "flex h-full flex-col rounded-xl bg-white dark:bg-gray-800",
+                activeBackgroundId &&
+                  "bg-white/30 backdrop-blur-sm dark:bg-black/10",
+              )}
+            >
+              <div
+                className={cn(
+                  "border-b border-slate-100 p-5 dark:border-slate-700",
+                  activeBackgroundId &&
+                    "border-black/50 p-5 dark:border-white/50",
+                )}
+              >
                 <div className="mb-3 flex items-center justify-between gap-4 text-sm text-slate-500 dark:text-gray-200">
                   <div className="flex items-center gap-2">
                     <Calendar className="size-4" />

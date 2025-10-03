@@ -1,5 +1,4 @@
 import { Rnd } from "react-rnd";
-
 import { PlannerEventType } from "@/lib/types/calendar";
 import { startOfWeek } from "date-fns";
 import { getDateFromWeekDay, getDayFromDate } from "@/lib/utils/date";

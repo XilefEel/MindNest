@@ -74,15 +74,17 @@ export default function AddTemplateModal({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         className={cn(
-          "max-w-4xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
-          activeBackgroundId
-            ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
-            : "bg-white dark:bg-gray-800",
+          "max-w-4xl rounded-2xl border-0 bg-white shadow-xl transition-all ease-in-out dark:bg-gray-800",
+          activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/30",
         )}
       >
         <div className="flex h-full flex-col rounded-xl">
-          {/* Entry Header */}
-          <DialogHeader className="border-b border-slate-100 dark:border-gray-700">
+          <DialogHeader
+            className={cn(
+              "border-b border-slate-100 dark:border-gray-700",
+              activeBackgroundId && "border-black/50 dark:border-white/50",
+            )}
+          >
             <div className="mb-3 flex items-center justify-between text-sm text-slate-500 dark:text-gray-200">
               <div className="flex items-center gap-2">
                 <Calendar className="size-4" />
@@ -105,7 +107,6 @@ export default function AddTemplateModal({
             </DialogTitle>
           </DialogHeader>
 
-          {/* Text Area */}
           <div className="min-h-[400px] flex-1 py-3">
             <textarea
               value={currentContent}
@@ -115,8 +116,12 @@ export default function AddTemplateModal({
             />
           </div>
 
-          {/* Footer with buttons */}
-          <div className="border-t border-slate-100 py-3 dark:border-gray-700">
+          <div
+            className={cn(
+              "border-t border-slate-100 py-3 dark:border-gray-700",
+              activeBackgroundId && "border-black/50 dark:border-white/50",
+            )}
+          >
             <div className="flex justify-end gap-3">
               <Button
                 variant="outline"

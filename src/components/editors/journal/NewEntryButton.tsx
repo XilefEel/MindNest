@@ -11,8 +11,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { JournalTemplate } from "@/lib/types/journal";
+import { cn } from "@/lib/utils/general";
 import { useJournalStore } from "@/stores/useJournalStore";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestStore } from "@/stores/useNestStore";
 import { Plus, ChevronDown, Trash, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -23,6 +25,8 @@ export function NewEntryButton({
 }) {
   const { activeNestling } = useNestlingTreeStore();
   if (!activeNestling) return null;
+
+  const { activeBackgroundId } = useNestStore();
   const { templates, useTemplate, fetchTemplates, deleteTemplate } =
     useJournalStore();
 
@@ -50,7 +54,6 @@ export function NewEntryButton({
 
   return (
     <div className="flex rounded-lg bg-teal-500 shadow-sm">
-      {/* Left button (blank entry) */}
       <AddJournalEntryModal
         setActiveEntry={() => {
           setIsEntryOpen(true);
@@ -62,7 +65,6 @@ export function NewEntryButton({
         </Button>
       </AddJournalEntryModal>
 
-      {/* Right button (dropdown trigger) */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="rounded-l-none rounded-r-lg px-2 hover:bg-teal-600">
@@ -70,14 +72,15 @@ export function NewEntryButton({
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="w-72 border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+          className={cn(
+            "w-72 border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+            activeBackgroundId &&
+              "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
+          )}
           align="start"
         >
           <DropdownMenuLabel>Templates</DropdownMenuLabel>
           <DropdownMenuGroup>
-            <DropdownMenuItem className="transition duration-200 hover:bg-teal-100 dark:hover:bg-gray-700">
-              MindNest Template
-            </DropdownMenuItem>
             {templates.map((template: JournalTemplate) => (
               <DropdownMenuItem
                 key={template.id}
@@ -113,7 +116,12 @@ export function NewEntryButton({
               </DropdownMenuItem>
             ))}
           </DropdownMenuGroup>
-          <DropdownMenuSeparator className="mx-2 bg-slate-200 dark:bg-gray-700" />
+          <DropdownMenuSeparator
+            className={cn(
+              "mx-2 bg-slate-200 dark:bg-gray-700",
+              activeBackgroundId && "bg-black/50 dark:bg-white/50",
+            )}
+          />
           <AddTemplateModal
             isOpen={isAddTemplateOpen}
             setIsOpen={setIsAddTemplateOpen}

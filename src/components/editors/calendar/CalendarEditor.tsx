@@ -16,7 +16,6 @@ export default function CalendarEditor() {
   if (!activeNestling) return null;
   const [title, setTitle] = useState(activeNestling.title);
 
-  const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [direction, setDirection] = useState(1);
   const [mode, setMode] = useState<"calendar" | "planner">("calendar");
@@ -70,11 +69,9 @@ export default function CalendarEditor() {
         {mode === "calendar" ? (
           <MonthView
             key="month"
-            currentDate={currentDate}
             selectedDate={selectedDate}
             direction={direction}
             variants={viewVariants}
-            setCurrentDate={setCurrentDate}
             setSelectedDate={setSelectedDate}
             setMode={setMode}
             setDirection={setDirection}

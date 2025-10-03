@@ -1,32 +1,27 @@
 import { create } from "zustand";
 import { getNestlings } from "@/lib/api/nestlings";
 import { getFolders, updateNestlingFolder } from "@/lib/api/folders";
-import { Folder, FolderWithNestlings } from "@/lib/types/folders";
+import { Folder } from "@/lib/types/folders";
 import { Nestling } from "@/lib/types/nestlings";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 
 type NestlingTreeState = {
-  // State
-  folders: Folder[]; // Lists of Folders in the current nest
-  nestlings: Nestling[]; // Lists of Nestlings in the current nest, regardless of folder
-  openFolders: Record<number, boolean>; // Keeps track of which folders are open (true) or closed (false)
-  activeNestling: Nestling | null; // The currently selected or opened Nestling
+  folders: Folder[];
+  nestlings: Nestling[];
+  openFolders: Record<number, boolean>;
+  activeNestling: Nestling | null;
   activeFolderId: number | null;
-  activeDraggingNestlingId: number | null; // The ID of the Nestling currently being dragged
+  activeDraggingNestlingId: number | null;
 
-  // Actions
-  setActiveNestling: (nestling: Nestling | null) => void; // Sets the currently selected or opened Nestling
+  setActiveNestling: (nestling: Nestling | null) => void;
   setActiveFolderId: (folder: number | null) => void;
-  setFolderOpen: (folder_ids: number, isOpen: boolean) => void; // Sets the open/closed state of a folder
+  setFolderOpen: (folder_ids: number, isOpen: boolean) => void;
 
-  // Helpers
-  fetchSidebar: (nestId: number) => Promise<void>; // Re-fetches the folders + nestlings from the backend/database
-  toggleFolder: (folderId: number) => void; // Expands/collapses a folder in the sidebar
-  handleDragStart: (event: DragStartEvent) => void; // Triggered when a drag begins.
-  handleDragEnd: (event: DragEndEvent, nestId: number) => Promise<void>; // Triggered when a drag ends.
-  folderGroups: () => FolderWithNestlings[]; // Groups folders with their nestlings
-  looseNestlings: () => Nestling[]; // Returns all nestlings that are not in a folder
-  updateNestling: (id: number, updates: Partial<Nestling>) => void; // Updates a nestling
+  fetchSidebar: (nestId: number) => Promise<void>;
+  toggleFolder: (folderId: number) => void;
+  handleDragStart: (event: DragStartEvent) => void;
+  handleDragEnd: (event: DragEndEvent, nestId: number) => Promise<void>;
+  updateNestling: (id: number, updates: Partial<Nestling>) => void;
 };
 
 export const useNestlingTreeStore = create<NestlingTreeState>((set, get) => ({
@@ -40,17 +35,10 @@ export const useNestlingTreeStore = create<NestlingTreeState>((set, get) => ({
   activeDraggingNestlingId: null,
 
   // Actions
-  setNestId: (nestId: number) =>
-    set((state) => {
-      const isSameNest = state.activeNestling?.nest_id === nestId;
-
-      return {
-        nestId,
-        activeNestling: isSameNest ? state.activeNestling : null,
-      };
-    }),
-
   setActiveNestling: (nestling) => set({ activeNestling: nestling }),
+
+  setActiveFolderId: (folderId) => set({ activeFolderId: folderId }),
+
   setFolderOpen: (folderId: number, isOpen: boolean) =>
     set((state) => ({
       openFolders: {
@@ -58,8 +46,6 @@ export const useNestlingTreeStore = create<NestlingTreeState>((set, get) => ({
         [folderId]: isOpen,
       },
     })),
-
-  setActiveFolderId: (folderId) => set({ activeFolderId: folderId }),
 
   // Helpers
   fetchSidebar: async (nestId) => {
@@ -122,18 +108,6 @@ export const useNestlingTreeStore = create<NestlingTreeState>((set, get) => ({
     } finally {
       await get().fetchSidebar(nestId);
     }
-  },
-
-  folderGroups: () => {
-    const { folders, nestlings } = get();
-    return folders.map((folder) => ({
-      ...folder,
-      nestlings: nestlings.filter((n) => n.folder_id === folder.id),
-    }));
-  },
-
-  looseNestlings: () => {
-    return get().nestlings.filter((n) => n.folder_id === null);
   },
 
   updateNestling: (id, updates) => {

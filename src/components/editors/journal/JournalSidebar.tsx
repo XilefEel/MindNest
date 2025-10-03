@@ -10,17 +10,25 @@ import {
 import { useState } from "react";
 import JournalSidebarContent from "./JournalSidebarContent";
 import { ChevronUp } from "lucide-react";
+import { useNestStore } from "@/stores/useNestStore";
+import { cn } from "@/lib/utils/general";
 
 export default function JournalSidebar({
   setIsEntryOpen,
 }: {
   setIsEntryOpen: (isOpen: boolean) => void;
 }) {
+  const { activeBackgroundId } = useNestStore();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
     <>
-      <div className="hidden w-64 flex-col rounded-lg bg-white lg:block dark:bg-gray-800">
+      <div
+        className={cn(
+          "hidden w-64 flex-col rounded-lg bg-white lg:block dark:bg-gray-800",
+          activeBackgroundId && "bg-white/30 backdrop-blur-sm dark:bg-black/10",
+        )}
+      >
         {/* Sidebar Header */}
         <JournalSidebarContent
           setIsEntryOpen={setIsEntryOpen}
@@ -38,7 +46,13 @@ export default function JournalSidebar({
           </Button>
         </DrawerTrigger>
 
-        <DrawerContent className="flex h-[85vh] flex-col bg-white dark:bg-gray-800">
+        <DrawerContent
+          className={cn(
+            "flex h-[85vh] flex-col bg-white dark:bg-gray-800",
+            activeBackgroundId &&
+              "bg-white/50 backdrop-blur-sm dark:bg-black/30",
+          )}
+        >
           <DrawerHeader className="flex-shrink-0 text-left">
             <DrawerTitle>Your Entries</DrawerTitle>
             <DrawerDescription>

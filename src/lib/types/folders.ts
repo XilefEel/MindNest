@@ -1,5 +1,3 @@
-import { Nestling } from "./nestlings";
-
 export type Folder = {
   id: number;
   nest_id: number;
@@ -11,8 +9,4 @@ export type Folder = {
 export type NewFolder = {
   nest_id: number;
   name: string;
-};
-
-export type FolderWithNestlings = Folder & {
-  nestlings: Nestling[];
 };

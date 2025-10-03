@@ -41,7 +41,7 @@ export default function BaseModal({
         className={cn(
           "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
           "bg-white dark:bg-gray-800",
-          activeBackgroundId && "bg-white/30 backdrop-blur-sm dark:bg-black/30",
+          activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/30",
         )}
       >
         <DialogHeader className="justify-between">

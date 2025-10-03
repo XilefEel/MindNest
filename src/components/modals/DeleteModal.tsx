@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { useNestStore } from "@/stores/useNestStore";
+import { clearLastNestling, getLastNestling } from "@/lib/storage/session";
 export default function DeleteModal({
   type,
   nestlingId,
@@ -19,7 +20,6 @@ export default function DeleteModal({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const { activeNestId } = useNestStore();
   const { fetchSidebar, setActiveNestling } = useNestlingTreeStore();
@@ -27,20 +27,22 @@ export default function DeleteModal({
   const handleExit = async () => {
     await fetchSidebar(activeNestId!);
     setIsOpen(false);
-    setError(null);
-    console.error(error);
-    setActiveNestling(null);
   };
 
   const handleDelete = async (type: "nestling" | "folder") => {
     if (!nestlingId && !folderId) return;
+    const lastNestling = await getLastNestling(activeNestId!);
     try {
       if (type === "nestling") {
         await deleteNestling(nestlingId!);
-        toast.error("Nestling deleted");
+        if (lastNestling?.id === nestlingId) {
+          await clearLastNestling(activeNestId!);
+          setActiveNestling(null);
+        }
+        toast.success("Nestling deleted");
       } else if (type === "folder") {
         await deleteFolder(folderId!);
-        toast.error("Folder deleted");
+        toast.success("Folder deleted");
       }
       handleExit();
     } catch (error) {

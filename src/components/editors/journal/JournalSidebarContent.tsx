@@ -1,5 +1,7 @@
 import { JournalEntry } from "@/lib/types/journal";
+import { cn } from "@/lib/utils/general";
 import { useJournalStore } from "@/stores/useJournalStore";
+import { useNestStore } from "@/stores/useNestStore";
 import { Clock, Search, Trash } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -12,6 +14,8 @@ export default function JournalSidebarContent({
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSwitching, setIsSwitching] = useState(false);
+
+  const { activeBackgroundId } = useNestStore();
   const { entries, setActiveEntry, deleteEntry } = useJournalStore();
 
   const filteredEntries = useMemo(() => {
@@ -47,9 +51,19 @@ export default function JournalSidebarContent({
 
   return (
     <div className="flex h-full flex-col">
-      {/* Search - Fixed height */}
-      <div className="flex-shrink-0 border-b border-slate-200 p-4 dark:border-slate-700">
-        <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white p-2 text-sm focus-within:border-teal-300 focus-within:ring-1 focus-within:ring-teal-200 dark:border-slate-600 dark:bg-slate-800 dark:focus-within:border-teal-400 dark:focus-within:ring-teal-400">
+      <div
+        className={cn(
+          "flex-shrink-0 border-b border-slate-200 p-4 dark:border-slate-700",
+          activeBackgroundId && "border-black/50 dark:border-white/50",
+        )}
+      >
+        <div
+          className={cn(
+            "flex items-center gap-2 rounded-lg border border-slate-200 bg-white p-2 text-sm focus-within:border-teal-300 focus-within:ring-1 focus-within:ring-teal-200 dark:border-slate-600 dark:bg-slate-800 dark:focus-within:border-teal-400 dark:focus-within:ring-teal-400",
+            activeBackgroundId &&
+              "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/10",
+          )}
+        >
           <Search className="h-4 w-4 text-slate-400 dark:text-slate-500" />
           <input
             type="text"
@@ -60,7 +74,6 @@ export default function JournalSidebarContent({
           />
         </div>
 
-        {/* Search Results Count */}
         {searchQuery && (
           <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
             {filteredEntries.length} of {entries.length} entries
@@ -68,7 +81,6 @@ export default function JournalSidebarContent({
         )}
       </div>
 
-      {/* Entries List - Takes remaining space and scrolls */}
       <div className="min-h-0 flex-1 overflow-y-auto p-4">
         <div className="space-y-3">
           {filteredEntries.length > 0 ? (
@@ -76,7 +88,11 @@ export default function JournalSidebarContent({
               <div
                 key={entry.id}
                 onClick={() => handleSelectEntry(entry)}
-                className="cursor-pointer rounded-xl border border-slate-200 bg-white p-3 transition-all duration-200 hover:border-teal-300 hover:text-teal-600 hover:shadow-md dark:border-slate-600 dark:bg-slate-800 dark:hover:border-teal-400 dark:hover:text-teal-400"
+                className={cn(
+                  "cursor-pointer rounded-xl border border-slate-200 bg-white p-3 transition-all duration-200 hover:border-teal-300 hover:text-teal-600 hover:shadow-md dark:border-slate-600 dark:bg-slate-800 dark:hover:border-teal-400 dark:hover:text-teal-400",
+                  activeBackgroundId &&
+                    "border-none bg-white/30 backdrop-blur-sm dark:bg-black/20",
+                )}
               >
                 <div className="mb-2 flex items-start justify-between gap-2">
                   <h3 className="line-clamp-2 flex-1 text-sm font-medium text-slate-900 transition-colors dark:text-slate-100">
@@ -122,8 +138,12 @@ export default function JournalSidebarContent({
         </div>
       </div>
 
-      {/* Footer - Fixed at bottom */}
-      <div className="flex-shrink-0 border-t border-slate-200 py-4 dark:border-slate-700">
+      <div
+        className={cn(
+          "flex-shrink-0 border-t border-slate-200 py-4 dark:border-slate-700",
+          activeBackgroundId && "border-black/50 dark:border-white/50",
+        )}
+      >
         <div className="text-center">
           <div className="mb-1 text-2xl font-bold text-teal-500 dark:text-teal-400">
             {searchQuery ? filteredEntries.length : entries.length}

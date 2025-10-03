@@ -10,7 +10,7 @@ import {
   updatePlannerEvent,
 } from "@/lib/api/calendar";
 
-interface PlannerState {
+type PlannerState = {
   events: PlannerEventType[];
   loading: boolean;
   error: string | null;
@@ -43,7 +43,7 @@ interface PlannerState {
     color: string | null;
   }) => Promise<void>;
   deleteEvent: (id: number) => Promise<void>;
-}
+};
 
 export const usePlannerStore = create<PlannerState>((set, get) => ({
   events: [],
@@ -74,7 +74,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
 
   addEvent: async (newEvent: NewPlannerEventType) => {
     try {
-      console.log("Adding event:", newEvent); // Debugging print
+      console.log("Adding event:", newEvent);
       const event = await createPlannerEvent(newEvent);
       set({ events: [...get().events, event] });
     } catch (e) {

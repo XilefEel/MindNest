@@ -7,6 +7,7 @@ import PlannerEvent from "./PlannerEvent";
 import { usePlannerStore } from "@/stores/usePlannerStore";
 import { NewPlannerEventType } from "@/lib/types/calendar";
 import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestStore } from "@/stores/useNestStore";
 
 export type EventType = {
   id: number;
@@ -30,6 +31,7 @@ export default function PlannerView({
     addDays(weekStart, i),
   );
 
+  const { activeBackgroundId } = useNestStore();
   const { activeNestling } = useNestlingTreeStore();
   if (!activeNestling) return null;
   const { events, addEvent } = usePlannerStore();
@@ -79,7 +81,6 @@ export default function PlannerView({
       transition={{ duration: 0.4, ease: "easeInOut" }}
       className="absolute h-full w-full px-6"
     >
-      {/* Planner Grid */}
       <div ref={colRef} className="grid h-full grid-cols-7">
         {weekDaysWithDates.map((day) => (
           <div className="py-2 text-center font-medium">
@@ -91,15 +92,25 @@ export default function PlannerView({
         {weekDaysWithDates.map((day, dayIndex) => (
           <div
             key={day.toISOString()}
-            className="relative border-r border-gray-300 dark:border-gray-600"
+            className={cn(
+              "relative border-r border-gray-300 dark:border-gray-600",
+              activeBackgroundId &&
+                "border-gray-300/30 dark:border-gray-600/30",
+            )}
           >
             <div className="relative grid grid-rows-24">
               {Array.from({ length: 24 }, (_, hour) => (
                 <div
                   key={hour}
                   className={cn(
-                    "h-16 border-t border-gray-200 dark:border-gray-700",
-                    hour % 2 === 0 && "bg-white/50 dark:bg-gray-800/50",
+                    "h-16 border-t",
+                    activeBackgroundId
+                      ? "border-gray-200/30 dark:border-gray-700/30"
+                      : "border-gray-200 dark:border-gray-700",
+                    hour % 2 === 0 &&
+                      (activeBackgroundId
+                        ? "bg-white/20 dark:bg-black/20"
+                        : "bg-white/20 dark:bg-gray-800/50"),
                   )}
                   onDoubleClick={() => {
                     handleDoubleClick({
