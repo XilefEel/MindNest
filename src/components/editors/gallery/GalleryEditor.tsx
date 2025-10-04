@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { editNote } from "@/lib/api/note";
 import { ArrowLeft, Plus, Upload } from "lucide-react";
@@ -15,7 +15,7 @@ import AddAlbumModal from "@/components/modals/AddAlbumModal";
 import { toast } from "sonner";
 
 export default function GalleryEditor() {
-  const { activeNestling } = useNestlingTreeStore();
+  const { activeNestling } = useNestlingStore();
   if (!activeNestling) return null;
   const { albums } = useGalleryStore();
 

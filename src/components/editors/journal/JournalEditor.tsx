@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Calendar } from "lucide-react";
 import NestlingTitle from "../NestlingTitle";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useJournalStore } from "@/stores/useJournalStore";
 import JournalSidebar from "./JournalSidebar";
 import useAutoSave from "@/hooks/useAutoSave";
@@ -14,7 +14,7 @@ export default function JournalingApp() {
   const { activeBackgroundId } = useNestStore();
   const { activeEntry, entries, fetchEntries, updateEntry } = useJournalStore();
 
-  const { activeNestling } = useNestlingTreeStore();
+  const { activeNestling } = useNestlingStore();
   if (!activeNestling) return null;
   const [title, setTitle] = useState(activeNestling.title);
 

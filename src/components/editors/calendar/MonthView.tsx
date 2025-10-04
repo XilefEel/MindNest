@@ -3,7 +3,7 @@ import DateSelect from "./DateSelect";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { addMonths, subMonths } from "date-fns";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import MonthGrid from "./MonthGrid";
 import { useState } from "react";
 
@@ -24,7 +24,7 @@ export default function MonthView({
 }) {
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  const { activeNestling } = useNestlingTreeStore();
+  const { activeNestling } = useNestlingStore();
   if (!activeNestling) return null;
 
   const years = Array.from({ length: 50 }, (_, i) => 2000 + i); // 2000–2049

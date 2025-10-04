@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { createNestling } from "@/lib/api/nestlings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -12,11 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { inputBase } from "@/lib/utils/styles";
 import { TextField } from "./TextField";
-import { useNestStore } from "@/stores/useNestStore";
 
 export default function AddNestlingModal({
   nestId,
@@ -31,11 +29,9 @@ export default function AddNestlingModal({
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { fetchSidebar, activeFolderId } = useNestlingTreeStore();
-  const { activeNestId } = useNestStore();
+  const { addNestling, activeFolderId } = useNestlingStore();
 
   const handleExit = async () => {
-    await fetchSidebar(activeNestId!);
     setTitle("");
     setContent("");
     setIsOpen(false);
@@ -47,12 +43,12 @@ export default function AddNestlingModal({
     }
     setLoading(true);
     try {
-      await createNestling({
+      await addNestling({
         nest_id: nestId,
         folder_id: activeFolderId,
-        nestling_type: nestlingType,
         title,
         content,
+        nestling_type: nestlingType,
       });
       handleExit();
     } catch (err) {

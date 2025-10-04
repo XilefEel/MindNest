@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { getLastNestId, getLastNestling } from "@/lib/storage/session";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useNestStore } from "@/stores/useNestStore";
 
 export default function SessionRestorer() {
@@ -11,7 +11,7 @@ export default function SessionRestorer() {
   const location = useLocation();
 
   const { setActiveNestId, activeNestId } = useNestStore();
-  const { setActiveNestling, setFolderOpen } = useNestlingTreeStore();
+  const { setActiveNestling, setFolderOpen } = useNestlingStore();
 
   const hasRestoredRef = useRef(false);
 

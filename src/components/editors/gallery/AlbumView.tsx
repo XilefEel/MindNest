@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { Columns3, Download, Folder, Image, Rows3 } from "lucide-react";
 import useAutoSave from "@/hooks/useAutoSave";
@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils/general";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
 export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
-  const { activeNestling } = useNestlingTreeStore();
+  const { activeNestling } = useNestlingStore();
   if (!activeNestling || !album) return null;
 
   const [title, setTitle] = useState(album.name);

@@ -5,7 +5,7 @@ import {
   getLastBackgroundImage,
 } from "@/lib/storage/session";
 import { Nest } from "@/lib/types/nests";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useNestStore } from "@/stores/useNestStore";
 import { useEffect } from "react";
 
@@ -18,7 +18,7 @@ export default function useRestore({
   setNest: (nest: Nest) => void;
   setLoading: (loading: boolean) => void;
 }) {
-  const { setActiveNestling, setFolderOpen } = useNestlingTreeStore();
+  const { setActiveNestling, setFolderOpen } = useNestlingStore();
   const { setActiveNestId, setActiveBackgroundId, fetchBackgrounds } =
     useNestStore();
 

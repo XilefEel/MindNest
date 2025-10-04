@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { createFolder } from "@/lib/api/folders";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 import { inputBase } from "@/lib/utils/styles";
-import { useNestStore } from "@/stores/useNestStore";
 
 export default function AddFolderModal({
   nestId,
@@ -20,11 +18,9 @@ export default function AddFolderModal({
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { activeNestId } = useNestStore();
-  const { fetchSidebar } = useNestlingTreeStore();
+  const { addFolder } = useNestlingStore();
 
   const handleExit = async () => {
-    await fetchSidebar(activeNestId!);
     setTitle("");
     setIsOpen(false);
   };
@@ -33,7 +29,7 @@ export default function AddFolderModal({
     if (!title.trim()) return;
     setLoading(true);
     try {
-      await createFolder({ nest_id: nestId, name: title });
+      await addFolder({ nest_id: nestId, name: title });
       handleExit();
     } catch (err) {
       console.error("Failed to create Folder:", err);

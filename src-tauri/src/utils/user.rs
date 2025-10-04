@@ -2,6 +2,7 @@ use argon2::password_hash::SaltString;
 use argon2::{password_hash::PasswordHasher, Argon2};
 use rand::rngs::OsRng;
 use rusqlite::{Connection, Error};
+
 pub fn get_connection() -> Result<Connection, Error> {
     let path = "test.db";
     println!("Opening DB at: {}", path);

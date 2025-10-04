@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { editNote } from "@/lib/api/note";
 import { Columns3, Folder, Grid, Image, List, Rows3 } from "lucide-react";
@@ -31,7 +31,7 @@ export default function MainView({
   setCurrentView: (view: "main" | "album") => void;
   setAlbumId: (id: number | null) => void;
 }) {
-  const { activeNestling } = useNestlingTreeStore();
+  const { activeNestling } = useNestlingStore();
   if (!activeNestling) return null;
   const [title, setTitle] = useState(activeNestling.title);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");

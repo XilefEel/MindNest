@@ -1,11 +1,11 @@
 use crate::db::nestling::{
-    delete_folder_from_db, delete_nestling_from_db, get_folders_by_nest, get_nestlings_by_nest,
-    insert_folder_into_db, insert_nestling_into_db, update_nestling_folder,
+    insert_nestling_into_db, get_nestlings_by_nest, update_nestling_in_db, delete_nestling_from_db,
+    insert_folder_into_db, get_folders_by_nest, update_folder_in_db, delete_folder_from_db
 };
 use crate::models::nestling::{Folder, Nestling, NewFolder, NewNestling};
 
 #[tauri::command]
-pub fn create_nestling(data: NewNestling) -> Result<(), String> {
+pub fn create_nestling(data: NewNestling) -> Result<Nestling, String> {
     insert_nestling_into_db(data)
 }
 
@@ -15,7 +15,18 @@ pub fn get_nestlings(nest_id: i32) -> Result<Vec<Nestling>, String> {
 }
 
 #[tauri::command]
-pub fn create_folder(data: NewFolder) -> Result<(), String> {
+pub fn update_nestling(id: i64, folder_id: Option<i64>, title: Option<String>, content: Option<String>) -> Result<(), String> {
+    update_nestling_in_db(id, folder_id, title, content)
+}
+
+#[tauri::command]
+pub fn delete_nestling(id: i64) -> Result<(), String> {
+    delete_nestling_from_db(id)
+}
+
+
+#[tauri::command]
+pub fn create_folder(data: NewFolder) -> Result<Folder, String> {
     insert_folder_into_db(data)
 }
 
@@ -25,13 +36,8 @@ pub fn get_folders(nest_id: i32) -> Result<Vec<Folder>, String> {
 }
 
 #[tauri::command]
-pub fn update_folder(id: i64, folder_id: Option<i64>) -> Result<(), String> {
-    update_nestling_folder(id, folder_id)
-}
-
-#[tauri::command]
-pub fn delete_nestling(id: i64) -> Result<(), String> {
-    delete_nestling_from_db(id)
+pub fn update_folder(id: i64, name: String) -> Result<(), String> {
+    update_folder_in_db(id, name)
 }
 
 #[tauri::command]

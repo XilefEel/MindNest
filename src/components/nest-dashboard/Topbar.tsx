@@ -13,7 +13,7 @@ import SettingsModal from "../modals/SettingsModal";
 import { clearLastNestId } from "@/lib/storage/session";
 import { cn } from "@/lib/utils/general";
 import { useNestStore } from "@/stores/useNestStore";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 
 export default function Topbar({
   nest,
@@ -25,7 +25,7 @@ export default function Topbar({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const navigate = useNavigate();
-  const { setActiveNestling } = useNestlingTreeStore();
+  const { setActiveNestling } = useNestlingStore();
   const { activeBackgroundId, setActiveBackgroundId } = useNestStore();
 
   const handleExit = () => {

@@ -14,7 +14,7 @@ import {
 import { cn } from "@/lib/utils/general";
 import { getWeekRange } from "@/lib/utils/date";
 import { useNestStore } from "@/stores/useNestStore";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { usePlannerStore } from "@/stores/usePlannerStore";
 
 export default function MonthGrid({
@@ -35,7 +35,7 @@ export default function MonthGrid({
   setDirection: (direction: number) => void;
 }) {
   const { activeBackgroundId } = useNestStore();
-  const { activeNestling } = useNestlingTreeStore();
+  const { activeNestling } = useNestlingStore();
   const { fetchEvents } = usePlannerStore();
 
   const monthStart = startOfMonth(currentDate);

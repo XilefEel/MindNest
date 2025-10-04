@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useJournalStore } from "@/stores/useJournalStore";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { JournalTemplate } from "@/lib/types/journal";
 import { useNestStore } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
@@ -25,7 +25,7 @@ export default function AddTemplateModal({
   setIsOpen: (isOpen: boolean) => void;
   template?: JournalTemplate | null;
 }) {
-  const { activeNestling } = useNestlingTreeStore();
+  const { activeNestling } = useNestlingStore();
   if (!activeNestling) return null;
 
   const { activeBackgroundId } = useNestStore();

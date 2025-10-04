@@ -3,7 +3,7 @@ import { useGalleryStore } from "@/stores/useGalleryStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, PlusSquare, Download, Trash2 } from "lucide-react";
 import AddAlbumModal from "../modals/AddAlbumModal";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { toast } from "sonner";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
@@ -15,7 +15,7 @@ export default function AlbumContextMenu({
   album: GalleryAlbum;
   children: React.ReactNode;
 }) {
-  const { activeNestling } = useNestlingTreeStore();
+  const { activeNestling } = useNestlingStore();
   if (!activeNestling) return;
   const { downloadAlbum, selectImages, removeAlbum } = useGalleryStore();
 

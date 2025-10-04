@@ -1,4 +1,4 @@
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useEffect, useMemo, useState } from "react";
 import NestlingTitle from "@/components/editors/NestlingTitle";
 import { useBoardStore } from "@/stores/useBoardStore";
@@ -20,7 +20,7 @@ import {
 import { editNote } from "@/lib/api/note";
 
 export default function BoardEditor() {
-  const nestling = useNestlingTreeStore((s) => s.activeNestling);
+  const nestling = useNestlingStore((s) => s.activeNestling);
   if (!nestling)
     return <div className="p-4 text-gray-500">No note selected</div>;
 

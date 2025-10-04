@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useJournalStore } from "@/stores/useJournalStore";
 import { JournalEntry } from "@/lib/types/journal";
 import BaseModal from "./BaseModal";
@@ -17,7 +17,7 @@ export default function AddJournalEntryModal({
   setActiveEntry: (entry: JournalEntry) => void;
   children: React.ReactNode;
 }) {
-  const { activeNestling } = useNestlingTreeStore();
+  const { activeNestling } = useNestlingStore();
   if (!activeNestling) return null;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +25,7 @@ export default function AddJournalEntryModal({
   const [loading, setLoading] = useState(false);
 
   const { activeNestId } = useNestStore();
-  const { fetchSidebar } = useNestlingTreeStore();
+  const { fetchSidebar } = useNestlingStore();
 
   const { addEntry } = useJournalStore();
 

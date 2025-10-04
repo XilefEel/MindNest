@@ -4,10 +4,16 @@ mod models;
 mod utils;
 
 use handler::nest::{create_nest, delete_nest, get_nest_by_id, get_user_nests, update_nest};
+
 use handler::nestling::{
-    create_folder, create_nestling, delete_folder, delete_nestling, get_folders, get_nestlings,
-    update_folder,
+    create_nestling, get_nestlings, update_nestling, delete_nestling,
+    create_folder, get_folders, update_folder, delete_folder
 };
+
+use handler::nest_background::{
+    add_background, import_background, get_backgrounds, delete_background,
+};
+
 use handler::user::{login_user, signup_user};
 
 use handler::note::edit_note;
@@ -26,11 +32,6 @@ use handler::gallery::{
     create_album, delete_album, delete_image, get_albums,
     get_images, add_image, import_image, import_image_data, update_album, update_image,
     download_image, download_album, duplicate_image
-};
-
-use handler::nest_background::{
-    add_background, import_background, get_backgrounds,
-    delete_background,
 };
 
 use utils::user::init_db;
@@ -57,11 +58,12 @@ pub fn run() {
             
             // Nestlings & Folders
             create_nestling,
-            create_folder,
             get_nestlings,
+            update_nestling,
+            delete_nestling,
+            create_folder,
             get_folders,
             update_folder,
-            delete_nestling,
             delete_folder,
 
             // Notes

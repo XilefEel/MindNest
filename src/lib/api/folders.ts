@@ -2,21 +2,15 @@ import { invoke } from "@tauri-apps/api/core";
 import { Folder, NewFolder } from "../types/folders";
 
 export async function createFolder(data: NewFolder) {
-  await invoke<void>("create_folder", { data });
+  return await invoke<Folder>("create_folder", { data });
 }
 
 export async function getFolders(nestId: number) {
   return await invoke<Folder[]>("get_folders", { nestId });
 }
 
-export async function updateNestlingFolder(
-  nestlingId: number,
-  folderId: number | null,
-) {
-  await invoke<void>("update_folder", {
-    id: nestlingId,
-    folderId,
-  });
+export async function updateFolder(id: number, name: string) {
+  await invoke<void>("update_folder", { id, name });
 }
 
 export async function deleteFolder(folderId: number) {

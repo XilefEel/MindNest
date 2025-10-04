@@ -1,7 +1,7 @@
 import { saveLastNestling } from "@/lib/storage/session";
 import { Nestling } from "@/lib/types/nestlings";
 import { cn } from "@/lib/utils/general";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useNestStore } from "@/stores/useNestStore";
 import { useDraggable } from "@dnd-kit/core";
 import {
@@ -34,7 +34,7 @@ export default function NestlingItem({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const { activeNestling, setActiveFolderId, setActiveNestling } =
-    useNestlingTreeStore();
+    useNestlingStore();
   const { activeNestId } = useNestStore();
 
   const handleSelect = () => {

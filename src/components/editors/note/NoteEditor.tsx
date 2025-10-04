@@ -4,7 +4,7 @@ import BottomBar from "./BottomBar";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BookOpen, Pencil } from "lucide-react";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNoteStore } from "@/stores/useNoteStore";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils/general";
 import { useNestStore } from "@/stores/useNestStore";
 
 export default function NoteEditor() {
-  const nestling = useNestlingTreeStore((s) => s.activeNestling);
+  const nestling = useNestlingStore((s) => s.activeNestling);
   if (!nestling)
     return <div className="p-4 text-gray-500">No note selected</div>;
 

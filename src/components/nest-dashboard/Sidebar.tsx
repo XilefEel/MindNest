@@ -6,7 +6,7 @@ import NestlingContextMenu from "../context-menu/NestlingContextMenu";
 import { DndContext, rectIntersection } from "@dnd-kit/core";
 import LooseNestlings from "./LooseNestlings";
 import { useEffect, useMemo } from "react";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import AddNestlingModal from "../modals/AddNestlingModal";
 import AddFolderModal from "../modals/AddFolderModal";
 import ToolBarItem from "../editors/note/ToolBarItem";
@@ -34,7 +34,7 @@ export default function Sidebar({
     handleDragEnd,
     fetchSidebar,
     setActiveNestling,
-  } = useNestlingTreeStore();
+  } = useNestlingStore();
 
   const { activeBackgroundId } = useNestStore();
 

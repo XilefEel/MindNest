@@ -1,7 +1,7 @@
 import { saveLastNestling } from "@/lib/storage/session";
 import { Nestling } from "@/lib/types/nestlings";
 import { debounce } from "@/lib/utils/general";
-import { useNestlingTreeStore } from "@/stores/useNestlingStore";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useNestStore } from "@/stores/useNestStore";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -27,7 +27,7 @@ export default function useAutoSave<T = any>({
   const latestDataRef = useRef(currentData);
   const latestContextRef = useRef(context);
 
-  const { fetchSidebar, updateNestling } = useNestlingTreeStore();
+  const { fetchSidebar, updateNestling } = useNestlingStore();
   const { activeNestId } = useNestStore();
 
   const debouncedSave = useRef(
