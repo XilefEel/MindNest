@@ -1,3 +1,4 @@
+import useActiveNestling from "@/hooks/useActiveNestling";
 import { saveLastNestling } from "@/lib/storage/session";
 import { Nestling } from "@/lib/types/nestlings";
 import { cn } from "@/lib/utils/general";
@@ -33,13 +34,13 @@ export default function NestlingItem({
   nestling: Nestling;
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
-  const { activeNestling, setActiveFolderId, setActiveNestling } =
-    useNestlingStore();
+  const { setActiveFolderId, setActiveNestlingId } = useNestlingStore();
+  const { activeNestling } = useActiveNestling();
   const { activeNestId } = useNestStore();
 
   const handleSelect = () => {
-    setActiveNestling(nestling);
-    saveLastNestling(activeNestId!, nestling);
+    setActiveNestlingId(nestling.id);
+    saveLastNestling(activeNestId!, nestling.id);
   };
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =

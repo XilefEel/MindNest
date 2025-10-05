@@ -6,8 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import PlannerEvent from "./PlannerEvent";
 import { usePlannerStore } from "@/stores/usePlannerStore";
 import { NewPlannerEventType } from "@/lib/types/calendar";
-import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useNestStore } from "@/stores/useNestStore";
+import useActiveNestling from "@/hooks/useActiveNestling";
 
 export type EventType = {
   id: number;
@@ -32,8 +32,7 @@ export default function PlannerView({
   );
 
   const { activeBackgroundId } = useNestStore();
-  const { activeNestling } = useNestlingStore();
-  if (!activeNestling) return null;
+  const { activeNestling } = useActiveNestling();
   const { events, addEvent } = usePlannerStore();
 
   const handleDoubleClick = ({

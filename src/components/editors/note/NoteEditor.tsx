@@ -4,7 +4,6 @@ import BottomBar from "./BottomBar";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BookOpen, Pencil } from "lucide-react";
-import { useNestlingStore } from "@/stores/useNestlingStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNoteStore } from "@/stores/useNoteStore";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -13,21 +12,26 @@ import NestlingTitle from "../NestlingTitle";
 import { editNote } from "@/lib/api/note";
 import { cn } from "@/lib/utils/general";
 import { useNestStore } from "@/stores/useNestStore";
+import useActiveNestling from "@/hooks/useActiveNestling";
 
 export default function NoteEditor() {
-  const nestling = useNestlingStore((s) => s.activeNestling);
-  if (!nestling)
-    return <div className="p-4 text-gray-500">No note selected</div>;
+  const { activeNestling } = useActiveNestling();
 
-  const [title, setTitle] = useState(nestling.title);
+  const [title, setTitle] = useState(activeNestling.title);
   const [previewMode, setPreviewMode] = useState(false);
 
   const content = useNoteStore((s) => s.present);
   const { updateNote, undo, redo } = useNoteStore();
 
   const { autoSaveStatus } = useAutoSave({
-    target: nestling,
-    currentData: useMemo(() => ({ title, content }), [title, content]),
+    target: activeNestling,
+    currentData: useMemo(
+      () => ({
+        title,
+        content,
+      }),
+      [activeNestling.folder_id, title, content],
+    ),
     saveFunction: (id, data) => editNote(id, data.title, data.content),
   });
 
@@ -120,11 +124,11 @@ export default function NoteEditor() {
 
   // Load selected note title and content
   useEffect(() => {
-    if (nestling) {
-      setTitle(nestling.title);
-      updateNote(nestling.content);
+    if (activeNestling) {
+      setTitle(activeNestling.title);
+      updateNote(activeNestling.content);
     }
-  }, [nestling]);
+  }, [activeNestling]);
 
   useHotkeys("ctrl+z", undo, [undo]);
   useHotkeys("ctrl+shift+z, ctrl+y", redo, [redo]);

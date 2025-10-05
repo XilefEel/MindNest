@@ -15,6 +15,7 @@ import CalendarEditor from "@/components/editors/calendar/CalendarEditor";
 import JournalEditor from "@/components/editors/journal/JournalEditor";
 import GalleryEditor from "@/components/editors/gallery/GalleryEditor";
 import useRestore from "@/hooks/useRestore";
+import useActiveNestling from "@/hooks/useActiveNestling";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -23,9 +24,8 @@ export default function NestDashboardPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  const { activeNestling } = useNestlingStore();
-  const { activeNestId, activeBackgroundId, backgrounds, fetchBackgrounds } =
-    useNestStore();
+  const { activeNestling } = useActiveNestling();
+  const { activeBackgroundId, backgrounds } = useNestStore();
 
   const activeBackgroundImage = backgrounds.find(
     (background) => background.id === activeBackgroundId,
@@ -36,10 +36,6 @@ export default function NestDashboardPage() {
     : null;
 
   useRestore({ id, setNest, setLoading });
-
-  useEffect(() => {
-    fetchBackgrounds(activeNestId!);
-  }, [activeNestId]);
 
   if (loading) return <LoadingScreen />;
   if (!nest) return <p>Nest not found.</p>;

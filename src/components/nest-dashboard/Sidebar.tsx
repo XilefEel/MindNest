@@ -15,6 +15,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils/general";
 import { useNestStore } from "@/stores/useNestStore";
 import { clearLastNestling } from "@/lib/storage/session";
+import useActiveNestling from "@/hooks/useActiveNestling";
 
 export default function Sidebar({
   nestId,
@@ -25,7 +26,6 @@ export default function Sidebar({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const {
-    activeNestling,
     openFolders,
     folders,
     nestlings,
@@ -33,9 +33,10 @@ export default function Sidebar({
     handleDragStart,
     handleDragEnd,
     fetchSidebar,
-    setActiveNestling,
+    setActiveNestlingId,
   } = useNestlingStore();
 
+  const { activeNestling } = useActiveNestling();
   const { activeBackgroundId } = useNestStore();
 
   const folderGroups = useMemo(() => {
@@ -81,7 +82,7 @@ export default function Sidebar({
               "bg-teal-100 font-bold text-teal-900 dark:bg-teal-400 dark:text-white",
           )}
           onClick={() => {
-            setActiveNestling(null);
+            setActiveNestlingId(null);
             setIsSidebarOpen(false);
             clearLastNestling(nestId);
           }}

@@ -1,4 +1,3 @@
-import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useEffect, useMemo, useState } from "react";
 import NestlingTitle from "@/components/editors/NestlingTitle";
 import { useBoardStore } from "@/stores/useBoardStore";
@@ -18,13 +17,15 @@ import {
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { editNote } from "@/lib/api/note";
+import useActiveNestling from "@/hooks/useActiveNestling";
 
 export default function BoardEditor() {
-  const nestling = useNestlingStore((s) => s.activeNestling);
-  if (!nestling)
+  const { activeNestling, activeNestlingId } = useActiveNestling();
+
+  if (!activeNestling)
     return <div className="p-4 text-gray-500">No note selected</div>;
 
-  const [title, setTitle] = useState(nestling.title);
+  const [title, setTitle] = useState(activeNestling.title);
   const {
     boardData,
     fetchBoard,
@@ -43,15 +44,15 @@ export default function BoardEditor() {
   );
 
   useEffect(() => {
-    fetchBoard(nestling.id);
-  }, [fetchBoard, nestling.id]);
+    fetchBoard(activeNestlingId!);
+  }, [fetchBoard, activeNestlingId]);
 
   useEffect(() => {
-    setTitle(nestling.title);
-  }, [nestling.title]);
+    setTitle(activeNestling.title);
+  }, [activeNestling.title]);
 
   useAutoSave({
-    target: nestling,
+    target: activeNestling,
     currentData: useMemo(() => ({ title }), [title]),
     saveFunction: (id, data) => editNote(id, data.title, ""),
   });
@@ -110,7 +111,7 @@ export default function BoardEditor() {
                   }
 
                   addColumn({
-                    nestling_id: nestling.id,
+                    nestling_id: activeNestlingId!,
                     title: "New Column",
                     order_index: boardData.columns.length + 1,
                   });

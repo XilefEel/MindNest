@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { editNote } from "@/lib/api/note";
 import { Columns3, Folder, Grid, Image, List, Rows3 } from "lucide-react";
@@ -23,6 +22,7 @@ import {
 } from "@dnd-kit/core";
 import ImageLayout from "./ImageLayout";
 import { toast } from "sonner";
+import useActiveNestling from "@/hooks/useActiveNestling";
 
 export default function MainView({
   setCurrentView,
@@ -31,8 +31,7 @@ export default function MainView({
   setCurrentView: (view: "main" | "album") => void;
   setAlbumId: (id: number | null) => void;
 }) {
-  const { activeNestling } = useNestlingStore();
-  if (!activeNestling) return null;
+  const { activeNestling } = useActiveNestling();
   const [title, setTitle] = useState(activeNestling.title);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [layoutMode, setLayoutMode] = useState<"row" | "column">("row");

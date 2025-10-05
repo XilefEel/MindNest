@@ -2,7 +2,6 @@ import { useMemo, useRef, useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { RowsPhotoAlbum, ColumnsPhotoAlbum } from "react-photo-album";
 import { Lightbox } from "yet-another-react-lightbox";
-import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { Upload } from "lucide-react";
 import { cn } from "@/lib/utils/general";
@@ -13,6 +12,7 @@ import "yet-another-react-lightbox/styles.css";
 import ImageCard from "./ImageCard";
 import { GalleryAlbum } from "@/lib/types/gallery";
 import { toast } from "sonner";
+import useActiveNestling from "@/hooks/useActiveNestling";
 
 export default function ImageLayout({
   album,
@@ -21,7 +21,7 @@ export default function ImageLayout({
   album?: GalleryAlbum;
   layoutMode: "row" | "column";
 }) {
-  const { activeNestling } = useNestlingStore();
+  const { activeNestling } = useActiveNestling();
   if (!activeNestling) return null;
   const { images, fetchImages, editImage, uploadImage, removeImage } =
     useGalleryStore();

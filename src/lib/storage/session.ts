@@ -1,10 +1,9 @@
 import { Store } from "@tauri-apps/plugin-store";
-import { Nestling } from "@/lib/types/nestlings";
 import { User } from "@/lib/types/user";
 
 let storePromise: Promise<Store> | null = null;
 
-type LastNestlings = Record<string, Nestling>;
+type LastNestlings = Record<string, number>;
 type LastBackgroundImages = Record<string, number>;
 
 function getStore() {
@@ -55,15 +54,15 @@ export async function clearLastNestId() {
   return deleteItem("lastNestId");
 }
 
-export async function saveLastNestling(nestId: number, nestling: Nestling) {
+export async function saveLastNestling(nestId: number, nestlingId: number) {
   const current = (await getItem<LastNestlings>("lastNestlings")) || {};
-  current[nestId.toString()] = nestling;
+  current[nestId.toString()] = nestlingId;
   await setItem<LastNestlings>("lastNestlings", current);
 }
 
 export async function getLastNestling(
   nestId: number | null,
-): Promise<Nestling | null> {
+): Promise<number | null> {
   if (nestId == null) return null;
   const current = (await getItem<LastNestlings>("lastNestlings")) || {};
   return current[nestId.toString()] ?? null;

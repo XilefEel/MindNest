@@ -20,7 +20,7 @@ export default function DeleteModal({
   const [isOpen, setIsOpen] = useState(false);
 
   const { activeNestId } = useNestStore();
-  const { setActiveNestling, deleteNestling, deleteFolder } =
+  const { setActiveNestlingId, deleteNestling, deleteFolder } =
     useNestlingStore();
 
   const handleExit = async () => {
@@ -35,7 +35,7 @@ export default function DeleteModal({
         await deleteNestling(nestlingId!);
         if (lastNestling?.id === nestlingId) {
           await clearLastNestling(activeNestId!);
-          setActiveNestling(null);
+          setActiveNestlingId(null);
         }
         toast.success("Nestling deleted");
       } else if (type === "folder") {

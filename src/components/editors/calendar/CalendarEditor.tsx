@@ -4,16 +4,16 @@ import { AnimatePresence } from "framer-motion";
 import MonthView from "./MonthView";
 import PlannerView from "./PlannerView";
 import NestlingTitle from "../NestlingTitle";
-import { useNestlingStore } from "@/stores/useNestlingStore";
 import useAutoSave from "@/hooks/useAutoSave";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils/general";
 import { editNote } from "@/lib/api/note";
+import useActiveNestling from "@/hooks/useActiveNestling";
 
 export default function CalendarEditor() {
-  const { activeNestling } = useNestlingStore();
-  if (!activeNestling) return null;
+  const { activeNestling } = useActiveNestling();
+
   const [title, setTitle] = useState(activeNestling.title);
 
   const [selectedDate, setSelectedDate] = useState(new Date());

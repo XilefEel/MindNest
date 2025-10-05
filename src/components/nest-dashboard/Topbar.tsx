@@ -25,14 +25,14 @@ export default function Topbar({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const navigate = useNavigate();
-  const { setActiveNestling } = useNestlingStore();
+  const { setActiveNestlingId } = useNestlingStore();
   const { activeBackgroundId, setActiveBackgroundId } = useNestStore();
 
   const handleExit = () => {
     navigate("/dashboard");
     clearLastNestId();
     setActiveBackgroundId(null);
-    setActiveNestling(null);
+    setActiveNestlingId(null);
   };
   return (
     <nav className="flex w-full items-center justify-between border-b p-2 pt-8 sm:p-4 sm:pt-10">

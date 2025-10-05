@@ -10,8 +10,8 @@ export default function SessionRestorer() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { setActiveNestId, activeNestId } = useNestStore();
-  const { setActiveNestling, setFolderOpen } = useNestlingStore();
+  const { setActiveNestId } = useNestStore();
+  const { setActiveNestlingId, setFolderOpen } = useNestlingStore();
 
   const hasRestoredRef = useRef(false);
 
@@ -20,25 +20,31 @@ export default function SessionRestorer() {
       user && !loading && location.pathname === "/" && !hasRestoredRef.current;
 
     if (!shouldRestore) return;
-
     hasRestoredRef.current = true;
 
     const restoreSession = async () => {
       const lastNestId = await getLastNestId();
-      const lastNestling = await getLastNestling(activeNestId!);
 
-      if (lastNestId) {
-        setActiveNestId(lastNestId);
-        navigate(`/nest/${lastNestId}`);
+      if (!lastNestId) {
+        navigate("/dashboard");
+        return;
+      }
+      setActiveNestId(lastNestId);
+      navigate(`/nest/${lastNestId}`);
+
+      const lastNestlingId = await getLastNestling(lastNestId);
+
+      if (lastNestlingId != null) {
+        const lastNestling = useNestlingStore
+          .getState()
+          .nestlings.find((n) => n.id === lastNestlingId);
 
         if (lastNestling) {
-          setActiveNestling(lastNestling);
-          if (lastNestling.folder_id) {
+          setActiveNestlingId(lastNestling.id);
+          if (lastNestling.folder_id != null) {
             setFolderOpen(lastNestling.folder_id, true);
           }
         }
-      } else {
-        navigate("/dashboard");
       }
     };
 
@@ -49,7 +55,7 @@ export default function SessionRestorer() {
     location.pathname,
     navigate,
     setActiveNestId,
-    setActiveNestling,
+    setActiveNestlingId,
     setFolderOpen,
   ]);
 

@@ -10,10 +10,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import useActiveNestling from "@/hooks/useActiveNestling";
 import { JournalTemplate } from "@/lib/types/journal";
 import { cn } from "@/lib/utils/general";
 import { useJournalStore } from "@/stores/useJournalStore";
-import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useNestStore } from "@/stores/useNestStore";
 import { Plus, ChevronDown, Trash, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -23,8 +23,7 @@ export function NewEntryButton({
 }: {
   setIsEntryOpen: (isOpen: boolean) => void;
 }) {
-  const { activeNestling } = useNestlingStore();
-  if (!activeNestling) return null;
+  const { activeNestling } = useActiveNestling();
 
   const { activeBackgroundId } = useNestStore();
   const { templates, useTemplate, fetchTemplates, deleteTemplate } =

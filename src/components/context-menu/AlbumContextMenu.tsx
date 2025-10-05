@@ -15,13 +15,13 @@ export default function AlbumContextMenu({
   album: GalleryAlbum;
   children: React.ReactNode;
 }) {
-  const { activeNestling } = useNestlingStore();
-  if (!activeNestling) return;
+  const { activeNestlingId } = useNestlingStore();
+  if (!activeNestlingId) return;
   const { downloadAlbum, selectImages, removeAlbum } = useGalleryStore();
 
   const handleSelectImage = async (albumId: number) => {
     try {
-      const selected = await selectImages(activeNestling.id, albumId);
+      const selected = await selectImages(activeNestlingId, albumId);
       if (selected) {
         toast.success("Image uploaded successfully!");
       } else {
@@ -56,7 +56,7 @@ export default function AlbumContextMenu({
         <>
           {/* Using ContextMenu.Item instead of ContextMenuItem
               because modal triggers don't work with custom ContextMenuItem component*/}
-          <AddAlbumModal nestling_id={activeNestling.id} album={album}>
+          <AddAlbumModal nestling_id={activeNestlingId} album={album}>
             <ContextMenu.Item
               className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
               onSelect={(e) => {

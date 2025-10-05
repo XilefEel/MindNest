@@ -18,7 +18,8 @@ export default function useRestore({
   setNest: (nest: Nest) => void;
   setLoading: (loading: boolean) => void;
 }) {
-  const { setActiveNestling, setFolderOpen } = useNestlingStore();
+  const { setActiveNestlingId, setFolderOpen, fetchSidebar } =
+    useNestlingStore();
   const { setActiveNestId, setActiveBackgroundId, fetchBackgrounds } =
     useNestStore();
 
@@ -27,38 +28,42 @@ export default function useRestore({
   useEffect(() => {
     async function restore() {
       setLoading(true);
-
       try {
-        //fetch last nest
+        // Fetch last nest and set as active
         const lastNest = await getNestFromId(Number(id));
         setNest(lastNest);
         setActiveNestId(lastNest.id);
         await saveLastNestId(lastNest.id);
 
-        // fetch last nestling and background
-        const [lastNestling, lastBackgroundImage] = await Promise.all([
+        // Fetch last nestling and background from store and db
+        const [lastNestlingId, lastBackgroundImage] = await Promise.all([
           getLastNestling(lastNest.id),
           getLastBackgroundImage(lastNest.id),
+          fetchSidebar(lastNest.id),
           fetchBackgrounds(lastNest.id),
         ]);
 
+        // Find last nestling from zustand store
+        const lastNestling = useNestlingStore
+          .getState()
+          .nestlings.find((n) => n.id === lastNestlingId);
+
+        // Set last nestling and its folder as active
         if (lastNestling && Number(id) === lastNestling.nest_id) {
-          setActiveNestling(lastNestling);
-          if (lastNestling.folder_id) {
+          setActiveNestlingId(lastNestling.id);
+          if (lastNestling.folder_id)
             setFolderOpen(lastNestling.folder_id, true);
-          }
         }
 
-        if (lastBackgroundImage != null) {
+        // Set last background
+        if (lastBackgroundImage != null)
           setActiveBackgroundId(lastBackgroundImage);
-        }
       } catch (error) {
         console.error("Failed to restore", error);
       } finally {
         setLoading(false);
       }
     }
-
     restore();
   }, [id]);
 }

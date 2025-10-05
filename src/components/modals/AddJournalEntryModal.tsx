@@ -9,6 +9,7 @@ import { inputBase } from "@/lib/utils/styles";
 import { TextField } from "./TextField";
 import { toast } from "sonner";
 import { useNestStore } from "@/stores/useNestStore";
+import useActiveNestling from "@/hooks/useActiveNestling";
 
 export default function AddJournalEntryModal({
   setActiveEntry,
@@ -17,8 +18,7 @@ export default function AddJournalEntryModal({
   setActiveEntry: (entry: JournalEntry) => void;
   children: React.ReactNode;
 }) {
-  const { activeNestling } = useNestlingStore();
-  if (!activeNestling) return null;
+  const { activeNestling } = useActiveNestling();
 
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");

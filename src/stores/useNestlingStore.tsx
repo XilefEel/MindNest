@@ -14,10 +14,11 @@ import {
 import { Folder, NewFolder } from "@/lib/types/folders";
 import { Nestling, NewNestling } from "@/lib/types/nestlings";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
+import { saveLastNestling } from "@/lib/storage/session";
 
 type NestlingState = {
   nestlings: Nestling[];
-  activeNestling: Nestling | null;
+  activeNestlingId: number | null;
   folders: Folder[];
   activeFolderId: number | null;
 
@@ -26,7 +27,7 @@ type NestlingState = {
   loading: boolean;
   error: string | null;
 
-  setActiveNestling: (nestling: Nestling | null) => void;
+  setActiveNestlingId: (nestlingId: number | null) => void;
   setActiveFolderId: (folder: number | null) => void;
   setFolderOpen: (folder_ids: number, isOpen: boolean) => void;
   toggleFolder: (folderId: number) => void;
@@ -48,7 +49,7 @@ type NestlingState = {
 export const useNestlingStore = create<NestlingState>((set, get) => ({
   nestlings: [],
   folders: [],
-  activeNestling: null,
+  activeNestlingId: null,
   activeFolderId: null,
 
   openFolders: {},
@@ -56,7 +57,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   loading: false,
   error: null,
 
-  setActiveNestling: (nestling) => set({ activeNestling: nestling }),
+  setActiveNestlingId: (number) => set({ activeNestlingId: number }),
 
   setActiveFolderId: (folderId) => set({ activeFolderId: folderId }),
 
@@ -173,7 +174,6 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     }
   },
 
-  // Helpers
   fetchSidebar: async (nestId) => {
     try {
       const [fetchedFolders, fetchedNestlings] = await Promise.all([
@@ -232,11 +232,15 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
       } else if (overType === "loose") {
         await editNestling(nestlingId, null);
       }
+
+      await get().fetchSidebar(nestId);
+      await saveLastNestling(nestId, nestlingId);
+
+      set({ activeNestlingId: nestlingId });
     } catch (err) {
       console.error("Failed to update folder:", err);
     } finally {
       set({ loading: false });
-      await get().fetchSidebar(nestId);
     }
   },
 }));
