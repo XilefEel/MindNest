@@ -3,6 +3,8 @@ import { Edit3, Trash2, FileText, FolderPlus, Copy } from "lucide-react";
 import DeleteModal from "../modals/DeleteModal";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
+import AddFolderModal from "../modals/AddFolderModal";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function FolderContextMenu({
   folderId,
@@ -11,15 +13,22 @@ export default function FolderContextMenu({
   folderId: number;
   children: React.ReactNode;
 }) {
+  const { activeNestId } = useNestStore();
   return (
     <BaseContextMenu
       content={
         <>
-          <ContextMenuItem
-            action={() => console.log("Rename folder", folderId)}
-            Icon={Edit3}
-            text="Rename Folder"
-          />
+          <AddFolderModal folderId={folderId} nestId={activeNestId!}>
+            <ContextMenu.Item
+              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
+              onSelect={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <Edit3 className="size-4" />
+              Rename Folder
+            </ContextMenu.Item>
+          </AddFolderModal>
 
           <ContextMenuItem
             action={() => console.log("Duplicate folder", folderId)}
@@ -32,7 +41,7 @@ export default function FolderContextMenu({
           <ContextMenuItem
             action={() => console.log("New nestling in folder", folderId)}
             Icon={FileText}
-            text="New Note"
+            text="New Nestling"
           />
 
           <ContextMenuItem

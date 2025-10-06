@@ -16,11 +16,12 @@ import {
   SortableContext,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { editNote } from "@/lib/api/note";
 import useActiveNestling from "@/hooks/useActiveNestling";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 
 export default function BoardEditor() {
   const { activeNestling, activeNestlingId } = useActiveNestling();
+  const { updateNestling } = useNestlingStore();
 
   if (!activeNestling)
     return <div className="p-4 text-gray-500">No note selected</div>;
@@ -53,8 +54,15 @@ export default function BoardEditor() {
 
   useAutoSave({
     target: activeNestling,
-    currentData: useMemo(() => ({ title }), [title]),
-    saveFunction: (id, data) => editNote(id, data.title, ""),
+    currentData: useMemo(
+      () => ({
+        title,
+        folder_id: activeNestling.folder_id ?? null,
+      }),
+      [activeNestling.folder_id, title],
+    ),
+
+    saveFunction: (id, data) => updateNestling(id, data),
   });
 
   const columns = boardData?.columns || [];

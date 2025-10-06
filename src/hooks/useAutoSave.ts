@@ -47,10 +47,7 @@ export default function useAutoSave<T = any>({
         setTimeout(() => setAutoSaveStatus("idle"), 1000);
 
         if ((currentTarget as Nestling).nestling_type) {
-          saveLastNestling(activeNestId!, {
-            ...(currentTarget as Nestling),
-            ...updatedData,
-          });
+          saveLastNestling(activeNestId!, currentTarget.id);
           fetchSidebar(activeNestId!);
           updateNestling(currentTarget.id, updatedData);
         }

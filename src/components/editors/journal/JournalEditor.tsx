@@ -4,11 +4,11 @@ import NestlingTitle from "../NestlingTitle";
 import { useJournalStore } from "@/stores/useJournalStore";
 import JournalSidebar from "./JournalSidebar";
 import useAutoSave from "@/hooks/useAutoSave";
-import { editNote } from "@/lib/api/note";
 import { NewEntryButton } from "./NewEntryButton";
 import { useNestStore } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 import useActiveNestling from "@/hooks/useActiveNestling";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 
 export default function JournalingApp() {
   const { activeBackgroundId } = useNestStore();
@@ -22,10 +22,18 @@ export default function JournalingApp() {
   const [wordCount, setWordCount] = useState(0);
   const [isEntryOpen, setIsEntryOpen] = useState(false);
 
+  const { updateNestling } = useNestlingStore();
   useAutoSave({
     target: activeNestling,
-    currentData: useMemo(() => ({ title }), [title]),
-    saveFunction: (id, data) => editNote(id, data.title, ""),
+    currentData: useMemo(
+      () => ({
+        title,
+        folder_id: activeNestling.folder_id ?? null,
+      }),
+      [activeNestling.folder_id, title],
+    ),
+
+    saveFunction: (id, data) => updateNestling(id, data),
   });
 
   useAutoSave({

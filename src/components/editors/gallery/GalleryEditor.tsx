@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useGalleryStore } from "@/stores/useGalleryStore";
-import { editNote } from "@/lib/api/note";
 import { ArrowLeft, Plus, Upload } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import NestlingTitle from "../NestlingTitle";
@@ -13,6 +12,7 @@ import { cn } from "@/lib/utils/general";
 import AddAlbumModal from "@/components/modals/AddAlbumModal";
 import { toast } from "sonner";
 import useActiveNestling from "@/hooks/useActiveNestling";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 
 export default function GalleryEditor() {
   const { activeNestling } = useActiveNestling();
@@ -41,10 +41,18 @@ export default function GalleryEditor() {
 
   const { fetchImages, fetchAlbums, selectImages } = useGalleryStore();
 
+  const { updateNestling } = useNestlingStore();
   useAutoSave({
     target: activeNestling,
-    currentData: useMemo(() => ({ title }), [title]),
-    saveFunction: (id, data) => editNote(id, data.title, ""),
+    currentData: useMemo(
+      () => ({
+        title,
+        folder_id: activeNestling.folder_id ?? null,
+      }),
+      [activeNestling.folder_id, title],
+    ),
+
+    saveFunction: (id, data) => updateNestling(id, data),
   });
 
   useEffect(() => {

@@ -9,13 +9,14 @@ import { useNoteStore } from "@/stores/useNoteStore";
 import { useHotkeys } from "react-hotkeys-hook";
 import useAutoSave from "@/hooks/useAutoSave";
 import NestlingTitle from "../NestlingTitle";
-import { editNote } from "@/lib/api/note";
 import { cn } from "@/lib/utils/general";
 import { useNestStore } from "@/stores/useNestStore";
 import useActiveNestling from "@/hooks/useActiveNestling";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 
 export default function NoteEditor() {
   const { activeNestling } = useActiveNestling();
+  const { updateNestling } = useNestlingStore();
 
   const [title, setTitle] = useState(activeNestling.title);
   const [previewMode, setPreviewMode] = useState(false);
@@ -29,10 +30,12 @@ export default function NoteEditor() {
       () => ({
         title,
         content,
+        folder_id: activeNestling.folder_id ?? null,
       }),
       [activeNestling.folder_id, title, content],
     ),
-    saveFunction: (id, data) => editNote(id, data.title, data.content),
+
+    saveFunction: (id, data) => updateNestling(id, data),
   });
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);

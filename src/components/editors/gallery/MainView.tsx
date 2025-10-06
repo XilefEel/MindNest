@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { useGalleryStore } from "@/stores/useGalleryStore";
-import { editNote } from "@/lib/api/note";
 import { Columns3, Folder, Grid, Image, List, Rows3 } from "lucide-react";
 import { cn } from "@/lib/utils/general";
 import useAutoSave from "@/hooks/useAutoSave";
@@ -23,6 +22,7 @@ import {
 import ImageLayout from "./ImageLayout";
 import { toast } from "sonner";
 import useActiveNestling from "@/hooks/useActiveNestling";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 
 export default function MainView({
   setCurrentView,
@@ -48,10 +48,18 @@ export default function MainView({
     handleDragEnd,
   } = useGalleryStore();
 
+  const { updateNestling } = useNestlingStore();
   useAutoSave({
     target: activeNestling,
-    currentData: useMemo(() => ({ title }), [title]),
-    saveFunction: (id, data) => editNote(id, data.title, ""),
+    currentData: useMemo(
+      () => ({
+        title,
+        folder_id: activeNestling.folder_id ?? null,
+      }),
+      [activeNestling.folder_id, title],
+    ),
+
+    saveFunction: (id, data) => updateNestling(id, data),
   });
 
   const sensors = useSensors(

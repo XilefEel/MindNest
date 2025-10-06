@@ -33,7 +33,7 @@ type NestlingState = {
   toggleFolder: (folderId: number) => void;
 
   addNestling: (nestling: NewNestling) => Promise<void>;
-  updateNestling: (id: number, updates: Partial<Nestling>) => void;
+  updateNestling: (id: number, updates: Partial<Nestling>) => Promise<void>;
   deleteNestling: (nestlingId: number) => Promise<void>;
 
   addFolder: (folder: NewFolder) => Promise<void>;
@@ -46,7 +46,7 @@ type NestlingState = {
   handleDragEnd: (event: DragEndEvent, nestId: number) => Promise<void>;
 };
 
-export const useNestlingStore = create<NestlingState>((set, get) => ({
+export const useNestlingStore = create<NestlingState>((set) => ({
   nestlings: [],
   folders: [],
   activeNestlingId: null,
@@ -85,6 +85,52 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     }
   },
 
+  updateNestling: async (id, updates) => {
+    try {
+      await editNestling(
+        id,
+        updates.folder_id ?? null,
+        updates.title,
+        updates.content,
+      );
+
+      set((state) => ({
+        nestlings: state.nestlings
+          .map((n) =>
+            n.id === id
+              ? {
+                  ...n,
+                  folder_id: updates.folder_id ?? n.folder_id,
+                  title: updates.title ?? n.title,
+                  content: updates.content ?? n.content,
+                }
+              : n,
+          )
+          .sort((a, b) => a.title.localeCompare(b.title)),
+      }));
+    } catch (error) {
+      set({ error: String(error) });
+      throw error;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  deleteNestling: async (nestlingId) => {
+    set({ loading: true, error: null });
+    try {
+      await deleteNestling(nestlingId);
+      set((state) => ({
+        nestlings: state.nestlings.filter((n) => n.id !== nestlingId),
+      }));
+    } catch (error) {
+      set({ error: String(error) });
+      throw error;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
   addFolder: async (folder) => {
     set({ loading: true, error: null });
     try {
@@ -101,55 +147,13 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     }
   },
 
-  updateNestling: async (id, updates) => {
-    try {
-      await editNestling(
-        id,
-        updates.folder_id ?? null,
-        updates.title,
-        updates.content,
-      );
-
-      set((state) => ({
-        nestlings: state.nestlings.map((n) =>
-          n.id === id
-            ? {
-                ...n,
-                folder_id: updates.folder_id ?? n.folder_id,
-                title: updates.title ?? n.title,
-                content: updates.content ?? n.content,
-              }
-            : n,
-        ),
-      }));
-    } catch (error) {
-      set({ error: String(error) });
-      throw error;
-    } finally {
-      set({ loading: false });
-    }
-  },
-
   updateFolder: async (id, name) => {
     try {
       await updateFolder(id, name);
       set((state) => ({
-        folders: state.folders.map((f) => (f.id === id ? { ...f, name } : f)),
-      }));
-    } catch (error) {
-      set({ error: String(error) });
-      throw error;
-    } finally {
-      set({ loading: false });
-    }
-  },
-
-  deleteNestling: async (nestlingId) => {
-    set({ loading: true, error: null });
-    try {
-      await deleteNestling(nestlingId);
-      set((state) => ({
-        nestlings: state.nestlings.filter((n) => n.id !== nestlingId),
+        folders: state.folders
+          .map((f) => (f.id === id ? { ...f, name } : f))
+          .sort((a, b) => a.name.localeCompare(b.name)),
       }));
     } catch (error) {
       set({ error: String(error) });
@@ -226,14 +230,17 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     const nestlingId = Number(activeIdStr);
 
     try {
-      if (overType === "folder") {
-        const folderId = Number(overIdStr);
-        await editNestling(nestlingId, folderId);
-      } else if (overType === "loose") {
-        await editNestling(nestlingId, null);
-      }
+      const folderId = overType === "folder" ? Number(overIdStr) : null;
+      await editNestling(nestlingId, folderId);
 
-      await get().fetchSidebar(nestId);
+      set((state) => ({
+        nestlings: state.nestlings
+          .map((n) =>
+            n.id === nestlingId ? { ...n, folder_id: Number(overIdStr) } : n,
+          )
+          .sort((a, b) => a.title.localeCompare(b.title)),
+      }));
+
       await saveLastNestling(nestId, nestlingId);
 
       set({ activeNestlingId: nestlingId });
