@@ -60,57 +60,55 @@ export default function AddNestlingModal({
   };
 
   return (
-    <div>
-      <BaseModal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        title="Create a New Nestling"
-        description="Give your nestling a title. You can always change it later."
-        body={
-          <>
-            <TextField label="Title">
-              <Input
-                value={title}
-                autoFocus
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. My First Note, My Journal, My Board"
-                className={inputBase}
-              />
-            </TextField>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Select Nestling Type
-            </label>
-            <Select value={nestlingType} onValueChange={setNestlingType}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a type" />
-              </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-gray-800">
-                <SelectGroup>
-                  <SelectLabel>Nestling Type</SelectLabel>
-                  <SelectItem value="note">Note</SelectItem>
-                  <SelectItem value="board">Board</SelectItem>
-                  <SelectItem value="calendar">Calendar</SelectItem>
-                  <SelectItem value="journal">Journal</SelectItem>
-                  <SelectItem value="gallery">Gallery</SelectItem>
-                  <SelectItem value="mindmap">Mindmap</SelectItem>
-                  <SelectItem value="database">Database</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </>
-        }
-        footer={
-          <Button
-            onClick={handleCreateNestling}
-            disabled={loading || !title.trim()}
-            className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
-          >
-            {loading ? "Creating..." : "Create"}
-          </Button>
-        }
-      >
-        {children}
-      </BaseModal>
-    </div>
+    <BaseModal
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      title="Create a New Nestling"
+      description="Give your nestling a title. You can always change it later."
+      body={
+        <>
+          <TextField label="Title">
+            <Input
+              value={title}
+              autoFocus
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. My First Note, My Journal, My Board"
+              className={inputBase}
+            />
+          </TextField>
+          <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Select Nestling Type
+          </label>
+          <Select value={nestlingType} onValueChange={setNestlingType}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select a type" />
+            </SelectTrigger>
+            <SelectContent className="bg-white dark:bg-gray-800">
+              <SelectGroup>
+                <SelectLabel>Nestling Type</SelectLabel>
+                <SelectItem value="note">Note</SelectItem>
+                <SelectItem value="board">Board</SelectItem>
+                <SelectItem value="calendar">Calendar</SelectItem>
+                <SelectItem value="journal">Journal</SelectItem>
+                <SelectItem value="gallery">Gallery</SelectItem>
+                <SelectItem value="mindmap">Mindmap</SelectItem>
+                <SelectItem value="database">Database</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </>
+      }
+      footer={
+        <Button
+          onClick={handleCreateNestling}
+          disabled={loading || !title.trim()}
+          className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
+        >
+          {loading ? "Creating..." : "Create"}
+        </Button>
+      }
+    >
+      {children}
+    </BaseModal>
   );
 }

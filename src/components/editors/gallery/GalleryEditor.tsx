@@ -63,12 +63,14 @@ export default function GalleryEditor() {
 
   const handleSelectImage = async () => {
     try {
+      setIsUploading(true);
       const selected = await selectImages(activeNestling.id, albumId);
       if (selected) {
         toast.success("Image uploaded successfully!");
       } else {
         toast.error("No image selected");
       }
+      setIsUploading(false);
     } catch (error) {
       toast.error("Failed to upload image");
     }

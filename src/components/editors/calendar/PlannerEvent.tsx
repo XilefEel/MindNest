@@ -52,7 +52,7 @@ export default function PlannerEvent({
         }}
         onDragStop={(e, d) => {
           const currentDay = getDayFromDate(event.date); // 0–6
-
+          console.log(e);
           // Absolute positions
           const absoluteX = currentDay * colWidth + d.x;
           const absoluteY = d.y;
@@ -73,6 +73,7 @@ export default function PlannerEvent({
           updateEvent({ ...event, date: newDate, start_time: newHour });
         }}
         onResizeStop={(e, dir, ref, delta) => {
+          console.log(e, dir, ref, delta);
           const newDuration = Math.round(ref.offsetHeight / 64);
 
           if (dir === "top") {

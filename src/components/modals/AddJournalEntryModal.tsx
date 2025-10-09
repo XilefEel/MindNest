@@ -37,6 +37,7 @@ export default function AddJournalEntryModal({
 
   const createNewEntry = async () => {
     try {
+      setLoading(true);
       const newEntry = await addEntry({
         nestling_id: activeNestling.id,
         title: title,
@@ -44,6 +45,7 @@ export default function AddJournalEntryModal({
         entry_date: new Date().toISOString().split("T")[0],
       });
       setActiveEntry(newEntry);
+      setLoading(false);
       toast.success(`Journal entry "${title}" created successfully!`);
       handleExit();
     } catch (error) {

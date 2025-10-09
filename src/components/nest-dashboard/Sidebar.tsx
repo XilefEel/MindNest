@@ -1,8 +1,6 @@
 import { FilePlus, FolderPlus, Home } from "lucide-react";
 import FolderTree from "./FolderTree";
 import NestlingItem from "./NestlingItem";
-import FolderContextMenu from "../context-menu/FolderContextMenu";
-import NestlingContextMenu from "../context-menu/NestlingContextMenu";
 import { DndContext, rectIntersection } from "@dnd-kit/core";
 import LooseNestlings from "./LooseNestlings";
 import { useEffect, useMemo } from "react";
@@ -29,7 +27,6 @@ export default function Sidebar({
     openFolders,
     folders,
     nestlings,
-    toggleFolder,
     handleDragStart,
     handleDragEnd,
     fetchSidebar,
@@ -49,6 +46,12 @@ export default function Sidebar({
   const looseNestlings = useMemo(() => {
     return nestlings.filter((n) => n.folder_id === null);
   }, [nestlings]);
+
+  const handleHomeClick = () => {
+    setActiveNestlingId(null);
+    setIsSidebarOpen(false);
+    clearLastNestling(nestId);
+  };
 
   useEffect(() => {
     if (nestId) {
@@ -81,11 +84,8 @@ export default function Sidebar({
             activeNestling === null &&
               "bg-teal-100 font-bold text-teal-900 dark:bg-teal-400 dark:text-white",
           )}
-          onClick={() => {
-            setActiveNestlingId(null);
-            setIsSidebarOpen(false);
-            clearLastNestling(nestId);
-          }}
+          onClick={handleHomeClick}
+          onDoubleClick={(e) => e.stopPropagation()}
         >
           <Home className="size-4" />
           <span>Home</span>
@@ -101,26 +101,22 @@ export default function Sidebar({
               <motion.div
                 key={folder.id}
                 layout="position"
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
                 transition={{
                   type: "spring",
-                  stiffness: 250,
-                  damping: 25,
+                  stiffness: 300,
+                  damping: 30,
                 }}
               >
-                <FolderContextMenu folderId={folder.id} key={folder.id}>
-                  <div>
-                    <FolderTree
-                      folder={folder}
-                      nestlings={folder.nestlings}
-                      isOpen={openFolders[folder.id] || false}
-                      setIsSidebarOpen={setIsSidebarOpen}
-                      onToggle={() => toggleFolder(folder.id)}
-                    />
-                  </div>
-                </FolderContextMenu>
+                <FolderTree
+                  key={folder.id}
+                  folder={folder}
+                  nestlings={folder.nestlings}
+                  isOpen={openFolders[folder.id] || false}
+                  setIsSidebarOpen={setIsSidebarOpen}
+                />
               </motion.div>
             ))}
 
@@ -129,26 +125,21 @@ export default function Sidebar({
                 <motion.div
                   key={nestling.id}
                   layout="position"
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                  whileTap={{ scale: 0.98 }}
                   transition={{
                     type: "spring",
-                    stiffness: 250,
-                    damping: 25,
+                    stiffness: 300,
+                    damping: 30,
                   }}
                 >
-                  <NestlingContextMenu
-                    nestlingId={nestling.id}
+                  <NestlingItem
                     key={nestling.id}
-                  >
-                    <div>
-                      <NestlingItem
-                        nestling={nestling}
-                        setIsSidebarOpen={setIsSidebarOpen}
-                      />
-                    </div>
-                  </NestlingContextMenu>
+                    nestling={nestling}
+                    setIsSidebarOpen={setIsSidebarOpen}
+                  />
                 </motion.div>
               ))}
             </LooseNestlings>

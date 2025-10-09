@@ -235,9 +235,7 @@ export const useNestlingStore = create<NestlingState>((set) => ({
 
       set((state) => ({
         nestlings: state.nestlings
-          .map((n) =>
-            n.id === nestlingId ? { ...n, folder_id: Number(overIdStr) } : n,
-          )
+          .map((n) => (n.id === nestlingId ? { ...n, folder_id: folderId } : n))
           .sort((a, b) => a.title.localeCompare(b.title)),
       }));
 

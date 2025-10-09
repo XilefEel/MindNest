@@ -29,11 +29,11 @@ export default function DeleteModal({
 
   const handleDelete = async (type: "nestling" | "folder") => {
     if (!nestlingId && !folderId) return;
-    const lastNestling = await getLastNestling(activeNestId!);
+    const lastNestlingId = await getLastNestling(activeNestId!);
     try {
       if (type === "nestling") {
         await deleteNestling(nestlingId!);
-        if (lastNestling?.id === nestlingId) {
+        if (lastNestlingId === nestlingId) {
           await clearLastNestling(activeNestId!);
           setActiveNestlingId(null);
         }
