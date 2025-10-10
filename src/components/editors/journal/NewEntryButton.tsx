@@ -1,5 +1,5 @@
 import AddJournalEntryModal from "@/components/modals/AddJournalEntryModal";
-import AddTemplateModal from "@/components/modals/AddTemplateModal";
+import AddTemplateModal from "@/components/modals/TemplateModal";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

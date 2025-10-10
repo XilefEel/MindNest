@@ -5,7 +5,7 @@ import { useNestStore } from "@/stores/useNestStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { cn } from "@/lib/utils/general";
 import Topbar from "@/components/nest-dashboard/Topbar";
-import Sidebar from "@/components/nest-dashboard/Sidebar";
+import Sidebar from "@/components/nest-dashboard/sidebar/Sidebar";
 import Home from "@/components/nest-dashboard/Home";
 import LoadingScreen from "@/components/LoadingScreen";
 import NoteEditor from "@/components/editors/note/NoteEditor";

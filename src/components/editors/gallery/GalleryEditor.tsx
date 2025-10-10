@@ -9,7 +9,7 @@ import "yet-another-react-lightbox/styles.css";
 import MainView from "./MainView";
 import AlbumView from "./AlbumView";
 import { cn } from "@/lib/utils/general";
-import AddAlbumModal from "@/components/modals/AddAlbumModal";
+import AlbumModal from "@/components/modals/AlbumModal";
 import { toast } from "sonner";
 import useActiveNestling from "@/hooks/useActiveNestling";
 import { useNestlingStore } from "@/stores/useNestlingStore";
@@ -111,7 +111,7 @@ export default function GalleryEditor() {
               {isUploading ? "Uploading..." : "Add Images"}
             </span>
           </button>
-          <AddAlbumModal nestling_id={activeNestling.id}>
+          <AlbumModal nestling_id={activeNestling.id}>
             <button
               className={cn(
                 "flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-white transition-colors hover:bg-teal-600",
@@ -121,7 +121,7 @@ export default function GalleryEditor() {
               <Plus className="size-4" />
               <span className="hidden md:block">Add Album</span>
             </button>
-          </AddAlbumModal>
+          </AlbumModal>
         </div>
       </div>
 

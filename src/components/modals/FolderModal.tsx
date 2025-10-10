@@ -41,7 +41,9 @@ export default function AddFolderModal({
       console.error("Failed to create Folder:", err);
     } finally {
       setLoading(false);
-      toast.success(folderId ? "Folder Renamed" : "Folder created");
+      toast.success(
+        folderId ? `Folder Renamed to "${title}"` : "Folder created",
+      );
     }
   };
 
@@ -81,7 +83,13 @@ export default function AddFolderModal({
           disabled={loading || !title.trim()}
           className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
         >
-          {loading ? "Saving..." : folderId ? "Rename Folder" : "Create Folder"}
+          {folderId
+            ? loading
+              ? "Saving..."
+              : "Save"
+            : loading
+              ? "Creating..."
+              : "Create"}
         </Button>
       }
     >

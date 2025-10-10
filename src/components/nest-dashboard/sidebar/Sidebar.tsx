@@ -1,19 +1,17 @@
-import { FilePlus, FolderPlus, Home } from "lucide-react";
+import { Home } from "lucide-react";
 import FolderTree from "./FolderTree";
 import NestlingItem from "./NestlingItem";
 import { DndContext, rectIntersection } from "@dnd-kit/core";
 import LooseNestlings from "./LooseNestlings";
 import { useEffect, useMemo } from "react";
 import { useNestlingStore } from "@/stores/useNestlingStore";
-import AddNestlingModal from "../modals/AddNestlingModal";
-import AddFolderModal from "../modals/AddFolderModal";
-import ToolBarItem from "../editors/note/ToolBarItem";
-import { SidebarContextMenu } from "../context-menu/SidebarContextMenu";
+import { SidebarContextMenu } from "../../context-menu/SidebarContextMenu";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils/general";
 import { useNestStore } from "@/stores/useNestStore";
 import { clearLastNestling } from "@/lib/storage/session";
 import useActiveNestling from "@/hooks/useActiveNestling";
+import ToolBar from "./ToolBar";
 
 export default function Sidebar({
   nestId,
@@ -69,14 +67,7 @@ export default function Sidebar({
             : "border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800",
         )}
       >
-        <div className="mb-2.5 flex items-center border-b dark:border-white">
-          <AddNestlingModal nestId={nestId}>
-            <ToolBarItem Icon={FilePlus} label="New Nestling" />
-          </AddNestlingModal>
-          <AddFolderModal nestId={nestId}>
-            <ToolBarItem Icon={FolderPlus} label="New Folder" />
-          </AddFolderModal>
-        </div>
+        <ToolBar nestId={nestId} />
 
         <div
           className={cn(

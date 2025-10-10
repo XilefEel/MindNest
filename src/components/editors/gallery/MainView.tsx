@@ -4,10 +4,9 @@ import { useGalleryStore } from "@/stores/useGalleryStore";
 import { Columns3, Folder, Grid, Image, List, Rows3 } from "lucide-react";
 import { cn } from "@/lib/utils/general";
 import useAutoSave from "@/hooks/useAutoSave";
+import AlbumCard from "./AlbumCard";
 import "react-photo-album/rows.css";
 import "yet-another-react-lightbox/styles.css";
-import AlbumCard from "./AlbumCard";
-import * as Tooltip from "@radix-ui/react-tooltip";
 
 import {
   DndContext,
@@ -23,6 +22,7 @@ import ImageLayout from "./ImageLayout";
 import { toast } from "sonner";
 import useActiveNestling from "@/hooks/useActiveNestling";
 import { useNestlingStore } from "@/stores/useNestlingStore";
+import BaseToolTip from "@/components/BaseToolTip";
 
 export default function MainView({
   setCurrentView,
@@ -94,66 +94,40 @@ export default function MainView({
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
     >
-      <div className="mb-2 flex items-center justify-between gap-2 text-lg font-semibold">
-        <div className="flex items-center gap-2">
+      <div className="mb-2 flex items-center justify-between gap-2 text-lg">
+        <div className="flex items-center gap-2 font-semibold">
           <Folder size={20} />
           Albums ({albums.length})
         </div>
 
         <div className="flex rounded border border-gray-200 bg-gray-100 p-1 dark:border-gray-700 dark:bg-gray-800">
-          <Tooltip.Provider>
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <button
-                  onClick={() => setViewMode("grid")}
-                  className={cn(
-                    "rounded p-2 transition duration-100",
-                    viewMode === "grid"
-                      ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
-                      : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-                  )}
-                >
-                  <Grid size={18} />
-                </button>
-              </Tooltip.Trigger>
-              <Tooltip.Portal>
-                <Tooltip.Content
-                  side="top"
-                  sideOffset={8}
-                  className="data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 relative z-50 rounded bg-white px-2 py-1 text-sm text-black shadow-md"
-                >
-                  Grid
-                </Tooltip.Content>
-              </Tooltip.Portal>
-            </Tooltip.Root>
-          </Tooltip.Provider>
+          <BaseToolTip label="Grid View">
+            <button
+              onClick={() => setViewMode("grid")}
+              className={cn(
+                "rounded p-2 transition duration-100",
+                viewMode === "grid"
+                  ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+                  : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+              )}
+            >
+              <Grid size={18} />
+            </button>
+          </BaseToolTip>
 
-          <Tooltip.Provider>
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <button
-                  onClick={() => setViewMode("list")}
-                  className={cn(
-                    "rounded p-2 transition duration-100",
-                    viewMode === "list"
-                      ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
-                      : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-                  )}
-                >
-                  <List size={18} />
-                </button>
-              </Tooltip.Trigger>
-              <Tooltip.Portal>
-                <Tooltip.Content
-                  side="top"
-                  sideOffset={8}
-                  className="data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 relative z-50 rounded bg-white px-2 py-1 text-sm text-black shadow-md"
-                >
-                  List
-                </Tooltip.Content>
-              </Tooltip.Portal>
-            </Tooltip.Root>
-          </Tooltip.Provider>
+          <BaseToolTip label="List View">
+            <button
+              onClick={() => setViewMode("list")}
+              className={cn(
+                "rounded p-2 transition duration-100",
+                viewMode === "list"
+                  ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+                  : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+              )}
+            >
+              <List size={18} />
+            </button>
+          </BaseToolTip>
         </div>
       </div>
       {albums.length > 0 ? (
@@ -188,59 +162,33 @@ export default function MainView({
           All Images ({images.length})
         </h2>
         <div className="flex rounded border border-gray-200 bg-gray-100 p-1 dark:border-gray-700 dark:bg-gray-800">
-          <Tooltip.Provider>
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <button
-                  onClick={() => setLayoutMode("row")}
-                  className={cn(
-                    "rounded p-2 transition duration-100",
-                    layoutMode === "row"
-                      ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
-                      : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-                  )}
-                >
-                  <Rows3 size={18} />
-                </button>
-              </Tooltip.Trigger>
-              <Tooltip.Portal>
-                <Tooltip.Content
-                  side="top"
-                  sideOffset={8}
-                  className="data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 relative z-50 rounded bg-white px-2 py-1 text-sm text-black shadow-md"
-                >
-                  Row layout
-                </Tooltip.Content>
-              </Tooltip.Portal>
-            </Tooltip.Root>
-          </Tooltip.Provider>
+          <BaseToolTip label="Row View">
+            <button
+              onClick={() => setLayoutMode("row")}
+              className={cn(
+                "rounded p-2 transition duration-100",
+                layoutMode === "row"
+                  ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+                  : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+              )}
+            >
+              <Rows3 size={18} />
+            </button>
+          </BaseToolTip>
 
-          <Tooltip.Provider>
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <button
-                  onClick={() => setLayoutMode("column")}
-                  className={cn(
-                    "rounded p-2 transition duration-100",
-                    layoutMode === "column"
-                      ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
-                      : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-                  )}
-                >
-                  <Columns3 size={18} />
-                </button>
-              </Tooltip.Trigger>
-              <Tooltip.Portal>
-                <Tooltip.Content
-                  side="top"
-                  sideOffset={8}
-                  className="data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 relative z-50 rounded bg-white px-2 py-1 text-sm text-black shadow-md"
-                >
-                  Column Layout
-                </Tooltip.Content>
-              </Tooltip.Portal>
-            </Tooltip.Root>
-          </Tooltip.Provider>
+          <BaseToolTip label="Column View">
+            <button
+              onClick={() => setLayoutMode("column")}
+              className={cn(
+                "rounded p-2 transition duration-100",
+                layoutMode === "column"
+                  ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+                  : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+              )}
+            >
+              <Columns3 size={18} />
+            </button>
+          </BaseToolTip>
         </div>
       </div>
 

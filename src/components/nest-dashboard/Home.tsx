@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import DashboardCard from "../user-dashboard/DashboardCard";
-import AddNestlingModal from "../modals/AddNestlingModal";
-import AddFolderModal from "../modals/AddFolderModal";
+import NestlingModal from "../modals/NestlingModal";
+import AddFolderModal from "../modals/FolderModal";
 import { Plus } from "lucide-react";
 
 export default function Home({ nestId }: { nestId: number }) {
@@ -19,11 +19,11 @@ export default function Home({ nestId }: { nestId: number }) {
           Quick Actions
         </h2>
         <div className="flex flex-wrap gap-3">
-          <AddNestlingModal nestId={nestId}>
+          <NestlingModal nestId={nestId}>
             <div className="flex cursor-pointer items-center rounded-lg bg-black p-2 px-3 text-sm font-semibold text-white transition hover:scale-105 dark:bg-teal-400">
               <Plus className="mr-1 size-4" /> Create Nestling
             </div>
-          </AddNestlingModal>
+          </NestlingModal>
           <AddFolderModal nestId={nestId}>
             <div className="flex cursor-pointer items-center rounded-lg bg-black p-2 px-3 text-sm font-semibold text-white transition hover:scale-105 dark:bg-teal-400">
               <Plus className="mr-1 size-4" /> Create Folder

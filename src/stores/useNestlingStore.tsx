@@ -31,12 +31,15 @@ type NestlingState = {
   setActiveFolderId: (folder: number | null) => void;
   setFolderOpen: (folder_ids: number, isOpen: boolean) => void;
   toggleFolder: (folderId: number) => void;
+  toggleAllFolders: (toggle: boolean) => void;
 
   addNestling: (nestling: NewNestling) => Promise<void>;
+  duplicateNestling: (nestlingId: number) => Promise<void>;
   updateNestling: (id: number, updates: Partial<Nestling>) => Promise<void>;
   deleteNestling: (nestlingId: number) => Promise<void>;
 
   addFolder: (folder: NewFolder) => Promise<void>;
+  duplicateFolder: (folderId: number) => Promise<void>;
   updateFolder: (id: number, name: string) => Promise<void>;
   deleteFolder: (folderId: number) => Promise<void>;
 
@@ -46,7 +49,7 @@ type NestlingState = {
   handleDragEnd: (event: DragEndEvent, nestId: number) => Promise<void>;
 };
 
-export const useNestlingStore = create<NestlingState>((set) => ({
+export const useNestlingStore = create<NestlingState>((set, get) => ({
   nestlings: [],
   folders: [],
   activeNestlingId: null,
@@ -74,7 +77,31 @@ export const useNestlingStore = create<NestlingState>((set) => ({
     try {
       const newNestling = await createNestling(nestling);
       set((state) => ({
-        nestlings: [...state.nestlings, newNestling],
+        nestlings: [...state.nestlings, newNestling].sort((a, b) =>
+          a.title.localeCompare(b.title),
+        ),
+        loading: false,
+      }));
+    } catch (error) {
+      set({ error: String(error) });
+      throw error;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  duplicateNestling: async (nestlingId: number) => {
+    set({ loading: true, error: null });
+    try {
+      const originalNestling = get().nestlings.find(
+        (n) => n.id === nestlingId,
+      )!;
+      const newNestling = await createNestling(originalNestling);
+
+      set((state) => ({
+        nestlings: [...state.nestlings, newNestling].sort((a, b) =>
+          a.title.localeCompare(b.title),
+        ),
         loading: false,
       }));
     } catch (error) {
@@ -136,7 +163,29 @@ export const useNestlingStore = create<NestlingState>((set) => ({
     try {
       const newFolder = await createFolder(folder);
       set((state) => ({
-        folders: [...state.folders, newFolder],
+        folders: [...state.folders, newFolder].sort((a, b) =>
+          a.name.localeCompare(b.name),
+        ),
+        loading: false,
+      }));
+    } catch (error) {
+      set({ error: String(error) });
+      throw error;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  duplicateFolder: async (folderId) => {
+    set({ loading: true, error: null });
+    try {
+      const originalFolder = get().folders.find((f) => f.id === folderId)!;
+      const newFolder = await createFolder(originalFolder);
+
+      set((state) => ({
+        folders: [...state.folders, newFolder].sort((a, b) =>
+          a.name.localeCompare(b.name),
+        ),
         loading: false,
       }));
     } catch (error) {
@@ -185,16 +234,11 @@ export const useNestlingStore = create<NestlingState>((set) => ({
         getNestlings(nestId),
       ]);
 
-      const sortedFolders = [...fetchedFolders].sort((a, b) =>
-        a.name.localeCompare(b.name),
-      );
-      const sortedNestlings = [...fetchedNestlings].sort((a, b) =>
-        a.title.localeCompare(b.title),
-      );
-
       set({
-        folders: sortedFolders,
-        nestlings: sortedNestlings,
+        folders: fetchedFolders.sort((a, b) => a.name.localeCompare(b.name)),
+        nestlings: fetchedNestlings.sort((a, b) =>
+          a.title.localeCompare(b.title),
+        ),
       });
     } catch (err) {
       set({ error: String(err) });
@@ -209,6 +253,15 @@ export const useNestlingStore = create<NestlingState>((set) => ({
       openFolders: {
         ...state.openFolders,
         [folderId]: !state.openFolders[folderId],
+      },
+    }));
+  },
+
+  toggleAllFolders: (toggle: boolean) => {
+    set((state) => ({
+      openFolders: {
+        ...state.openFolders,
+        ...Object.fromEntries(state.folders.map((f) => [f.id, toggle])),
       },
     }));
   },

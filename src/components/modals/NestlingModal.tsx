@@ -1,0 +1,146 @@
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { useNestlingStore } from "@/stores/useNestlingStore";
+import BaseModal from "./BaseModal";
+import { inputBase } from "@/lib/utils/styles";
+import { TextField } from "./TextField";
+
+export default function NestlingModal({
+  nestId,
+  children,
+  nestlingId,
+}: {
+  nestId?: number;
+  children: React.ReactNode;
+  nestlingId?: number;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [nestlingType, setNestlingType] = useState("note");
+  const [loading, setLoading] = useState(false);
+
+  const { addNestling, activeFolderId, updateNestling, nestlings } =
+    useNestlingStore();
+  const nestling = nestlings.find((n) => n.id === nestlingId);
+
+  const handleExit = async () => {
+    setTitle("");
+    setIsOpen(false);
+  };
+
+  const handleCreateNestling = async () => {
+    if (!title.trim()) {
+      return;
+    }
+    setLoading(true);
+    try {
+      if (nestlingId) {
+        await updateNestling(nestlingId, {
+          title,
+          folder_id: nestling?.folder_id,
+        });
+      } else {
+        await addNestling({
+          nest_id: nestId!,
+          folder_id: activeFolderId,
+          title,
+          content: "",
+          nestling_type: nestlingType,
+        });
+      }
+      handleExit();
+    } catch (err) {
+      console.error("Failed to create nestling:", err);
+    } finally {
+      setLoading(false);
+    }
+    toast.success(
+      nestlingId ? `Nestling Renamed to "${title}!"` : "Nestling created!",
+    );
+  };
+
+  useEffect(() => {
+    if (nestlingId) {
+      setTitle(nestling?.title || "");
+    }
+  }, [nestlingId, nestling]);
+
+  return (
+    <BaseModal
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      title={nestlingId ? "Rename Nestling" : "Create Nestling"}
+      description={
+        nestlingId
+          ? "Don't like the title? You can change it here."
+          : "Give your nestling a title. You can always change it later."
+      }
+      body={
+        <>
+          <TextField label={nestlingId ? "New Title" : "Nestling Title"}>
+            <Input
+              value={title}
+              autoFocus
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. My First Note, My Journal, My Board"
+              className={inputBase}
+            />
+          </TextField>
+
+          {!nestlingId && (
+            <>
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Select Nestling Type
+              </label>
+              <Select value={nestlingType} onValueChange={setNestlingType}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a type" />
+                </SelectTrigger>
+                <SelectContent className="bg-white dark:bg-gray-800">
+                  <SelectGroup>
+                    <SelectLabel>Nestling Type</SelectLabel>
+                    <SelectItem value="note">Note</SelectItem>
+                    <SelectItem value="board">Board</SelectItem>
+                    <SelectItem value="calendar">Calendar</SelectItem>
+                    <SelectItem value="journal">Journal</SelectItem>
+                    <SelectItem value="gallery">Gallery</SelectItem>
+                    <SelectItem value="mindmap">Mindmap</SelectItem>
+                    <SelectItem value="database">Database</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </>
+          )}
+        </>
+      }
+      footer={
+        <Button
+          onClick={handleCreateNestling}
+          disabled={loading || !title.trim()}
+          className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
+        >
+          {nestlingId
+            ? loading
+              ? "Saving..."
+              : "Save"
+            : loading
+              ? "Creating..."
+              : "Create"}
+        </Button>
+      }
+    >
+      {children}
+    </BaseModal>
+  );
+}

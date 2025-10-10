@@ -1,7 +1,7 @@
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { FilePlus, FolderPlus } from "lucide-react";
-import AddFolderModal from "../modals/AddFolderModal";
-import AddNestlingModal from "../modals/AddNestlingModal";
+import AddFolderModal from "../modals/FolderModal";
+import NestlingModal from "../modals/NestlingModal";
 import BaseContextMenu from "./BaseContextMenu";
 
 export function SidebarContextMenu({
@@ -15,7 +15,7 @@ export function SidebarContextMenu({
     <BaseContextMenu
       content={
         <>
-          <AddNestlingModal nestId={nestId}>
+          <NestlingModal nestId={nestId}>
             {/* Using ContextMenu.Item instead of ContextMenuItem
               because modal triggers don't work with custom ContextMenuItem component*/}
             <ContextMenu.Item
@@ -27,7 +27,7 @@ export function SidebarContextMenu({
               <FilePlus className="h-4 w-4" />
               <span>New Nestling</span>
             </ContextMenu.Item>
-          </AddNestlingModal>
+          </NestlingModal>
 
           <AddFolderModal nestId={nestId}>
             {/* Using ContextMenu.Item instead of ContextMenuItem

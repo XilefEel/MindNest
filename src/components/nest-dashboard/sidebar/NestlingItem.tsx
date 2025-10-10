@@ -16,7 +16,7 @@ import {
   Table2,
   Network,
 } from "lucide-react";
-import NestlingContextMenu from "../context-menu/NestlingContextMenu";
+import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
 
 const iconMap: Record<string, LucideIcon> = {
   note: FileText,

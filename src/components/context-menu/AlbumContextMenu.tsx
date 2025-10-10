@@ -2,7 +2,7 @@ import { GalleryAlbum } from "@/lib/types/gallery";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, PlusSquare, Download, Trash2 } from "lucide-react";
-import AddAlbumModal from "../modals/AddAlbumModal";
+import AlbumModal from "../modals/AlbumModal";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import { toast } from "sonner";
 import ContextMenuItem from "./ContextMenuItem";
@@ -56,7 +56,7 @@ export default function AlbumContextMenu({
         <>
           {/* Using ContextMenu.Item instead of ContextMenuItem
               because modal triggers don't work with custom ContextMenuItem component*/}
-          <AddAlbumModal nestling_id={activeNestlingId} album={album}>
+          <AlbumModal nestling_id={activeNestlingId} album={album}>
             <ContextMenu.Item
               className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
               onSelect={(e) => {
@@ -67,7 +67,7 @@ export default function AlbumContextMenu({
               <Edit3 className="size-4" />
               Edit
             </ContextMenu.Item>
-          </AddAlbumModal>
+          </AlbumModal>
 
           <ContextMenuItem
             Icon={PlusSquare}

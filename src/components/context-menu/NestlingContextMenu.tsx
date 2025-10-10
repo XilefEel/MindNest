@@ -3,6 +3,8 @@ import { Edit3, Trash2, Copy, Star, Archive } from "lucide-react";
 import DeleteModal from "../modals/DeleteModal";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
+import { useNestlingStore } from "@/stores/useNestlingStore";
+import NestlingModal from "../modals/NestlingModal";
 
 export default function NestlingContextMenu({
   nestlingId,
@@ -11,20 +13,28 @@ export default function NestlingContextMenu({
   nestlingId: number;
   children: React.ReactNode;
 }) {
+  const { duplicateNestling } = useNestlingStore();
+
   return (
     <BaseContextMenu
       content={
         <>
-          <ContextMenuItem
-            Icon={Edit3}
-            text="Rename"
-            action={() => console.log("Rename note", nestlingId)}
-          />
+          <NestlingModal nestlingId={nestlingId}>
+            <ContextMenu.Item
+              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
+              onSelect={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <Edit3 className="size-4" />
+              Rename
+            </ContextMenu.Item>
+          </NestlingModal>
 
           <ContextMenuItem
             Icon={Copy}
             text="Duplicate"
-            action={() => console.log("Duplicate note", nestlingId)}
+            action={() => duplicateNestling(nestlingId)}
           />
 
           <ContextMenuItem

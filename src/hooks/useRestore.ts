@@ -18,8 +18,12 @@ export default function useRestore({
   setNest: (nest: Nest) => void;
   setLoading: (loading: boolean) => void;
 }) {
-  const { setActiveNestlingId, setFolderOpen, fetchSidebar } =
-    useNestlingStore();
+  const {
+    setActiveNestlingId,
+    setActiveFolderId,
+    setFolderOpen,
+    fetchSidebar,
+  } = useNestlingStore();
   const { setActiveNestId, setActiveBackgroundId, fetchBackgrounds } =
     useNestStore();
 
@@ -51,8 +55,10 @@ export default function useRestore({
         // Set last nestling and its folder as active
         if (lastNestling && Number(id) === lastNestling.nest_id) {
           setActiveNestlingId(lastNestling.id);
-          if (lastNestling.folder_id)
+          if (lastNestling.folder_id) {
+            setActiveFolderId(lastNestling.folder_id);
             setFolderOpen(lastNestling.folder_id, true);
+          }
         }
 
         // Set last background

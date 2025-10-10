@@ -9,7 +9,7 @@ import { TextField } from "./TextField";
 import { cn } from "@/lib/utils/general";
 import { inputBase } from "@/lib/utils/styles";
 
-export default function AddAlbumModal({
+export default function AlbumModal({
   nestling_id,
   children,
   album,

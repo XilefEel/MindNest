@@ -1,11 +1,11 @@
 import { Folder } from "@/lib/types/folders";
 import { Nestling } from "@/lib/types/nestlings";
 import { ChevronDown, Folder as LucideFolder } from "lucide-react";
-import NestlingItem from "./NestlingItem";
+import NestlingItem from "../sidebar/NestlingItem";
 import { useDroppable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils/general";
 import { motion } from "framer-motion";
-import FolderContextMenu from "../context-menu/FolderContextMenu";
+import FolderContextMenu from "../../context-menu/FolderContextMenu";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 
 export default function FolderTree({

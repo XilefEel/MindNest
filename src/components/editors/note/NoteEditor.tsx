@@ -125,7 +125,6 @@ export default function NoteEditor() {
 
   const { activeBackgroundId } = useNestStore();
 
-  // Load selected note title and content
   useEffect(() => {
     if (activeNestling) {
       setTitle(activeNestling.title);
