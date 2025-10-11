@@ -1,5 +1,4 @@
 import { Folder } from "@/lib/types/folders";
-import { Nestling } from "@/lib/types/nestlings";
 import { ChevronDown, Folder as LucideFolder } from "lucide-react";
 import NestlingItem from "../sidebar/NestlingItem";
 import { useDroppable } from "@dnd-kit/core";
@@ -10,46 +9,54 @@ import { useNestlingStore } from "@/stores/useNestlingStore";
 
 export default function FolderTree({
   folder,
-  nestlings,
-  isOpen,
   setIsSidebarOpen,
 }: {
   folder: Folder;
-  nestlings: Nestling[];
-  isOpen: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
-  const { toggleFolder } = useNestlingStore();
+  const { toggleFolder, openFolders, nestlings, folders } = useNestlingStore();
+  const isFolderOpen = openFolders[folder.id] || false;
 
   const { setNodeRef, isOver } = useDroppable({
     id: `folder-${folder.id}`,
   });
 
+  const childFolders = folders.filter((f) => f.parent_id === folder.id);
+  const childNestlings = nestlings.filter((n) => n.folder_id === folder.id);
+
   return (
     <FolderContextMenu folderId={folder.id}>
       <div
-        ref={setNodeRef}
         className={cn(
-          "flex cursor-pointer flex-col gap-1 rounded px-2 py-1 font-medium",
+          "flex cursor-pointer flex-col gap-1 rounded py-1 font-medium",
           isOver && "bg-teal-100 dark:bg-teal-400",
         )}
       >
         <motion.div
+          ref={setNodeRef}
           onClick={() => toggleFolder(folder.id)}
           onDoubleClick={(e) => e.stopPropagation()}
           whileTap={{ scale: 0.98 }}
           className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 font-medium transition-colors duration-200 hover:bg-teal-50 dark:hover:bg-gray-700"
         >
           <ChevronDown
-            className={`size-4 transition-transform duration-200 ${isOpen ? "rotate-0" : "-rotate-90"}`}
+            className={`size-4 transition-transform duration-200 ${isFolderOpen ? "rotate-0" : "-rotate-90"}`}
           />
           <LucideFolder className="size-4" />
           <span>{folder.name}</span>
         </motion.div>
 
-        {isOpen && (
+        {isFolderOpen && (
           <div className="ml-6">
-            {nestlings.map((nestling) => (
+            {childFolders.map((childFolder) => (
+              <FolderTree
+                key={childFolder.id}
+                folder={childFolder}
+                setIsSidebarOpen={setIsSidebarOpen}
+              />
+            ))}
+
+            {childNestlings.map((nestling) => (
               <motion.div
                 key={nestling.id}
                 layout="position"

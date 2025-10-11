@@ -37,10 +37,12 @@ pub fn init_db() -> Result<(), String> {
         CREATE TABLE IF NOT EXISTS folders (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nest_id INTEGER NOT NULL,
+            parent_id INTEGER,
             name TEXT NOT NULL,
             created_at TEXT NOT NULL,
             updated_at TEXT NOT NULL,
-            FOREIGN KEY (nest_id) REFERENCES nests(id) ON DELETE CASCADE
+            FOREIGN KEY (nest_id) REFERENCES nests(id) ON DELETE CASCADE,
+            FOREIGN KEY (parent_id) REFERENCES folders(id) ON DELETE CASCADE
         );
 
         CREATE TABLE IF NOT EXISTS nestlings (

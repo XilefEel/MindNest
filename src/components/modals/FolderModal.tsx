@@ -20,7 +20,8 @@ export default function AddFolderModal({
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { addFolder, updateFolder, folders } = useNestlingStore();
+  const { addFolder, updateFolder, folders, activeFolderId } =
+    useNestlingStore();
 
   const handleExit = async () => {
     setTitle("");
@@ -34,7 +35,11 @@ export default function AddFolderModal({
       if (folderId) {
         await updateFolder(folderId, title);
       } else {
-        await addFolder({ nest_id: nestId, name: title });
+        await addFolder({
+          nest_id: nestId,
+          parent_id: activeFolderId,
+          name: title,
+        });
       }
       handleExit();
     } catch (err) {

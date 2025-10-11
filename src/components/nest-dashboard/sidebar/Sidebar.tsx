@@ -22,7 +22,6 @@ export default function Sidebar({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const {
-    openFolders,
     folders,
     nestlings,
     handleDragStart,
@@ -35,10 +34,12 @@ export default function Sidebar({
   const { activeBackgroundId } = useNestStore();
 
   const folderGroups = useMemo(() => {
-    return folders.map((folder) => ({
-      ...folder,
-      nestlings: nestlings.filter((n) => n.folder_id === folder.id),
-    }));
+    return folders
+      .filter((f) => f.parent_id === null)
+      .map((folder) => ({
+        ...folder,
+        nestlings: nestlings.filter((n) => n.folder_id === folder.id),
+      }));
   }, [folders, nestlings]);
 
   const looseNestlings = useMemo(() => {
@@ -104,8 +105,6 @@ export default function Sidebar({
                 <FolderTree
                   key={folder.id}
                   folder={folder}
-                  nestlings={folder.nestlings}
-                  isOpen={openFolders[folder.id] || false}
                   setIsSidebarOpen={setIsSidebarOpen}
                 />
               </motion.div>

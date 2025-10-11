@@ -153,22 +153,23 @@ pub fn insert_folder_into_db(data: NewFolder) -> Result<Folder, String> {
 
     let mut statement = connection
         .prepare(
-            "INSERT INTO folders (nest_id, name, created_at, updated_at)
-             VALUES (?1, ?2, ?3, ?4)
-             RETURNING id, nest_id, name, created_at, updated_at;",
+            "INSERT INTO folders (nest_id, parent_id, name, created_at, updated_at)
+             VALUES (?1, ?2, ?3, ?4, ?5)
+             RETURNING id, nest_id, parent_id, name, created_at, updated_at;",
         )
         .map_err(|e| e.to_string())?;
 
     let folder = statement
         .query_row(
-            params![data.nest_id, data.name, created_at, created_at],
+            params![data.nest_id, data.parent_id, data.name, created_at, created_at],
             |row| {
                 Ok(Folder {
                     id: row.get(0)?,
                     nest_id: row.get(1)?,
-                    name: row.get(2)?,
-                    created_at: row.get(3)?,
-                    updated_at: row.get(4)?,
+                    parent_id: row.get(2)?,
+                    name: row.get(3)?,
+                    created_at: row.get(4)?,
+                    updated_at: row.get(5)?,
                 })
             },
         )
@@ -182,7 +183,7 @@ pub fn get_folders_by_nest(nest_id: i32) -> Result<Vec<Folder>, String> {
 
     let mut statement = connection
         .prepare(
-            "SELECT id, nest_id, name, created_at, updated_at 
+            "SELECT id, nest_id, parent_id, name, created_at, updated_at 
          FROM folders 
          WHERE nest_id = ?1 
          ORDER BY updated_at DESC",
@@ -194,9 +195,10 @@ pub fn get_folders_by_nest(nest_id: i32) -> Result<Vec<Folder>, String> {
             Ok(Folder {
                 id: row.get(0)?,
                 nest_id: row.get(1)?,
-                name: row.get(2)?,
-                created_at: row.get(3)?,
-                updated_at: row.get(4)?,
+                parent_id: row.get(2)?,
+                name: row.get(3)?,
+                created_at: row.get(4)?,
+                updated_at: row.get(5)?,
             })
         })
         .map_err(|e| e.to_string())?;
