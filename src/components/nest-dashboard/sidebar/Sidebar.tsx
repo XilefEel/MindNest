@@ -6,7 +6,7 @@ import LooseNestlings from "./LooseNestlings";
 import { useEffect, useMemo } from "react";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import { SidebarContextMenu } from "../../context-menu/SidebarContextMenu";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils/general";
 import { useNestStore } from "@/stores/useNestStore";
 import { clearLastNestling } from "@/lib/storage/session";
@@ -90,47 +90,20 @@ export default function Sidebar({
             onDragEnd={(e) => handleDragEnd(e, nestId)}
           >
             {folderGroups.map((folder) => (
-              <motion.div
+              <FolderTree
                 key={folder.id}
-                layout="position"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 30,
-                }}
-              >
-                <FolderTree
-                  key={folder.id}
-                  folder={folder}
-                  setIsSidebarOpen={setIsSidebarOpen}
-                />
-              </motion.div>
+                folder={folder}
+                setIsSidebarOpen={setIsSidebarOpen}
+              />
             ))}
 
             <LooseNestlings>
               {looseNestlings.map((nestling) => (
-                <motion.div
+                <NestlingItem
                   key={nestling.id}
-                  layout="position"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 30,
-                  }}
-                >
-                  <NestlingItem
-                    key={nestling.id}
-                    nestling={nestling}
-                    setIsSidebarOpen={setIsSidebarOpen}
-                  />
-                </motion.div>
+                  nestling={nestling}
+                  setIsSidebarOpen={setIsSidebarOpen}
+                />
               ))}
             </LooseNestlings>
           </DndContext>

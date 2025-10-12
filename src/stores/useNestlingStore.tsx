@@ -198,7 +198,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
   updateFolder: async (id, name) => {
     try {
-      await updateFolder(id, name);
+      await updateFolder(id, undefined, name);
       set((state) => ({
         folders: state.folders
           .map((f) => (f.id === id ? { ...f, name } : f))
@@ -267,36 +267,65 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   },
 
   handleDragStart: (event) => {
+    console.log("DRAG START", event);
     set({ activeDraggingNestlingId: event.active.id as number });
   },
 
   handleDragEnd: async (event, nestId) => {
     const { active, over } = event;
     set({ activeDraggingNestlingId: null });
-
     if (!over || active.id === over.id) return;
 
     const [activeType, activeIdStr] = String(active.id).split("-");
     const [overType, overIdStr] = String(over.id).split("-");
 
-    if (activeType !== "nestling") return;
-    const nestlingId = Number(activeIdStr);
-
     try {
-      const folderId = overType === "folder" ? Number(overIdStr) : null;
-      await editNestling(nestlingId, folderId);
+      if (activeType === "nestling") {
+        const nestlingId = Number(activeIdStr);
+        const newFolderId = overType === "folder" ? Number(overIdStr) : null;
 
-      set((state) => ({
-        nestlings: state.nestlings
-          .map((n) => (n.id === nestlingId ? { ...n, folder_id: folderId } : n))
-          .sort((a, b) => a.title.localeCompare(b.title)),
-      }));
+        Promise.all([
+          editNestling(nestlingId, newFolderId),
+          saveLastNestling(nestId, nestlingId),
+        ]);
 
-      await saveLastNestling(nestId, nestlingId);
+        set((state) => ({
+          nestlings: state.nestlings
+            .map((n) =>
+              n.id === nestlingId ? { ...n, folder_id: newFolderId } : n,
+            )
+            .sort((a, b) => a.title.localeCompare(b.title)),
+          activeNestlingId: nestlingId,
+        }));
+      } else if (activeType === "folder") {
+        const folderId = Number(activeIdStr);
+        const newParentId = overType === "folder" ? Number(overIdStr) : null;
 
-      set({ activeNestlingId: nestlingId });
+        if (folderId === newParentId) return;
+
+        const folderMap = new Map(
+          get().folders.map((f) => [f.id, f.parent_id]),
+        );
+
+        // Check if the folder is an ancestor of the new parent
+        let ancestorId: number | null = newParentId;
+        while (ancestorId !== null) {
+          if (ancestorId === folderId) return;
+          ancestorId = folderMap.get(ancestorId) ?? null;
+        }
+
+        await updateFolder(folderId, newParentId);
+
+        set((state) => ({
+          folders: state.folders
+            .map((f) =>
+              f.id === folderId ? { ...f, parent_id: newParentId } : f,
+            )
+            .sort((a, b) => a.name.localeCompare(b.name)),
+        }));
+      }
     } catch (err) {
-      console.error("Failed to update folder:", err);
+      console.error("Failed to drag folder:", err);
     } finally {
       set({ loading: false });
     }

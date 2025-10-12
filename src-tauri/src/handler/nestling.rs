@@ -36,8 +36,9 @@ pub fn get_folders(nest_id: i32) -> Result<Vec<Folder>, String> {
 }
 
 #[tauri::command]
-pub fn update_folder(id: i64, name: String) -> Result<(), String> {
-    update_folder_in_db(id, name)
+pub fn update_folder(id: i64, parent_id: Option<i64>, name: Option<String>) -> Result<(), String> {
+    println!("update_folder called: id={} parent_id={:?} name={:?}", id, parent_id, name);
+    update_folder_in_db(id, parent_id, name)
 }
 
 #[tauri::command]

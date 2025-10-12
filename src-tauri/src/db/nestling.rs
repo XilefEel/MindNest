@@ -209,7 +209,7 @@ pub fn get_folders_by_nest(nest_id: i32) -> Result<Vec<Folder>, String> {
     Ok(result)
 }
 
-pub fn update_folder_in_db(id: i64, name: String) -> Result<(), String> {
+pub fn update_folder_in_db(id: i64, parent_id: Option<i64>, name: Option<String>) -> Result<(), String> {
     let connection = get_connection().map_err(|e| e.to_string())?;
     let updated_at = chrono::Local::now()
         .naive_local()
@@ -218,10 +218,13 @@ pub fn update_folder_in_db(id: i64, name: String) -> Result<(), String> {
 
     connection
         .execute("
-        UPDATE folders
-        SET name = ?1, updated_at = ?2
-        WHERE id = ?3",
-            params![name, updated_at, id],
+            UPDATE folders
+            SET
+                parent_id = COALESCE(?1, parent_id),
+                name = COALESCE(?2, name),
+                updated_at = ?3
+            WHERE id = ?4",
+            params![parent_id, name, updated_at, id],
         )
         .map_err(|e| e.to_string())?;
 

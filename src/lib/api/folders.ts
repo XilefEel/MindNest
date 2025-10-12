@@ -9,8 +9,12 @@ export async function getFolders(nestId: number) {
   return await invoke<Folder[]>("get_folders", { nestId });
 }
 
-export async function updateFolder(id: number, name: string) {
-  await invoke<void>("update_folder", { id, name });
+export async function updateFolder(
+  id: number,
+  parentId?: number | null,
+  name?: string | null,
+) {
+  await invoke<void>("update_folder", { id, parentId, name });
 }
 
 export async function deleteFolder(folderId: number) {
