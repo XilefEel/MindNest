@@ -3,15 +3,16 @@ use crate::db::calendar::{
     update_planner_event_in_db,
 };
 use crate::models::nestling::{NewPlannerEvent, PlannerEvent};
+use crate::utils::db::AppDb;
 
 #[tauri::command]
-pub fn create_event(data: NewPlannerEvent) -> Result<PlannerEvent, String> {
-    println!("Adding event: {:#?}", data);
-    insert_planner_event_into_db(data)
+pub fn create_event(db: tauri::State<AppDb>, data: NewPlannerEvent) -> Result<PlannerEvent, String> {
+    insert_planner_event_into_db(&db, data)
 }
 
 #[tauri::command]
 pub fn update_event(
+    db: tauri::State<AppDb>, 
     id: i64,
     date: String,
     title: String,
@@ -20,23 +21,20 @@ pub fn update_event(
     duration: i64,
     color: Option<String>,
 ) -> Result<(), String> {
-    update_planner_event_in_db(id, date, title, description, start_time, duration, color)
+    update_planner_event_in_db(&db, id, date, title, description, start_time, duration, color)
 }
 
 #[tauri::command]
-pub fn delete_event(id: i64) -> Result<(), String> {
-    delete_planner_event_from_db(id)
+pub fn delete_event(db: tauri::State<AppDb>, id: i64) -> Result<(), String> {
+    delete_planner_event_from_db(&db, id)
 }
 
 #[tauri::command]
 pub fn get_events(
+    db: tauri::State<AppDb>, 
     nestling_id: i64,
     start: String,
     end: String,
 ) -> Result<Vec<PlannerEvent>, String> {
-    println!(
-        "Getting events for nestling {} between {} and {}",
-        nestling_id, start, end
-    );
-    get_planner_events_from_range(nestling_id, start, end)
+    get_planner_events_from_range(&db, nestling_id, start, end)
 }

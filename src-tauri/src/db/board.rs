@@ -2,13 +2,13 @@ use crate::db::nestling::get_nestling_by_id;
 use crate::models::nestling::{
     BoardCard, BoardColumn, BoardColumnData, BoardData, NewBoardCard, NewBoardColumn,
 };
-use crate::utils::user::get_connection;
+use crate::utils::db::AppDb;
 use chrono;
 use rusqlite::params;
 use std::collections::HashMap;
 
-pub fn insert_board_column_into_db(data: NewBoardColumn) -> Result<BoardColumn, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> Result<BoardColumn, String> {
+    let connection = db.connection.lock().unwrap();
 
     let created_at = chrono::Local::now()
         .naive_local()
@@ -47,8 +47,8 @@ pub fn insert_board_column_into_db(data: NewBoardColumn) -> Result<BoardColumn, 
     Ok(column)
 }
 
-pub fn update_board_column_in_db(id: i64, title: String, order_index: i64) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn update_board_column_in_db(db: &AppDb, id: i64, title: String, order_index: i64) -> Result<(), String> {
+    let connection = db.connection.lock().unwrap();
 
     connection.execute(
         "UPDATE board_columns SET title = ?1, order_index = ?2, updated_at = CURRENT_TIMESTAMP WHERE id = ?3",
@@ -57,8 +57,8 @@ pub fn update_board_column_in_db(id: i64, title: String, order_index: i64) -> Re
     Ok(())
 }
 
-pub fn delete_board_column_from_db(id: i64) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn delete_board_column_from_db(db: &AppDb, id: i64) -> Result<(), String> {
+    let connection = db.connection.lock().unwrap();
 
     connection
         .execute("DELETE FROM board_columns WHERE id = ?1", params![id])
@@ -67,8 +67,8 @@ pub fn delete_board_column_from_db(id: i64) -> Result<(), String> {
     Ok(())
 }
 
-pub fn insert_board_card_into_db(data: NewBoardCard) -> Result<BoardCard, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn insert_board_card_into_db(db: &AppDb, data: NewBoardCard) -> Result<BoardCard, String> {
+    let connection = db.connection.lock().unwrap();
 
     let created_at = chrono::Local::now()
         .naive_local()
@@ -108,13 +108,14 @@ pub fn insert_board_card_into_db(data: NewBoardCard) -> Result<BoardCard, String
 }
 
 pub fn update_board_card_in_db(
+    db: &AppDb, 
     id: i64,
     title: String,
     description: Option<String>,
     order_index: i64,
     column_id: i64,
 ) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+    let connection = db.connection.lock().unwrap();
 
     connection.execute(
         "UPDATE board_cards 
@@ -126,8 +127,8 @@ pub fn update_board_card_in_db(
     Ok(())
 }
 
-pub fn delete_board_card_from_db(id: i64) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn delete_board_card_from_db(db: &AppDb, id: i64) -> Result<(), String> {
+    let connection = db.connection.lock().unwrap();
 
     connection
         .execute("DELETE FROM board_cards WHERE id = ?1", params![id])
@@ -135,8 +136,8 @@ pub fn delete_board_card_from_db(id: i64) -> Result<(), String> {
     Ok(())
 }
 
-fn get_board_columns_by_nestling(nestling_id: i64) -> Result<Vec<BoardColumn>, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+fn get_board_columns_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<BoardColumn>, String> {
+    let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
         .prepare(
@@ -166,8 +167,8 @@ fn get_board_columns_by_nestling(nestling_id: i64) -> Result<Vec<BoardColumn>, S
     Ok(result)
 }
 
-fn get_all_cards_by_nestling(nestling_id: i64) -> Result<Vec<BoardCard>, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+fn get_all_cards_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<BoardCard>, String> {
+    let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
         .prepare(
@@ -200,10 +201,10 @@ fn get_all_cards_by_nestling(nestling_id: i64) -> Result<Vec<BoardCard>, String>
     Ok(result)
 }
 
-pub fn get_board_data_from_db(nestling_id: i64) -> Result<BoardData, String> {
-    let nestling = get_nestling_by_id(nestling_id)?;
-    let columns = get_board_columns_by_nestling(nestling_id)?;
-    let all_cards = get_all_cards_by_nestling(nestling_id)?;
+pub fn get_board_data_from_db(db: &AppDb, nestling_id: i64) -> Result<BoardData, String> {
+    let nestling = get_nestling_by_id(&db, nestling_id)?;
+    let columns = get_board_columns_by_nestling(&db, nestling_id)?;
+    let all_cards = get_all_cards_by_nestling(&db, nestling_id)?;
 
     let mut cards_by_column: HashMap<i64, Vec<BoardCard>> = HashMap::new();
     for card in all_cards {

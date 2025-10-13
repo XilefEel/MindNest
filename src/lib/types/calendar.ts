@@ -1,15 +1,4 @@
-export type PlannerEventType = {
-  id: number;
-  nestling_id: number;
-  date: string;
-  title: string;
-  description: string | null;
-  start_time: number;
-  duration: number;
-  color: string;
-  created_at: string;
-  updated_at: string;
-};
+import { WithBase } from "./base";
 
 export type NewPlannerEventType = {
   nestling_id: number;
@@ -20,3 +9,5 @@ export type NewPlannerEventType = {
   duration: number;
   color: string;
 };
+
+export type PlannerEventType = WithBase<NewPlannerEventType>;

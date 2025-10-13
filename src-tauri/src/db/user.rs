@@ -1,10 +1,11 @@
 use crate::models::user::{LoginData, SignupData, User};
 
-use crate::utils::user::{get_connection, hash_password, verify_password};
+use crate::utils::db::AppDb;
+use crate::utils::user::{hash_password, verify_password};
 use rusqlite::params;
 
-pub fn create_user(data: SignupData) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn create_user(db: &AppDb, data: SignupData) -> Result<(), String> {
+    let connection = db.connection.lock().unwrap();
 
     let mut stmt = connection
         .prepare("SELECT COUNT(*) FROM users WHERE email = ?1")
@@ -27,8 +28,8 @@ pub fn create_user(data: SignupData) -> Result<(), String> {
     Ok(())
 }
 
-pub fn authenticate_user(data: LoginData) -> Result<User, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn authenticate_user(db: &AppDb, data: LoginData) -> Result<User, String> {
+    let connection = db.connection.lock().unwrap();
 
     let mut stmt = connection
         .prepare("SELECT id, username, email, password FROM users WHERE email = ?1")

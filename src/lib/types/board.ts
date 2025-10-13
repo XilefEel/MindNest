@@ -1,13 +1,5 @@
+import { WithBase } from "./base";
 import { Nestling } from "./nestlings";
-
-export type BoardColumn = {
-  id: number;
-  nestling_id: number;
-  title: string;
-  order_index: number;
-  created_at: string;
-  updated_at: string;
-};
 
 export type NewBoardColumn = {
   nestling_id: number;
@@ -15,15 +7,7 @@ export type NewBoardColumn = {
   order_index: number;
 };
 
-export type BoardCard = {
-  id: number;
-  column_id: number;
-  title: string;
-  description: string | null;
-  order_index: number;
-  created_at: string;
-  updated_at: string;
-};
+export type BoardColumn = WithBase<NewBoardColumn>;
 
 export type NewBoardCard = {
   column_id: number;
@@ -31,6 +15,8 @@ export type NewBoardCard = {
   description: string | null;
   order_index: number;
 };
+
+export type BoardCard = WithBase<NewBoardCard>;
 
 export type BoardData = {
   nestling: Nestling;

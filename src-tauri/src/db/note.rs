@@ -1,7 +1,8 @@
-use crate::utils::user::get_connection;
 use rusqlite::params;
-pub fn update_note(id: i64, title: Option<String>, content: Option<String>) -> Result<(), String> {
-    let conn = get_connection().map_err(|e| e.to_string())?;
+use crate::utils::db::AppDb;
+
+pub fn update_note(db: &AppDb, id: i64, title: Option<String>, content: Option<String>) -> Result<(), String> {
+    let conn = db.connection.lock().unwrap();
 
     if title.is_some() && content.is_some() {
         conn.execute(

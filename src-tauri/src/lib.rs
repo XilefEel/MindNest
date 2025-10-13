@@ -3,6 +3,7 @@ mod handler;
 mod models;
 mod utils;
 
+use tauri::Manager;
 use handler::nest::{create_nest, delete_nest, get_nest_by_id, get_user_nests, update_nest};
 
 use handler::nestling::{
@@ -36,10 +37,29 @@ use handler::gallery::{
 
 use utils::user::init_db;
 
+use crate::utils::db::AppDb;
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    init_db().expect("Failed to initialize DB");
     tauri::Builder::default()
+        .setup(|app| {
+            let db = AppDb::new("test.db")
+                .map_err(|e| {
+                    println!("Failed to create DB: {}", e);
+                    format!("Failed to open database: {}", e)
+                })?;
+            init_db(&db)
+                .map_err(|e| {
+                    println!("Failed to init DB: {}", e);
+                    format!("Failed to initialize database: {}", e)
+                })?;
+            
+            app.manage(db);
+            
+            println!("Database initialized");
+            
+            Ok(())
+        })
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())

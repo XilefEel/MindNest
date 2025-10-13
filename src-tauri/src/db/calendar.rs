@@ -1,11 +1,10 @@
-use crate::models::nestling::{NewPlannerEvent, PlannerEvent};
-use crate::utils::user::get_connection;
+use crate::{models::nestling::{NewPlannerEvent, PlannerEvent}, utils::db::AppDb};
 use rusqlite::params;
 
 use chrono;
 
-pub fn insert_planner_event_into_db(data: NewPlannerEvent) -> Result<PlannerEvent, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn insert_planner_event_into_db(db: &AppDb, data: NewPlannerEvent) -> Result<PlannerEvent, String> {
+    let connection = db.connection.lock().unwrap();
 
     let created_at = chrono::Local::now()
         .naive_local()
@@ -54,6 +53,7 @@ pub fn insert_planner_event_into_db(data: NewPlannerEvent) -> Result<PlannerEven
 }
 
 pub fn update_planner_event_in_db(
+    db: &AppDb, 
     id: i64,
     date: String,
     title: String,
@@ -62,7 +62,7 @@ pub fn update_planner_event_in_db(
     duration: i64,
     color: Option<String>,
 ) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+    let connection = db.connection.lock().unwrap();
     let updated_at = chrono::Local::now()
         .naive_local()
         .format("%Y-%m-%d %H:%M:%S")
@@ -78,8 +78,8 @@ pub fn update_planner_event_in_db(
     Ok(())
 }
 
-pub fn delete_planner_event_from_db(id: i64) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn delete_planner_event_from_db(db: &AppDb, id: i64) -> Result<(), String> {
+    let connection = db.connection.lock().unwrap();
 
     connection
         .execute("DELETE FROM planner_events WHERE id = ?1", params![id])
@@ -89,11 +89,12 @@ pub fn delete_planner_event_from_db(id: i64) -> Result<(), String> {
 }
 
 pub fn get_planner_events_from_range(
+    db: &AppDb, 
     nestling_id: i64,
     start: String,
     end: String,
 ) -> Result<Vec<PlannerEvent>, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+    let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
         "SELECT id, nestling_id, date, title, description, start_time, duration, color, created_at, updated_at

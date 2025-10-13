@@ -1,5 +1,5 @@
 use crate::models::nestling::{GalleryAlbum, GalleryImage, NewGalleryAlbum, NewGalleryImage};
-use crate::utils::user::get_connection;
+use crate::utils::db::AppDb;
 use rusqlite::params;
 
 use chrono::Local;
@@ -10,8 +10,8 @@ use std::io::Write;
 use std::path::Path;
 use tauri::Manager;
 
-pub fn add_image_into_db(data: NewGalleryImage) -> Result<GalleryImage, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn add_image_into_db(db: &AppDb, data: NewGalleryImage) -> Result<GalleryImage, String> {
+    let connection = db.connection.lock().unwrap();
     let created_at = Local::now()
         .naive_local()
         .format("%Y-%m-%d %H:%M:%S")
@@ -58,7 +58,6 @@ pub fn add_image_into_db(data: NewGalleryImage) -> Result<GalleryImage, String> 
     Ok(image)
 }
 
-
 fn get_image_dimensions(path: &str) -> Result<(i64, i64), String> {
     let dim = size(path).map_err(|e| e.to_string())?;
     Ok((dim.width as i64, dim.height as i64))
@@ -102,6 +101,7 @@ fn copy_image_to_app_dir(
 
 pub fn import_image_into_app(
     app_handle: tauri::AppHandle,
+    db: &AppDb, 
     nestling_id: i64,
     album_id: Option<i64>,
     file_path: String,
@@ -120,12 +120,13 @@ pub fn import_image_into_app(
         height: height,
     };
 
-    let saved_image = add_image_into_db(new_image).map_err(|e| e.to_string())?;
+    let saved_image = add_image_into_db(&db, new_image).map_err(|e| e.to_string())?;
     Ok(saved_image)
 }
 
 pub fn import_image_data_into_app(
     app_handle: tauri::AppHandle,
+    db: &AppDb, 
     nestling_id: i64,
     album_id: Option<i64>,
     file_name: String,
@@ -162,13 +163,13 @@ pub fn import_image_data_into_app(
         height,
     };
 
-    let saved_image = add_image_into_db(new_image).map_err(|e| e.to_string())?;
+    let saved_image = add_image_into_db(&db, new_image).map_err(|e| e.to_string())?;
     Ok(saved_image)
 }
 
 
-pub fn duplicate_image_from_image(app_handle: tauri::AppHandle, original_image_id: i64) -> Result<GalleryImage, String>{
-    let original_image = get_image_by_id(original_image_id)
+pub fn duplicate_image_from_image(db: &AppDb, app_handle: tauri::AppHandle, original_image_id: i64) -> Result<GalleryImage, String>{
+    let original_image = get_image_by_id(&db,original_image_id)
         .map_err(|e| e.to_string())?;
 
     if !Path::new(&original_image.file_path).exists() {
@@ -186,6 +187,7 @@ pub fn duplicate_image_from_image(app_handle: tauri::AppHandle, original_image_i
 
     let duplicated_image = import_image_data_into_app(
         app_handle,
+        &db,
         original_image.nestling_id,
         original_image.album_id,
         original_filename,
@@ -198,8 +200,8 @@ pub fn duplicate_image_from_image(app_handle: tauri::AppHandle, original_image_i
     Ok(duplicated_image)
 }
 
-pub fn get_images_from_db(nestling_id: i64) -> Result<Vec<GalleryImage>, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn get_images_from_db(db: &AppDb, nestling_id: i64) -> Result<Vec<GalleryImage>, String> {
+    let connection = db.connection.lock().unwrap();
     let mut statement = connection.prepare("
         SELECT id, album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
         FROM gallery_images
@@ -230,8 +232,8 @@ pub fn get_images_from_db(nestling_id: i64) -> Result<Vec<GalleryImage>, String>
 }
 
 
-fn get_image_by_id(id: i64) -> Result<GalleryImage, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+fn get_image_by_id(db: &AppDb, id: i64) -> Result<GalleryImage, String> {
+    let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare("
         SELECT id, album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
@@ -259,8 +261,8 @@ fn get_image_by_id(id: i64) -> Result<GalleryImage, String> {
     Ok(image)
 }
 
-fn get_images_by_album_id(album_id: i64) -> Result<Vec<GalleryImage>, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+fn get_images_by_album_id(db: &AppDb, album_id: i64) -> Result<Vec<GalleryImage>, String> {
+    let connection = db.connection.lock().unwrap();
     let mut statement = connection.prepare("
         SELECT id, album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
         FROM gallery_images
@@ -291,9 +293,8 @@ fn get_images_by_album_id(album_id: i64) -> Result<Vec<GalleryImage>, String> {
 }
 
 
-
-pub fn download_image_into_user(image_id: i64, save_path: String) -> Result<(), String> {
-    let image = get_image_by_id(image_id)
+pub fn download_image_into_user(db: &AppDb, image_id: i64, save_path: String) -> Result<(), String> {
+    let image = get_image_by_id(&db, image_id)
         .map_err(|e| e.to_string())?;
 
     fs::copy(&image.file_path, &save_path).map_err(|e| e.to_string())?;
@@ -301,8 +302,8 @@ pub fn download_image_into_user(image_id: i64, save_path: String) -> Result<(), 
     Ok(())
 }
 
-pub fn download_album_into_user(album_id: i64, save_path: String) -> Result<(), String> {
-    let images = get_images_by_album_id(album_id)?;
+pub fn download_album_into_user(db: &AppDb, album_id: i64, save_path: String) -> Result<(), String> {
+    let images = get_images_by_album_id(&db, album_id)?;
     if images.is_empty() {
         return Err("No images found in this album".to_string());
     }
@@ -342,13 +343,14 @@ pub fn download_album_into_user(album_id: i64, save_path: String) -> Result<(), 
 
 
 pub fn update_image_in_db(
+    db: &AppDb, 
     id: i64,
     album_id: Option<i64>,
     title: Option<String>,
     description: Option<String>,
     is_favorite: bool,
 ) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+    let connection = db.connection.lock().unwrap();
     let updated_at = Local::now()
         .naive_local()
         .format("%Y-%m-%d %H:%M:%S")
@@ -367,8 +369,8 @@ pub fn update_image_in_db(
     Ok(())
 }
 
-fn delete_gallery_image_from_db(id: i64) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+fn delete_gallery_image_from_db(db: &AppDb, id: i64) -> Result<(), String> {
+    let connection = db.connection.lock().unwrap();
     connection
         .execute(
             "
@@ -380,8 +382,8 @@ fn delete_gallery_image_from_db(id: i64) -> Result<(), String> {
     Ok(())
 }
 
-pub fn delete_image_from_app(id: i64) -> Result<(), String> {
-    let image = get_image_by_id(id).map_err(|e| e.to_string())?;
+pub fn delete_image_from_app(db: &AppDb, id: i64) -> Result<(), String> {
+    let image = get_image_by_id(&db, id).map_err(|e| e.to_string())?;
 
     if let Err(err) = fs::remove_file(&image.file_path) {
         if err.kind() != std::io::ErrorKind::NotFound {
@@ -389,12 +391,12 @@ pub fn delete_image_from_app(id: i64) -> Result<(), String> {
         }
     }
 
-    delete_gallery_image_from_db(id).map_err(|e| e.to_string())?;
+    delete_gallery_image_from_db(&db, id).map_err(|e| e.to_string())?;
     Ok(())
 }
 
-pub fn add_album_to_db(data: NewGalleryAlbum) -> Result<GalleryAlbum, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn add_album_to_db(db: &AppDb, data: NewGalleryAlbum) -> Result<GalleryAlbum, String> {
+    let connection = db.connection.lock().unwrap();
     let created_at = Local::now()
         .naive_local()
         .format("%Y-%m-%d %H:%M:%S")
@@ -434,8 +436,8 @@ pub fn add_album_to_db(data: NewGalleryAlbum) -> Result<GalleryAlbum, String> {
     Ok(album)
 }
 
-pub fn get_albums_from_db(nestling_id: i64) -> Result<Vec<GalleryAlbum>, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn get_albums_from_db(db: &AppDb, nestling_id: i64) -> Result<Vec<GalleryAlbum>, String> {
+    let connection = db.connection.lock().unwrap();
     let mut statement = connection
         .prepare(
             "
@@ -465,11 +467,12 @@ pub fn get_albums_from_db(nestling_id: i64) -> Result<Vec<GalleryAlbum>, String>
 }
 
 pub fn update_album_in_db(
+    db: &AppDb, 
     id: i64,
     name: Option<String>,
     description: Option<String>,
 ) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+    let connection = db.connection.lock().unwrap();
     let updated_at = Local::now()
         .naive_local()
         .format("%Y-%m-%d %H:%M:%S")
@@ -488,8 +491,8 @@ pub fn update_album_in_db(
     Ok(())
 }
 
-pub fn delete_album_from_db(id: i64) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn delete_album_from_db(db: &AppDb, id: i64) -> Result<(), String> {
+    let connection = db.connection.lock().unwrap();
     connection
         .execute(
             "

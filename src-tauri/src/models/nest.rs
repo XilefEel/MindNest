@@ -6,6 +6,7 @@ pub struct Nest {
     pub user_id: i32,
     pub title: String,
     pub created_at: String,
+    pub updated_at: String,
 }
 
 #[derive(Debug, Deserialize)]

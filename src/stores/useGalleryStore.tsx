@@ -405,7 +405,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
           albumId,
           title: image.title,
           description: image.description,
-          is_favorite: image.is_favorite,
+          is_favorite: image.is_favorite ?? false,
         });
       } catch (error) {
         set({ error: String(error) });

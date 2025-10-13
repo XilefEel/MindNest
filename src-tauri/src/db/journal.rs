@@ -1,11 +1,11 @@
 use crate::models::nestling::{JournalEntry, JournalTemplate, NewJournalEntry, NewJournalTemplate};
-use crate::utils::user::get_connection;
+use crate::utils::db::AppDb;
 use rusqlite::params;
 
 use chrono::Local;
 
-pub fn insert_journal_entry_into_db(data: NewJournalEntry) -> Result<JournalEntry, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn insert_journal_entry_into_db(db: &AppDb, data: NewJournalEntry) -> Result<JournalEntry, String> {
+    let connection = db.connection.lock().unwrap();
     let created_at = chrono::Local::now()
         .naive_local()
         .format("%Y-%m-%d %H:%M:%S")
@@ -43,8 +43,8 @@ pub fn insert_journal_entry_into_db(data: NewJournalEntry) -> Result<JournalEntr
     Ok(journal_entry)
 }
 
-pub fn get_journal_entries_by_nestling(nestling_id: i64) -> Result<Vec<JournalEntry>, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn get_journal_entries_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<JournalEntry>, String> {
+    let connection = db.connection.lock().unwrap();
     let mut statement = connection
         .prepare(
             "
@@ -74,12 +74,13 @@ pub fn get_journal_entries_by_nestling(nestling_id: i64) -> Result<Vec<JournalEn
 }
 
 pub fn update_journal_entry_in_db(
+    db: &AppDb, 
     id: i64,
     title: String,
     content: String,
     entry_date: String,
 ) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+    let connection = db.connection.lock().unwrap();
     let updated_at = Local::now()
         .naive_local()
         .format("%Y-%m-%d %H:%M:%S")
@@ -96,8 +97,8 @@ pub fn update_journal_entry_in_db(
     Ok(())
 }
 
-pub fn delete_journal_entry_from_db(id: i64) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn delete_journal_entry_from_db(db: &AppDb, id: i64) -> Result<(), String> {
+    let connection = db.connection.lock().unwrap();
     connection
         .execute(
             "
@@ -109,9 +110,10 @@ pub fn delete_journal_entry_from_db(id: i64) -> Result<(), String> {
 }
 
 pub fn insert_journal_template_into_db(
+    db: &AppDb, 
     data: NewJournalTemplate,
 ) -> Result<JournalTemplate, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+    let connection = db.connection.lock().unwrap();
     let timestamp = chrono::Local::now()
         .naive_local()
         .format("%Y-%m-%d %H:%M:%S")
@@ -152,8 +154,8 @@ pub fn insert_journal_template_into_db(
     Ok(journal_template)
 }
 
-pub fn get_journal_templates_by_nestling(nestling_id: i64) -> Result<Vec<JournalTemplate>, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn get_journal_templates_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<JournalTemplate>, String> {
+    let connection = db.connection.lock().unwrap();
     let mut statement = connection
         .prepare(
             "
@@ -182,8 +184,8 @@ pub fn get_journal_templates_by_nestling(nestling_id: i64) -> Result<Vec<Journal
     Ok(journal_templates)
 }
 
-pub fn update_journal_template_in_db(id: i64, name: String, content: String) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn update_journal_template_in_db(db: &AppDb, id: i64, name: String, content: String) -> Result<(), String> {
+    let connection = db.connection.lock().unwrap();
     let updated_at = chrono::Local::now()
         .naive_local()
         .format("%Y-%m-%d %H:%M:%S")
@@ -203,8 +205,8 @@ pub fn update_journal_template_in_db(id: i64, name: String, content: String) -> 
     Ok(())
 }
 
-pub fn delete_journal_template_from_db(id: i64) -> Result<(), String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn delete_journal_template_from_db(db: &AppDb, id: i64) -> Result<(), String> {
+    let connection = db.connection.lock().unwrap();
     connection
         .execute(
             "

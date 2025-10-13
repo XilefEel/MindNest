@@ -1,5 +1,5 @@
 use crate::models::nest_background::{BackgroundImage, NewBackgroundImage};
-use crate::utils::user::get_connection;
+use crate::utils::db::AppDb;
 
 use chrono::Local;
 use imagesize::size;
@@ -8,8 +8,8 @@ use std::fs;
 use std::path::Path;
 use tauri::Manager;
 
-pub fn add_background_into_db(data: NewBackgroundImage) -> Result<BackgroundImage, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn add_background_into_db(db: &AppDb, data: NewBackgroundImage) -> Result<BackgroundImage, String> {
+    let connection = db.connection.lock().unwrap();
     let created_at = Local::now()
         .naive_local()
         .format("%Y-%m-%d %H:%M:%S")
@@ -93,6 +93,7 @@ fn copy_background_to_app_dir(
 
 pub fn import_background_into_app(
     app_handle: tauri::AppHandle,
+    db: &AppDb, 
     nest_id: i64,
     file_path: String,
 ) -> Result<BackgroundImage, String> {
@@ -107,12 +108,12 @@ pub fn import_background_into_app(
         height,
     };
 
-    let saved_background = add_background_into_db(new_background).map_err(|e| e.to_string())?;
+    let saved_background = add_background_into_db(&db, new_background).map_err(|e| e.to_string())?;
     Ok(saved_background)
 }
 
-pub fn get_backgrounds_from_db(nest_id: i64) -> Result<Vec<BackgroundImage>, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+pub fn get_backgrounds_from_db(db: &AppDb, nest_id: i64) -> Result<Vec<BackgroundImage>, String> {
+    let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
         .prepare("
@@ -144,8 +145,8 @@ pub fn get_backgrounds_from_db(nest_id: i64) -> Result<Vec<BackgroundImage>, Str
     Ok(result)
 }
 
-fn get_background_by_id(id: i64) -> Result<BackgroundImage, String> {
-    let connection = get_connection().map_err(|e| e.to_string())?;
+fn get_background_by_id(db: &AppDb, id: i64) -> Result<BackgroundImage, String> {
+    let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
         .prepare("
@@ -173,9 +174,9 @@ fn get_background_by_id(id: i64) -> Result<BackgroundImage, String> {
     Ok(image)
 }
 
-pub fn delete_background_from_db(id: i64) -> Result<(), String> {
+pub fn delete_background_from_db(db: &AppDb, id: i64) -> Result<(), String> {
 
-    let background_image = get_background_by_id(id).map_err(|e| e.to_string())?;
+    let background_image = get_background_by_id(&db, id).map_err(|e| e.to_string())?;
 
     if let Err(err) = fs::remove_file(&background_image.file_path) {
         if err.kind() != std::io::ErrorKind::NotFound {
@@ -183,7 +184,7 @@ pub fn delete_background_from_db(id: i64) -> Result<(), String> {
         }
     }
 
-    let connection = get_connection().map_err(|e| e.to_string())?;
+    let connection = db.connection.lock().unwrap();
     connection
         .execute("DELETE FROM background_images WHERE id = ?1", params![id],
         )
