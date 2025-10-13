@@ -4,15 +4,15 @@ import {
   getNestlings,
   deleteNestling,
   editNestling,
-} from "@/lib/api/nestlings";
+} from "@/lib/api/nestling";
 import {
   createFolder,
   deleteFolder,
   getFolders,
   updateFolder,
-} from "@/lib/api/folders";
-import { Folder, NewFolder } from "@/lib/types/folders";
-import { Nestling, NewNestling } from "@/lib/types/nestlings";
+} from "@/lib/api/folder";
+import { Folder, NewFolder } from "@/lib/types/folder";
+import { Nestling, NewNestling } from "@/lib/types/nestling";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 import { saveLastNestling } from "@/lib/storage/session";
 

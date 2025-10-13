@@ -3,7 +3,7 @@ use crate::db::journal::{
     get_journal_templates_by_nestling, insert_journal_entry_into_db,
     insert_journal_template_into_db, update_journal_entry_in_db, update_journal_template_in_db,
 };
-use crate::models::nestling::{JournalEntry, JournalTemplate, NewJournalEntry, NewJournalTemplate};
+use crate::models::journal::{JournalEntry, JournalTemplate, NewJournalEntry, NewJournalTemplate};
 use crate::utils::db::AppDb;
 
 #[tauri::command]

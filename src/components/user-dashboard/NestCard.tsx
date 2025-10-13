@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardCard from "./DashboardCard";
 import EditNestModal from "../modals/EditNestModal";
 import { Button } from "../ui/button";
-import { Nest } from "@/lib/types/nests";
+import { Nest } from "@/lib/types/nest";
 import { useNestStore } from "@/stores/useNestStore";
 
 export default function NestCard({ nest }: { nest: Nest }) {

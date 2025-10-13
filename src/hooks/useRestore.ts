@@ -1,10 +1,10 @@
-import { getNestFromId } from "@/lib/api/nests";
+import { getNestFromId } from "@/lib/api/nest";
 import {
   saveLastNestId,
   getLastNestling,
   getLastBackgroundImage,
 } from "@/lib/storage/session";
-import { Nest } from "@/lib/types/nests";
+import { Nest } from "@/lib/types/nest";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useNestStore } from "@/stores/useNestStore";
 import { useEffect } from "react";

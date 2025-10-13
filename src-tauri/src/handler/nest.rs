@@ -11,21 +11,21 @@ pub fn create_nest(db: tauri::State<AppDb>, data: NewNest) -> Result<Nest, Strin
 }
 
 #[tauri::command]
-pub fn get_user_nests(db: tauri::State<AppDb>, user_id: i32) -> Result<Vec<Nest>, String> {
+pub fn get_user_nests(db: tauri::State<AppDb>, user_id: i64) -> Result<Vec<Nest>, String> {
     get_nests_by_user(&db, user_id)
 }
 
 #[tauri::command]
-pub fn update_nest(db: tauri::State<AppDb>, nest_id: i32, new_title: String) -> Result<(), String> {
+pub fn update_nest(db: tauri::State<AppDb>, nest_id: i64, new_title: String) -> Result<(), String> {
     update_nest_title(&db, nest_id, new_title)
 }
 
 #[tauri::command]
-pub fn delete_nest(db: tauri::State<AppDb>, nest_id: i32) -> Result<(), String> {
+pub fn delete_nest(db: tauri::State<AppDb>, nest_id: i64) -> Result<(), String> {
     delete_nest_from_db(&db, nest_id)
 }
 
 #[tauri::command]
-pub fn get_nest_by_id(db: tauri::State<AppDb>, nest_id: i32) -> Result<Nest, String> {
+pub fn get_nest_by_id(db: tauri::State<AppDb>, nest_id: i64) -> Result<Nest, String> {
     get_nest_data(&db, nest_id)
 }

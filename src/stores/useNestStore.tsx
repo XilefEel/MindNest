@@ -1,12 +1,12 @@
 import { create } from "zustand";
-import { Nest } from "../lib/types/nests";
+import { Nest } from "../lib/types/nest";
 import {
   getUserNests,
   createNest,
   updateNest,
   deleteNest,
   getNestFromId,
-} from "../lib/api/nests";
+} from "../lib/api/nest";
 import {
   importBackground,
   deleteBackground,

@@ -1,4 +1,4 @@
-import { Folder } from "@/lib/types/folders";
+import { Folder } from "@/lib/types/folder";
 import { cn } from "@/lib/utils/general";
 import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, Folder as FolderIcon, GripVertical } from "lucide-react";

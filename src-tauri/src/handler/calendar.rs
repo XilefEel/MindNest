@@ -2,7 +2,7 @@ use crate::db::calendar::{
     delete_planner_event_from_db, get_planner_events_from_range, insert_planner_event_into_db,
     update_planner_event_in_db,
 };
-use crate::models::nestling::{NewPlannerEvent, PlannerEvent};
+use crate::models::calendar::{NewPlannerEvent, PlannerEvent};
 use crate::utils::db::AppDb;
 
 #[tauri::command]

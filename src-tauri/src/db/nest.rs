@@ -36,7 +36,7 @@ pub fn create_nest_in_db(db: &AppDb, data: NewNest) -> Result<Nest, String> {
     Ok(nest)
 }
 
-pub fn get_nests_by_user(db: &AppDb, user_id: i32) -> Result<Vec<Nest>, String> {
+pub fn get_nests_by_user(db: &AppDb, user_id: i64) -> Result<Vec<Nest>, String> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare("
@@ -63,7 +63,7 @@ pub fn get_nests_by_user(db: &AppDb, user_id: i32) -> Result<Vec<Nest>, String> 
     Ok(nests)
 }
 
-pub fn update_nest_title(db: &AppDb, nest_id: i32, new_title: String) -> Result<(), String> {
+pub fn update_nest_title(db: &AppDb, nest_id: i64, new_title: String) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
     connection.execute(
         "UPDATE nests SET title = ?1 WHERE id = ?2",
@@ -73,14 +73,14 @@ pub fn update_nest_title(db: &AppDb, nest_id: i32, new_title: String) -> Result<
     Ok(())
 }
 
-pub fn delete_nest_from_db(db: &AppDb, nest_id: i32) -> Result<(), String> {
+pub fn delete_nest_from_db(db: &AppDb, nest_id: i64) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
     connection.execute("DELETE FROM nests WHERE id = ?1", params![nest_id])
         .map_err(|e| e.to_string())?;
     Ok(())
 }
 
-pub fn get_nest_data(db: &AppDb, nest_id: i32) -> Result<Nest, String> {
+pub fn get_nest_data(db: &AppDb, nest_id: i64) -> Result<Nest, String> {
     let connection = db.connection.lock().unwrap();
     let mut statement = connection
         .prepare("

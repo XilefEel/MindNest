@@ -3,7 +3,7 @@ use crate::db::gallery::{
     get_images_from_db, add_image_into_db, import_image_into_app, import_image_data_into_app, duplicate_image_from_image, update_album_in_db, update_image_in_db,
     download_image_into_user, download_album_into_user,
 };
-use crate::models::nestling::{GalleryAlbum, GalleryImage, NewGalleryAlbum, NewGalleryImage};
+use crate::models::gallery::{GalleryAlbum, GalleryImage, NewGalleryAlbum, NewGalleryImage};
 use crate::utils::db::AppDb;
 
 #[tauri::command]

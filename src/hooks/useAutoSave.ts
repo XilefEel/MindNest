@@ -1,5 +1,5 @@
 import { saveLastNestling } from "@/lib/storage/session";
-import { Nestling } from "@/lib/types/nestlings";
+import { Nestling } from "@/lib/types/nestling";
 import { debounce } from "@/lib/utils/general";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useNestStore } from "@/stores/useNestStore";

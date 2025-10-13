@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { Nest } from "../types/nests";
+import { Nest } from "../types/nest";
 
 export async function createNest(userId: number, title: string) {
   await invoke<void>("create_nest", {

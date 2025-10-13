@@ -8,6 +8,9 @@ use handler::nest::{create_nest, delete_nest, get_nest_by_id, get_user_nests, up
 
 use handler::nestling::{
     create_nestling, get_nestlings, update_nestling, delete_nestling,
+};
+
+use handler::folder::{
     create_folder, get_folders, update_folder, delete_folder
 };
 
@@ -35,9 +38,7 @@ use handler::gallery::{
     download_image, download_album, duplicate_image
 };
 
-use utils::user::init_db;
-
-use crate::utils::db::AppDb;
+use crate::utils::db::{AppDb, init_db};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -56,7 +57,7 @@ pub fn run() {
             
             app.manage(db);
             
-            println!("Database initialized");
+            println!("Database initialized!");
             
             Ok(())
         })

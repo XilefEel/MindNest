@@ -1,4 +1,4 @@
-import { Nest } from "@/lib/types/nests";
+import { Nest } from "@/lib/types/nest";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Pencil, Trash } from "lucide-react";

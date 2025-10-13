@@ -1,5 +1,5 @@
 use crate::db::nestling::get_nestling_by_id;
-use crate::models::nestling::{
+use crate::models::board::{
     BoardCard, BoardColumn, BoardColumnData, BoardData, NewBoardCard, NewBoardColumn,
 };
 use crate::utils::db::AppDb;

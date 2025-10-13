@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { Folder, NewFolder } from "../types/folders";
+import { Folder, NewFolder } from "../types/folder";
 
 export async function createFolder(data: NewFolder) {
   return await invoke<Folder>("create_folder", { data });

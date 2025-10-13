@@ -1,6 +1,6 @@
 import useActiveNestling from "@/hooks/useActiveNestling";
 import { saveLastNestling } from "@/lib/storage/session";
-import { Nestling } from "@/lib/types/nestlings";
+import { Nestling } from "@/lib/types/nestling";
 import { cn } from "@/lib/utils/general";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useNestStore } from "@/stores/useNestStore";

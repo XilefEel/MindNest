@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { Nest } from "@/lib/types/nests";
+import { Nest } from "@/lib/types/nest";
 import { useNestStore } from "@/stores/useNestStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { cn } from "@/lib/utils/general";

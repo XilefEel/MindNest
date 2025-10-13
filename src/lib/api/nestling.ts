@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { Nestling, NewNestling } from "../types/nestlings";
+import { Nestling, NewNestling } from "../types/nestling";
 
 export async function createNestling(data: NewNestling) {
   return await invoke<Nestling>("create_nestling", { data });

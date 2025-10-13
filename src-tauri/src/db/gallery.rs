@@ -1,4 +1,4 @@
-use crate::models::nestling::{GalleryAlbum, GalleryImage, NewGalleryAlbum, NewGalleryImage};
+use crate::models::gallery::{GalleryAlbum, GalleryImage, NewGalleryAlbum, NewGalleryImage};
 use crate::utils::db::AppDb;
 use rusqlite::params;
 

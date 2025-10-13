@@ -1,4 +1,4 @@
-import { Folder } from "@/lib/types/folders";
+import { Folder } from "@/lib/types/folder";
 import NestlingItem from "../sidebar/NestlingItem";
 import { useDroppable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils/general";

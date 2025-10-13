@@ -1,4 +1,9 @@
 pub mod nest;
 pub mod nestling;
+pub mod folder;
 pub mod user;
 pub mod nest_background;
+pub mod board;
+pub mod calendar;
+pub mod journal;
+pub mod gallery;

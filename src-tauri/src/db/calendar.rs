@@ -1,4 +1,4 @@
-use crate::{models::nestling::{NewPlannerEvent, PlannerEvent}, utils::db::AppDb};
+use crate::{models::calendar::{NewPlannerEvent, PlannerEvent}, utils::db::AppDb};
 use rusqlite::params;
 
 use chrono;

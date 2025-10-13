@@ -3,7 +3,7 @@ use crate::db::board::{
     insert_board_card_into_db, insert_board_column_into_db, update_board_card_in_db,
     update_board_column_in_db,
 };
-use crate::models::nestling::{BoardCard, BoardColumn, BoardData, NewBoardCard, NewBoardColumn};
+use crate::models::board::{BoardCard, BoardColumn, BoardData, NewBoardCard, NewBoardColumn};
 use crate::utils::db::AppDb;
 
 #[tauri::command]

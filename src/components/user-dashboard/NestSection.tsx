@@ -1,4 +1,4 @@
-import { Nest } from "@/lib/types/nests";
+import { Nest } from "@/lib/types/nest";
 import NestCard from "./NestCard";
 import { useNestStore } from "@/stores/useNestStore";
 import { useEffect } from "react";

@@ -1,4 +1,4 @@
-use crate::models::nestling::{JournalEntry, JournalTemplate, NewJournalEntry, NewJournalTemplate};
+use crate::models::journal::{JournalEntry, JournalTemplate, NewJournalEntry, NewJournalTemplate};
 use crate::utils::db::AppDb;
 use rusqlite::params;
 

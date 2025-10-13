@@ -1,5 +1,5 @@
 import { WithBase } from "./base";
-import { Nestling } from "./nestlings";
+import { Nestling } from "./nestling";
 
 export type NewBoardColumn = {
   nestling_id: number;
