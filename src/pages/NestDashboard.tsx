@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Nest } from "@/lib/types/nest";
 import { useNestStore } from "@/stores/useNestStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
@@ -22,6 +22,7 @@ export default function NestDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isTopbarCollapsed, setIsTopbarCollapsed] = useState(false);
 
   const { activeNestling } = useActiveNestling();
   const { activeBackgroundId, backgrounds } = useNestStore();
@@ -36,6 +37,32 @@ export default function NestDashboardPage() {
 
   useRestore({ id, setNest, setLoading });
 
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+
+        switch (e.key) {
+          case "t":
+            setIsTopbarCollapsed(!isTopbarCollapsed);
+            break;
+
+          case "s":
+            const isMobile = window.innerWidth < 768;
+            if (isMobile) {
+              setIsSidebarOpen(!isSidebarOpen);
+            } else {
+              setIsSidebarCollapsed(!isSidebarCollapsed);
+            }
+            break;
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  });
+
   if (loading) return <LoadingScreen />;
   if (!nest) return <p>Nest not found.</p>;
 
@@ -48,12 +75,27 @@ export default function NestDashboardPage() {
       }}
       className="flex h-screen cursor-default flex-col bg-gray-50 pb-3 md:pb-6 dark:bg-gray-900"
     >
-      <div className="shrink-0 md:px-6">
-        <Topbar
-          nest={nest}
-          isSidebarOpen={isSidebarOpen}
-          setIsSidebarOpen={setIsSidebarOpen}
-        />
+      <div
+        className={cn(
+          "shrink-0 transition-all duration-300 ease-in-out",
+          isTopbarCollapsed ? "h-0" : "h-24",
+        )}
+      >
+        <div
+          className={cn(
+            "cursor-pointer transition-all duration-300 md:px-6",
+            isTopbarCollapsed
+              ? "-translate-y-11/12 opacity-30 hover:opacity-60"
+              : "translate-y-0 opacity-100",
+          )}
+          onDoubleClick={() => setIsTopbarCollapsed(!isTopbarCollapsed)}
+        >
+          <Topbar
+            nest={nest}
+            isSidebarOpen={isSidebarOpen}
+            setIsSidebarOpen={setIsSidebarOpen}
+          />
+        </div>
       </div>
       <div className="mt-6 flex flex-1 overflow-hidden">
         {isSidebarOpen && (
