@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import {
   Select,
@@ -13,7 +12,6 @@ import {
 } from "../ui/select";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
-import { inputBase } from "@/lib/utils/styles";
 import { TextField } from "./TextField";
 
 export default function NestlingModal({
@@ -94,15 +92,12 @@ export default function NestlingModal({
       }
       body={
         <>
-          <TextField label={nestlingId ? "New Title" : "Nestling Title"}>
-            <Input
-              value={title}
-              autoFocus
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. My First Note, My Journal, My Board"
-              className={inputBase}
-            />
-          </TextField>
+          <TextField
+            label={nestlingId ? "New Title" : "Nestling Title"}
+            text={title}
+            setText={setTitle}
+            placeholder="e.g. My First Note, My Journal, My Board"
+          />
 
           {!nestlingId && (
             <>

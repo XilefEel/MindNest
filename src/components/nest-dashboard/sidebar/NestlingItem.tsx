@@ -38,11 +38,11 @@ export default function NestlingItem({
 }) {
   const { setActiveFolderId, setActiveNestlingId } = useNestlingStore();
   const { activeNestling } = useActiveNestling();
-  const { activeNestId } = useNestStore();
+  const { activeNestId, activeBackgroundId } = useNestStore();
 
   const handleSelect = () => {
     setActiveNestlingId(nestling.id);
-    setActiveFolderId(nestling.folder_id || null);
+    setActiveFolderId(nestling.folder_id);
     saveLastNestling(activeNestId!, nestling.id);
     setIsSidebarOpen(false);
   };
@@ -78,15 +78,20 @@ export default function NestlingItem({
       >
         <div
           className={cn(
-            "flex w-full max-w-full cursor-pointer items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition-colors duration-200 hover:bg-teal-50 dark:hover:bg-gray-700",
-            nestling.id === activeNestling?.id &&
-              "bg-teal-100 font-bold text-teal-900 dark:bg-teal-400 dark:text-white",
+            "flex w-full max-w-full cursor-pointer items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition-colors duration-150 ease-in-out",
+            activeBackgroundId
+              ? nestling.id === activeNestling?.id
+                ? "bg-white/50 font-bold dark:bg-black/50"
+                : "hover:bg-white/20 dark:hover:bg-black/20"
+              : nestling.id === activeNestling?.id
+                ? "bg-teal-100 font-bold dark:bg-teal-400"
+                : "hover:bg-teal-50 dark:hover:bg-gray-700",
           )}
           onClick={() => handleSelect()}
           onDoubleClick={(e) => e.stopPropagation()}
           style={style}
         >
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <Icon className="size-4" />
             <span className="max-w-[140px] truncate">{nestling.title}</span>
           </div>

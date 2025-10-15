@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useNestStore } from "@/stores/useNestStore";
 import BaseModal from "./BaseModal";
-import { inputBase } from "@/lib/utils/styles";
 import { TextField } from "./TextField";
 
 export default function AddNestModal({ userId }: { userId: number }) {
@@ -40,17 +38,7 @@ export default function AddNestModal({ userId }: { userId: number }) {
       setIsOpen={setIsOpen}
       title="Create a New Nest"
       description="Give your nest a title. You can always change it later."
-      body={
-        <TextField label="Title">
-          <Input
-            value={title}
-            autoFocus
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Personal, Work, School"
-            className={inputBase}
-          />
-        </TextField>
-      }
+      body={<TextField label="Title" text={title} setText={setTitle} />}
       footer={
         <Button
           onClick={handleCreateNest}

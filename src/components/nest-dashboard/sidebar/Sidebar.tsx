@@ -30,7 +30,7 @@ export default function Sidebar({
     setActiveNestlingId,
   } = useNestlingStore();
 
-  const { activeNestling } = useActiveNestling();
+  const { activeNestlingId } = useActiveNestling();
   const { activeBackgroundId } = useNestStore();
 
   const folderGroups = useMemo(() => {
@@ -72,9 +72,14 @@ export default function Sidebar({
 
         <div
           className={cn(
-            "flex cursor-pointer items-center gap-1 rounded px-2 py-1 font-medium transition-colors hover:bg-teal-100 dark:hover:bg-gray-700",
-            activeNestling === null &&
-              "bg-teal-100 font-bold text-teal-900 dark:bg-teal-400 dark:text-white",
+            "flex cursor-pointer items-center gap-1 truncate rounded px-2 py-1 font-medium transition-colors duration-150 ease-in-out",
+            activeBackgroundId
+              ? activeNestlingId === null
+                ? "bg-white/50 font-bold dark:bg-black/50"
+                : "hover:bg-white/20 dark:hover:bg-black/20"
+              : activeNestlingId === null
+                ? "bg-teal-100 font-bold dark:bg-teal-400"
+                : "hover:bg-teal-50 dark:hover:bg-gray-700",
           )}
           onClick={handleHomeClick}
           onDoubleClick={(e) => e.stopPropagation()}

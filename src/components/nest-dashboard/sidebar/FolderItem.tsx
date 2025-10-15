@@ -4,6 +4,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, Folder as FolderIcon, GripVertical } from "lucide-react";
 import FolderContextMenu from "@/components/context-menu/FolderContextMenu";
 import { motion } from "framer-motion";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function FolderItem({
   folder,
@@ -14,6 +15,8 @@ export default function FolderItem({
   isFolderOpen: boolean;
   toggleFolder: (id: number) => void;
 }) {
+  const { activeBackgroundId } = useNestStore();
+
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: `folder-${folder.id}`,
@@ -37,14 +40,17 @@ export default function FolderItem({
           style={style}
           className={cn(
             "flex cursor-pointer items-center justify-between gap-1 rounded px-2 py-1 transition-colors duration-200 hover:bg-teal-50 dark:hover:bg-gray-700",
-            isDragging && "opacity-50",
+            activeBackgroundId
+              ? "hover:bg-white/20 dark:hover:bg-black/20"
+              : "hover:bg-teal-50 dark:hover:bg-gray-700",
           )}
         >
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <ChevronDown
-              className={`size-4 transition-transform duration-200 ${
-                isFolderOpen ? "rotate-0" : "-rotate-90"
-              }`}
+              className={cn(
+                "size-4 transition-transform duration-200",
+                isFolderOpen ? "rotate-0" : "-rotate-90",
+              )}
             />
             <FolderIcon className="size-4" />
             <span className="max-w-[140px] truncate">{folder.name}</span>

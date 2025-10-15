@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useJournalStore } from "@/stores/useJournalStore";
 import { JournalEntry } from "@/lib/types/journal";
 import BaseModal from "./BaseModal";
-import { inputBase } from "@/lib/utils/styles";
 import { TextField } from "./TextField";
 import { toast } from "sonner";
 import { useNestStore } from "@/stores/useNestStore";
@@ -55,15 +53,12 @@ export default function AddJournalEntryModal({
       title="Create a New Journal Entry"
       description="Start writing your journal entry."
       body={
-        <TextField label="Entry Title">
-          <Input
-            placeholder="e.g. My First Journal Entry"
-            value={title}
-            autoFocus
-            onChange={(e) => setTitle(e.target.value)}
-            className={inputBase}
-          />
-        </TextField>
+        <TextField
+          label="Entry Title"
+          text={title}
+          setText={setTitle}
+          placeholder="e.g. My First Journal Entry"
+        />
       }
       footer={
         <Button

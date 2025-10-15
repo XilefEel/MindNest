@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
-import { inputBase } from "@/lib/utils/styles";
 
 export default function AddFolderModal({
   children,
@@ -78,15 +76,12 @@ export default function AddFolderModal({
           : "Create a new folder to organize your notes."
       }
       body={
-        <TextField label="Folder Title">
-          <Input
-            placeholder="e.g. Personal, Work, School"
-            value={title}
-            autoFocus
-            onChange={(e) => setTitle(e.target.value)}
-            className={inputBase}
-          />
-        </TextField>
+        <TextField
+          label="Folder Title"
+          text={title}
+          setText={setTitle}
+          placeholder="e.g. Personal, Work, School"
+        />
       }
       footer={
         <Button

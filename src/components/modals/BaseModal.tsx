@@ -38,6 +38,7 @@ export default function BaseModal({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         onClick={(e) => e.stopPropagation()}
+        onDoubleClick={(e) => e.stopPropagation()}
         className={cn(
           "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
           "bg-white dark:bg-gray-800",

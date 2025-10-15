@@ -3,7 +3,6 @@ import HomeSection from "@/components/user-dashboard/HomeSection";
 import NestSection from "@/components/user-dashboard/NestSection";
 import SharedSection from "@/components/user-dashboard/SharedSection";
 import ExploreSection from "@/components/user-dashboard/DiscoverSection";
-
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils/general";
@@ -14,20 +13,6 @@ export default function DashboardPage() {
   >("home");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  function renderSection() {
-    switch (activeSection) {
-      case "home":
-        return <HomeSection />;
-      case "nests":
-        return <NestSection />;
-      case "shared":
-        return <SharedSection />;
-      case "explore":
-        return <ExploreSection />;
-      default:
-        return null;
-    }
-  }
   useEffect(() => {
     if (isSidebarOpen) {
       document.body.style.overflow = "hidden";
@@ -72,7 +57,15 @@ export default function DashboardPage() {
           </button>
         </header>
         <main className="flex-1 overflow-y-auto p-6 transition-opacity duration-200">
-          {renderSection()}
+          {activeSection && activeSection === "home" ? (
+            <HomeSection />
+          ) : activeSection === "nests" ? (
+            <NestSection />
+          ) : activeSection === "shared" ? (
+            <SharedSection />
+          ) : activeSection === "explore" ? (
+            <ExploreSection />
+          ) : null}
         </main>
       </div>
     </div>

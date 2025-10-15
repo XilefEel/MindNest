@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { GalleryAlbum } from "@/lib/types/gallery";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
-import { cn } from "@/lib/utils/general";
-import { inputBase } from "@/lib/utils/styles";
 
 export default function AlbumModal({
   nestling_id,
@@ -76,25 +73,19 @@ export default function AlbumModal({
       }
       body={
         <>
-          <TextField label="Album Title">
-            <Input
-              placeholder="e.g. Family, Vacation, Work"
-              value={title}
-              autoFocus
-              onChange={(e) => setTitle(e.target.value)}
-              className={inputBase}
-            />
-          </TextField>
+          <TextField
+            label="Album Title"
+            text={title}
+            setText={setTitle}
+            placeholder="e.g. Family, Vacation, Work"
+          />
 
-          <TextField label="Description">
-            <textarea
-              rows={3}
-              placeholder="e.g. Photos from my trip to Italy"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className={cn(inputBase, "resize-none")}
-            />
-          </TextField>
+          <TextField
+            label="Description"
+            text={description}
+            setText={setDescription}
+            placeholder="e.g. Photos from my trip to Italy"
+          />
         </>
       }
       footer={

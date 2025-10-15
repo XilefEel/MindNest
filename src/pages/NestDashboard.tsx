@@ -4,7 +4,7 @@ import { Nest } from "@/lib/types/nest";
 import { useNestStore } from "@/stores/useNestStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { cn } from "@/lib/utils/general";
-import Topbar from "@/components/nest-dashboard/Topbar";
+import Topbar from "@/components/nest-dashboard/topbar/Topbar";
 import Sidebar from "@/components/nest-dashboard/sidebar/Sidebar";
 import Home from "@/components/nest-dashboard/Home";
 import LoadingScreen from "@/components/LoadingScreen";
@@ -96,7 +96,7 @@ export default function NestDashboardPage() {
     >
       {!isCardHidden && (
         <>
-          <div
+          <nav
             className={cn(
               "shrink-0 transition-all duration-300 ease-in-out",
               isTopbarCollapsed ? "h-0" : "h-24",
@@ -115,7 +115,7 @@ export default function NestDashboardPage() {
                 setIsSidebarOpen={setIsSidebarOpen}
               />
             </div>
-          </div>
+          </nav>
           <div className="mt-6 flex flex-1 overflow-hidden">
             {isSidebarOpen && (
               <div

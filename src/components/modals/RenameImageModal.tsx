@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import BaseModal from "./BaseModal";
+import { TextField } from "./TextField";
 
 export default function RenameImageModal({
   children,
@@ -50,33 +50,21 @@ export default function RenameImageModal({
       title="Edit Image"
       description="Update your image title and description."
       body={
-        <div className="space-y-4">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Image Title
-            </label>
-            <Input
-              placeholder="Enter image title"
-              value={title}
-              autoFocus
-              onChange={(e) => setTitle(e.target.value)}
-              className="border-gray-300 bg-white text-sm text-black placeholder-gray-400 focus:border-teal-500 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:border-teal-400 dark:focus:ring-teal-400"
-            />
-          </div>
+        <>
+          <TextField
+            label="Title"
+            text={title}
+            setText={setTitle}
+            placeholder="e.g. Family, Vacation, Work"
+          />
 
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Description
-            </label>
-            <textarea
-              rows={3}
-              placeholder="Enter description..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full resize-none rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-black placeholder-gray-400 focus:border-teal-500 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:border-teal-400 dark:focus:ring-teal-400"
-            />
-          </div>
-        </div>
+          <TextField
+            label="Description"
+            text={description}
+            setText={setDescription}
+            placeholder="e.g. Photos from my trip to Italy"
+          />
+        </>
       }
       footer={
         <Button

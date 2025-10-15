@@ -2,11 +2,9 @@ import { Nest } from "@/lib/types/nest";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Pencil, Trash } from "lucide-react";
-import { Input } from "../ui/input";
 import { toast } from "sonner";
 import { useNestStore } from "@/stores/useNestStore";
 import BaseModal from "./BaseModal";
-import { inputBase } from "@/lib/utils/styles";
 import { TextField } from "./TextField";
 import { clearLastNestling } from "@/lib/storage/session";
 
@@ -53,15 +51,12 @@ export default function EditNestModal({ nest }: { nest: Nest | null }) {
         title="Edit Nest"
         description="Don't like the title? You can change it! or delete it."
         body={
-          <TextField label="New Nest Title">
-            <Input
-              placeholder="e.g. Personal, Work, School"
-              value={title}
-              autoFocus
-              onChange={(e) => setTitle(e.target.value)}
-              className={inputBase}
-            />
-          </TextField>
+          <TextField
+            label="New Nest Title"
+            text={title}
+            setText={setTitle}
+            placeholder="e.g. Personal, Work, School"
+          />
         }
         footer={
           <>
