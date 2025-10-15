@@ -9,6 +9,7 @@ import {
   getPlannerEvents,
   updatePlannerEvent,
 } from "@/lib/api/calendar";
+import { withStoreErrorHandler } from "@/lib/utils/general";
 
 type PlannerState = {
   events: PlannerEventType[];
@@ -50,38 +51,35 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
   loading: false,
   error: null,
 
-  fetchEvents: async ({
-    nestlingId,
-    start,
-    end,
-  }: {
-    nestlingId: number;
-    start: string;
-    end: string;
-  }) => {
-    set({ loading: true, error: null });
-    try {
+  fetchEvents: withStoreErrorHandler(
+    set,
+    async ({
+      nestlingId,
+      start,
+      end,
+    }: {
+      nestlingId: number;
+      start: string;
+      end: string;
+    }) => {
       const events = await getPlannerEvents({
         id: nestlingId,
         start,
         end,
       });
-      set({ events, loading: false });
-    } catch (e) {
-      set({ error: String(e), loading: false });
-    }
-  },
+      set({ events });
+    },
+  ),
 
-  addEvent: async (newEvent: NewPlannerEventType) => {
-    try {
-      console.log("Adding event:", newEvent);
+  addEvent: withStoreErrorHandler(
+    set,
+    async (newEvent: NewPlannerEventType) => {
       const event = await createPlannerEvent(newEvent);
       set({ events: [...get().events, event] });
-    } catch (e) {
-      set({ error: String(e) });
-    }
-  },
+    },
+  ),
 
+  // not using withStoreErrorHandler since we want optimistic update
   updateEvent: async ({
     id,
     date,
@@ -100,23 +98,23 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
     color: string | null;
   }) => {
     const prevEvent = get().events;
-    set({
-      events: prevEvent.map((e) =>
-        e.id === id
-          ? {
-              ...e,
-              date,
-              title,
-              description: description ?? e.description,
-              start_time,
-              duration,
-              updated_at: new Date().toISOString(),
-              color: color ?? e.color,
-            }
-          : e,
-      ),
-    });
     try {
+      set({
+        events: prevEvent.map((e) =>
+          e.id === id
+            ? {
+                ...e,
+                date,
+                title,
+                description: description ?? e.description,
+                start_time,
+                duration,
+                updated_at: new Date().toISOString(),
+                color: color ?? e.color,
+              }
+            : e,
+        ),
+      });
       await updatePlannerEvent({
         id,
         date,
@@ -126,18 +124,16 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
         duration,
         color,
       });
-    } catch (e) {
-      console.error("Error updating event:", e);
-      set({ events: prevEvent, error: String(e) });
+    } catch (error) {
+      set({ events: prevEvent, error: String(error) });
+      throw error;
+    } finally {
+      set({ loading: false });
     }
   },
 
-  deleteEvent: async (id) => {
-    try {
-      await deletePlannerEvent(id);
-      set({ events: get().events.filter((e) => e.id !== id) });
-    } catch (e) {
-      set({ error: String(e) });
-    }
-  },
+  deleteEvent: withStoreErrorHandler(set, async (id) => {
+    await deletePlannerEvent(id);
+    set({ events: get().events.filter((e) => e.id !== id) });
+  }),
 }));

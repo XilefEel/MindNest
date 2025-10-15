@@ -26,3 +26,27 @@ export function debounce<T extends (...args: any[]) => any>(
 export function getRandomElement<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
+
+export const withStoreErrorHandler = <
+  TState extends { loading: boolean; error: string | null },
+  TArgs extends any[],
+  TResult,
+>(
+  set: (
+    partial: Partial<TState> | ((state: TState) => Partial<TState>),
+  ) => void,
+  storeFn: (...args: TArgs) => Promise<TResult>,
+) => {
+  return async (...args: TArgs): Promise<TResult> => {
+    set({ loading: true, error: null } as Partial<TState>);
+    try {
+      const result = await storeFn(...args);
+      return result;
+    } catch (error) {
+      set({ error: String(error) } as Partial<TState>);
+      throw error;
+    } finally {
+      set({ loading: false } as Partial<TState>);
+    }
+  };
+};

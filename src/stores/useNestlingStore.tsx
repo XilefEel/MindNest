@@ -15,6 +15,7 @@ import { Folder, NewFolder } from "@/lib/types/folder";
 import { Nestling, NewNestling } from "@/lib/types/nestling";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 import { saveLastNestling } from "@/lib/storage/session";
+import { withStoreErrorHandler } from "@/lib/utils/general";
 
 type NestlingState = {
   nestlings: Nestling[];
@@ -52,13 +53,13 @@ type NestlingState = {
 export const useNestlingStore = create<NestlingState>((set, get) => ({
   nestlings: [],
   folders: [],
-  activeNestlingId: null,
-  activeFolderId: null,
-
-  openFolders: {},
-  activeDraggingNestlingId: null,
   loading: false,
   error: null,
+
+  activeNestlingId: null,
+  activeFolderId: null,
+  openFolders: {},
+  activeDraggingNestlingId: null,
 
   setActiveNestlingId: (number) => set({ activeNestlingId: number }),
 
@@ -72,181 +73,107 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
       },
     })),
 
-  addNestling: async (nestling: NewNestling) => {
-    set({ loading: true, error: null });
-    try {
-      const newNestling = await createNestling(nestling);
-      set((state) => ({
-        nestlings: [...state.nestlings, newNestling].sort((a, b) =>
-          a.title.localeCompare(b.title),
-        ),
-        loading: false,
-      }));
-    } catch (error) {
-      set({ error: String(error) });
-      throw error;
-    } finally {
-      set({ loading: false });
-    }
-  },
+  addNestling: withStoreErrorHandler(set, async (nestling: NewNestling) => {
+    const newNestling = await createNestling(nestling);
+    set((state) => ({
+      nestlings: [...state.nestlings, newNestling].sort((a, b) =>
+        a.title.localeCompare(b.title),
+      ),
+    }));
+  }),
 
-  duplicateNestling: async (nestlingId: number) => {
-    set({ loading: true, error: null });
-    try {
-      const originalNestling = get().nestlings.find(
-        (n) => n.id === nestlingId,
-      )!;
-      const newNestling = await createNestling(originalNestling);
+  duplicateNestling: withStoreErrorHandler(set, async (nestlingId: number) => {
+    const originalNestling = get().nestlings.find((n) => n.id === nestlingId)!;
+    const newNestling = await createNestling(originalNestling);
 
-      set((state) => ({
-        nestlings: [...state.nestlings, newNestling].sort((a, b) =>
-          a.title.localeCompare(b.title),
-        ),
-        loading: false,
-      }));
-    } catch (error) {
-      set({ error: String(error) });
-      throw error;
-    } finally {
-      set({ loading: false });
-    }
-  },
+    set((state) => ({
+      nestlings: [...state.nestlings, newNestling].sort((a, b) =>
+        a.title.localeCompare(b.title),
+      ),
+    }));
+  }),
 
-  updateNestling: async (id, updates) => {
-    try {
-      await editNestling(
-        id,
-        updates.folder_id ?? null,
-        updates.title,
-        updates.content,
-      );
+  updateNestling: withStoreErrorHandler(set, async (id, updates) => {
+    await editNestling(
+      id,
+      updates.folder_id ?? null,
+      updates.title,
+      updates.content,
+    );
 
-      set((state) => ({
-        nestlings: state.nestlings
-          .map((n) =>
-            n.id === id
-              ? {
-                  ...n,
-                  folder_id: updates.folder_id ?? n.folder_id,
-                  title: updates.title ?? n.title,
-                  content: updates.content ?? n.content,
-                }
-              : n,
-          )
-          .sort((a, b) => a.title.localeCompare(b.title)),
-      }));
-    } catch (error) {
-      set({ error: String(error) });
-      throw error;
-    } finally {
-      set({ loading: false });
-    }
-  },
+    set((state) => ({
+      nestlings: state.nestlings
+        .map((n) =>
+          n.id === id
+            ? {
+                ...n,
+                folder_id: updates.folder_id ?? n.folder_id,
+                title: updates.title ?? n.title,
+                content: updates.content ?? n.content,
+              }
+            : n,
+        )
+        .sort((a, b) => a.title.localeCompare(b.title)),
+    }));
+  }),
 
-  deleteNestling: async (nestlingId) => {
-    set({ loading: true, error: null });
-    try {
-      await deleteNestling(nestlingId);
-      set((state) => ({
-        nestlings: state.nestlings.filter((n) => n.id !== nestlingId),
-      }));
-    } catch (error) {
-      set({ error: String(error) });
-      throw error;
-    } finally {
-      set({ loading: false });
-    }
-  },
+  deleteNestling: withStoreErrorHandler(set, async (nestlingId) => {
+    await deleteNestling(nestlingId);
+    set((state) => ({
+      nestlings: state.nestlings.filter((n) => n.id !== nestlingId),
+    }));
+  }),
 
-  addFolder: async (folder) => {
-    set({ loading: true, error: null });
-    try {
-      const newFolder = await createFolder(folder);
-      set((state) => ({
-        folders: [...state.folders, newFolder].sort((a, b) =>
-          a.name.localeCompare(b.name),
-        ),
-        loading: false,
-      }));
-    } catch (error) {
-      set({ error: String(error) });
-      throw error;
-    } finally {
-      set({ loading: false });
-    }
-  },
+  addFolder: withStoreErrorHandler(set, async (folder) => {
+    const newFolder = await createFolder(folder);
+    set((state) => ({
+      folders: [...state.folders, newFolder].sort((a, b) =>
+        a.name.localeCompare(b.name),
+      ),
+    }));
+  }),
 
-  duplicateFolder: async (folderId) => {
-    set({ loading: true, error: null });
-    try {
-      const originalFolder = get().folders.find((f) => f.id === folderId)!;
-      const newFolder = await createFolder(originalFolder);
+  duplicateFolder: withStoreErrorHandler(set, async (folderId) => {
+    const originalFolder = get().folders.find((f) => f.id === folderId)!;
+    const newFolder = await createFolder(originalFolder);
 
-      set((state) => ({
-        folders: [...state.folders, newFolder].sort((a, b) =>
-          a.name.localeCompare(b.name),
-        ),
-        loading: false,
-      }));
-    } catch (error) {
-      set({ error: String(error) });
-      throw error;
-    } finally {
-      set({ loading: false });
-    }
-  },
+    set((state) => ({
+      folders: [...state.folders, newFolder].sort((a, b) =>
+        a.name.localeCompare(b.name),
+      ),
+      loading: false,
+    }));
+  }),
 
-  updateFolder: async (id, name) => {
-    try {
-      await updateFolder(id, undefined, name);
-      set((state) => ({
-        folders: state.folders
-          .map((f) => (f.id === id ? { ...f, name } : f))
-          .sort((a, b) => a.name.localeCompare(b.name)),
-      }));
-    } catch (error) {
-      set({ error: String(error) });
-      throw error;
-    } finally {
-      set({ loading: false });
-    }
-  },
+  updateFolder: withStoreErrorHandler(set, async (id, name) => {
+    await updateFolder(id, undefined, name);
+    set((state) => ({
+      folders: state.folders
+        .map((f) => (f.id === id ? { ...f, name } : f))
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    }));
+  }),
 
-  deleteFolder: async (folderId) => {
-    set({ loading: true, error: null });
-    try {
-      await deleteFolder(folderId);
-      set((state) => ({
-        folders: state.folders.filter((f) => f.id !== folderId),
-      }));
-    } catch (error) {
-      set({ error: String(error) });
-      throw error;
-    } finally {
-      set({ loading: false });
-    }
-  },
+  deleteFolder: withStoreErrorHandler(set, async (folderId) => {
+    await deleteFolder(folderId);
+    set((state) => ({
+      folders: state.folders.filter((f) => f.id !== folderId),
+    }));
+  }),
 
-  fetchSidebar: async (nestId) => {
-    try {
-      const [fetchedFolders, fetchedNestlings] = await Promise.all([
-        getFolders(nestId),
-        getNestlings(nestId),
-      ]);
+  fetchSidebar: withStoreErrorHandler(set, async (nestId) => {
+    const [fetchedFolders, fetchedNestlings] = await Promise.all([
+      getFolders(nestId),
+      getNestlings(nestId),
+    ]);
 
-      set({
-        folders: fetchedFolders.sort((a, b) => a.name.localeCompare(b.name)),
-        nestlings: fetchedNestlings.sort((a, b) =>
-          a.title.localeCompare(b.title),
-        ),
-      });
-    } catch (err) {
-      set({ error: String(err) });
-      console.error("Failed to refresh data:", err);
-    } finally {
-      set({ loading: false });
-    }
-  },
+    set({
+      folders: fetchedFolders.sort((a, b) => a.name.localeCompare(b.name)),
+      nestlings: fetchedNestlings.sort((a, b) =>
+        a.title.localeCompare(b.title),
+      ),
+    });
+  }),
 
   toggleFolder: (folderId) => {
     set((state) => ({
@@ -324,10 +251,9 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
             .sort((a, b) => a.name.localeCompare(b.name)),
         }));
       }
-    } catch (err) {
-      console.error("Failed to drag folder:", err);
-    } finally {
-      set({ loading: false });
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
   },
 }));

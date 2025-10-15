@@ -3,7 +3,6 @@ import {
   GalleryImage,
   GalleryAlbum,
   NewGalleryAlbum,
-  NewGalleryImage,
 } from "@/lib/types/gallery";
 import {
   importImage,
@@ -17,11 +16,11 @@ import {
   updateAlbum,
   deleteAlbum,
   importImageData,
-  addImage,
   duplicateImage,
 } from "@/lib/api/gallery";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
+import { withStoreErrorHandler } from "@/lib/utils/general";
 
 type GalleryState = {
   images: GalleryImage[];
@@ -31,22 +30,24 @@ type GalleryState = {
   error: string | null;
 
   fetchImages: (nestlingId: number) => Promise<void>;
-  addImage: (data: NewGalleryImage) => Promise<GalleryImage>;
-  duplicateImage: (id: number) => Promise<GalleryImage>;
-  uploadImage: (
-    nestlingId: number,
-    file: {
-      path?: string;
-      name?: string;
-      data?: Uint8Array;
-    },
-    album_id?: number | null,
-  ) => Promise<void>;
-  downloadImage: (id: number) => Promise<void>;
   selectImages: (
     nestlingId: number,
     albumId?: number | null,
   ) => Promise<boolean>;
+  uploadImage: ({
+    nestlingId,
+    file,
+    album_id,
+  }: {
+    nestlingId: number;
+    file: {
+      path?: string;
+      name?: string;
+      data?: Uint8Array;
+    };
+    album_id?: number | null;
+  }) => Promise<void>;
+  duplicateImage: (id: number) => Promise<GalleryImage>;
   editImage: ({
     id,
     albumId,
@@ -61,6 +62,7 @@ type GalleryState = {
     is_favorite: boolean;
   }) => Promise<void>;
   removeImage: (id: number) => Promise<void>;
+  downloadImage: (id: number) => Promise<void>;
 
   fetchAlbums: (nestlingId: number) => Promise<void>;
   addAlbum: ({
@@ -90,25 +92,20 @@ type GalleryState = {
 
 export const useGalleryStore = create<GalleryState>((set, get) => ({
   images: [],
-  activeDraggingImageId: null,
   albums: [],
+  activeDraggingImageId: null,
+
   loading: false,
   error: null,
 
-  fetchImages: async (nestlingId: number) => {
-    set({ loading: true, error: null });
-    try {
-      const images = await getImages(nestlingId);
-      console.log("Images fetched:", images);
-      set({ images, loading: false });
-    } catch (error) {
-      set({ error: String(error) });
-      throw error;
-    }
-  },
+  fetchImages: withStoreErrorHandler(set, async (nestlingId: number) => {
+    const images = await getImages(nestlingId);
+    set({ images });
+  }),
 
-  selectImages: async (nestlingId: number, albumId?: number | null) => {
-    try {
+  selectImages: withStoreErrorHandler(
+    set,
+    async (nestlingId: number, albumId?: number | null) => {
       const selected = await open({
         multiple: true,
         filters: [
@@ -124,123 +121,72 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       const files = Array.isArray(selected) ? selected : [selected];
 
       for (const filePath of files) {
-        await get().uploadImage(nestlingId, { path: filePath }, albumId);
+        await get().uploadImage({
+          nestlingId,
+          file: { path: filePath },
+          album_id: albumId,
+        });
       }
       await get().fetchImages(nestlingId);
 
       return true;
-    } catch (error) {
-      console.error("Failed to select files:", error);
-      set({ error: String(error) });
-      return false;
-    }
-  },
-
-  addImage: async (data: NewGalleryImage) => {
-    set({ loading: true, error: null });
-    try {
-      const image = await addImage(data);
-      set((state) => ({
-        images: [...state.images, image],
-        loading: false,
-      }));
-      return image;
-    } catch (error) {
-      set({ error: String(error), loading: false });
-      throw error;
-    }
-  },
-
-  duplicateImage: async (id: number) => {
-    set({ loading: true, error: null });
-    try {
-      const image = await duplicateImage(id);
-      set((state) => ({
-        images: [...state.images, image],
-        loading: false,
-      }));
-      return image;
-    } catch (error) {
-      set({ error: String(error), loading: false });
-      throw error;
-    }
-  },
-
-  uploadImage: async (
-    nestlingId: number,
-    file: {
-      path?: string;
-      name?: string;
-      data?: Uint8Array;
     },
-    album_id?: number | null,
-  ) => {
-    set({ loading: true, error: null });
-    try {
-      let newImage;
-      if (file.path) {
-        newImage = await importImage(nestlingId, file.path, album_id);
-      } else {
-        newImage = await importImageData(
-          nestlingId,
-          file.name!,
-          Array.from(file.data!),
-          album_id,
-        );
-      }
+  ),
+
+  uploadImage: withStoreErrorHandler(
+    set,
+    async ({
+      nestlingId,
+      file,
+      album_id,
+    }: {
+      nestlingId: number;
+      file: {
+        path?: string;
+        name?: string;
+        data?: Uint8Array;
+      };
+      album_id?: number | null;
+    }) => {
+      let newImage: GalleryImage;
+      newImage = file.path
+        ? await importImage(nestlingId, file.path, album_id)
+        : await importImageData(
+            nestlingId,
+            file.name!,
+            Array.from(file.data!),
+            album_id,
+          );
+
       set((state) => ({
         images: [...state.images, newImage],
-        loading: false,
       }));
-    } catch (error) {
-      set({ error: String(error), loading: false });
-      throw error;
-    }
-  },
+    },
+  ),
 
-  downloadImage: async (id: number) => {
-    set({ loading: true, error: null });
-    try {
-      const filePath = await save({
-        title: "Save Image",
-        defaultPath: `${"image"}.png`,
-        filters: [
-          {
-            name: "Image Files",
-            extensions: ["png", "jpeg", "jpg", "gif", "webp", "bmp"],
-          },
-          { name: "All Files", extensions: ["*"] },
-        ],
-      });
+  duplicateImage: withStoreErrorHandler(set, async (id: number) => {
+    const image = await duplicateImage(id);
+    set((state) => ({
+      images: [...state.images, image],
+    }));
+    return image;
+  }),
 
-      if (!filePath) {
-        set({ loading: false });
-        throw new Error("Download canceled");
-      }
-
-      await downloadImage(id, filePath);
-      set({ loading: false });
-    } catch (error) {
-      set({ error: String(error), loading: false });
-      throw error;
-    }
-  },
-
-  editImage: async ({
-    id,
-    albumId,
-    title,
-    description,
-    is_favorite,
-  }: {
-    id: number;
-    albumId: number | null;
-    title: string | null;
-    description: string | null;
-    is_favorite: boolean;
-  }) => {
-    set({ loading: true, error: null });
-    try {
+  editImage: withStoreErrorHandler(
+    set,
+    async ({
+      id,
+      albumId,
+      title,
+      description,
+      is_favorite,
+    }: {
+      id: number;
+      albumId: number | null;
+      title: string | null;
+      description: string | null;
+      is_favorite: boolean;
+    }) => {
       set((state) => ({
         images: state.images.map((img) =>
           img.id === id
@@ -256,87 +202,69 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
         ),
       }));
       await updateImage(id, albumId, title, description, is_favorite);
+    },
+  ),
 
-      set({ loading: false });
-    } catch (error) {
-      set({ error: String(error), loading: false });
-      throw error;
-    }
-  },
+  removeImage: withStoreErrorHandler(set, async (id: number) => {
+    await deleteImage(id);
+    set((state) => ({
+      images: state.images.filter((image) => image.id !== id),
+    }));
+  }),
 
-  removeImage: async (id: number) => {
-    set({ loading: true, error: null });
-    try {
-      await deleteImage(id);
-      set((state) => ({
-        images: state.images.filter((image) => image.id !== id),
-        loading: false,
-      }));
-    } catch (error) {
-      set({ error: String(error), loading: false });
-      throw error;
-    }
-  },
+  downloadImage: withStoreErrorHandler(set, async (id: number) => {
+    const filePath = await save({
+      title: "Save Image",
+      defaultPath: `${"image"}.png`,
+      filters: [
+        {
+          name: "Image Files",
+          extensions: ["png", "jpeg", "jpg", "gif", "webp", "bmp"],
+        },
+        { name: "All Files", extensions: ["*"] },
+      ],
+    });
 
-  fetchAlbums: async (nestlingId: number) => {
-    set({ loading: true, error: null });
-    try {
-      const albums = await getAlbums(nestlingId);
-      console.log("Albums fetched:", albums);
-      set({ albums, loading: false });
-    } catch (error) {
-      set({ error: String(error) });
-      throw error;
-    }
-  },
+    if (!filePath) throw new Error("Download canceled");
+    await downloadImage(id, filePath);
+  }),
 
-  addAlbum: async (data: NewGalleryAlbum) => {
-    set({ loading: true, error: null });
-    try {
-      const newAlbum = await createAlbum(data);
-      set((state) => ({
-        albums: [...state.albums, newAlbum],
-        loading: false,
-      }));
-    } catch (error) {
-      set({ error: String(error), loading: false });
-      throw error;
-    }
-  },
+  fetchAlbums: withStoreErrorHandler(set, async (nestlingId: number) => {
+    const albums = await getAlbums(nestlingId);
+    set({ albums });
+  }),
 
-  downloadAlbum: async (id: number) => {
-    set({ loading: true, error: null });
-    try {
-      const filePath = await save({
-        title: "Save Album",
-        defaultPath: `Album_${id}.zip`,
-        filters: [{ name: "Zip Files", extensions: ["zip"] }],
-      });
+  addAlbum: withStoreErrorHandler(set, async (data: NewGalleryAlbum) => {
+    const newAlbum = await createAlbum(data);
+    set((state) => ({
+      albums: [...state.albums, newAlbum],
+    }));
+  }),
 
-      if (!filePath) {
-        set({ loading: false });
-        throw new Error("Download canceled");
-      }
+  downloadAlbum: withStoreErrorHandler(set, async (id: number) => {
+    const filePath = await save({
+      title: "Save Album",
+      defaultPath: `Album_${id}.zip`,
+      filters: [{ name: "Zip Files", extensions: ["zip"] }],
+    });
 
-      await downloadAlbum(id, filePath);
-      set({ loading: false });
-    } catch (error) {
-      set({ error: String(error), loading: false });
-      throw error;
-    }
-  },
+    if (!filePath) throw new Error("Download canceled");
 
-  editAlbum: async ({
-    id,
-    name,
-    description,
-  }: {
-    id: number;
-    name: string | null;
-    description: string | null;
-  }) => {
-    set({ loading: true, error: null });
-    try {
+    await downloadAlbum(id, filePath);
+    set({ loading: false });
+  }),
+
+  editAlbum: withStoreErrorHandler(
+    set,
+    async ({
+      id,
+      name,
+      description,
+    }: {
+      id: number;
+      name: string | null;
+      description: string | null;
+    }) => {
       await updateAlbum(id, name, description);
       set((state) => ({
         albums: state.albums.map((album) =>
@@ -349,32 +277,22 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
               }
             : album,
         ),
-        loading: false,
       }));
-    } catch (error) {
-      set({ error: String(error), loading: false });
-      throw error;
-    }
-  },
+    },
+  ),
 
-  removeAlbum: async (id: number) => {
-    set({ loading: true, error: null });
-    try {
-      await deleteAlbum(id);
-      set((state) => ({
-        albums: state.albums.filter((album) => album.id !== id),
-        loading: false,
-      }));
-    } catch (error) {
-      set({ error: String(error), loading: false });
-      throw error;
-    }
-  },
+  removeAlbum: withStoreErrorHandler(set, async (id: number) => {
+    await deleteAlbum(id);
+    set((state) => ({
+      albums: state.albums.filter((album) => album.id !== id),
+    }));
+  }),
 
   handleDragStart: (event: DragStartEvent) => {
     set({ activeDraggingImageId: event.active.id as string });
     console.log("DRAG START");
   },
+
   handleDragEnd: async (event: DragEndEvent) => {
     const { active, over } = event;
     set({ activeDraggingImageId: null });
@@ -383,7 +301,6 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     const activeImage = active.data.current;
     const overAlbum = over.data.current;
 
-    // Handle dropping an image onto an album
     if (activeImage?.type === "image" && overAlbum?.type === "album") {
       const imageId = parseInt(active.id as string, 10);
       const albumId = parseInt(over.id as string, 10);
@@ -396,9 +313,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
           set({ error: "Image not found" });
           return;
         }
-        if (image.album_id === albumId) {
-          return;
-        }
+        if (image.album_id === albumId) return;
 
         await get().editImage({
           id: imageId,

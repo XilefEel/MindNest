@@ -23,8 +23,7 @@ export default function ImageLayout({
 }) {
   const { activeNestling } = useActiveNestling();
   if (!activeNestling) return null;
-  const { images, fetchImages, editImage, uploadImage, removeImage } =
-    useGalleryStore();
+  const { images, editImage, uploadImage, removeImage } = useGalleryStore();
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -35,19 +34,17 @@ export default function ImageLayout({
   const PhotoLayout = layoutMode === "row" ? RowsPhotoAlbum : ColumnsPhotoAlbum;
 
   const photos = useMemo(() => {
-    // Filter images by album (if album is selected)
     const filtered = album
       ? images.filter((img) => img.album_id == album.id)
       : images;
 
-    // Map images into the format required by the photo album
     const mapped = filtered.map((img) => ({
       id: img.id,
       album_id: img.album_id,
       src: convertFileSrc(img.file_path),
       title: img.title ?? "Untitled",
       description: img.description ?? "No Description",
-      is_favorite: img.is_favorite,
+      is_favorite: img.is_favorite!,
       width: img.width,
       height: img.height,
       created_at: img.created_at,
@@ -59,9 +56,7 @@ export default function ImageLayout({
         return (
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
-      } else {
-        return b.is_favorite ? 1 : -1;
-      }
+      } else return b.is_favorite ? 1 : -1;
     });
 
     return mapped;
@@ -70,11 +65,9 @@ export default function ImageLayout({
   const handleImageDelete = async (id: number) => {
     try {
       await removeImage(id);
-      await fetchImages(activeNestling.id);
       toast.success("Image deleted successfully!");
     } catch (error) {
       toast.error("Failed to delete image");
-      console.error("Failed to delete image:", error);
     }
   };
 
@@ -95,7 +88,6 @@ export default function ImageLayout({
         : toast.success("Image removed from favorites!");
     } catch (error) {
       toast.error("Failed to add image to favorites");
-      console.error("Failed to add image to favorites:", error);
     }
   };
 
@@ -119,16 +111,14 @@ export default function ImageLayout({
     try {
       for (const file of imageFiles) {
         const uint8Array = new Uint8Array(await file.arrayBuffer());
-        await uploadImage(activeNestling.id, {
-          name: file.name,
-          data: uint8Array,
+        await uploadImage({
+          nestlingId: activeNestling.id,
+          file: { name: file.name, data: uint8Array },
         });
-        fetchImages(activeNestling.id);
       }
       toast.success("Image uploaded successfully!");
     } catch (error) {
       toast.error("Failed to upload image");
-      console.error("Upload failed:", error);
     } finally {
       setIsUploading(false);
     }
@@ -136,13 +126,11 @@ export default function ImageLayout({
 
   const handleDropOver = (e: React.DragEvent) => {
     e.preventDefault();
-    console.log("Dragging over drop zone");
     setIsDragOver(true);
   };
 
   const handleDropLeave = (e: React.DragEvent) => {
     e.preventDefault();
-    console.log("Left drop zone");
     if (!dropZoneRef.current?.contains(e.relatedTarget as Node)) {
       setIsDragOver(false);
     }

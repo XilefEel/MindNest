@@ -56,13 +56,13 @@ export default function ColumnCard(card: BoardCard) {
       newDescription !== (card.description || "")
     ) {
       try {
-        await updateCard(
-          card.id,
-          newTitle,
-          newDescription,
-          card.order_index,
-          card.column_id,
-        );
+        await updateCard({
+          id: card.id,
+          title: newTitle,
+          description: newDescription,
+          order_index: card.order_index,
+          column_id: card.column_id,
+        });
       } catch (err) {
         console.error("Failed to update card:", err);
       }

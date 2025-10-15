@@ -9,7 +9,7 @@ export default function Titlebar() {
   return (
     <div
       data-tauri-drag-region
-      className="fixed flex h-6 w-full items-center justify-between dark:text-white"
+      className="fixed z-10 flex h-6 w-full items-center justify-between dark:text-white"
     >
       <div
         className={cn(

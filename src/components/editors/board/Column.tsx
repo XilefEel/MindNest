@@ -55,7 +55,11 @@ export default function Column(col: BoardColumnData) {
   const handleSubmit = async () => {
     const newTitle = title.trim();
     if (newTitle && newTitle !== col.column.title) {
-      await updateColumn(col.column.id, newTitle, col.column.order_index)
+      await updateColumn({
+        id: col.column.id,
+        title: newTitle,
+        order_index: col.column.order_index,
+      })
         .then(() => {
           setIsEditing(false);
         })

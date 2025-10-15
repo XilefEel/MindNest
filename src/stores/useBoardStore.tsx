@@ -8,39 +8,55 @@ import {
   updateBoardColumn,
 } from "@/lib/api/board";
 import { BoardData, NewBoardCard, NewBoardColumn } from "@/lib/types/board";
+import { withStoreErrorHandler } from "@/lib/utils/general";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { create } from "zustand";
 
 type BoardState = {
   boardData: BoardData | null;
-  error: string | null;
   activeDraggingId: string | null;
+  loading: boolean;
+  error: string | null;
 
   fetchBoard: (nestlingId: number) => void;
 
   addColumn: (column: NewBoardColumn) => void;
-  updateColumn: (
-    id: number,
-    title: string,
-    order_index: number,
-  ) => Promise<void>;
+  updateColumn: ({
+    id,
+    title,
+    order_index,
+  }: {
+    id: number;
+    title: string;
+    order_index: number;
+  }) => Promise<void>;
   removeColumn: (columnId: number) => void;
   reorderColumn: (activeColumnId: number, targetColumnId: number) => void;
 
   addCard: (card: NewBoardCard) => void;
-  updateCard: (
-    id: number,
-    title: string,
-    description: string | null,
-    order_index: number,
-    column_id: number,
-  ) => Promise<void>;
+  updateCard: ({
+    id,
+    title,
+    description,
+    order_index,
+    column_id,
+  }: {
+    id: number;
+    title: string;
+    description: string | null;
+    order_index: number;
+    column_id: number;
+  }) => Promise<void>;
   removeCard: (cardId: number) => void;
-  reorderCard: (
-    activeCardId: number,
-    targetCardId: number | null,
-    targetColumnId: number,
-  ) => void;
+  reorderCard: ({
+    activeCardId,
+    targetCardId,
+    targetColumnId,
+  }: {
+    activeCardId: number;
+    targetCardId: number | null;
+    targetColumnId: number;
+  }) => void;
 
   handleDragStart: (event: DragStartEvent) => void;
   handleDragEnd: (event: DragEndEvent) => Promise<void>;
@@ -48,43 +64,34 @@ type BoardState = {
 
 export const useBoardStore = create<BoardState>((set, get) => ({
   boardData: null,
+  loading: false,
   error: null,
   activeDraggingId: null,
 
-  fetchBoard: async (nestlingId) => {
-    set({ error: null });
-    try {
-      const data = await getBoard(nestlingId);
-      set({ boardData: data });
-    } catch (err) {
-      set({ error: String(err) });
-      console.error("Failed to fetch board data:", err);
-    }
-  },
+  fetchBoard: withStoreErrorHandler(set, async (nestlingId) => {
+    const data = await getBoard(nestlingId);
+    set({ boardData: data });
+  }),
 
-  addColumn: async (column) => {
-    try {
-      const newColumn = await createBoardColumn(column);
-      set((state) => ({
-        boardData: {
-          ...state.boardData!,
-          columns: [
-            ...state.boardData!.columns,
-            {
-              column: newColumn,
-              cards: [],
-            },
-          ],
-        },
-      }));
-    } catch (err) {
-      set({ error: String(err) });
-      console.error("Failed to add column:", err);
-    }
-  },
+  addColumn: withStoreErrorHandler(set, async (column) => {
+    const newColumn = await createBoardColumn(column);
+    set((state) => ({
+      boardData: {
+        ...state.boardData!,
+        columns: [
+          ...state.boardData!.columns,
+          {
+            column: newColumn,
+            cards: [],
+          },
+        ],
+      },
+    }));
+  }),
 
-  updateColumn: async (id, title, order_index) => {
-    try {
+  updateColumn: withStoreErrorHandler(
+    set,
+    async ({ id, title, order_index }) => {
       await updateBoardColumn({ id, title, order_index });
       if (get().boardData) {
         set((state) => ({
@@ -98,28 +105,22 @@ export const useBoardStore = create<BoardState>((set, get) => ({
           },
         }));
       }
-    } catch (err) {
-      set({ error: String(err) });
-    }
-  },
+    },
+  ),
 
-  removeColumn: async (columnId) => {
-    try {
-      if (get().boardData) {
-        set((state) => ({
-          boardData: {
-            ...state.boardData!,
-            columns: state.boardData!.columns.filter(
-              (col) => col.column.id !== columnId,
-            ),
-          },
-        }));
-      }
-      await deleteBoardColumn(columnId);
-    } catch (error) {
-      set({ error: String(error) });
+  removeColumn: withStoreErrorHandler(set, async (columnId) => {
+    await deleteBoardColumn(columnId);
+    if (get().boardData) {
+      set((state) => ({
+        boardData: {
+          ...state.boardData!,
+          columns: state.boardData!.columns.filter(
+            (col) => col.column.id !== columnId,
+          ),
+        },
+      }));
     }
-  },
+  }),
   reorderColumn: async (activeColumnId, targetColumnId) => {
     const board = get().boardData;
     if (!board) return;
@@ -153,48 +154,41 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         : null,
     }));
 
-    try {
-      await Promise.all(
-        boardColumns.map((column) =>
-          updateBoardColumn({
-            id: column.column.id,
-            title: column.column.title,
-            order_index: column.column.order_index,
-          }),
+    await Promise.all(
+      boardColumns.map((column) =>
+        updateBoardColumn({
+          id: column.column.id,
+          title: column.column.title,
+          order_index: column.column.order_index,
+        }),
+      ),
+    );
+  },
+
+  addCard: withStoreErrorHandler(set, async (card) => {
+    const newCard = await createBoardCard(card);
+
+    const currentState = get();
+    if (!currentState.boardData) {
+      set({ error: "Board data not loaded" });
+      return;
+    }
+
+    set((state) => ({
+      boardData: {
+        ...state.boardData!,
+        columns: state.boardData!.columns.map((col) =>
+          col.column.id === card.column_id
+            ? { ...col, cards: [...col.cards, newCard] }
+            : col,
         ),
-      );
-    } catch (error) {
-      set({ error: String(error) });
-    }
-  },
+      },
+    }));
+  }),
 
-  addCard: async (card) => {
-    try {
-      const newCard = await createBoardCard(card);
-
-      const currentState = get();
-      if (!currentState.boardData) {
-        set({ error: "Board data not loaded" });
-        return;
-      }
-
-      set((state) => ({
-        boardData: {
-          ...state.boardData!,
-          columns: state.boardData!.columns.map((col) =>
-            col.column.id === card.column_id
-              ? { ...col, cards: [...col.cards, newCard] }
-              : col,
-          ),
-        },
-      }));
-    } catch (err) {
-      set({ error: String(err) });
-    }
-  },
-
-  updateCard: async (id, title, description, order_index, column_id) => {
-    try {
+  updateCard: withStoreErrorHandler(
+    set,
+    async ({ id, title, description, order_index, column_id }) => {
       await updateBoardCard({ id, title, description, order_index, column_id });
       if (get().boardData) {
         set((state) => ({
@@ -211,30 +205,25 @@ export const useBoardStore = create<BoardState>((set, get) => ({
           },
         }));
       }
-    } catch (err) {
-      set({ error: String(err) });
-    }
-  },
+    },
+  ),
 
-  removeCard: async (cardId) => {
-    try {
-      await deleteBoardCard(cardId);
-      if (get().boardData) {
-        set((state) => ({
-          boardData: {
-            ...state.boardData!,
-            columns: state.boardData!.columns.map((col) => ({
-              ...col,
-              cards: col.cards.filter((card) => card.id !== cardId),
-            })),
-          },
-        }));
-      }
-    } catch (error) {
-      set({ error: String(error) });
+  removeCard: withStoreErrorHandler(set, async (cardId) => {
+    await deleteBoardCard(cardId);
+    if (get().boardData) {
+      set((state) => ({
+        boardData: {
+          ...state.boardData!,
+          columns: state.boardData!.columns.map((col) => ({
+            ...col,
+            cards: col.cards.filter((card) => card.id !== cardId),
+          })),
+        },
+      }));
     }
-  },
-  reorderCard: async (activeCardId, targetCardId, targetColumnId) => {
+  }),
+
+  reorderCard: async ({ activeCardId, targetCardId, targetColumnId }) => {
     // Exit if the cards are the same or if board data is not loaded
     const board = get().boardData;
     if (!board || activeCardId === targetCardId) return;
@@ -400,11 +389,11 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         // Dropped on card - extract column ID from card
         targetColumnId = Number(targetParts[3]); // card-{cardId}-column-{columnId}
         console.log(
-          "📋 COLUMN dropped on CARD - extracted column:",
+          "COLUMN dropped on CARD - extracted column:",
           targetColumnId,
         );
       } else {
-        console.log("❌ Invalid drop target for column");
+        console.log("Invalid drop target for column");
         return;
       }
 
@@ -420,10 +409,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       if (targetType === "card") {
         const targetCardId = Number(targetParts[1]);
         const targetColumnId = Number(targetParts[3]);
-        get().reorderCard(activeCardId, targetCardId, targetColumnId);
+        get().reorderCard({ activeCardId, targetCardId, targetColumnId });
       } else if (targetType === "column") {
         const targetColumnId = Number(targetParts[1]);
-        get().reorderCard(activeCardId, null, targetColumnId);
+        get().reorderCard({ activeCardId, targetCardId: null, targetColumnId });
       }
     }
   },

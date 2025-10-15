@@ -15,14 +15,21 @@ import JournalEditor from "@/components/editors/journal/JournalEditor";
 import GalleryEditor from "@/components/editors/gallery/GalleryEditor";
 import useRestore from "@/hooks/useRestore";
 import useActiveNestling from "@/hooks/useActiveNestling";
+import NestlingModal from "@/components/modals/NestlingModal";
+import AddFolderModal from "@/components/modals/FolderModal";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
   const [nest, setNest] = useState<Nest | null>(null);
   const [loading, setLoading] = useState(true);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isTopbarCollapsed, setIsTopbarCollapsed] = useState(false);
+  const [isCardHidden, setIsCardHidden] = useState(false);
+
+  const [isNestlingModalOpen, setIsNestlingModalOpen] = useState(false);
+  const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
 
   const { activeNestling } = useActiveNestling();
   const { activeBackgroundId, backgrounds } = useNestStore();
@@ -55,6 +62,18 @@ export default function NestDashboardPage() {
               setIsSidebarCollapsed(!isSidebarCollapsed);
             }
             break;
+
+          case "h":
+            setIsCardHidden(!isCardHidden);
+            break;
+
+          case "n":
+            setIsNestlingModalOpen(!isNestlingModalOpen);
+            break;
+
+          case "f":
+            setIsFolderModalOpen(!isFolderModalOpen);
+            break;
         }
       }
     };
@@ -75,91 +94,113 @@ export default function NestDashboardPage() {
       }}
       className="flex h-screen cursor-default flex-col bg-gray-50 pb-3 md:pb-6 dark:bg-gray-900"
     >
-      <div
-        className={cn(
-          "shrink-0 transition-all duration-300 ease-in-out",
-          isTopbarCollapsed ? "h-0" : "h-24",
-        )}
-      >
-        <div
-          className={cn(
-            "cursor-pointer transition-all duration-300 md:px-6",
-            isTopbarCollapsed
-              ? "-translate-y-11/12 opacity-30 hover:opacity-60"
-              : "translate-y-0 opacity-100",
-          )}
-          onDoubleClick={() => setIsTopbarCollapsed(!isTopbarCollapsed)}
-        >
-          <Topbar
-            nest={nest}
-            isSidebarOpen={isSidebarOpen}
-            setIsSidebarOpen={setIsSidebarOpen}
-          />
-        </div>
-      </div>
-      <div className="mt-6 flex flex-1 overflow-hidden">
-        {isSidebarOpen && (
+      {!isCardHidden && (
+        <>
           <div
-            className="fixed inset-0 z-30 bg-black/30 md:hidden"
-            onClick={() => setIsSidebarOpen(false)}
-          />
-        )}
-
-        <div
-          className={cn(
-            "shrink-0 transition-all duration-300 ease-in-out",
-            // Mobile
-            "w-0 md:w-72",
-            // Desktop
-            isSidebarCollapsed ? "md:w-0" : "md:w-72",
-          )}
-        >
-          <aside
             className={cn(
-              "w-72 transition-transform duration-300 ease-in-out",
-              // Mobile
-              "fixed top-0 z-40 h-full md:z-0",
-              isSidebarOpen ? "translate-x-0" : "-translate-x-full",
-              // Desktop
-              "md:relative",
-              isSidebarCollapsed ? "md:-translate-x-11/12" : "md:translate-x-0",
+              "shrink-0 transition-all duration-300 ease-in-out",
+              isTopbarCollapsed ? "h-0" : "h-24",
             )}
-            onDoubleClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           >
-            <Sidebar
-              nestId={nest.id}
-              isSidebarOpen={isSidebarOpen}
-              setIsSidebarOpen={setIsSidebarOpen}
-            />
-          </aside>
-        </div>
+            <div
+              className={cn(
+                "cursor-pointer transition-all duration-300 md:px-6",
+                isTopbarCollapsed ? "-translate-y-11/12" : "translate-y-0",
+              )}
+              onDoubleClick={() => setIsTopbarCollapsed(!isTopbarCollapsed)}
+            >
+              <Topbar
+                nest={nest}
+                isSidebarOpen={isSidebarOpen}
+                setIsSidebarOpen={setIsSidebarOpen}
+              />
+            </div>
+          </div>
+          <div className="mt-6 flex flex-1 overflow-hidden">
+            {isSidebarOpen && (
+              <div
+                className="fixed inset-0 z-30 bg-black/30 md:hidden"
+                onClick={() => setIsSidebarOpen(false)}
+              />
+            )}
 
-        <main
-          className={cn(
-            "mx-3 flex-1 p-5 md:mx-8",
-            activeNestling?.nestling_type === "note"
-              ? "overflow-hidden"
-              : "overflow-y-auto",
-            activeBackgroundId
-              ? "rounded-2xl bg-white/30 backdrop-blur-sm dark:bg-black/30"
-              : "",
-          )}
-        >
-          {activeNestling && activeNestling.nestling_type === "note" ? (
-            <NoteEditor key={activeNestling.id} />
-          ) : activeNestling && activeNestling?.nestling_type === "board" ? (
-            <BoardEditor key={activeNestling.id} />
-          ) : activeNestling && activeNestling?.nestling_type === "calendar" ? (
-            <CalendarEditor key={activeNestling.id} />
-          ) : activeNestling && activeNestling?.nestling_type === "journal" ? (
-            <JournalEditor key={activeNestling.id} />
-          ) : activeNestling && activeNestling?.nestling_type === "gallery" ? (
-            <GalleryEditor key={activeNestling.id} />
-          ) : (
-            <Home nestId={nest.id} />
-          )}
-        </main>
-      </div>
+            <aside
+              className={cn(
+                "shrink-0 transition-all duration-300 ease-in-out",
+                // Mobile
+                "w-0 md:w-72",
+                // Desktop
+                isSidebarCollapsed ? "md:w-0" : "md:w-72",
+              )}
+            >
+              <div
+                className={cn(
+                  "w-72 transition-transform duration-300 ease-in-out",
+                  // Mobile
+                  "fixed top-0 z-40 h-full md:z-0",
+                  isSidebarOpen ? "translate-x-0" : "-translate-x-full",
+                  // Desktop
+                  "md:relative",
+                  isSidebarCollapsed
+                    ? "md:-translate-x-11/12"
+                    : "md:translate-x-0",
+                )}
+                onDoubleClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              >
+                <Sidebar
+                  nestId={nest.id}
+                  isSidebarOpen={isSidebarOpen}
+                  setIsSidebarOpen={setIsSidebarOpen}
+                />
+              </div>
+            </aside>
+
+            <main
+              className={cn(
+                "mx-3 flex-1 p-5 md:mx-8",
+                activeNestling?.nestling_type === "note"
+                  ? "overflow-hidden"
+                  : "overflow-y-auto",
+                activeBackgroundId
+                  ? "rounded-2xl bg-white/30 backdrop-blur-sm dark:bg-black/30"
+                  : "",
+              )}
+            >
+              {activeNestling && activeNestling.nestling_type === "note" ? (
+                <NoteEditor key={activeNestling.id} />
+              ) : activeNestling &&
+                activeNestling?.nestling_type === "board" ? (
+                <BoardEditor key={activeNestling.id} />
+              ) : activeNestling &&
+                activeNestling?.nestling_type === "calendar" ? (
+                <CalendarEditor key={activeNestling.id} />
+              ) : activeNestling &&
+                activeNestling?.nestling_type === "journal" ? (
+                <JournalEditor key={activeNestling.id} />
+              ) : activeNestling &&
+                activeNestling?.nestling_type === "gallery" ? (
+                <GalleryEditor key={activeNestling.id} />
+              ) : (
+                <Home nestId={nest.id} />
+              )}
+            </main>
+          </div>
+        </>
+      )}
+      <NestlingModal
+        nestId={nest.id}
+        isOpen={isNestlingModalOpen}
+        setIsOpen={setIsNestlingModalOpen}
+      >
+        <div />
+      </NestlingModal>
+      <AddFolderModal
+        nestId={nest.id}
+        isOpen={isFolderModalOpen}
+        setIsOpen={setIsFolderModalOpen}
+      >
+        <div />
+      </AddFolderModal>
     </div>
   );
 }

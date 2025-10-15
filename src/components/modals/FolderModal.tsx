@@ -8,24 +8,31 @@ import { TextField } from "./TextField";
 import { inputBase } from "@/lib/utils/styles";
 
 export default function AddFolderModal({
-  nestId,
   children,
+  nestId,
   folderId,
+  isOpen,
+  setIsOpen,
 }: {
-  nestId: number;
   children: React.ReactNode;
+  nestId: number;
   folderId?: number;
+  isOpen?: boolean;
+  setIsOpen?: (isOpen: boolean) => void;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isActuallyOpen = isOpen ?? internalOpen;
+  const setOpen = setIsOpen ?? setInternalOpen;
 
   const { addFolder, updateFolder, folders, activeFolderId } =
     useNestlingStore();
 
   const handleExit = async () => {
     setTitle("");
-    setIsOpen(false);
+    setOpen(false);
   };
 
   const handleSave = async () => {
@@ -34,21 +41,20 @@ export default function AddFolderModal({
     try {
       if (folderId) {
         await updateFolder(folderId, title);
+        toast.success(`Folder Renamed to "${title}"`);
       } else {
         await addFolder({
           nest_id: nestId,
           parent_id: activeFolderId,
           name: title,
         });
+        toast.success(`Folder "${title}" created successfully!`);
       }
       handleExit();
     } catch (err) {
       console.error("Failed to create Folder:", err);
     } finally {
       setLoading(false);
-      toast.success(
-        folderId ? `Folder Renamed to "${title}"` : "Folder created",
-      );
     }
   };
 
@@ -63,8 +69,8 @@ export default function AddFolderModal({
 
   return (
     <BaseModal
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
+      isOpen={isActuallyOpen}
+      setIsOpen={setOpen}
       title={folderId ? "Rename Folder" : "Create a New Folder"}
       description={
         folderId

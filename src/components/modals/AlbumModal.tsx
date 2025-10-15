@@ -21,8 +21,7 @@ export default function AlbumModal({
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { addAlbum, editAlbum } = useGalleryStore();
+  const { addAlbum, editAlbum, loading } = useGalleryStore();
 
   const handleExit = async () => {
     setTitle("");
@@ -45,14 +44,13 @@ export default function AlbumModal({
           name: title,
           description,
         });
+
         toast.success(`Album "${title}" created successfully!`);
       }
+      handleExit();
     } catch (error) {
       toast.error("Failed to add album");
       console.error("Failed to add album:", error);
-    } finally {
-      handleExit();
-      setLoading(false);
     }
   };
 

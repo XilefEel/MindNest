@@ -17,18 +17,25 @@ import { inputBase } from "@/lib/utils/styles";
 import { TextField } from "./TextField";
 
 export default function NestlingModal({
-  nestId,
   children,
+  nestId,
   nestlingId,
+  isOpen,
+  setIsOpen,
 }: {
-  nestId?: number;
   children: React.ReactNode;
+  nestId?: number;
   nestlingId?: number;
+  isOpen?: boolean;
+  setIsOpen?: (isOpen: boolean) => void;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [nestlingType, setNestlingType] = useState("note");
   const [loading, setLoading] = useState(false);
+
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isActuallyOpen = isOpen ?? internalOpen;
+  const setOpen = setIsOpen ?? setInternalOpen;
 
   const { addNestling, activeFolderId, updateNestling, nestlings } =
     useNestlingStore();
@@ -36,7 +43,7 @@ export default function NestlingModal({
 
   const handleExit = async () => {
     setTitle("");
-    setIsOpen(false);
+    setOpen(false);
   };
 
   const handleCreateNestling = async () => {
@@ -50,6 +57,7 @@ export default function NestlingModal({
           title,
           folder_id: nestling?.folder_id,
         });
+        toast.success(`Nestling Renamed to "${title}!"`);
       } else {
         await addNestling({
           nest_id: nestId!,
@@ -58,6 +66,7 @@ export default function NestlingModal({
           content: "",
           nestling_type: nestlingType,
         });
+        toast.success(`Nestling "${title}" created successfully!`);
       }
       handleExit();
     } catch (err) {
@@ -65,9 +74,6 @@ export default function NestlingModal({
     } finally {
       setLoading(false);
     }
-    toast.success(
-      nestlingId ? `Nestling Renamed to "${title}!"` : "Nestling created!",
-    );
   };
 
   useEffect(() => {
@@ -78,8 +84,8 @@ export default function NestlingModal({
 
   return (
     <BaseModal
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
+      isOpen={isActuallyOpen}
+      setIsOpen={setOpen}
       title={nestlingId ? "Rename Nestling" : "Create Nestling"}
       description={
         nestlingId

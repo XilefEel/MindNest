@@ -58,7 +58,6 @@ export default function GalleryEditor() {
   useEffect(() => {
     fetchAlbums(activeNestling.id);
     fetchImages(activeNestling.id);
-    console.log("Fetching images for nestling:", activeNestling.id);
   }, [fetchImages, activeNestling.id]);
 
   const handleSelectImage = async () => {

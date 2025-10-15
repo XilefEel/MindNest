@@ -18,16 +18,13 @@ export default function AddJournalEntryModal({
   setActiveEntry: (entry: JournalEntry) => void;
   children: React.ReactNode;
 }) {
-  const { activeNestling } = useActiveNestling();
-
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const { activeNestId } = useNestStore();
+  const { activeNestling } = useActiveNestling();
   const { fetchSidebar } = useNestlingStore();
-
-  const { addEntry } = useJournalStore();
+  const { addEntry, loading } = useJournalStore();
 
   const handleExit = async () => {
     await fetchSidebar(activeNestId!);
@@ -37,7 +34,6 @@ export default function AddJournalEntryModal({
 
   const createNewEntry = async () => {
     try {
-      setLoading(true);
       const newEntry = await addEntry({
         nestling_id: activeNestling.id,
         title: title,
@@ -45,9 +41,8 @@ export default function AddJournalEntryModal({
         entry_date: new Date().toISOString().split("T")[0],
       });
       setActiveEntry(newEntry);
-      setLoading(false);
-      toast.success(`Journal entry "${title}" created successfully!`);
       handleExit();
+      toast.success(`Journal entry "${title}" created successfully!`);
     } catch (error) {
       toast.error("Failed to create a new journal entry.");
     }
