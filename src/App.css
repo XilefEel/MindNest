@@ -33,3 +33,7 @@
 ::-webkit-scrollbar-track {
   background: transparent; /* or very light color */
 }
+
+.react-flow__attribution {
+  display: none;
+}

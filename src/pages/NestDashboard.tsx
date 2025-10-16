@@ -17,6 +17,7 @@ import useRestore from "@/hooks/useRestore";
 import useActiveNestling from "@/hooks/useActiveNestling";
 import NestlingModal from "@/components/modals/NestlingModal";
 import AddFolderModal from "@/components/modals/FolderModal";
+import MindmapEditor from "@/components/editors/mindmap/MindmapEditor";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -180,6 +181,8 @@ export default function NestDashboardPage() {
               ) : activeNestling &&
                 activeNestling?.nestling_type === "gallery" ? (
                 <GalleryEditor key={activeNestling.id} />
+              ) : activeNestling?.nestling_type === "mindmap" ? (
+                <MindmapEditor key={activeNestling.id} />
               ) : (
                 <Home nestId={nest.id} />
               )}
