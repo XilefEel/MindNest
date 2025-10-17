@@ -132,3 +132,29 @@ CREATE TABLE IF NOT EXISTS gallery_images (
     FOREIGN KEY (album_id) REFERENCES gallery_albums(id) ON DELETE SET NULL,
     FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS mindmap_nodes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nestling_id INTEGER NOT NULL,
+    position_x FLOAT NOT NULL,
+    position_y FLOAT NOT NULL,
+    height INTEGER NOT NULL,
+    width INTEGER NOT NULL,
+    label TEXT,
+    color TEXT NOT NULL,
+    text_color TEXT NOT NULL,
+    node_type TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS mindmap_edges (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    source_id INTEGER NOT NULL,
+    target_id INTEGER NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY (source_id) REFERENCES mindmap_nodes(id) ON DELETE CASCADE,
+    FOREIGN KEY (target_id) REFERENCES mindmap_nodes(id) ON DELETE CASCADE
+);

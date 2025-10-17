@@ -38,6 +38,11 @@ use handler::gallery::{
     download_image, download_album, duplicate_image
 };
 
+use handler::mindmap::{
+    create_node, get_nodes, update_node, delete_node,
+    get_edges, create_edge, delete_edge, 
+};
+
 use crate::utils::db::{AppDb, init_db};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -135,6 +140,15 @@ pub fn run() {
             add_background,
             get_backgrounds,
             delete_background,
+
+            // Mindmap
+            create_node,
+            get_nodes,
+            update_node,
+            delete_node,
+            create_edge,
+            get_edges,
+            delete_edge
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

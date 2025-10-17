@@ -7,3 +7,4 @@ pub mod board;
 pub mod calendar;
 pub mod journal;
 pub mod gallery;
+pub mod mindmap;

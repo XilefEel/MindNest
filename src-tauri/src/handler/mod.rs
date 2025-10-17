@@ -8,3 +8,4 @@ pub mod note;
 pub mod user;
 pub mod nest_background;
 pub mod folder;
+pub mod mindmap;

@@ -10,12 +10,46 @@ import {
   Background,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import CustomNode from "./CustomNode";
+import { MindmapNode } from "@/lib/types/mindmap";
 
-const initialNodes = [
-  { id: "n1", position: { x: 0, y: 0 }, data: { label: "Node 1" } },
-  { id: "n2", position: { x: 0, y: 100 }, data: { label: "Node 2" } },
+const initialNodes: MindmapNode[] = [
+  {
+    id: "1",
+    nestling_id: 1,
+    position: { x: 0, y: 0 },
+    type: "Custom",
+    data: {
+      label: "Node 1",
+      color: "#ff0071",
+      textColor: "#ffffff",
+    },
+    height: 100,
+    width: 255,
+    created_at: "",
+    updated_at: "",
+  },
+  {
+    id: "2",
+    nestling_id: 1,
+    position: { x: 100, y: 100 },
+    type: "Custom",
+    data: {
+      label: "Node 1",
+      color: "#ff0071",
+      textColor: "#ffffff",
+    },
+    height: 100,
+    width: 255,
+    created_at: "",
+    updated_at: "",
+  },
 ];
-const initialEdges = [{ id: "n1-n2", source: "n1", target: "n2" }];
+const initialEdges = [{ id: "1-2", source: "1", target: "2" }];
+
+const nodeTypes = {
+  Custom: CustomNode,
+};
 
 export default function MindmapEditor() {
   const [nodes, setNodes] = useState(initialNodes);
@@ -23,13 +57,8 @@ export default function MindmapEditor() {
   const [nodeCount, setNodeCount] = useState(2);
 
   const onNodesChange = useCallback(
-    (
-      changes: NodeChange<{
-        id: string;
-        position: { x: number; y: number };
-        data: { label: string };
-      }>[],
-    ) => setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
+    (changes: NodeChange<MindmapNode>[]) =>
+      setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
     [],
   );
   const onEdgesChange = useCallback(
@@ -47,8 +76,18 @@ export default function MindmapEditor() {
     const newId = `n${nodeCount + 1}`;
     const newNode = {
       id: newId,
+      type: "Custom",
       position: { x: Math.random() * 300, y: Math.random() * 300 },
-      data: { label: `Node ${nodeCount + 1}` },
+      height: 100,
+      width: 255,
+      data: {
+        label: `Node ${nodeCount + 1}`,
+        color: "#ff0071",
+        textColor: "#ffffff",
+      },
+      nestling_id: 1,
+      created_at: "",
+      updated_at: "",
     };
     setNodes((prevNodes) => [...prevNodes, newNode]);
     setNodeCount((prev) => prev + 1);
@@ -65,6 +104,7 @@ export default function MindmapEditor() {
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
