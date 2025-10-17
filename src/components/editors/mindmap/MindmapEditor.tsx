@@ -1,102 +1,122 @@
-import { useState, useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import {
   ReactFlow,
   applyNodeChanges,
   applyEdgeChanges,
-  addEdge,
+  addEdge as reactFlowAddEdge,
   NodeChange,
   EdgeChange,
   Controls,
   Background,
+  Connection,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import CustomNode from "./CustomNode";
-import { MindmapNode } from "@/lib/types/mindmap";
-
-const initialNodes: MindmapNode[] = [
-  {
-    id: "1",
-    nestling_id: 1,
-    position: { x: 0, y: 0 },
-    type: "Custom",
-    data: {
-      label: "Node 1",
-      color: "#ff0071",
-      textColor: "#ffffff",
-    },
-    height: 100,
-    width: 255,
-    created_at: "",
-    updated_at: "",
-  },
-  {
-    id: "2",
-    nestling_id: 1,
-    position: { x: 100, y: 100 },
-    type: "Custom",
-    data: {
-      label: "Node 1",
-      color: "#ff0071",
-      textColor: "#ffffff",
-    },
-    height: 100,
-    width: 255,
-    created_at: "",
-    updated_at: "",
-  },
-];
-const initialEdges = [{ id: "1-2", source: "1", target: "2" }];
+import { MindmapNode, MindmapEdge } from "@/lib/types/mindmap";
+import { useMindmapStore } from "@/stores/useMindmapStore";
+import useActiveNestling from "@/hooks/useActiveNestling";
 
 const nodeTypes = {
   Custom: CustomNode,
 };
 
 export default function MindmapEditor() {
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
-  const [nodeCount, setNodeCount] = useState(2);
+  const { activeNestlingId } = useActiveNestling();
+  const {
+    nodes,
+    edges,
+    setNodes,
+    setEdges,
+    addNode,
+    fetchNodes,
+    updateNode,
+    addEdge,
+    fetchEdges,
+    deleteEdge,
+  } = useMindmapStore();
 
   const onNodesChange = useCallback(
-    (changes: NodeChange<MindmapNode>[]) =>
-      setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
-    [],
-  );
-  const onEdgesChange = useCallback(
-    (changes: EdgeChange<{ id: string; source: string; target: string }>[]) =>
-      setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
-    [],
-  );
-  const onConnect = useCallback(
-    (params: any) =>
-      setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
-    [],
+    (changes: NodeChange<MindmapNode>[]) => {
+      const updatedNodes = applyNodeChanges(changes, nodes);
+      setNodes(updatedNodes);
+
+      changes.forEach((change) => {
+        if (
+          change.type === "position" &&
+          change.dragging === false &&
+          change.position
+        ) {
+          const node = nodes.find((n) => n.id === change.id);
+          if (node) {
+            updateNode(parseInt(node.id), {
+              ...node,
+              position: change.position,
+            });
+          }
+        }
+      });
+    },
+    [nodes, updateNode],
   );
 
-  const addNode = useCallback(() => {
-    const newId = `n${nodeCount + 1}`;
-    const newNode = {
-      id: newId,
-      type: "Custom",
-      position: { x: Math.random() * 300, y: Math.random() * 300 },
-      height: 100,
-      width: 255,
-      data: {
-        label: `Node ${nodeCount + 1}`,
-        color: "#ff0071",
-        textColor: "#ffffff",
+  const onEdgesChange = useCallback(
+    (changes: EdgeChange<MindmapEdge>[]) => {
+      const updatedEdges = applyEdgeChanges(changes, edges);
+      setEdges(updatedEdges);
+
+      changes.forEach((change) => {
+        if (change.type === "remove") deleteEdge(parseInt(change.id));
+      });
+    },
+    [edges, setEdges, deleteEdge],
+  );
+
+  const onConnect = useCallback(
+    async (params: Connection) => {
+      const newEdge = reactFlowAddEdge(params, edges);
+      setEdges(newEdge);
+
+      try {
+        await addEdge({
+          source: params.source,
+          target: params.target,
+        });
+      } catch (error) {
+        setEdges(edges);
+        console.error("Failed to create edge:", error);
+      }
+    },
+    [edges, setEdges, addEdge, activeNestlingId!],
+  );
+
+  // Add new node
+  const handleAddNode = useCallback(async () => {
+    await addNode({
+      nestling_id: activeNestlingId!,
+      position: {
+        x: Math.random() * 300,
+        y: Math.random() * 300,
       },
-      nestling_id: 1,
-      created_at: "",
-      updated_at: "",
-    };
-    setNodes((prevNodes) => [...prevNodes, newNode]);
-    setNodeCount((prev) => prev + 1);
-  }, [nodeCount]);
+      height: 100,
+      width: 200,
+      data: {
+        label: `New Node ${nodes.length + 1}`,
+        color: "#ffffff",
+        text_color: "#000000",
+      },
+      node_type: "Custom",
+    });
+  }, [addNode, nodes.length, activeNestlingId!]);
+
+  useEffect(() => {
+    fetchNodes(activeNestlingId!);
+    fetchEdges(activeNestlingId!);
+  }, [activeNestlingId, fetchNodes, fetchEdges]);
 
   return (
     <div className="h-full">
       <button
-        onClick={addNode}
+        onClick={handleAddNode}
         className="absolute top-2.5 left-2.5 z-10 rounded bg-teal-500 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-teal-600"
       >
         Add Node

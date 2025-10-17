@@ -36,7 +36,7 @@ export function mindmapNodeToDb(node: MindmapNode): MindmapNodeDB {
     label: node.data.label,
     color: node.data.color,
     textColor: node.data.textColor,
-    type: node.type,
+    nodeType: node.nodeType,
     created_at: node.created_at,
     updated_at: node.updated_at,
   };
@@ -52,7 +52,7 @@ export function newMindmapNodeToDb(node: NewMindmapNode): NewMindmapNodeDB {
     label: node.data.label,
     color: node.data.color,
     textColor: node.data.textColor,
-    type: node.type,
+    nodeType: node.nodeType,
   };
 }
 

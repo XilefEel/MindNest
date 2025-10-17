@@ -18,7 +18,7 @@ pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> Result<Mindmap
             nestling_id, position_x, position_y, height, width, label,
             color, text_color, node_type, created_at, updated_at
         ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
-        RETURNING id, nestling_id, position_x, position_y, height, width, label, color, text_color, type, created_at, updated_at
+        RETURNING id, nestling_id, position_x, position_y, height, width, label, color, text_color, node_type, created_at, updated_at
     ").map_err(|e| e.to_string())?;
 
     let node = statement
@@ -62,7 +62,7 @@ pub fn get_nodes_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<Mindmap
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare("
-        SELECT id, nestling_id, position_x, position_y, height, width, label, color, text_color, type, created_at, updated_at
+        SELECT id, nestling_id, position_x, position_y, height, width, label, color, text_color, node_type, created_at, updated_at
         FROM mindmap_nodes
         WHERE nestling_id = ?1
     ").map_err(|e| e.to_string())?;
@@ -91,36 +91,6 @@ pub fn get_nodes_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<Mindmap
         .map_err(|e| e.to_string())?;
 
     Ok(result.into_iter().map(|node| node.into()).collect())
-}
-
-pub fn get_node_by_id(db: &AppDb, id: i64) -> Result<MindmapNode, String> {
-    let connection = db.connection.lock().unwrap();
-    let mut statement = connection.prepare("
-        SELECT id, nestling_id, position_x, position_y, height, width, label, color, text_color, type, created_at, updated_at
-        FROM mindmap_nodes
-        WHERE id = ?1
-    ").map_err(|e| e.to_string())?;
-
-    let node = statement
-        .query_row([id], |row| {
-            Ok(MindmapNodeDB {
-                id: row.get(0)?,
-                nestling_id: row.get(1)?,
-                position_x: row.get(2)?,
-                position_y: row.get(3)?,
-                height: row.get(4)?,
-                width: row.get(5)?,
-                label: row.get(6)?,
-                color: row.get(7)?,
-                text_color: row.get(8)?,
-                node_type: row.get(9)?,
-                created_at: row.get(10)?,
-                updated_at: row.get(11)?,
-            })
-        })
-        .map_err(|e| e.to_string())?;
-
-    Ok(node.into())
 }
 
 pub fn update_node_in_db(
@@ -240,29 +210,6 @@ pub fn get_edges_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<Mindmap
         .map_err(|e| e.to_string())?;
 
     Ok(result.into_iter().map(|edge| edge.into()).collect())
-}
-
-pub fn get_edge_by_id(db: &AppDb, id: i64) -> Result<MindmapEdge, String> {
-    let connection = db.connection.lock().unwrap();
-    let mut statement = connection.prepare("
-        SELECT id, source_id, target_id, created_at, updated_at
-        FROM mindmap_edges
-        WHERE id = ?1
-    ").map_err(|e| e.to_string())?;
-
-    let edge = statement
-        .query_row([id], |row| {
-            Ok(MindmapEdgeDB {
-                id: row.get(0)?,
-                source_id: row.get(1)?,
-                target_id: row.get(2)?,
-                created_at: row.get(3)?,
-                updated_at: row.get(4)?,
-            })
-        })
-        .map_err(|e| e.to_string())?;
-
-    Ok(edge.into())
 }
 
 pub fn delete_edge_from_db(db: &AppDb, id: i64) -> Result<(), String> {
