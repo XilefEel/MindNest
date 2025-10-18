@@ -1,6 +1,6 @@
 import { useMindmapStore } from "@/stores/useMindmapStore";
 import { Handle, Position, NodeResizer } from "@xyflow/react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 export default function ResizableNodeSelected({
   data,
@@ -14,7 +14,7 @@ export default function ResizableNodeSelected({
   const [label, setLabel] = useState(data.label);
   const { updateNode, nodes } = useMindmapStore();
 
-  const handleBlur = useCallback(async () => {
+  const handleBlur = async () => {
     if (label !== data.label) {
       const currentNode = nodes.find((n) => n.id === id);
       if (!currentNode) return;
@@ -31,33 +31,30 @@ export default function ResizableNodeSelected({
         },
       });
     }
-  }, [label, data.label, id, updateNode, nodes]);
+  };
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-        e.currentTarget.blur();
-      }
-      if (e.key === "Escape") {
-        setLabel(data.label);
-        e.currentTarget.blur();
-      }
-    },
-    [data.label],
-  );
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.currentTarget.blur();
+    }
+    if (e.key === "Escape") {
+      setLabel(data.label);
+      e.currentTarget.blur();
+    }
+  };
 
   return (
-    <div className="h-full rounded border bg-white p-3">
+    <div className="h-full rounded border border-white bg-white p-3">
       <NodeResizer
         color="#ff0071"
         isVisible={selected}
-        minWidth={100}
-        minHeight={30}
+        minWidth={120}
+        minHeight={50}
       />
       <Handle type="target" position={Position.Top} />
       <input
         id="text"
-        className="w-full text-center focus:outline-none"
+        className="w-full text-center text-sm text-black focus:outline-none"
         value={label}
         onChange={(e) => setLabel(e.target.value)}
         onBlur={handleBlur}

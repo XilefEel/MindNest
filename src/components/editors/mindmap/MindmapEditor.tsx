@@ -6,7 +6,6 @@ import {
   addEdge as reactFlowAddEdge,
   NodeChange,
   EdgeChange,
-  Controls,
   Background,
   Connection,
   OnConnectEnd,
@@ -19,6 +18,7 @@ import { MindmapNode, MindmapEdge } from "@/lib/types/mindmap";
 import { useMindmapStore } from "@/stores/useMindmapStore";
 import useActiveNestling from "@/hooks/useActiveNestling";
 import { toast } from "sonner";
+import Toolbar from "./Toolbar";
 
 const nodeTypes = {
   custom: CustomNode,
@@ -109,8 +109,8 @@ function MindmapEditorContent() {
         const newNode = await addNode({
           nestling_id: activeNestlingId!,
           position,
-          height: 100,
-          width: 200,
+          height: 50,
+          width: 120,
           data: {
             label: `Node ${nodes.length + 1}`,
             color: "#ffffff",
@@ -138,8 +138,8 @@ function MindmapEditorContent() {
           x: Math.random() * 300,
           y: Math.random() * 300,
         },
-        height: 100,
-        width: 200,
+        height: 50,
+        width: 120,
         data: {
           label: `New Node ${nodes.length + 1}`,
           color: "#ffffff",
@@ -169,18 +169,6 @@ function MindmapEditorContent() {
 
   return (
     <div className="h-full">
-      <button
-        onClick={handleAddNode}
-        className="top-2.5 left-2.5 z-10 rounded bg-teal-500 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-teal-600"
-      >
-        Add Node
-      </button>
-      <button
-        onClick={handleDeleteAll}
-        className="rounded bg-red-500 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-red-600"
-      >
-        Delete All
-      </button>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -193,7 +181,7 @@ function MindmapEditorContent() {
         fitView
       >
         <Background />
-        <Controls />
+        <Toolbar onAddNode={handleAddNode} onDeleteAll={handleDeleteAll} />
       </ReactFlow>
     </div>
   );

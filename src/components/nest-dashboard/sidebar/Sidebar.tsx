@@ -72,7 +72,7 @@ export default function Sidebar({
 
         <div
           className={cn(
-            "flex cursor-pointer items-center gap-1 truncate rounded px-2 py-1 font-medium transition-colors duration-150 ease-in-out",
+            "flex cursor-pointer items-center gap-1 rounded px-2 py-1 font-medium transition-colors duration-150 ease-in-out",
             activeBackgroundId
               ? activeNestlingId === null
                 ? "bg-white/50 font-bold dark:bg-black/50"
