@@ -27,6 +27,7 @@ pub struct NewMindmapNode {
     pub height: i64,
     pub width: i64,
     pub data: MindmapNodeData,
+    #[serde(rename = "type")]
     pub node_type: String,
 }
 
@@ -39,6 +40,7 @@ pub struct MindmapNode {
     pub height: i64,
     pub width: i64,
     pub data: MindmapNodeData,
+    #[serde(rename = "type")]
     pub node_type: String,
     pub created_at: String,
     pub updated_at: String,
@@ -55,6 +57,7 @@ pub struct MindmapNodeDB {
     pub label: String,
     pub color: String,
     pub text_color: String,
+    #[serde(rename = "type")]
     pub node_type: String,
     pub created_at: String,
     pub updated_at: String,
@@ -70,6 +73,7 @@ pub struct NewMindmapNodeDB {
     pub label: String,
     pub color: String,
     pub text_color: String,
+    #[serde(rename = "type")]
     pub node_type: String,
 }
 

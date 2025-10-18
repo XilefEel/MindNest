@@ -6,9 +6,7 @@ import {
   MindmapEdge,
 } from "../types/mindmap";
 
-// Node functions
 export async function createNode(data: NewMindmapNode): Promise<MindmapNode> {
-  console.log(data);
   return invoke("create_node", { data });
 }
 
@@ -26,7 +24,7 @@ export async function updateNode(
   label: string,
   color: string,
   textColor: string,
-  nodeType: string,
+  type: string,
 ): Promise<void> {
   return invoke("update_node", {
     id,
@@ -38,7 +36,7 @@ export async function updateNode(
     label,
     color,
     textColor,
-    nodeType,
+    nodeType: type,
   });
 }
 

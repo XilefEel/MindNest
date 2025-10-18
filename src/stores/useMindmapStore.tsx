@@ -83,7 +83,7 @@ export const useMindmapStore = create<MindmapStore>((set) => ({
         node.data.label,
         node.data.color,
         node.data.text_color,
-        node.node_type,
+        node.type,
       );
     },
   ),

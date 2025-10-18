@@ -10,7 +10,7 @@ export type NewMindmapNode = {
     color: string;
     text_color: string;
   };
-  node_type: string;
+  type: string;
 };
 
 export type MindmapNode = Omit<WithBase<NewMindmapNode>, "id"> & { id: string };
@@ -26,7 +26,7 @@ export type MindmapNodeDB = WithBase<{
   label: string;
   color: string;
   textColor: string;
-  nodeType: string;
+  type: string;
 }>;
 
 export type NewMindmapEdge = {
