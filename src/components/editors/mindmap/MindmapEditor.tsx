@@ -11,6 +11,9 @@ import {
   OnConnectEnd,
   useReactFlow,
   ReactFlowProvider,
+  getIncomers,
+  getOutgoers,
+  getConnectedEdges,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import CustomNode from "./CustomNode";
@@ -60,9 +63,86 @@ function MindmapEditorContent() {
             });
           }
         }
+        if (
+          change.type === "dimensions" &&
+          change.resizing === false &&
+          change.dimensions
+        ) {
+          const node = nodes.find((n) => n.id === change.id);
+          if (node) {
+            updateNode(parseInt(node.id), {
+              ...node,
+              position: node.position,
+              width: change.dimensions.width,
+              height: change.dimensions.height,
+            });
+          }
+        }
+        if (change.type === "remove") deleteNode(parseInt(change.id));
       });
     },
-    [nodes, updateNode],
+    [nodes, updateNode, setNodes, deleteNode],
+  );
+
+  const onNodeDelete = useCallback(
+    async (deletedNodes: MindmapNode[]) => {
+      let remainingNodes = [...nodes];
+
+      const newEdges = deletedNodes.reduce((currentEdges, node) => {
+        const incomers = getIncomers(node, remainingNodes, currentEdges);
+        const outgoers = getOutgoers(node, remainingNodes, currentEdges);
+        const connectedEdges = getConnectedEdges([node], currentEdges);
+
+        const remainingEdges = currentEdges.filter(
+          (edge) => !connectedEdges.includes(edge),
+        );
+
+        const createdEdges = incomers
+          .flatMap(({ id: source }) =>
+            outgoers.map(({ id: target }) => ({
+              id: `${source}-${target}`,
+              source,
+              target,
+            })),
+          )
+          .filter(
+            (newEdge) =>
+              !currentEdges.some(
+                (existingEdge) =>
+                  existingEdge.source === newEdge.source &&
+                  existingEdge.target === newEdge.target,
+              ),
+          ) as MindmapEdge[];
+
+        remainingNodes = remainingNodes.filter((r) => r.id !== node.id);
+        return [...remainingEdges, ...createdEdges];
+      }, edges);
+
+      setEdges(newEdges);
+
+      try {
+        await Promise.all(
+          deletedNodes.map((node) => deleteNode(parseInt(node.id))),
+        );
+
+        const edgesToCreate = newEdges.filter(
+          (edge) => !edges.some((e) => e.id === edge.id),
+        );
+
+        await Promise.all(
+          edgesToCreate.map((edge) =>
+            addEdge({
+              source: edge.source,
+              target: edge.target,
+            }),
+          ),
+        );
+      } catch (error) {
+        console.error("Failed to delete node:", error);
+        toast.error("Failed to delete node");
+      }
+    },
+    [nodes, edges, setEdges, deleteNode, addEdge],
   );
 
   const onEdgesChange = useCallback(
@@ -90,9 +170,10 @@ function MindmapEditorContent() {
       } catch (error) {
         setEdges(edges);
         console.error("Failed to create edge:", error);
+        toast.error("Failed to create edge");
       }
     },
-    [edges, setEdges, addEdge, activeNestlingId!],
+    [edges, setEdges, addEdge],
   );
 
   const onConnectEnd: OnConnectEnd = useCallback(
@@ -141,7 +222,7 @@ function MindmapEditorContent() {
         height: 50,
         width: 120,
         data: {
-          label: `New Node ${nodes.length + 1}`,
+          label: `Node ${nodes.length + 1}`,
           color: "#ffffff",
           text_color: "#000000",
         },
@@ -154,8 +235,11 @@ function MindmapEditorContent() {
   };
 
   const handleDeleteAll = async () => {
+    if (nodes.length === 0) return;
+
     try {
       await Promise.all(nodes.map((node) => deleteNode(parseInt(node.id))));
+      toast.success("All nodes deleted");
     } catch (error) {
       toast.error("Failed to delete all");
       console.error("Failed to delete all:", error);
@@ -163,8 +247,9 @@ function MindmapEditorContent() {
   };
 
   useEffect(() => {
-    fetchNodes(activeNestlingId!);
-    fetchEdges(activeNestlingId!);
+    if (!activeNestlingId) return;
+    fetchNodes(activeNestlingId);
+    fetchEdges(activeNestlingId);
   }, [activeNestlingId, fetchNodes, fetchEdges]);
 
   return (
@@ -173,11 +258,13 @@ function MindmapEditorContent() {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        nodeOrigin={[0.5, 0]}
         onNodesChange={onNodesChange}
+        onNodesDelete={onNodeDelete}
         onConnectEnd={onConnectEnd}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        nodeOrigin={[0.5, 0]}
+        defaultEdgeOptions={{ markerEnd: { type: "arrowclosed" } }}
         fitView
       >
         <Background />

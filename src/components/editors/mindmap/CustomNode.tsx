@@ -1,3 +1,4 @@
+import MindmapContextMenu from "@/components/context-menu/MindmapContextMenu";
 import { useMindmapStore } from "@/stores/useMindmapStore";
 import { Handle, Position, NodeResizer } from "@xyflow/react";
 import { useState } from "react";
@@ -44,23 +45,25 @@ export default function ResizableNodeSelected({
   };
 
   return (
-    <div className="h-full rounded border border-white bg-white p-3">
-      <NodeResizer
-        color="#ff0071"
-        isVisible={selected}
-        minWidth={120}
-        minHeight={50}
-      />
-      <Handle type="target" position={Position.Top} />
-      <input
-        id="text"
-        className="w-full text-center text-sm text-black focus:outline-none"
-        value={label}
-        onChange={(e) => setLabel(e.target.value)}
-        onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
-      />
-      <Handle type="source" position={Position.Bottom} />
-    </div>
+    <MindmapContextMenu>
+      <div className="h-full rounded border border-gray-200 bg-white p-3">
+        <NodeResizer
+          color="#ff0071"
+          isVisible={selected}
+          minWidth={120}
+          minHeight={50}
+        />
+        <Handle type="target" position={Position.Top} />
+        <input
+          id="text"
+          className="w-full text-center text-sm text-black focus:outline-none"
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+        />
+        <Handle type="source" position={Position.Bottom} />
+      </div>
+    </MindmapContextMenu>
   );
 }

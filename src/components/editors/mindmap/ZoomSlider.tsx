@@ -15,7 +15,6 @@ export default function ZoomSlider() {
         size="icon"
         onClick={() => zoomOut({ duration: 300 })}
         className="rounded-lg transition-all hover:scale-105 hover:bg-gray-100/50 active:scale-98 dark:hover:bg-gray-800/50"
-        title="Zoom Out"
       >
         <Minus />
       </Button>
@@ -23,10 +22,10 @@ export default function ZoomSlider() {
       <div className="flex items-center px-2">
         <Slider
           className="[&_[data-slot=slider-range]]:bg-primary w-[120px] [&_[data-slot=slider-thumb]]:size-4 [&_[data-slot=slider-thumb]]:border-2 [&_[data-slot=slider-thumb]]:shadow-md [&_[data-slot=slider-thumb]]:transition-transform hover:[&_[data-slot=slider-thumb]]:scale-110 [&_[data-slot=slider-track]]:h-2 [&_[data-slot=slider-track]]:bg-gray-400/50 [&_[data-slot=slider-track]]:dark:bg-gray-600/50"
-          value={[zoom]}
           min={minZoom}
           max={maxZoom}
           step={0.01}
+          value={[zoom]}
           onValueChange={(values) => zoomTo(values[0])}
         />
       </div>
@@ -35,7 +34,6 @@ export default function ZoomSlider() {
         variant="ghost"
         onClick={() => zoomIn({ duration: 300 })}
         className="rounded-lg transition-all hover:scale-105 hover:bg-gray-100/50 active:scale-98 dark:hover:bg-gray-800/50"
-        title="Zoom In"
       >
         <Plus />
       </Button>
