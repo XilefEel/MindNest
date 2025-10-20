@@ -25,8 +25,8 @@ const iconMap: Record<string, LucideIcon> = {
   calendar: Calendar,
   journal: Notebook,
   gallery: Images,
-  mindmap: Table2,
-  database: Network,
+  mindmap: Network,
+  database: Table2,
 };
 
 export default function NestlingItem({

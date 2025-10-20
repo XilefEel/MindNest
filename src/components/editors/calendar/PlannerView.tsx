@@ -1,4 +1,4 @@
-import { getDayFromDate, PLANNER_EVENT_COLORS } from "@/lib/utils/date";
+import { getDayFromDate } from "@/lib/utils/date";
 import { cn, getRandomElement } from "@/lib/utils/general";
 import { addDays, format, startOfWeek } from "date-fns";
 import { motion } from "framer-motion";
@@ -8,6 +8,7 @@ import { usePlannerStore } from "@/stores/usePlannerStore";
 import { NewPlannerEventType } from "@/lib/types/calendar";
 import { useNestStore } from "@/stores/useNestStore";
 import useActiveNestling from "@/hooks/useActiveNestling";
+import { COLORS } from "@/lib/utils/constants";
 
 export type EventType = {
   id: number;
@@ -49,7 +50,7 @@ export default function PlannerView({
       description: null,
       start_time: startHour,
       duration: 1,
-      color: getRandomElement(PLANNER_EVENT_COLORS),
+      color: getRandomElement(COLORS),
     };
     console.log(newEvent);
     addEvent(newEvent);

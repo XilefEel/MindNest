@@ -1,5 +1,5 @@
 import { PlannerEventType } from "@/lib/types/calendar";
-import { PLANNER_EVENT_COLORS } from "@/lib/utils/date";
+import { COLORS } from "@/lib/utils/constants";
 import { usePlannerStore } from "@/stores/usePlannerStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Copy, Trash, Check, Palette } from "lucide-react";
@@ -38,14 +38,14 @@ export default function PlannerEventContextMenu({
               <div
                 className="ml-auto h-3 w-3 rounded-full border border-gray-300 dark:border-gray-600"
                 style={{
-                  backgroundColor: event.color || PLANNER_EVENT_COLORS[0],
+                  backgroundColor: event.color || COLORS[0],
                 }}
               />
             </ContextMenu.SubTrigger>
             <ContextMenu.Portal>
               <ContextMenu.SubContent className="animate-in fade-in-0 zoom-in-95 z-50 min-w-[160px] rounded-lg border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
                 <div className="grid grid-cols-4 gap-2">
-                  {PLANNER_EVENT_COLORS.map((color) => (
+                  {COLORS.map((color) => (
                     <button
                       key={color}
                       className="relative h-8 w-8 rounded-full border-2 border-gray-200 transition-all duration-200 hover:scale-110 dark:border-gray-600"

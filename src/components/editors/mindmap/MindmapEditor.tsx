@@ -22,6 +22,8 @@ import { useMindmapStore } from "@/stores/useMindmapStore";
 import useActiveNestling from "@/hooks/useActiveNestling";
 import { toast } from "sonner";
 import Toolbar from "./Toolbar";
+import { getRandomElement } from "@/lib/utils/general";
+import { COLORS } from "@/lib/utils/constants";
 
 const nodeTypes = {
   custom: CustomNode,
@@ -194,7 +196,7 @@ function MindmapEditorContent() {
           width: 120,
           data: {
             label: `Node ${nodes.length + 1}`,
-            color: "#ffffff",
+            color: getRandomElement(COLORS),
             text_color: "#000000",
           },
           type: "custom",
@@ -223,7 +225,7 @@ function MindmapEditorContent() {
         width: 120,
         data: {
           label: `Node ${nodes.length + 1}`,
-          color: "#ffffff",
+          color: getRandomElement(COLORS),
           text_color: "#000000",
         },
         type: "custom",

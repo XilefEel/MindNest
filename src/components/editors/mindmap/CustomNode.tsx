@@ -8,18 +8,18 @@ export default function ResizableNodeSelected({
   selected,
   id,
 }: {
-  data: { label: string; color: string; textColor: string };
+  data: { label: string; color: string; text_color: string };
   selected: any;
   id: string;
 }) {
   const [label, setLabel] = useState(data.label);
-  const { updateNode, nodes } = useMindmapStore();
+  const { nodes, updateNode } = useMindmapStore();
+
+  const currentNode = nodes.find((n) => n.id === id);
+  if (!currentNode) return;
 
   const handleBlur = async () => {
     if (label !== data.label) {
-      const currentNode = nodes.find((n) => n.id === id);
-      if (!currentNode) return;
-
       await updateNode(parseInt(id), {
         nestling_id: currentNode.nestling_id,
         position: currentNode.position,
@@ -45,8 +45,14 @@ export default function ResizableNodeSelected({
   };
 
   return (
-    <MindmapContextMenu>
-      <div className="h-full rounded border border-gray-200 bg-white p-3">
+    <MindmapContextMenu node={currentNode}>
+      <div
+        className="h-full rounded border border-gray-200 p-3"
+        style={{
+          backgroundColor: data.color,
+          color: data.text_color,
+        }}
+      >
         <NodeResizer
           color="#ff0071"
           isVisible={selected}
@@ -56,7 +62,7 @@ export default function ResizableNodeSelected({
         <Handle type="target" position={Position.Top} />
         <input
           id="text"
-          className="w-full text-center text-sm text-black focus:outline-none"
+          className="w-full text-center text-sm focus:outline-none"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           onBlur={handleBlur}
