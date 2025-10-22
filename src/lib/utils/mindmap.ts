@@ -20,7 +20,7 @@ export function dbToMindmapNode(row: MindmapNodeDB): MindmapNode {
     data: {
       label: row.label,
       color: row.color,
-      textColor: row.textColor,
+      text_color: row.textColor,
     },
   };
 }
@@ -35,8 +35,8 @@ export function mindmapNodeToDb(node: MindmapNode): MindmapNodeDB {
     width: node.width,
     label: node.data.label,
     color: node.data.color,
-    textColor: node.data.textColor,
-    nodeType: node.nodeType,
+    textColor: node.data.text_color,
+    type: node.type,
     created_at: node.created_at,
     updated_at: node.updated_at,
   };
@@ -51,8 +51,8 @@ export function newMindmapNodeToDb(node: NewMindmapNode): NewMindmapNodeDB {
     width: node.width,
     label: node.data.label,
     color: node.data.color,
-    textColor: node.data.textColor,
-    nodeType: node.nodeType,
+    textColor: node.data.text_color,
+    type: node.type,
   };
 }
 

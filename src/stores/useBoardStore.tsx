@@ -11,6 +11,11 @@ import { BoardData, NewBoardCard, NewBoardColumn } from "@/lib/types/board";
 import { withStoreErrorHandler } from "@/lib/utils/general";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { create } from "zustand";
+import {
+  parseDragId,
+  reorderArray,
+  updateOrderIndexes,
+} from "@/lib/utils/boards";
 
 type BoardState = {
   boardData: BoardData | null;
@@ -75,60 +80,69 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
   addColumn: withStoreErrorHandler(set, async (column) => {
     const newColumn = await createBoardColumn(column);
-    set((state) => ({
-      boardData: {
-        ...state.boardData!,
-        columns: [
-          ...state.boardData!.columns,
-          {
-            column: newColumn,
-            cards: [],
-          },
-        ],
-      },
-    }));
+
+    set((state) => {
+      if (!state.boardData) return state;
+
+      return {
+        boardData: {
+          ...state.boardData,
+          columns: [
+            ...state.boardData.columns,
+            { column: newColumn, cards: [] },
+          ],
+        },
+      };
+    });
   }),
 
   updateColumn: withStoreErrorHandler(
     set,
     async ({ id, title, order_index }) => {
       await updateBoardColumn({ id, title, order_index });
-      if (get().boardData) {
-        set((state) => ({
+
+      set((state) => {
+        if (!state.boardData) return state;
+
+        return {
           boardData: {
-            ...state.boardData!,
-            columns: state.boardData!.columns.map((col) =>
+            ...state.boardData,
+            columns: state.boardData.columns.map((col) =>
               col.column.id === id
                 ? { ...col, column: { ...col.column, title, order_index } }
                 : col,
             ),
           },
-        }));
-      }
+        };
+      });
     },
   ),
 
   removeColumn: withStoreErrorHandler(set, async (columnId) => {
     await deleteBoardColumn(columnId);
-    if (get().boardData) {
-      set((state) => ({
+
+    set((state) => {
+      if (!state.boardData) return state;
+
+      return {
         boardData: {
-          ...state.boardData!,
-          columns: state.boardData!.columns.filter(
+          ...state.boardData,
+          columns: state.boardData.columns.filter(
             (col) => col.column.id !== columnId,
           ),
         },
-      }));
-    }
+      };
+    });
   }),
-  reorderColumn: async (activeColumnId, targetColumnId) => {
-    const board = get().boardData;
-    if (!board) return;
 
-    const activeColumnIndex = board.columns.findIndex(
+  reorderColumn: async (activeColumnId, targetColumnId) => {
+    const { boardData } = get();
+    if (!boardData) return;
+
+    const activeColumnIndex = boardData.columns.findIndex(
       (column) => column.column.id === activeColumnId,
     );
-    const targetColumnIndex = board.columns.findIndex(
+    const targetColumnIndex = boardData.columns.findIndex(
       (column) => column.column.id === targetColumnId,
     );
 
@@ -140,22 +154,24 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       return;
     }
 
-    const boardColumns = [...board.columns];
-    const [movedColumn] = boardColumns.splice(activeColumnIndex, 1);
-    boardColumns.splice(targetColumnIndex, 0, movedColumn);
-
-    boardColumns.forEach((column, index) => {
-      column.column.order_index = index;
-    });
+    const reorderedColumns = reorderArray(
+      boardData.columns,
+      activeColumnId,
+      targetColumnId,
+    );
+    const columnsWithNewIndexes = reorderedColumns.map((col, index) => ({
+      ...col,
+      column: { ...col.column, order_index: index },
+    }));
 
     set((state) => ({
       boardData: state.boardData
-        ? { ...state.boardData, columns: boardColumns }
+        ? { ...state.boardData, columns: columnsWithNewIndexes }
         : null,
     }));
 
     await Promise.all(
-      boardColumns.map((column) =>
+      reorderedColumns.map((column) =>
         updateBoardColumn({
           id: column.column.id,
           title: column.column.title,
@@ -168,33 +184,33 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   addCard: withStoreErrorHandler(set, async (card) => {
     const newCard = await createBoardCard(card);
 
-    const currentState = get();
-    if (!currentState.boardData) {
-      set({ error: "Board data not loaded" });
-      return;
-    }
+    set((state) => {
+      if (!state.boardData) return { error: "Board data not loaded" };
 
-    set((state) => ({
-      boardData: {
-        ...state.boardData!,
-        columns: state.boardData!.columns.map((col) =>
-          col.column.id === card.column_id
-            ? { ...col, cards: [...col.cards, newCard] }
-            : col,
-        ),
-      },
-    }));
+      return {
+        boardData: {
+          ...state.boardData,
+          columns: state.boardData.columns.map((col) =>
+            col.column.id === card.column_id
+              ? { ...col, cards: [...col.cards, newCard] }
+              : col,
+          ),
+        },
+      };
+    });
   }),
 
   updateCard: withStoreErrorHandler(
     set,
     async ({ id, title, description, order_index, column_id }) => {
       await updateBoardCard({ id, title, description, order_index, column_id });
-      if (get().boardData) {
-        set((state) => ({
+      set((state) => {
+        if (!state.boardData) return state;
+
+        return {
           boardData: {
-            ...state.boardData!,
-            columns: state.boardData!.columns.map((col) => ({
+            ...state.boardData,
+            columns: state.boardData.columns.map((col) => ({
               ...col,
               cards: col.cards.map((card) =>
                 card.id === id
@@ -203,8 +219,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
               ),
             })),
           },
-        }));
-      }
+        };
+      });
     },
   ),
 
@@ -224,115 +240,75 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   }),
 
   reorderCard: async ({ activeCardId, targetCardId, targetColumnId }) => {
-    // Exit if the cards are the same or if board data is not loaded
-    const board = get().boardData;
-    if (!board || activeCardId === targetCardId) return;
+    const { boardData } = get();
+    if (!boardData || activeCardId === targetCardId) return;
 
-    // Find the original and target column
-    const originalColumnIndex = board.columns.findIndex((col) =>
+    const originalColIndex = boardData.columns.findIndex((col) =>
       col.cards.some((card) => card.id === activeCardId),
     );
-    const originalColumn = board.columns[originalColumnIndex];
-    const targetColumnIndex = board.columns.findIndex(
+    const targetColIndex = boardData.columns.findIndex(
       (col) => col.column.id === targetColumnId,
     );
-    const targetColumn = board.columns[targetColumnIndex];
 
-    if (originalColumnIndex === -1 || targetColumnIndex === -1) return;
+    if (originalColIndex === -1 || targetColIndex === -1) return;
 
-    // Copy the arrays for mutability
-    const boardColumns = [...board.columns];
+    const originalCol = boardData.columns[originalColIndex];
+    const targetCol = boardData.columns[targetColIndex];
+    const isSameColumn = originalColIndex === targetColIndex;
 
-    // Find the cards that are being moved
-    const movedCardIndex = originalColumn.cards.findIndex(
+    const activeCardIndex = originalCol.cards.findIndex(
       (card) => card.id === activeCardId,
     );
-    let targetCardIndex = -1;
-    if (targetCardId === null) {
-      targetCardIndex = targetColumn.cards.length;
-    } else {
-      targetCardIndex = targetColumn.cards.findIndex(
-        (card) => card.id === targetCardId,
+    const targetCardIndex =
+      targetCardId === null
+        ? targetCol.cards.length
+        : targetCol.cards.findIndex((card) => card.id === targetCardId);
+
+    if (activeCardIndex === -1 || targetCardIndex === -1) return;
+
+    const updatedColumns = [...boardData.columns];
+    const movedCard = { ...originalCol.cards[activeCardIndex] };
+
+    if (isSameColumn) {
+      const reorderedCards = reorderArray(
+        originalCol.cards,
+        activeCardIndex,
+        targetCardIndex,
       );
-    }
+      const cardsWithIndexes = updateOrderIndexes(reorderedCards);
 
-    if (movedCardIndex === -1 || targetCardIndex === -1) return;
-
-    const [movedCard] = originalColumn.cards.splice(movedCardIndex, 1);
-
-    // Update the moved card's column_id if moving between columns
-    if (originalColumnIndex !== targetColumnIndex) {
-      movedCard.column_id = targetColumnId;
-    }
-
-    // Handle same column vs different column scenarios
-    if (originalColumnIndex === targetColumnIndex) {
-      // Moving within the same column - simpler logic
-      const updatedCards = [...originalColumn.cards];
-      updatedCards.splice(targetCardIndex, 0, movedCard);
-
-      // Update order indexes
-      const reorderedCards = updatedCards.map((card, idx) => ({
-        ...card,
-        order_index: idx,
-      }));
-
-      boardColumns[originalColumnIndex] = {
-        ...originalColumn,
-        cards: reorderedCards,
+      updatedColumns[originalColIndex] = {
+        ...originalCol,
+        cards: cardsWithIndexes,
       };
     } else {
-      // Moving between different columns
-      const originalCards = [...originalColumn.cards];
-      const targetCards = [...targetColumn.cards];
+      const sourceCards = originalCol.cards.filter(
+        (card) => card.id !== activeCardId,
+      );
+      const targetCards = [...targetCol.cards];
 
-      // Insert into target column at the target position
+      movedCard.column_id = targetColumnId;
       targetCards.splice(targetCardIndex, 0, movedCard);
 
-      // Update order indexes for both columns
-      const updatedOriginalCards = originalCards.map((card, idx) => ({
-        ...card,
-        order_index: idx,
-      }));
-
-      const updatedTargetCards = targetCards.map((card, idx) => ({
-        ...card,
-        order_index: idx,
-      }));
-
-      // Update both columns
-      boardColumns[originalColumnIndex] = {
-        ...originalColumn,
-        cards: updatedOriginalCards,
+      updatedColumns[originalColIndex] = {
+        ...originalCol,
+        cards: updateOrderIndexes(sourceCards),
       };
-
-      boardColumns[targetColumnIndex] = {
-        ...targetColumn,
-        cards: updatedTargetCards,
+      updatedColumns[targetColIndex] = {
+        ...targetCol,
+        cards: updateOrderIndexes(targetCards),
       };
     }
 
-    // Update the state
-    set((state) => ({
-      boardData: state.boardData
-        ? { ...state.boardData, columns: boardColumns }
-        : null,
-    }));
+    set({ boardData: { ...boardData, columns: updatedColumns } });
 
-    // Update the backend - only update cards that actually changed
     try {
-      const cardsToUpdate = [];
-
-      if (originalColumnIndex === targetColumnIndex) {
-        // Only update cards in the same column
-        cardsToUpdate.push(...boardColumns[originalColumnIndex].cards);
-      } else {
-        // Update cards in both columns
-        cardsToUpdate.push(
-          ...boardColumns[originalColumnIndex].cards,
-          ...boardColumns[targetColumnIndex].cards,
-        );
-      }
+      const cardsToUpdate = isSameColumn
+        ? updatedColumns[originalColIndex].cards
+        : [
+            ...updatedColumns[originalColIndex].cards,
+            ...updatedColumns[targetColIndex].cards,
+          ];
 
       await Promise.all(
         cardsToUpdate.map((card) =>
@@ -346,74 +322,41 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         ),
       );
     } catch (error) {
-      set({ error: String(error) });
+      set({ boardData, error: String(error) });
     }
   },
 
   handleDragStart: (event) => {
     set({ activeDraggingId: event.active.id as string });
-    console.log("DRAG START:", {
-      activeId: event.active.id,
-      activeType: String(event.active.id).split("-")[0],
-    });
   },
 
   handleDragEnd: async (event) => {
     const { active, over } = event;
-
-    console.log("DRAG END:", {
-      activeId: active.id,
-      overId: over?.id,
-      hasOver: !!over,
-    });
-
     set({ activeDraggingId: null });
-    if (!over || active.id === over.id) {
-      console.log("No valid drop target or same position");
+    if (!over || active.id === over.id) return;
+
+    const activeData = parseDragId(active.id);
+    const targetData = parseDragId(over.id);
+
+    if (!activeData || !targetData) return;
+
+    const targetColumnId =
+      targetData.type === "column" ? targetData.id : targetData.columnId!;
+
+    if (activeData.type === "column") {
+      get().reorderColumn(activeData.id, targetColumnId);
       return;
     }
 
-    const activeParts = String(active.id).split("-");
-    const targetParts = String(over.id).split("-");
+    if (activeData.type === "card") {
+      const targetCardId = targetData.type === "card" ? targetData.id : null;
 
-    const activeType = activeParts[0];
-    const targetType = targetParts[0];
-
-    if (activeType === "column") {
-      let targetColumnId: number;
-
-      if (targetType === "column") {
-        // Dropped on column directly
-        targetColumnId = Number(targetParts[1]);
-      } else if (targetType === "card") {
-        // Dropped on card - extract column ID from card
-        targetColumnId = Number(targetParts[3]); // card-{cardId}-column-{columnId}
-        console.log(
-          "COLUMN dropped on CARD - extracted column:",
-          targetColumnId,
-        );
-      } else {
-        console.log("Invalid drop target for column");
-        return;
-      }
-
-      const activeColumnId = Number(activeParts[1]);
-      console.log("📋 COLUMN REORDER:", { activeColumnId, targetColumnId });
+      get().reorderCard({
+        activeCardId: activeData.id,
+        targetCardId,
+        targetColumnId,
+      });
       return;
-    }
-
-    // Handle card movements (unchanged)
-    if (activeType === "card") {
-      const activeCardId = Number(activeParts[1]);
-
-      if (targetType === "card") {
-        const targetCardId = Number(targetParts[1]);
-        const targetColumnId = Number(targetParts[3]);
-        get().reorderCard({ activeCardId, targetCardId, targetColumnId });
-      } else if (targetType === "column") {
-        const targetColumnId = Number(targetParts[1]);
-        get().reorderCard({ activeCardId, targetCardId: null, targetColumnId });
-      }
     }
   },
 }));
