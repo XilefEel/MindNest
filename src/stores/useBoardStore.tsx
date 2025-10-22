@@ -1,12 +1,4 @@
-import {
-  createBoardCard,
-  createBoardColumn,
-  deleteBoardCard,
-  deleteBoardColumn,
-  getBoard,
-  updateBoardCard,
-  updateBoardColumn,
-} from "@/lib/api/board";
+import * as boardApi from "@/lib/api/board";
 import { BoardData, NewBoardCard, NewBoardColumn } from "@/lib/types/board";
 import { withStoreErrorHandler } from "@/lib/utils/general";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
@@ -74,12 +66,12 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   activeDraggingId: null,
 
   fetchBoard: withStoreErrorHandler(set, async (nestlingId) => {
-    const data = await getBoard(nestlingId);
+    const data = await boardApi.getBoard(nestlingId);
     set({ boardData: data });
   }),
 
   addColumn: withStoreErrorHandler(set, async (column) => {
-    const newColumn = await createBoardColumn(column);
+    const newColumn = await boardApi.createBoardColumn(column);
 
     set((state) => {
       if (!state.boardData) return state;
@@ -99,7 +91,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   updateColumn: withStoreErrorHandler(
     set,
     async ({ id, title, order_index }) => {
-      await updateBoardColumn({ id, title, order_index });
+      await boardApi.updateBoardColumn({ id, title, order_index });
 
       set((state) => {
         if (!state.boardData) return state;
@@ -119,7 +111,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   ),
 
   removeColumn: withStoreErrorHandler(set, async (columnId) => {
-    await deleteBoardColumn(columnId);
+    await boardApi.deleteBoardColumn(columnId);
 
     set((state) => {
       if (!state.boardData) return state;
@@ -171,7 +163,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
     await Promise.all(
       columnsWithNewIndexes.map((column) =>
-        updateBoardColumn({
+        boardApi.updateBoardColumn({
           id: column.column.id,
           title: column.column.title,
           order_index: column.column.order_index,
@@ -181,7 +173,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   },
 
   addCard: withStoreErrorHandler(set, async (card) => {
-    const newCard = await createBoardCard(card);
+    const newCard = await boardApi.createBoardCard(card);
 
     set((state) => {
       if (!state.boardData) return { error: "Board data not loaded" };
@@ -202,7 +194,13 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   updateCard: withStoreErrorHandler(
     set,
     async ({ id, title, description, order_index, column_id }) => {
-      await updateBoardCard({ id, title, description, order_index, column_id });
+      await boardApi.updateBoardCard({
+        id,
+        title,
+        description,
+        order_index,
+        column_id,
+      });
       set((state) => {
         if (!state.boardData) return state;
 
@@ -224,7 +222,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   ),
 
   removeCard: withStoreErrorHandler(set, async (cardId) => {
-    await deleteBoardCard(cardId);
+    await boardApi.deleteBoardCard(cardId);
     set((state) => {
       if (!state.boardData) return state;
 
@@ -313,7 +311,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
       await Promise.all(
         cardsToUpdate.map((card) =>
-          updateBoardCard({
+          boardApi.updateBoardCard({
             id: card.id,
             title: card.title,
             description: card.description,

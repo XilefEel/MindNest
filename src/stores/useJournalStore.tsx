@@ -1,13 +1,4 @@
-import {
-  createJournalEntry,
-  createJournalTemplate,
-  deleteJournalEntry,
-  deleteJournalTemplate,
-  getJournalEntries,
-  getJournalTemplates,
-  updateJournalEntry,
-  updateJournalTemplate,
-} from "@/lib/api/journal";
+import * as journalApi from "@/lib/api/journal";
 import {
   JournalEntry,
   JournalTemplate,
@@ -50,7 +41,7 @@ export const useJournalStore = create<JournalState>((set) => ({
   setActiveEntry: (entry: JournalEntry) => set({ activeEntry: entry }),
 
   addEntry: withStoreErrorHandler(set, async (entry: NewJournalEntry) => {
-    const newEntry = await createJournalEntry(entry);
+    const newEntry = await journalApi.createJournalEntry(entry);
     set((state) => ({
       entries: [...state.entries, newEntry],
       activeEntry: newEntry,
@@ -60,12 +51,12 @@ export const useJournalStore = create<JournalState>((set) => ({
   }),
 
   fetchEntries: withStoreErrorHandler(set, async (nestlingId: number) => {
-    const entries = await getJournalEntries(nestlingId);
+    const entries = await journalApi.getJournalEntries(nestlingId);
     set({ entries, loading: false });
   }),
 
   updateEntry: withStoreErrorHandler(set, async (entry: JournalEntry) => {
-    await updateJournalEntry(
+    await journalApi.updateJournalEntry(
       entry.id,
       entry.title,
       entry.content,
@@ -86,7 +77,7 @@ export const useJournalStore = create<JournalState>((set) => ({
     return updatedEntries;
   }),
   deleteEntry: withStoreErrorHandler(set, async (id: number) => {
-    await deleteJournalEntry(id);
+    await journalApi.deleteJournalEntry(id);
     set((state) => ({
       entries: state.entries.filter((e) => e.id !== id),
       activeEntry: state.activeEntry?.id === id ? null : state.activeEntry,
@@ -96,7 +87,7 @@ export const useJournalStore = create<JournalState>((set) => ({
   addTemplate: withStoreErrorHandler(
     set,
     async (template: NewJournalTemplate) => {
-      const newTemplate = await createJournalTemplate(template);
+      const newTemplate = await journalApi.createJournalTemplate(template);
       set((state) => ({
         templates: [...state.templates, newTemplate],
       }));
@@ -107,7 +98,7 @@ export const useJournalStore = create<JournalState>((set) => ({
   useTemplate: withStoreErrorHandler(
     set,
     async (nestlingId: number, template: JournalTemplate) => {
-      const newEntry = await createJournalEntry({
+      const newEntry = await journalApi.createJournalEntry({
         nestling_id: nestlingId,
         title: template.name,
         content: template.content,
@@ -122,14 +113,18 @@ export const useJournalStore = create<JournalState>((set) => ({
   ),
 
   fetchTemplates: withStoreErrorHandler(set, async (nestlingId: number) => {
-    const templates = await getJournalTemplates(nestlingId);
+    const templates = await journalApi.getJournalTemplates(nestlingId);
     set({ templates, loading: false });
   }),
 
   updateTemplate: withStoreErrorHandler(
     set,
     async (template: JournalTemplate) => {
-      await updateJournalTemplate(template.id, template.name, template.content);
+      await journalApi.updateJournalTemplate(
+        template.id,
+        template.name,
+        template.content,
+      );
       const updatedTemplates = {
         ...template,
         updated_at: new Date().toISOString(),
@@ -146,7 +141,7 @@ export const useJournalStore = create<JournalState>((set) => ({
   ),
 
   deleteTemplate: withStoreErrorHandler(set, async (id: number) => {
-    await deleteJournalTemplate(id);
+    await journalApi.deleteJournalTemplate(id);
     set((state) => ({
       templates: state.templates.filter((e) => e.id !== id),
     }));

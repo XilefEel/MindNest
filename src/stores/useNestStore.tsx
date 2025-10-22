@@ -1,17 +1,7 @@
 import { create } from "zustand";
 import { Nest } from "../lib/types/nest";
-import {
-  getUserNests,
-  createNest,
-  updateNest,
-  deleteNest,
-  getNestFromId,
-} from "../lib/api/nest";
-import {
-  importBackground,
-  deleteBackground,
-  getBackgrounds,
-} from "@/lib/api/nest-background";
+import * as nestApi from "../lib/api/nest";
+import * as backgroundApi from "@/lib/api/nest-background";
 import { BackgroundImage } from "@/lib/types/nest_backgrounds";
 import { open } from "@tauri-apps/plugin-dialog";
 import {
@@ -74,12 +64,12 @@ export const useNestStore = create<NestState>((set, get) => ({
   },
 
   fetchNests: withStoreErrorHandler(set, async (userId) => {
-    const nests = await getUserNests(userId);
+    const nests = await nestApi.getUserNests(userId);
     set({ nests: nests });
   }),
 
   createNest: withStoreErrorHandler(set, async (userId, title) => {
-    await createNest(userId, title);
+    await nestApi.createNest(userId, title);
     await get().fetchNests(userId);
   }),
 
@@ -90,11 +80,11 @@ export const useNestStore = create<NestState>((set, get) => ({
       ),
     }));
 
-    await updateNest(nestId, newTitle);
+    await nestApi.updateNest(nestId, newTitle);
   }),
 
   deleteNest: withStoreErrorHandler(set, async (nestId) => {
-    await deleteNest(nestId);
+    await nestApi.deleteNest(nestId);
     set((state) => ({
       nests: state.nests.filter((n) => n.id !== nestId),
     }));
@@ -106,7 +96,7 @@ export const useNestStore = create<NestState>((set, get) => ({
     const activeId = get().activeNestId;
     if (!activeId) return;
 
-    const updatedNest = await getNestFromId(activeId);
+    const updatedNest = await nestApi.getNestFromId(activeId);
 
     set((state) => ({
       nests: state.nests.map((n) => (n.id === activeId ? updatedNest : n)),
@@ -116,7 +106,7 @@ export const useNestStore = create<NestState>((set, get) => ({
   uploadBackground: withStoreErrorHandler(
     set,
     async (nestId: number, filePath: string) => {
-      const background = await importBackground(nestId, filePath);
+      const background = await backgroundApi.importBackground(nestId, filePath);
       get().setActiveBackgroundId(background.id);
       return background;
     },
@@ -149,14 +139,14 @@ export const useNestStore = create<NestState>((set, get) => ({
   }),
 
   fetchBackgrounds: withStoreErrorHandler(set, async (nestId: number) => {
-    const backgrounds = await getBackgrounds(nestId);
+    const backgrounds = await backgroundApi.getBackgrounds(nestId);
     set({ backgrounds });
   }),
 
   deleteBackground: withStoreErrorHandler(set, async (backgroundId: number) => {
     const activeNestId = get().activeNestId;
     await Promise.all([
-      deleteBackground(backgroundId),
+      backgroundApi.deleteBackground(backgroundId),
       clearLastBackgroundImage(activeNestId!),
     ]);
     set((state) => ({

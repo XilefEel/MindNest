@@ -4,20 +4,7 @@ import {
   GalleryAlbum,
   NewGalleryAlbum,
 } from "@/lib/types/gallery";
-import {
-  importImage,
-  getImages,
-  downloadImage,
-  updateImage,
-  deleteImage,
-  createAlbum,
-  getAlbums,
-  downloadAlbum,
-  updateAlbum,
-  deleteAlbum,
-  importImageData,
-  duplicateImage,
-} from "@/lib/api/gallery";
+import * as galleryApi from "@/lib/api/gallery";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { withStoreErrorHandler } from "@/lib/utils/general";
@@ -99,7 +86,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   error: null,
 
   fetchImages: withStoreErrorHandler(set, async (nestlingId: number) => {
-    const images = await getImages(nestlingId);
+    const images = await galleryApi.getImages(nestlingId);
     set({ images });
   }),
 
@@ -150,8 +137,8 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     }) => {
       let newImage: GalleryImage;
       newImage = file.path
-        ? await importImage(nestlingId, file.path, album_id)
-        : await importImageData(
+        ? await galleryApi.importImage(nestlingId, file.path, album_id)
+        : await galleryApi.importImageData(
             nestlingId,
             file.name!,
             Array.from(file.data!),
@@ -165,7 +152,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   ),
 
   duplicateImage: withStoreErrorHandler(set, async (id: number) => {
-    const image = await duplicateImage(id);
+    const image = await galleryApi.duplicateImage(id);
     set((state) => ({
       images: [...state.images, image],
     }));
@@ -201,12 +188,18 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
             : img,
         ),
       }));
-      await updateImage(id, albumId, title, description, is_favorite);
+      await galleryApi.updateImage(
+        id,
+        albumId,
+        title,
+        description,
+        is_favorite,
+      );
     },
   ),
 
   removeImage: withStoreErrorHandler(set, async (id: number) => {
-    await deleteImage(id);
+    await galleryApi.deleteImage(id);
     set((state) => ({
       images: state.images.filter((image) => image.id !== id),
     }));
@@ -226,16 +219,16 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     });
 
     if (!filePath) throw new Error("Download canceled");
-    await downloadImage(id, filePath);
+    await galleryApi.downloadImage(id, filePath);
   }),
 
   fetchAlbums: withStoreErrorHandler(set, async (nestlingId: number) => {
-    const albums = await getAlbums(nestlingId);
+    const albums = await galleryApi.getAlbums(nestlingId);
     set({ albums });
   }),
 
   addAlbum: withStoreErrorHandler(set, async (data: NewGalleryAlbum) => {
-    const newAlbum = await createAlbum(data);
+    const newAlbum = await galleryApi.createAlbum(data);
     set((state) => ({
       albums: [...state.albums, newAlbum],
     }));
@@ -250,7 +243,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
 
     if (!filePath) throw new Error("Download canceled");
 
-    await downloadAlbum(id, filePath);
+    await galleryApi.downloadAlbum(id, filePath);
     set({ loading: false });
   }),
 
@@ -265,7 +258,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       name: string | null;
       description: string | null;
     }) => {
-      await updateAlbum(id, name, description);
+      await galleryApi.updateAlbum(id, name, description);
       set((state) => ({
         albums: state.albums.map((album) =>
           album.id === id
@@ -282,7 +275,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   ),
 
   removeAlbum: withStoreErrorHandler(set, async (id: number) => {
-    await deleteAlbum(id);
+    await galleryApi.deleteAlbum(id);
     set((state) => ({
       albums: state.albums.filter((album) => album.id !== id),
     }));

@@ -3,12 +3,7 @@ import type {
   PlannerEventType,
   NewPlannerEventType,
 } from "@/lib/types/calendar";
-import {
-  createPlannerEvent,
-  deletePlannerEvent,
-  getPlannerEvents,
-  updatePlannerEvent,
-} from "@/lib/api/calendar";
+import * as calendarApi from "@/lib/api/calendar";
 import { withStoreErrorHandler } from "@/lib/utils/general";
 
 type PlannerState = {
@@ -62,7 +57,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
       start: string;
       end: string;
     }) => {
-      const events = await getPlannerEvents({
+      const events = await calendarApi.getPlannerEvents({
         id: nestlingId,
         start,
         end,
@@ -74,7 +69,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
   addEvent: withStoreErrorHandler(
     set,
     async (newEvent: NewPlannerEventType) => {
-      const event = await createPlannerEvent(newEvent);
+      const event = await calendarApi.createPlannerEvent(newEvent);
       set({ events: [...get().events, event] });
     },
   ),
@@ -115,7 +110,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
             : e,
         ),
       });
-      await updatePlannerEvent({
+      await calendarApi.updatePlannerEvent({
         id,
         date,
         title,
@@ -133,7 +128,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
   },
 
   deleteEvent: withStoreErrorHandler(set, async (id) => {
-    await deletePlannerEvent(id);
+    await calendarApi.deletePlannerEvent(id);
     set({ events: get().events.filter((e) => e.id !== id) });
   }),
 }));

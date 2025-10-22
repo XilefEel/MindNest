@@ -1,16 +1,6 @@
 import { create } from "zustand";
-import {
-  createNestling,
-  getNestlings,
-  deleteNestling,
-  editNestling,
-} from "@/lib/api/nestling";
-import {
-  createFolder,
-  deleteFolder,
-  getFolders,
-  updateFolder,
-} from "@/lib/api/folder";
+import * as nestlingApi from "@/lib/api/nestling";
+import * as folderApi from "@/lib/api/folder";
 import { Folder, NewFolder } from "@/lib/types/folder";
 import { Nestling, NewNestling } from "@/lib/types/nestling";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
@@ -74,7 +64,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     })),
 
   addNestling: withStoreErrorHandler(set, async (nestling: NewNestling) => {
-    const newNestling = await createNestling(nestling);
+    const newNestling = await nestlingApi.createNestling(nestling);
     set((state) => ({
       nestlings: [...state.nestlings, newNestling].sort((a, b) =>
         a.title.localeCompare(b.title),
@@ -84,7 +74,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
   duplicateNestling: withStoreErrorHandler(set, async (nestlingId: number) => {
     const originalNestling = get().nestlings.find((n) => n.id === nestlingId)!;
-    const newNestling = await createNestling(originalNestling);
+    const newNestling = await nestlingApi.createNestling(originalNestling);
 
     set((state) => ({
       nestlings: [...state.nestlings, newNestling].sort((a, b) =>
@@ -94,7 +84,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   }),
 
   updateNestling: withStoreErrorHandler(set, async (id, updates) => {
-    await editNestling(
+    await nestlingApi.editNestling(
       id,
       updates.folder_id ?? null,
       updates.title,
@@ -118,14 +108,14 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   }),
 
   deleteNestling: withStoreErrorHandler(set, async (nestlingId) => {
-    await deleteNestling(nestlingId);
+    await nestlingApi.deleteNestling(nestlingId);
     set((state) => ({
       nestlings: state.nestlings.filter((n) => n.id !== nestlingId),
     }));
   }),
 
   addFolder: withStoreErrorHandler(set, async (folder) => {
-    const newFolder = await createFolder(folder);
+    const newFolder = await folderApi.createFolder(folder);
     set((state) => ({
       folders: [...state.folders, newFolder].sort((a, b) =>
         a.name.localeCompare(b.name),
@@ -135,7 +125,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
   duplicateFolder: withStoreErrorHandler(set, async (folderId) => {
     const originalFolder = get().folders.find((f) => f.id === folderId)!;
-    const newFolder = await createFolder(originalFolder);
+    const newFolder = await folderApi.createFolder(originalFolder);
 
     set((state) => ({
       folders: [...state.folders, newFolder].sort((a, b) =>
@@ -146,7 +136,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   }),
 
   updateFolder: withStoreErrorHandler(set, async (id, name) => {
-    await updateFolder(id, undefined, name);
+    await folderApi.updateFolder(id, undefined, name);
     set((state) => ({
       folders: state.folders
         .map((f) => (f.id === id ? { ...f, name } : f))
@@ -155,7 +145,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   }),
 
   deleteFolder: withStoreErrorHandler(set, async (folderId) => {
-    await deleteFolder(folderId);
+    await folderApi.deleteFolder(folderId);
     set((state) => ({
       folders: state.folders.filter((f) => f.id !== folderId),
     }));
@@ -163,8 +153,8 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
   fetchSidebar: withStoreErrorHandler(set, async (nestId) => {
     const [fetchedFolders, fetchedNestlings] = await Promise.all([
-      getFolders(nestId),
-      getNestlings(nestId),
+      folderApi.getFolders(nestId),
+      nestlingApi.getNestlings(nestId),
     ]);
 
     set({
@@ -212,7 +202,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
         const newFolderId = overType === "folder" ? Number(overIdStr) : null;
 
         Promise.all([
-          editNestling(nestlingId, newFolderId),
+          nestlingApi.editNestling(nestlingId, newFolderId),
           saveLastNestling(nestId, nestlingId),
         ]);
 
@@ -241,7 +231,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
           ancestorId = folderMap.get(ancestorId) ?? null;
         }
 
-        await updateFolder(folderId, newParentId);
+        await folderApi.updateFolder(folderId, newParentId);
 
         set((state) => ({
           folders: state.folders
