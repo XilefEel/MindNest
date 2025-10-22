@@ -150,14 +150,13 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       activeColumnIndex === -1 ||
       targetColumnIndex === -1 ||
       activeColumnIndex === targetColumnIndex
-    ) {
+    )
       return;
-    }
 
     const reorderedColumns = reorderArray(
       boardData.columns,
-      activeColumnId,
-      targetColumnId,
+      activeColumnIndex,
+      targetColumnIndex,
     );
     const columnsWithNewIndexes = reorderedColumns.map((col, index) => ({
       ...col,
@@ -171,7 +170,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     }));
 
     await Promise.all(
-      reorderedColumns.map((column) =>
+      columnsWithNewIndexes.map((column) =>
         updateBoardColumn({
           id: column.column.id,
           title: column.column.title,
@@ -226,17 +225,19 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
   removeCard: withStoreErrorHandler(set, async (cardId) => {
     await deleteBoardCard(cardId);
-    if (get().boardData) {
-      set((state) => ({
+    set((state) => {
+      if (!state.boardData) return state;
+
+      return {
         boardData: {
-          ...state.boardData!,
-          columns: state.boardData!.columns.map((col) => ({
+          ...state.boardData,
+          columns: state.boardData.columns.map((col) => ({
             ...col,
             cards: col.cards.filter((card) => card.id !== cardId),
           })),
         },
-      }));
-    }
+      };
+    });
   }),
 
   reorderCard: async ({ activeCardId, targetCardId, targetColumnId }) => {

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import NestlingTitle from "@/components/editors/NestlingTitle";
 import { useBoardStore } from "@/stores/useBoardStore";
 import Column from "@/components/editors/board/Column";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import useAutoSave from "@/hooks/useAutoSave";
 
 import {
@@ -23,18 +23,14 @@ export default function BoardEditor() {
   const { activeNestling, activeNestlingId } = useActiveNestling();
   const { updateNestling } = useNestlingStore();
 
-  if (!activeNestling)
-    return <div className="p-4 text-gray-500">No note selected</div>;
+  if (!activeNestling) return;
 
   const [title, setTitle] = useState(activeNestling.title);
-  const {
-    boardData,
-    fetchBoard,
-    addColumn,
-    handleDragStart,
-    handleDragEnd,
-    activeDraggingId,
-  } = useBoardStore();
+  const { boardData, fetchBoard, addColumn, handleDragStart, handleDragEnd } =
+    useBoardStore();
+
+  const columns = boardData?.columns || [];
+  const columnIds = columns.map((col) => `column-${col.column.id}`);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -43,6 +39,18 @@ export default function BoardEditor() {
       },
     }),
   );
+
+  const handleAddColumn = async () => {
+    try {
+      addColumn({
+        nestling_id: activeNestlingId!,
+        title: "New Column",
+        order_index: boardData!.columns.length + 1,
+      });
+    } catch (error) {
+      console.error("Error adding column:", error);
+    }
+  };
 
   useEffect(() => {
     fetchBoard(activeNestlingId!);
@@ -65,13 +73,6 @@ export default function BoardEditor() {
     saveFunction: (id, data) => updateNestling(id, data),
   });
 
-  const columns = boardData?.columns || [];
-  const columnIds = columns.map((col) => `column-${col.column.id}`);
-
-  if (!boardData) {
-    return <div>Board data not loaded yet...</div>;
-  }
-
   return (
     <div className="flex h-full flex-col gap-3">
       <NestlingTitle title={title} setTitle={setTitle} />
@@ -90,41 +91,13 @@ export default function BoardEditor() {
             <div className="flex flex-row items-start gap-4">
               <AnimatePresence>
                 {columns.map((col) => (
-                  <motion.div
-                    key={col.column.id}
-                    layout={activeDraggingId == null}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{
-                      opacity: 0,
-                      y: 30,
-                      transition: { duration: 0.2 },
-                    }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 250,
-                      damping: 25,
-                    }}
-                  >
-                    <Column key={col.column.id} {...col} />
-                  </motion.div>
+                  <Column key={col.column.id} {...col} />
                 ))}
               </AnimatePresence>
 
               <button
-                onClick={() => {
-                  if (!boardData) {
-                    console.log("Board data not loaded yet");
-                    return;
-                  }
-
-                  addColumn({
-                    nestling_id: activeNestlingId!,
-                    title: "New Column",
-                    order_index: boardData.columns.length + 1,
-                  });
-                }}
-                className="w-72 flex-shrink-0 cursor-pointer rounded-lg border border-dashed bg-gray-50 p-3 text-gray-500 transition duration-200 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700"
+                onClick={handleAddColumn}
+                className="w-72 flex-shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 py-5 text-gray-400 dark:border-gray-600 dark:text-gray-500"
               >
                 + Add column
               </button>

@@ -5,6 +5,7 @@ import { useBoardStore } from "@/stores/useBoardStore";
 import { useEffect, useRef, useState } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
+import { motion } from "framer-motion";
 
 export default function ColumnCard(card: BoardCard) {
   const { updateCard, removeCard } = useBoardStore();
@@ -27,6 +28,8 @@ export default function ColumnCard(card: BoardCard) {
     id: `card-${card.id}-column-${card.column_id}`,
   });
 
+  const { activeDraggingId } = useBoardStore();
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -46,6 +49,22 @@ export default function ColumnCard(card: BoardCard) {
     setTitle(card.title);
     setDescription(card.description || "");
   }, [card.title, card.description]);
+
+  const handdleSubmit = (
+    e: React.KeyboardEvent,
+    type: "title" | "description",
+  ) => {
+    if (e.key === "Enter") handleSubmit();
+    if (e.key === "Escape") {
+      if (type === "title") {
+        setTitle(card.title);
+        setIsEditingTitle(false);
+      } else {
+        setDescription(card.description || "");
+        setIsEditingDescription(false);
+      }
+    }
+  };
 
   const handleSubmit = async () => {
     const newTitle = title.trim();
@@ -72,73 +91,84 @@ export default function ColumnCard(card: BoardCard) {
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="flex items-center justify-between rounded bg-white p-3 shadow-sm hover:shadow dark:bg-gray-700"
+    <motion.div
+      key={card.id}
+      layout={activeDraggingId == null}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{
+        opacity: 0,
+        scale: 0.8,
+        y: 10,
+        transition: { duration: 0.15 },
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 300,
+        damping: 25,
+      }}
+      className="flex flex-1 flex-col px-3 py-2"
     >
       <div
-        {...attributes}
-        {...listeners}
-        className="flex-1 cursor-grab active:cursor-grabbing"
+        ref={setNodeRef}
+        style={style}
+        className="flex items-center justify-between rounded bg-white p-3 shadow-sm hover:shadow dark:bg-gray-700"
       >
-        {isEditingTitle ? (
-          <input
-            ref={titleRef}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            onBlur={handleSubmit}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSubmit();
-              if (e.key === "Escape") {
-                setTitle(card.title);
-                setIsEditingTitle(false);
-              }
-            }}
-            className="w-full rounded bg-transparent outline-none focus:ring-0 focus:outline-none"
-          />
-        ) : (
-          <h3
-            className="cursor-pointer font-semibold"
-            onClick={() => setIsEditingTitle(true)}
-          >
-            {card.title}
-          </h3>
-        )}
+        <div
+          {...attributes}
+          {...listeners}
+          className="flex-1 cursor-grab active:cursor-grabbing"
+        >
+          {isEditingTitle ? (
+            <input
+              ref={titleRef}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              onBlur={handleSubmit}
+              onKeyDown={(e) => {
+                handdleSubmit(e, "title");
+              }}
+              className="w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-800"
+            />
+          ) : (
+            <h3
+              className="cursor-pointer font-semibold"
+              onClick={() => setIsEditingTitle(true)}
+            >
+              {card.title}
+            </h3>
+          )}
 
-        {isEditingDescription ? (
-          <input
-            ref={descRef}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            onBlur={handleSubmit}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSubmit();
-              if (e.key === "Escape") {
-                setDescription(card.description || "");
-                setIsEditingDescription(false);
-              }
-            }}
-            className="w-full rounded bg-transparent outline-none focus:ring-0 focus:outline-none"
-          />
-        ) : (
-          <p
-            className="mt-1 cursor-pointer text-sm text-gray-600 dark:text-gray-300"
-            onClick={() => setIsEditingDescription(true)}
-          >
-            {description || (
-              <span className="text-gray-300">Add description…</span>
-            )}
-          </p>
-        )}
+          {isEditingDescription ? (
+            <input
+              ref={descRef}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              onBlur={handleSubmit}
+              onKeyDown={(e) => {
+                handdleSubmit(e, "description");
+              }}
+              className="w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-800"
+            />
+          ) : (
+            <p
+              className="mt-1 cursor-pointer text-sm text-gray-600 dark:text-gray-300"
+              onClick={() => setIsEditingDescription(true)}
+            >
+              {description || (
+                <span className="text-gray-300">Add description…</span>
+              )}
+            </p>
+          )}
+        </div>
+        <Button
+          variant="ghost"
+          onClick={() => removeCard(card.id)}
+          className="cursor-pointer rounded-lg p-1 text-red-500 transition duration-200 hover:bg-red-100 focus-visible:ring-red-400 dark:hover:bg-red-200"
+        >
+          <Trash />
+        </Button>
       </div>
-      <Button
-        variant={"ghost"}
-        onClick={() => removeCard(card.id)}
-        className="cursor-pointer rounded-lg p-1 text-red-500 transition duration-200 hover:bg-red-100 focus-visible:ring-red-400 dark:hover:bg-red-200"
-      >
-        <Trash />
-      </Button>
-    </div>
+    </motion.div>
   );
 }
