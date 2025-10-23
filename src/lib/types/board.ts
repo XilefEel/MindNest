@@ -5,6 +5,7 @@ export type NewBoardColumn = {
   nestling_id: number;
   title: string;
   order_index: number;
+  color: string;
 };
 
 export type BoardColumn = WithBase<NewBoardColumn>;

@@ -11,6 +11,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragOverlay,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -18,6 +19,10 @@ import {
 } from "@dnd-kit/sortable";
 import useActiveNestling from "@/hooks/useActiveNestling";
 import { useNestlingStore } from "@/stores/useNestlingStore";
+import { COLORS } from "@/lib/utils/constants";
+import { getRandomElement } from "@/lib/utils/general";
+import { createPortal } from "react-dom";
+import ColumnCard from "./ColumnCard";
 
 export default function BoardEditor() {
   const { activeNestling, activeNestlingId } = useActiveNestling();
@@ -26,11 +31,26 @@ export default function BoardEditor() {
   if (!activeNestling) return;
 
   const [title, setTitle] = useState(activeNestling.title);
-  const { boardData, fetchBoard, addColumn, handleDragStart, handleDragEnd } =
-    useBoardStore();
+  const {
+    boardData,
+    fetchBoard,
+    addColumn,
+    handleDragStart,
+    handleDragEnd,
+    activeDraggingId,
+  } = useBoardStore();
 
   const columns = boardData?.columns || [];
   const columnIds = columns.map((col) => `column-${col.column.id}`);
+  const activeColumn = activeDraggingId?.startsWith("column-")
+    ? columns.find((col) => `column-${col.column.id}` === activeDraggingId)
+    : null;
+
+  const activeCard = activeDraggingId?.startsWith("card-")
+    ? columns
+        .flatMap((col) => col.cards)
+        .find((card) => activeDraggingId.includes(`card-${card.id}`))
+    : null;
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -46,6 +66,7 @@ export default function BoardEditor() {
         nestling_id: activeNestlingId!,
         title: "New Column",
         order_index: boardData!.columns.length + 1,
+        color: getRandomElement(COLORS),
       });
     } catch (error) {
       console.error("Error adding column:", error);
@@ -88,7 +109,7 @@ export default function BoardEditor() {
             items={columnIds}
             strategy={horizontalListSortingStrategy}
           >
-            <div className="flex flex-row items-start gap-4">
+            <div className="flex flex-row items-start gap-4 p-2">
               <AnimatePresence>
                 {columns.map((col) => (
                   <Column key={col.column.id} {...col} />
@@ -103,6 +124,13 @@ export default function BoardEditor() {
               </button>
             </div>
           </SortableContext>
+          <DragOverlay dropAnimation={null}>
+            {activeCard && (
+              <div className="w-72">
+                <ColumnCard {...activeCard} />
+              </div>
+            )}
+          </DragOverlay>
         </DndContext>
       </div>
     </div>

@@ -7,6 +7,7 @@ pub struct NewBoardColumn {
     pub nestling_id: i64,
     pub title: String,
     pub order_index: i64,
+    pub color: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -15,6 +16,7 @@ pub struct BoardColumn {
     pub nestling_id: i64,
     pub title: String,
     pub order_index: i64,
+    pub color: String,
     pub created_at: String,
     pub updated_at: String,
 }

@@ -15,15 +15,18 @@ export async function updateBoardColumn({
   id,
   title,
   order_index,
+  color,
 }: {
   id: number;
   title: string;
   order_index: number;
+  color: string;
 }) {
   await invoke<void>("update_board_column", {
     id,
     title,
     orderIndex: order_index,
+    color,
   });
 }
 

@@ -34,6 +34,7 @@ export default function Column(col: BoardColumnData) {
     transform: transform ? `translateX(${transform.x}px)` : undefined,
     transition,
     opacity: isDragging ? 0.5 : 1,
+    backgroundColor: col.column.color,
   };
 
   const cards = col.cards;
@@ -72,6 +73,7 @@ export default function Column(col: BoardColumnData) {
           id: col.column.id,
           title: newTitle,
           order_index: col.column.order_index,
+          color: col.column.color,
         });
       }
     } catch (error) {
@@ -94,23 +96,32 @@ export default function Column(col: BoardColumnData) {
     <motion.div
       key={col.column.id}
       layout={activeDraggingId == null}
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.9, y: 20 }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        transition: {
+          type: "spring",
+          stiffness: 300,
+          damping: 25,
+        },
+      }}
       exit={{
         opacity: 0,
-        y: 30,
-        transition: { duration: 0.2 },
+        scale: 0.9,
+        y: 20,
+        transition: { duration: 0.15 },
       }}
-      transition={{
-        type: "spring",
-        stiffness: 250,
-        damping: 25,
+      whileHover={{
+        scale: 1.02,
+        transition: { duration: 0.15 },
       }}
     >
       <div
         ref={setNodeRef}
         style={style}
-        className="flex w-72 flex-shrink-0 flex-col rounded-xl bg-gray-100 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+        className="flex w-72 flex-shrink-0 flex-col rounded-xl shadow-sm dark:border-gray-700"
       >
         <div
           className="flex items-center gap-2 border-b border-gray-200 px-4 py-2.5 dark:border-gray-700"
@@ -155,14 +166,14 @@ export default function Column(col: BoardColumnData) {
             strategy={verticalListSortingStrategy}
           >
             <AnimatePresence>
-              {cards.map((card, idx) => (
-                <ColumnCard key={idx} {...card} />
+              {cards.map((card) => (
+                <ColumnCard key={card.id} {...card} />
               ))}
             </AnimatePresence>
           </SortableContext>
 
           {cards.length === 0 && (
-            <div className="flex min-h-[120px] items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-sm text-gray-400 dark:border-gray-600 dark:text-gray-500">
+            <div className="border-gray-00 flex min-h-[120px] items-center justify-center rounded-lg border-2 border-dashed text-sm dark:border-gray-600">
               Drop cards here
             </div>
           )}
@@ -170,7 +181,7 @@ export default function Column(col: BoardColumnData) {
 
         <button
           onClick={handleAddCard}
-          className="flex items-center gap-2 rounded-b-xl border-t border-gray-200 px-4 py-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700"
+          className="flex items-center gap-2 rounded-b-xl border-t border-gray-200 px-4 py-3 text-sm font-medium transition-colors duration-200 hover:bg-white/30 dark:border-gray-700"
         >
           <Plus className="size-4" />
           Add card

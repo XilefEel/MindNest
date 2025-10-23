@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS board_columns (
     order_index INTEGER NOT NULL,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
+    color TEXT NOT NULL,
     FOREIGN KEY(nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
 );
 

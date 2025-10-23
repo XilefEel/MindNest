@@ -17,9 +17,9 @@ pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> Result<B
 
     let mut statement = connection
         .prepare(
-            "INSERT INTO board_columns (nestling_id, title, order_index, created_at, updated_at)
-         VALUES (?1, ?2, ?3, ?4, ?5)
-         RETURNING id, nestling_id, title, order_index, created_at, updated_at",
+            "INSERT INTO board_columns (nestling_id, title, order_index, color, created_at, updated_at)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+         RETURNING id, nestling_id, title, order_index, color, created_at, updated_at",
         )
         .map_err(|e| e.to_string())?;
 
@@ -29,6 +29,7 @@ pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> Result<B
                 data.nestling_id,
                 data.title,
                 data.order_index,
+                data.color,
                 created_at,
                 created_at
             ],
@@ -38,8 +39,9 @@ pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> Result<B
                     nestling_id: row.get(1)?,
                     title: row.get(2)?,
                     order_index: row.get(3)?,
-                    created_at: row.get(4)?,
-                    updated_at: row.get(5)?,
+                    color: row.get(4)?,
+                    created_at: row.get(5)?,
+                    updated_at: row.get(6)?,
                 })
             },
         )
@@ -141,7 +143,7 @@ fn get_board_columns_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<Boa
 
     let mut statement = connection
         .prepare(
-            "SELECT id, nestling_id, title, order_index, created_at, updated_at
+            "SELECT id, nestling_id, title, order_index, color, created_at, updated_at
              FROM board_columns
              WHERE nestling_id = ?1
              ORDER BY order_index ASC",
@@ -155,8 +157,9 @@ fn get_board_columns_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<Boa
                 nestling_id: row.get(1)?,
                 title: row.get(2)?,
                 order_index: row.get(3)?,
-                created_at: row.get(4)?,
-                updated_at: row.get(5)?,
+                color: row.get(4)?,
+                created_at: row.get(5)?,
+                updated_at: row.get(6)?,
             })
         })
         .map_err(|e| e.to_string())?;

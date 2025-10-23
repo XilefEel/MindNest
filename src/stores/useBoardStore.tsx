@@ -22,10 +22,12 @@ type BoardState = {
     id,
     title,
     order_index,
+    color,
   }: {
     id: number;
     title: string;
     order_index: number;
+    color: string;
   }) => Promise<void>;
   removeColumn: (columnId: number) => void;
   reorderColumn: (activeColumnId: number, targetColumnId: number) => void;
@@ -90,8 +92,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
   updateColumn: withStoreErrorHandler(
     set,
-    async ({ id, title, order_index }) => {
-      await boardApi.updateBoardColumn({ id, title, order_index });
+    async ({ id, title, order_index, color }) => {
+      await boardApi.updateBoardColumn({ id, title, order_index, color });
 
       set((state) => {
         if (!state.boardData) return state;
@@ -101,7 +103,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
             ...state.boardData,
             columns: state.boardData.columns.map((col) =>
               col.column.id === id
-                ? { ...col, column: { ...col.column, title, order_index } }
+                ? {
+                    ...col,
+                    column: { ...col.column, title, order_index, color: color },
+                  }
                 : col,
             ),
           },
@@ -167,6 +172,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
           id: column.column.id,
           title: column.column.title,
           order_index: column.column.order_index,
+          color: column.column.color,
         }),
       ),
     );

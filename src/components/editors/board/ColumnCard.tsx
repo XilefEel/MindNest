@@ -33,7 +33,7 @@ export default function ColumnCard(card: BoardCard) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0 : 1,
   };
 
   useEffect(() => {
@@ -94,18 +94,21 @@ export default function ColumnCard(card: BoardCard) {
     <motion.div
       key={card.id}
       layout={activeDraggingId == null}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.9, y: 10 }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        transition: {
+          type: "spring",
+          stiffness: 400,
+          damping: 28,
+        },
+      }}
       exit={{
         opacity: 0,
         scale: 0.8,
-        y: 10,
-        transition: { duration: 0.15 },
-      }}
-      transition={{
-        type: "spring",
-        stiffness: 300,
-        damping: 25,
+        transition: { duration: 0.25 },
       }}
       className="flex flex-1 flex-col px-3 py-2"
     >
