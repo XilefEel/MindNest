@@ -49,12 +49,12 @@ pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> Result<B
     Ok(column)
 }
 
-pub fn update_board_column_in_db(db: &AppDb, id: i64, title: String, order_index: i64) -> Result<(), String> {
+pub fn update_board_column_in_db(db: &AppDb, id: i64, title: String, order_index: i64, color: String) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
 
     connection.execute(
-        "UPDATE board_columns SET title = ?1, order_index = ?2, updated_at = CURRENT_TIMESTAMP WHERE id = ?3",
-        params![title, order_index, id],
+        "UPDATE board_columns SET title = ?1, order_index = ?2, color = ?3, updated_at = CURRENT_TIMESTAMP WHERE id = ?4",
+        params![title, order_index, color, id],
     ).map_err(|e| e.to_string())?;
     Ok(())
 }

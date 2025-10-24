@@ -15,9 +15,9 @@ type BoardState = {
   loading: boolean;
   error: string | null;
 
-  fetchBoard: (nestlingId: number) => void;
+  fetchBoard: (nestlingId: number) => Promise<void>;
 
-  addColumn: (column: NewBoardColumn) => void;
+  addColumn: (column: NewBoardColumn) => Promise<void>;
   updateColumn: ({
     id,
     title,
@@ -29,10 +29,13 @@ type BoardState = {
     order_index: number;
     color: string;
   }) => Promise<void>;
-  removeColumn: (columnId: number) => void;
-  reorderColumn: (activeColumnId: number, targetColumnId: number) => void;
+  removeColumn: (columnId: number) => Promise<void>;
+  reorderColumn: (
+    activeColumnId: number,
+    targetColumnId: number,
+  ) => Promise<void>;
 
-  addCard: (card: NewBoardCard) => void;
+  addCard: (card: NewBoardCard) => Promise<void>;
   updateCard: ({
     id,
     title,
@@ -46,7 +49,7 @@ type BoardState = {
     order_index: number;
     column_id: number;
   }) => Promise<void>;
-  removeCard: (cardId: number) => void;
+  removeCard: (cardId: number) => Promise<void>;
   reorderCard: ({
     activeCardId,
     targetCardId,
@@ -55,7 +58,7 @@ type BoardState = {
     activeCardId: number;
     targetCardId: number | null;
     targetColumnId: number;
-  }) => void;
+  }) => Promise<void>;
 
   handleDragStart: (event: DragStartEvent) => void;
   handleDragEnd: (event: DragEndEvent) => Promise<void>;

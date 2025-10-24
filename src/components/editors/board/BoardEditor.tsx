@@ -21,7 +21,6 @@ import useActiveNestling from "@/hooks/useActiveNestling";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import { COLORS } from "@/lib/utils/constants";
 import { getRandomElement } from "@/lib/utils/general";
-import { createPortal } from "react-dom";
 import ColumnCard from "./ColumnCard";
 
 export default function BoardEditor() {
@@ -42,9 +41,6 @@ export default function BoardEditor() {
 
   const columns = boardData?.columns || [];
   const columnIds = columns.map((col) => `column-${col.column.id}`);
-  const activeColumn = activeDraggingId?.startsWith("column-")
-    ? columns.find((col) => `column-${col.column.id}` === activeDraggingId)
-    : null;
 
   const activeCard = activeDraggingId?.startsWith("card-")
     ? columns

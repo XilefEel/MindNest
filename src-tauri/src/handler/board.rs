@@ -12,8 +12,8 @@ pub fn create_board_column(db: tauri::State<AppDb>, data: NewBoardColumn) -> Res
 }
 
 #[tauri::command]
-pub fn update_board_column(db: tauri::State<AppDb>, id: i64, title: String, order_index: i64) -> Result<(), String> {
-    update_board_column_in_db(&db, id, title, order_index)
+pub fn update_board_column(db: tauri::State<AppDb>, id: i64, title: String, order_index: i64, color: String) -> Result<(), String> {
+    update_board_column_in_db(&db, id, title, order_index, color)
 }
 
 #[tauri::command]

@@ -36,20 +36,6 @@ export default function ColumnCard(card: BoardCard) {
     opacity: isDragging ? 0 : 1,
   };
 
-  useEffect(() => {
-    if (isEditingTitle && titleRef.current) {
-      titleRef.current.focus();
-    }
-    if (isEditingDescription && descRef.current) {
-      descRef.current.focus();
-    }
-  }, [isEditingTitle, isEditingDescription]);
-
-  useEffect(() => {
-    setTitle(card.title);
-    setDescription(card.description || "");
-  }, [card.title, card.description]);
-
   const handdleSubmit = (
     e: React.KeyboardEvent,
     type: "title" | "description",
@@ -89,6 +75,20 @@ export default function ColumnCard(card: BoardCard) {
     setIsEditingTitle(false);
     setIsEditingDescription(false);
   };
+
+  useEffect(() => {
+    if (isEditingTitle && titleRef.current) {
+      titleRef.current.focus();
+    }
+    if (isEditingDescription && descRef.current) {
+      descRef.current.focus();
+    }
+  }, [isEditingTitle, isEditingDescription]);
+
+  useEffect(() => {
+    setTitle(card.title);
+    setDescription(card.description || "");
+  }, [card.title, card.description]);
 
   return (
     <motion.div
