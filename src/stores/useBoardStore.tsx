@@ -1,5 +1,11 @@
 import * as boardApi from "@/lib/api/board";
-import { BoardData, NewBoardCard, NewBoardColumn } from "@/lib/types/board";
+import {
+  BoardCard,
+  BoardColumn,
+  BoardData,
+  NewBoardCard,
+  NewBoardColumn,
+} from "@/lib/types/board";
 import { withStoreErrorHandler } from "@/lib/utils/general";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { create } from "zustand";
@@ -18,6 +24,7 @@ type BoardState = {
   fetchBoard: (nestlingId: number) => Promise<void>;
 
   addColumn: (column: NewBoardColumn) => Promise<void>;
+  duplicateColumn: (column: BoardColumn) => Promise<void>;
   updateColumn: ({
     id,
     title,
@@ -36,6 +43,7 @@ type BoardState = {
   ) => Promise<void>;
 
   addCard: (card: NewBoardCard) => Promise<void>;
+  duplicateCard: (card: BoardCard) => Promise<void>;
   updateCard: ({
     id,
     title,
@@ -91,6 +99,68 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         },
       };
     });
+  }),
+
+  duplicateColumn: withStoreErrorHandler(set, async (column) => {
+    const { boardData } = get();
+    if (!boardData) return;
+
+    const originalColumnIndex = boardData.columns.findIndex(
+      (col) => col.column.id === column.id,
+    );
+    if (originalColumnIndex === -1) return;
+
+    const originalColumn = boardData.columns[originalColumnIndex];
+
+    const newColumn = await boardApi.createBoardColumn({
+      nestling_id: column.nestling_id,
+      title: column.title,
+      order_index: column.order_index + 1,
+      color: column.color,
+    });
+
+    const duplicatedCards = await Promise.all(
+      originalColumn.cards.map((card, index) =>
+        boardApi.createBoardCard({
+          column_id: newColumn.id,
+          title: card.title,
+          description: card.description,
+          order_index: index,
+        }),
+      ),
+    );
+
+    const updatedColumns = [...boardData.columns].splice(
+      originalColumnIndex + 1,
+      0,
+      {
+        column: newColumn,
+        cards: duplicatedCards,
+      },
+    );
+
+    const columnsWithNewIndexes = updatedColumns.map((col, index) => ({
+      ...col,
+      column: { ...col.column, order_index: index },
+    }));
+
+    set({
+      boardData: {
+        ...boardData,
+        columns: columnsWithNewIndexes,
+      },
+    });
+
+    await Promise.all(
+      columnsWithNewIndexes.slice(originalColumnIndex + 1).map((col) =>
+        boardApi.updateBoardColumn({
+          id: col.column.id,
+          title: col.column.title,
+          order_index: col.column.order_index,
+          color: col.column.color,
+        }),
+      ),
+    );
   }),
 
   updateColumn: withStoreErrorHandler(
@@ -198,6 +268,60 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         },
       };
     });
+  }),
+
+  duplicateCard: withStoreErrorHandler(set, async (card) => {
+    const { boardData } = get();
+    if (!boardData) return;
+
+    const originalCol = boardData.columns.find(
+      (col) => col.column.id === card.column_id,
+    );
+    if (!originalCol) return;
+
+    const originalCard = originalCol.cards.find((c) => c.id === card.id);
+    if (!originalCard) return;
+
+    const newCard = await boardApi.createBoardCard({
+      column_id: card.column_id,
+      title: card.title,
+      description: card.description,
+      order_index: card.order_index,
+    });
+
+    const updatedCards = [...originalCol.cards].splice(
+      originalCard.order_index + 1,
+      0,
+      newCard,
+    );
+
+    const cardsWithNewIndexes = updatedCards.map((card, index) => ({
+      ...card,
+      order_index: index,
+    }));
+
+    set({
+      boardData: {
+        ...boardData,
+        columns: boardData.columns.map((col) =>
+          col.column.id === card.column_id
+            ? { ...col, cards: cardsWithNewIndexes }
+            : col,
+        ),
+      },
+    });
+
+    await Promise.all(
+      cardsWithNewIndexes.map((card) =>
+        boardApi.updateBoardCard({
+          id: card.id,
+          title: card.title,
+          description: card.description,
+          order_index: card.order_index,
+          column_id: card.column_id,
+        }),
+      ),
+    );
   }),
 
   updateCard: withStoreErrorHandler(

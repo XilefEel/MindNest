@@ -1,6 +1,6 @@
 import { COLORS } from "@/lib/utils/constants";
 import * as ContextMenu from "@radix-ui/react-context-menu";
-import { Trash, Palette, CirclePlus, Copy, Check } from "lucide-react";
+import { Trash, Palette, Copy, Check } from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { BoardColumn } from "@/lib/types/board";
@@ -13,7 +13,7 @@ export default function ColumnContextMenu({
   column: BoardColumn;
   children: React.ReactNode;
 }) {
-  const { updateColumn, removeColumn, addColumn } = useBoardStore();
+  const { updateColumn, removeColumn, duplicateColumn } = useBoardStore();
 
   const handleDeleteColumn = async () => {
     try {
@@ -25,12 +25,7 @@ export default function ColumnContextMenu({
 
   const handleDuplicateColumn = async () => {
     try {
-      await addColumn({
-        nestling_id: column.nestling_id,
-        title: column.title,
-        order_index: column.order_index + 1,
-        color: column.color,
-      });
+      await duplicateColumn(column);
     } catch (error) {
       console.error("Error duplicating column:", error);
     }
@@ -53,12 +48,6 @@ export default function ColumnContextMenu({
     <BaseContextMenu
       content={
         <>
-          <ContextMenuItem
-            Icon={CirclePlus}
-            text="Add Card"
-            action={handleDuplicateColumn}
-          />
-
           <ContextMenuItem
             Icon={Copy}
             text="Duplicate Column"
