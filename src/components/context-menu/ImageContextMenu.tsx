@@ -129,7 +129,7 @@ export default function ImageContextMenu({
                 {albums.length === 0 ? (
                   <ContextMenuItem
                     action={() => {}}
-                    Icon={Star}
+                    Icon={Folder}
                     text="No Albums"
                   />
                 ) : (
