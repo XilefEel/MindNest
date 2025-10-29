@@ -39,9 +39,9 @@ export default function HomeSection() {
   const greeting = getGreeting(time.getHours());
 
   return (
-    <section className="flex flex-col gap-5 overflow-y-auto">
+    <section className="flex flex-col gap-5 overflow-y-auto pt-6">
       <div className="items-center justify-between px-6 md:flex">
-        <h1 className="text-3xl font-bold">
+        <h1 className="text-4xl font-bold">
           {greeting}, {user?.username}
         </h1>
         <div className="mt-2 md:mt-0 md:text-right">

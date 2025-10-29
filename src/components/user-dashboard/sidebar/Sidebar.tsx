@@ -10,7 +10,7 @@ import {
 import SidebarItem from "./SidebarItem";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import SettingsModal from "../modals/SettingsModal";
+import SettingsModal from "../../modals/SettingsModal";
 
 export default function Sidebar({
   activeSection,

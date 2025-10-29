@@ -9,9 +9,6 @@ use crate::db::mindmap::{
 // Node handlers
 #[tauri::command]
 pub fn create_node(db: State<AppDb>, data: NewMindmapNode) -> Result<MindmapNode, String> {
-    println!("🌳 Creating node...");
-    println!("{:?}", data);
-
     insert_node_into_db(&db, data.into())
 }
 

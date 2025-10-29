@@ -1,5 +1,5 @@
 import { Nest } from "@/lib/types/nest";
-import NestCard from "./NestCard";
+import NestCard from "../NestCard";
 import { useNestStore } from "@/stores/useNestStore";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -25,7 +25,7 @@ export default function NestSection() {
 
   return (
     <section>
-      <h2 className="mb-8 text-3xl font-bold text-gray-900 dark:text-white">
+      <h2 className="mb-8 pt-6 text-3xl font-bold text-gray-900 dark:text-white">
         🧠 Your Nests
       </h2>
 

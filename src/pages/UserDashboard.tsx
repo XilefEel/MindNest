@@ -1,8 +1,8 @@
-import Sidebar from "@/components/user-dashboard/Sidebar";
-import HomeSection from "@/components/user-dashboard/HomeSection";
-import NestSection from "@/components/user-dashboard/NestSection";
-import SharedSection from "@/components/user-dashboard/SharedSection";
-import ExploreSection from "@/components/user-dashboard/DiscoverSection";
+import Sidebar from "@/components/user-dashboard/sidebar/Sidebar";
+import HomeSection from "@/components/user-dashboard/sections/HomeSection";
+import NestSection from "@/components/user-dashboard/sections/NestSection";
+import SharedSection from "@/components/user-dashboard/sections/SharedSection";
+import ExploreSection from "@/components/user-dashboard/sections/DiscoverSection";
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils/general";

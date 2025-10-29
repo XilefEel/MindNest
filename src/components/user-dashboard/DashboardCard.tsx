@@ -11,9 +11,9 @@ export default function DashboardCard({
   return (
     <Card
       onClick={onClick}
-      className="rounded-2xl border-gray-200 bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-700"
+      className="rounded-2xl border-gray-100 bg-white p-6 shadow transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-gray-800 dark:bg-gray-700"
     >
-      <CardContent className="space-y-1 p-4">{children}</CardContent>
+      <CardContent className="space-y-1 py-2">{children}</CardContent>
     </Card>
   );
 }

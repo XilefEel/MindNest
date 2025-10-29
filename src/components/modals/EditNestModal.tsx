@@ -1,14 +1,20 @@
 import { Nest } from "@/lib/types/nest";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { Pencil, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { toast } from "sonner";
 import { useNestStore } from "@/stores/useNestStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 import { clearLastNestling } from "@/lib/storage/session";
 
-export default function EditNestModal({ nest }: { nest: Nest | null }) {
+export default function EditNestModal({
+  nest,
+  children,
+}: {
+  nest: Nest | null;
+  children: React.ReactNode;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState(nest?.title ?? "");
 
@@ -79,9 +85,7 @@ export default function EditNestModal({ nest }: { nest: Nest | null }) {
           </>
         }
       >
-        <div className="flex size-4 cursor-pointer items-center rounded-lg dark:text-white">
-          <Pencil className="size-4" />
-        </div>
+        {children}
       </BaseModal>
     </div>
   );
