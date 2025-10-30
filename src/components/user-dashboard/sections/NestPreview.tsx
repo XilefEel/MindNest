@@ -25,8 +25,8 @@ export default function NestPreview() {
             <Home className="text-white" size={20} />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Your Nests</h2>
-            <p className="text-sm text-gray-500">
+            <h2 className="text-2xl font-bold">Your Nests</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Personal collections and projects
             </p>
           </div>

@@ -12,6 +12,12 @@ export default function DashboardPage() {
     "home" | "nests" | "shared" | "explore"
   >("home");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  const handleToggleActive = (section: any) => {
+    setActiveSection(section);
+    setIsSidebarOpen(false);
+  };
 
   useEffect(() => {
     if (isSidebarOpen) {
@@ -29,22 +35,32 @@ export default function DashboardPage() {
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
-
       <aside
         className={cn(
-          "z-40 flex h-screen w-64 flex-col bg-white shadow-lg dark:bg-gray-800 dark:text-white",
-          "fixed top-0 left-0 shadow-xl transition-transform duration-300 ease-in-out",
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full",
-          "md:relative md:flex md:translate-x-0",
+          "shrink-0 transition-all duration-300 ease-in-out",
+          // Mobile
+          "w-0 md:w-64",
+          // Desktop - show icon width when collapsed
+          isSidebarCollapsed ? "md:w-20" : "md:w-64",
         )}
       >
-        <Sidebar
-          activeSection={activeSection}
-          setActiveSection={(section: any) => {
-            setActiveSection(section);
-            setIsSidebarOpen(false);
-          }}
-        />
+        <aside
+          onDoubleClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          className={cn(
+            "z-40 flex h-screen flex-col bg-white shadow-lg dark:bg-gray-800 dark:text-white",
+            "fixed top-0 left-0 shadow-xl transition-all duration-300 ease-in-out",
+            "w-64",
+            isSidebarCollapsed ? "md:w-20" : "md:w-64",
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full",
+            "md:relative md:flex md:translate-x-0",
+          )}
+        >
+          <Sidebar
+            activeSection={activeSection}
+            setActiveSection={handleToggleActive}
+            isCollapsed={isSidebarCollapsed}
+          />
+        </aside>
       </aside>
 
       <div className="flex flex-1 flex-col">

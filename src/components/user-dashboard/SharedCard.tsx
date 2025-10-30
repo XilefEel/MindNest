@@ -1,24 +1,17 @@
-import { Users } from "lucide-react";
-
 export function SharedCard() {
   return (
     <div className="group relative overflow-hidden rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:shadow-xl dark:bg-gray-800">
       <div className="flex items-start justify-between">
         <div className="flex flex-1 items-center gap-4">
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-sm">
-            <Users className="text-white" size={20} />
-          </div>
-
           <div className="flex flex-col gap-1">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
               Title Here
             </h3>
-
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Shared by <span className="font-medium">John Doe</span>
+              Shared by John Doe
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Updated on <span className="font-medium">Jul 21, 2025</span>
+            <p className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+              Last updated <span className="font-bold">3d ago</span>
             </p>
           </div>
         </div>

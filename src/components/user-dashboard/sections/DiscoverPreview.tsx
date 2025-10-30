@@ -10,10 +10,8 @@ export default function DiscoverPreview() {
           <Globe className="text-white" size={20} />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">
-            Discover Public Nests
-          </h2>
-          <p className="text-sm text-gray-500">
+          <h2 className="text-2xl font-bold">Discover Public Nests</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             Explore popular community collections
           </p>
         </div>
@@ -23,8 +21,8 @@ export default function DiscoverPreview() {
         <DiscoverCard />
         <DiscoverCard />
       </div>
-      <Button className="mt-4 flex w-full items-center gap-2">
-        🔍 Search More Nests
+      <Button className="mt-5 flex w-full cursor-pointer items-center gap-2 bg-blue-400 text-white hover:bg-blue-500">
+        Discover More Nests
       </Button>
     </div>
   );
