@@ -137,6 +137,8 @@ export default function NoteEditor() {
 
   return (
     <div className="flex h-full w-full flex-col space-y-2 overflow-hidden">
+      <NestlingTitle title={title} setTitle={setTitle} />
+
       <div
         className={cn(
           "flex justify-between rounded-lg px-3",
@@ -158,7 +160,6 @@ export default function NoteEditor() {
         </button>
       </div>
 
-      <NestlingTitle title={title} setTitle={setTitle} />
       <AnimatePresence>
         <div className="flex-1">
           <AnimatePresence mode="wait">

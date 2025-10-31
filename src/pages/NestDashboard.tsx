@@ -6,7 +6,7 @@ import { convertFileSrc } from "@tauri-apps/api/core";
 import { cn } from "@/lib/utils/general";
 import Topbar from "@/components/nest-dashboard/topbar/Topbar";
 import Sidebar from "@/components/nest-dashboard/sidebar/Sidebar";
-import Home from "@/components/nest-dashboard/Home";
+import Home from "@/components/nest-dashboard/home/Home";
 import LoadingScreen from "@/components/LoadingScreen";
 import NoteEditor from "@/components/editors/note/NoteEditor";
 import BoardEditor from "@/components/editors/board/BoardEditor";
