@@ -145,13 +145,17 @@ export const useNestStore = create<NestState>((set, get) => ({
 
   deleteBackground: withStoreErrorHandler(set, async (backgroundId: number) => {
     const activeNestId = get().activeNestId;
-    await Promise.all([
-      backgroundApi.deleteBackground(backgroundId),
-      clearLastBackgroundImage(activeNestId!),
-    ]);
+    await backgroundApi.deleteBackground(backgroundId);
+
+    if (backgroundId === get().activeBackgroundId) {
+      await clearLastBackgroundImage(activeNestId!);
+    }
+
     set((state) => ({
       backgrounds: state.backgrounds.filter((b) => b.id !== backgroundId),
-      activeBackgroundId: null,
+      ...(state.activeBackgroundId === backgroundId && {
+        activeBackgroundId: null,
+      }),
     }));
   }),
 }));

@@ -5,6 +5,8 @@ import { ChevronDown, Folder as FolderIcon, GripVertical } from "lucide-react";
 import FolderContextMenu from "@/components/context-menu/FolderContextMenu";
 import { motion } from "framer-motion";
 import { useNestStore } from "@/stores/useNestStore";
+import { useState, useRef, useEffect } from "react";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 
 export default function FolderItem({
   folder,
@@ -16,6 +18,22 @@ export default function FolderItem({
   toggleFolder: (id: number) => void;
 }) {
   const { activeBackgroundId } = useNestStore();
+  const { updateFolder } = useNestlingStore();
+
+  const [name, setName] = useState(folder.name);
+  const [isEditing, setIsEditing] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const shouldSaveRef = useRef(true);
+
+  const handleClick = () => {
+    if (isEditing) return;
+    toggleFolder(folder.id);
+  };
+
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsEditing(true);
+  };
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
@@ -29,13 +47,47 @@ export default function FolderItem({
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const handleBlur = async () => {
+    setIsEditing(false);
+    if (!shouldSaveRef.current) {
+      shouldSaveRef.current = true;
+      return;
+    }
+    if (name.trim() === "") {
+      setName(folder.name);
+      return;
+    }
+    if (name !== folder.name) {
+      await updateFolder(folder.id, name);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      shouldSaveRef.current = true;
+      e.currentTarget.blur();
+    }
+    if (e.key === "Escape") {
+      shouldSaveRef.current = false;
+      setName(folder.name);
+      e.currentTarget.blur();
+    }
+  };
+
+  useEffect(() => {
+    setName(folder.name);
+  }, [folder.name]);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditing]);
+
   return (
     <FolderContextMenu folderId={folder.id}>
-      <motion.div
-        whileTap={{ scale: 0.98 }}
-        onClick={() => toggleFolder(folder.id)}
-        onDoubleClick={(e) => e.stopPropagation()}
-      >
+      <motion.div whileTap={{ scale: 0.98 }} onClick={handleClick}>
         <div
           style={style}
           className={cn(
@@ -45,15 +97,37 @@ export default function FolderItem({
               : "hover:bg-teal-50 dark:hover:bg-gray-700",
           )}
         >
-          <div className="flex items-center gap-1.5">
+          <div
+            className="flex min-w-0 flex-1 items-center gap-1.5"
+            onDoubleClick={handleDoubleClick}
+          >
             <ChevronDown
               className={cn(
-                "size-4 transition-transform duration-200",
+                "size-4 flex-shrink-0 transition-transform duration-200",
                 isFolderOpen ? "rotate-0" : "-rotate-90",
               )}
             />
-            <FolderIcon className="size-4" />
-            <span className="max-w-[140px] truncate">{folder.name}</span>
+            <FolderIcon className="size-4 flex-shrink-0" />
+            <div
+              className={cn(
+                "min-w-0 flex-1 rounded transition-all duration-200",
+                isEditing &&
+                  "bg-white px-2 py-0.5 shadow-md ring-2 ring-teal-500 dark:bg-gray-800",
+              )}
+            >
+              <input
+                ref={inputRef}
+                className={cn(
+                  "w-full truncate bg-transparent focus:outline-none",
+                  !isEditing && "pointer-events-none",
+                )}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                readOnly={!isEditing}
+              />
+            </div>
           </div>
 
           <div

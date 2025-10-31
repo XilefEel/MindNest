@@ -5,29 +5,11 @@ import { cn } from "@/lib/utils/general";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useNestStore } from "@/stores/useNestStore";
 import { useDraggable } from "@dnd-kit/core";
-import {
-  FileText,
-  Calendar,
-  Images,
-  GripVertical,
-  LucideIcon,
-  KanbanSquare,
-  Notebook,
-  Table2,
-  Network,
-} from "lucide-react";
+import { GripVertical } from "lucide-react";
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
 import { motion } from "framer-motion";
-
-const iconMap: Record<string, LucideIcon> = {
-  note: FileText,
-  board: KanbanSquare,
-  calendar: Calendar,
-  journal: Notebook,
-  gallery: Images,
-  mindmap: Network,
-  database: Table2,
-};
+import { useState, useRef, useEffect } from "react";
+import { getNestlingIcon, NestlingType } from "@/lib/utils/nestlings";
 
 export default function NestlingItem({
   nestling,
@@ -36,11 +18,20 @@ export default function NestlingItem({
   nestling: Nestling;
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
-  const { setActiveFolderId, setActiveNestlingId } = useNestlingStore();
+  const { setActiveFolderId, setActiveNestlingId, updateNestling } =
+    useNestlingStore();
   const { activeNestling } = useActiveNestling();
   const { activeNestId, activeBackgroundId } = useNestStore();
 
+  const [title, setTitle] = useState(nestling.title);
+  const [isEditing, setIsEditing] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const shouldSaveRef = useRef(true);
+
+  const Icon = getNestlingIcon(nestling.nestling_type as NestlingType);
+
   const handleSelect = () => {
+    if (isEditing) return;
     setActiveNestlingId(nestling.id);
     setActiveFolderId(nestling.folder_id);
     saveLastNestling(activeNestId!, nestling.id);
@@ -59,7 +50,48 @@ export default function NestlingItem({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const Icon = iconMap[nestling.nestling_type] || FileText;
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsEditing(true);
+  };
+
+  const handleBlur = async () => {
+    setIsEditing(false);
+    if (!shouldSaveRef.current) {
+      shouldSaveRef.current = true;
+      return;
+    }
+    if (title.trim() === "") {
+      setTitle(nestling.title);
+      return;
+    }
+    if (title !== nestling.title) {
+      await updateNestling(nestling.id, { title });
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      shouldSaveRef.current = true;
+      e.currentTarget.blur();
+    }
+    if (e.key === "Escape") {
+      shouldSaveRef.current = false;
+      setTitle(nestling.title);
+      e.currentTarget.blur();
+    }
+  };
+
+  useEffect(() => {
+    setTitle(nestling.title);
+  }, [nestling.title]);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditing]);
 
   return (
     <NestlingContextMenu nestlingId={nestling.id}>
@@ -88,12 +120,34 @@ export default function NestlingItem({
                 : "hover:bg-teal-50 dark:hover:bg-gray-700",
           )}
           onClick={() => handleSelect()}
-          onDoubleClick={(e) => e.stopPropagation()}
           style={style}
         >
-          <div className="flex items-center gap-1.5">
-            <Icon className="size-4" />
-            <span className="max-w-[140px] truncate">{nestling.title}</span>
+          <div
+            className="flex min-w-0 flex-1 items-center gap-1.5"
+            onDoubleClick={handleDoubleClick}
+          >
+            <Icon className="size-4 flex-shrink-0" />
+            <div
+              className={cn(
+                "min-w-0 flex-1 rounded transition-all duration-200",
+                isEditing &&
+                  "bg-white px-2 py-0.5 shadow-md ring-2 ring-teal-500 dark:bg-gray-800",
+              )}
+            >
+              <input
+                ref={inputRef}
+                id="text"
+                className={cn(
+                  "w-full truncate bg-transparent focus:outline-none",
+                  !isEditing && "pointer-events-none",
+                )}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                readOnly={!isEditing}
+              />
+            </div>
           </div>
 
           <div

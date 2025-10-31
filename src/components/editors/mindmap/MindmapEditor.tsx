@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ReactFlow,
   applyNodeChanges,
@@ -24,13 +24,15 @@ import { toast } from "sonner";
 import Toolbar from "./Toolbar";
 import { getRandomElement } from "@/lib/utils/general";
 import { COLORS } from "@/lib/utils/constants";
+import { useNestlingStore } from "@/stores/useNestlingStore";
+import useAutoSave from "@/hooks/useAutoSave";
+import NestlingTitle from "../NestlingTitle";
 
 const nodeTypes = {
   custom: CustomNode,
 };
 
 function MindmapEditorContent() {
-  const { activeNestlingId } = useActiveNestling();
   const {
     nodes,
     edges,
@@ -45,6 +47,24 @@ function MindmapEditorContent() {
     deleteNode,
   } = useMindmapStore();
   const { screenToFlowPosition } = useReactFlow();
+
+  const { activeNestling, activeNestlingId } = useActiveNestling();
+  const { updateNestling } = useNestlingStore();
+  if (!activeNestling) return;
+  const [title, setTitle] = useState(activeNestling.title);
+
+  useAutoSave({
+    target: activeNestling,
+    currentData: useMemo(
+      () => ({
+        title,
+        folder_id: activeNestling.folder_id ?? null,
+      }),
+      [activeNestling.folder_id, title],
+    ),
+
+    saveFunction: (id, data) => updateNestling(id, data),
+  });
 
   const onNodesChange = useCallback(
     (changes: NodeChange<MindmapNode>[]) => {
@@ -255,24 +275,27 @@ function MindmapEditorContent() {
   }, [activeNestlingId, fetchNodes, fetchEdges]);
 
   return (
-    <div className="h-full">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        nodeOrigin={[0.5, 0]}
-        onNodesChange={onNodesChange}
-        onNodesDelete={onNodeDelete}
-        onConnectEnd={onConnectEnd}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        defaultEdgeOptions={{ markerEnd: { type: "arrowclosed" } }}
-        fitView
-      >
-        <Background />
-        <Toolbar onAddNode={handleAddNode} onDeleteAll={handleDeleteAll} />
-      </ReactFlow>
-    </div>
+    <>
+      <NestlingTitle title={title} setTitle={setTitle} />
+      <div className="h-full">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          nodeOrigin={[0.5, 0]}
+          onNodesChange={onNodesChange}
+          onNodesDelete={onNodeDelete}
+          onConnectEnd={onConnectEnd}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          defaultEdgeOptions={{ markerEnd: { type: "arrowclosed" } }}
+          fitView
+        >
+          <Background />
+          <Toolbar onAddNode={handleAddNode} onDeleteAll={handleDeleteAll} />
+        </ReactFlow>
+      </div>
+    </>
   );
 }
 

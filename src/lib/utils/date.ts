@@ -7,7 +7,7 @@ export function getDayFromDate(date: string): number {
 export function getDateFromWeekDay(baseWeekDate: Date, day: number): string {
   const result = new Date(baseWeekDate);
   result.setDate(baseWeekDate.getDate() + day);
-  return format(result, "yyyy-MM-dd"); // YYYY-MM-DD
+  return format(result, "yyyy-MM-dd");
 }
 
 export function getWeekRange(selectedDate: Date): {
