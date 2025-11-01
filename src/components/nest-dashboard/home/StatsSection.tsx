@@ -1,21 +1,37 @@
+import { cn } from "@/lib/utils/general";
+import { useNestlingStore } from "@/stores/useNestlingStore";
+import { useNestStore } from "@/stores/useNestStore";
+
 export default function StatsSection() {
+  const { nestlings, folders } = useNestlingStore();
+  const { backgrounds, activeBackgroundId } = useNestStore();
+
   const stats = [
-    { label: "Nestlings", value: 24, icon: "🪺" },
-    { label: "Folders", value: 5, icon: "📁" },
-    { label: "Backgrounds", value: 12, icon: "🖼️" },
+    { label: "Nestlings", value: nestlings.length, icon: "🪺" },
+    { label: "Folders", value: folders.length, icon: "📁" },
+    { label: "Backgrounds", value: backgrounds.length, icon: "🖼️" },
   ];
+
   return (
-    <section className="grid gap-5 sm:grid-cols-3">
+    <section className="grid grid-cols-2 gap-5 md:grid-cols-3">
       {stats.map((stat, i) => (
         <div
           key={i}
-          className="flex flex-col items-center justify-center rounded-2xl border border-b-4 border-slate-200 border-b-orange-500 bg-white p-8 transition hover:scale-105 hover:border-orange-500 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+          className={cn(
+            "flex flex-col items-center justify-center rounded-2xl",
+            "group cursor-pointer rounded-xl border border-b-4 p-4 hover:shadow-md",
+            "bg-white dark:bg-gray-800",
+            "border-gray-200 border-b-orange-500 hover:border-orange-500 dark:border-gray-800 dark:border-b-orange-500 dark:hover:hover:border-orange-500",
+            "transition hover:scale-105",
+            activeBackgroundId &&
+              "bg-white/10 backdrop-blur-sm dark:bg-black/10",
+          )}
         >
           <div className="mb-3 text-4xl">{stat.icon}</div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-white">
+          <div className="text-2xl font-bold text-gray-900 dark:text-white">
             {stat.value}
           </div>
-          <div className="text-slate-600 dark:text-slate-400">{stat.label}</div>
+          <div className="text-gray-600 dark:text-gray-400">{stat.label}</div>
         </div>
       ))}
     </section>

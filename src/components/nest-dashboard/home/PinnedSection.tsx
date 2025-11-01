@@ -1,36 +1,48 @@
+import { cn } from "@/lib/utils/general";
+import { useNestStore } from "@/stores/useNestStore";
 import { ArrowRight, Folder, Pin } from "lucide-react";
 
 export default function PinnedSection() {
+  const { activeBackgroundId } = useNestStore();
+
   const pinned = [
     { title: "🌱 July 24 Journal", folder: "Daily Logs" },
     { title: "💡 Project Ideas", folder: "Personal Projects" },
   ];
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
         <div className="rounded-lg bg-gradient-to-br from-pink-400 to-pink-500 p-2 shadow-md">
           <Pin className="h-5 w-5 text-white" />
         </div>
-        <h2 className="text-2xl font-bold">Pinned Nestlings</h2>
+        <h2 className="text-xl font-bold md:text-2xl">Pinned Nestlings</h2>
       </div>
 
       <div className="space-y-3">
         {pinned.map((item, i) => (
           <div
             key={i}
-            className="group cursor-pointer rounded-xl border border-l-4 border-slate-200 border-l-pink-500 bg-white p-4 transition hover:scale-105 hover:border-pink-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+            className={cn(
+              "group cursor-pointer rounded-xl border border-l-4 p-4 hover:shadow-md",
+              "bg-white dark:bg-gray-800",
+              "border-gray-200 border-l-pink-500 hover:border-pink-500 dark:border-gray-800 dark:border-l-pink-500 dark:hover:hover:border-pink-500",
+              "transition hover:scale-105",
+              activeBackgroundId &&
+                "bg-white/10 backdrop-blur-sm dark:bg-black/10",
+            )}
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-semibold text-slate-900 dark:text-white">
+                <p className="font-semibold text-gray-900 dark:text-white">
                   {item.title}
                 </p>
-                <div className="mt-1 flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400">
+                <div className="mt-1 flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
                   <Folder className="h-4 w-4" />
                   <span>{item.folder}</span>
                 </div>
               </div>
-              <ArrowRight className="h-5 w-5 text-slate-300 transition" />
+              <ArrowRight className="h-5 w-5 text-gray-300 transition" />
             </div>
           </div>
         ))}

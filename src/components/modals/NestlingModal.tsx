@@ -7,6 +7,7 @@ import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 import { cn } from "@/lib/utils/general";
 import { nestlingTypes } from "@/lib/utils/nestlings";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function NestlingModal({
   children,
@@ -31,6 +32,7 @@ export default function NestlingModal({
 
   const { addNestling, activeFolderId, updateNestling, nestlings } =
     useNestlingStore();
+  const { activeBackgroundId } = useNestStore();
   const nestling = nestlings.find((n) => n.id === nestlingId);
 
   const handleExit = async () => {
@@ -110,10 +112,14 @@ export default function NestlingModal({
                       key={type.value}
                       onClick={() => setNestlingType(type.value)}
                       className={cn(
-                        "relative flex items-center gap-3 rounded-lg border-2 p-4 transition-all duration-200",
+                        "relative flex items-center gap-3 rounded-lg p-4 transition-all duration-200",
                         isSelected
-                          ? "border-teal-500 bg-teal-50 shadow-md dark:bg-teal-950/30"
-                          : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:hover:border-gray-600",
+                          ? activeBackgroundId
+                            ? "bg-teal-300/20 shadow-md backdrop-blur-sm dark:bg-teal-400/20"
+                            : "border-2 border-teal-500 bg-teal-50 shadow-md dark:bg-teal-950/30"
+                          : activeBackgroundId
+                            ? "bg-white/10 backdrop-blur-sm hover:bg-white/40 hover:shadow-sm dark:hover:bg-white/20"
+                            : "border-2 border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:hover:border-gray-600",
                       )}
                     >
                       <div
@@ -125,7 +131,13 @@ export default function NestlingModal({
                           "text-white",
                         )}
                       >
-                        <Icon className="size-5" />
+                        <Icon
+                          className={cn(
+                            isSelected
+                              ? "text-white"
+                              : "text-gray-800 dark:text-gray-300",
+                          )}
+                        />
                       </div>
                       <div className="flex-1 text-left">
                         <p
@@ -133,7 +145,7 @@ export default function NestlingModal({
                             "text-sm font-medium transition-colors",
                             isSelected
                               ? "text-teal-700 dark:text-teal-300"
-                              : "text-gray-700 dark:text-gray-300",
+                              : "text-gray-800 dark:text-gray-300",
                           )}
                         >
                           {type.label}

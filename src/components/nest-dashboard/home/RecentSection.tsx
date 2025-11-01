@@ -1,6 +1,9 @@
+import { cn } from "@/lib/utils/general";
+import { useNestStore } from "@/stores/useNestStore";
 import { ArrowRight, Clock, Folder } from "lucide-react";
 
 export default function RecentSection() {
+  const { activeBackgroundId } = useNestStore();
   const recent = [
     { title: "🧠 MindMap Sketch", folder: "Creative Notes" },
     { title: "📓 September Review", folder: "Journals" },
@@ -12,26 +15,33 @@ export default function RecentSection() {
         <div className="rounded-lg bg-gradient-to-br from-blue-400 to-blue-500 p-2 shadow-md">
           <Clock className="h-5 w-5 text-white" />
         </div>
-        <h2 className="text-2xl font-bold">Recent Nestlings</h2>
+        <h2 className="text-xl font-bold md:text-2xl">Recent Nestlings</h2>
       </div>
 
       <div className="space-y-3">
         {recent.map((item, i) => (
           <div
             key={i}
-            className="group cursor-pointer rounded-xl border border-l-4 border-slate-200 border-l-blue-500 bg-white p-4 transition hover:scale-105 hover:border-blue-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+            className={cn(
+              "group cursor-pointer rounded-xl border border-l-4 p-4 hover:shadow-md",
+              "bg-white dark:bg-gray-800",
+              "border-gray-200 border-l-blue-500 hover:border-blue-500 dark:border-gray-800 dark:border-l-blue-500 dark:hover:hover:border-blue-500",
+              "transition hover:scale-105",
+              activeBackgroundId &&
+                "bg-white/10 backdrop-blur-sm dark:bg-black/10",
+            )}
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-semibold text-slate-900 dark:text-white">
+                <p className="font-semibold text-gray-900 dark:text-white">
                   {item.title}
                 </p>
-                <div className="mt-1 flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400">
+                <div className="mt-1 flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
                   <Folder className="h-4 w-4" />
                   <span>{item.folder}</span>
                 </div>
               </div>
-              <ArrowRight className="h-5 w-5 text-slate-300 transition" />
+              <ArrowRight className="h-5 w-5 text-gray-300 transition" />
             </div>
           </div>
         ))}
