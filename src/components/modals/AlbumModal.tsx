@@ -7,11 +7,11 @@ import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 
 export default function AlbumModal({
-  nestling_id,
+  nestlingId,
   children,
   album,
 }: {
-  nestling_id: number;
+  nestlingId: number;
   children: React.ReactNode;
   album?: GalleryAlbum | null;
 }) {
@@ -37,7 +37,7 @@ export default function AlbumModal({
         toast.success(`Album "${title}" updated successfully!`);
       } else {
         await addAlbum({
-          nestling_id,
+          nestlingId,
           name: title,
           description,
         });

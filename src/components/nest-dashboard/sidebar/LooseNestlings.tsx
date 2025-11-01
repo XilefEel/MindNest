@@ -1,10 +1,14 @@
 import { cn } from "@/lib/utils/general";
 import { useDroppable } from "@dnd-kit/core";
+import NestlingItem from "./NestlingItem";
+import { Nestling } from "@/lib/types/nestling";
 
 export default function LooseNestlings({
-  children,
+  looseNestlings,
+  setIsSidebarOpen,
 }: {
-  children: React.ReactNode;
+  looseNestlings: Nestling[];
+  setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: "loose-null",
@@ -18,7 +22,13 @@ export default function LooseNestlings({
         isOver && "bg-teal-100 dark:bg-teal-400",
       )}
     >
-      {children}
+      {looseNestlings.map((nestling) => (
+        <NestlingItem
+          key={nestling.id}
+          nestling={nestling}
+          setIsSidebarOpen={setIsSidebarOpen}
+        />
+      ))}
     </div>
   );
 }

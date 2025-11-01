@@ -14,18 +14,18 @@ export async function createBoardColumn(data: NewBoardColumn) {
 export async function updateBoardColumn({
   id,
   title,
-  order_index,
+  orderIndex,
   color,
 }: {
   id: number;
   title: string;
-  order_index: number;
+  orderIndex: number;
   color: string;
 }) {
   await invoke<void>("update_board_column", {
     id,
     title,
-    orderIndex: order_index,
+    orderIndex,
     color,
   });
 }
@@ -42,21 +42,21 @@ export async function updateBoardCard({
   id,
   title,
   description,
-  order_index,
-  column_id,
+  orderIndex,
+  columnId,
 }: {
   id: number;
   title: string;
   description: string | null;
-  order_index: number;
-  column_id: number;
+  orderIndex: number;
+  columnId: number;
 }) {
   await invoke<void>("update_board_card", {
     id,
     title,
     description,
-    orderIndex: order_index,
-    columnId: column_id,
+    orderIndex: orderIndex,
+    columnId: columnId,
   });
 }
 export async function deleteBoardCard(id: number) {

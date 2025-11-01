@@ -33,7 +33,7 @@ export default function AddJournalEntryModal({
   const createNewEntry = async () => {
     try {
       const newEntry = await addEntry({
-        nestling_id: activeNestling.id,
+        nestlingId: activeNestling.id,
         title: title,
         content: "",
         entry_date: new Date().toISOString().split("T")[0],

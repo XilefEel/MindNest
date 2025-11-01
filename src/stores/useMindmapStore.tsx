@@ -8,7 +8,7 @@ import {
 import { withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
 
-interface MindmapStore {
+type MindmapStore = {
   nodes: MindmapNode[];
   edges: MindmapEdge[];
   activeNode: MindmapNode | null;
@@ -28,7 +28,7 @@ interface MindmapStore {
   deleteEdge: (id: number) => Promise<void>;
 
   resetMindmap: () => void;
-}
+};
 
 export const useMindmapStore = create<MindmapStore>((set) => ({
   nodes: [],
@@ -67,14 +67,14 @@ export const useMindmapStore = create<MindmapStore>((set) => ({
 
       await mindmapApi.updateNode(
         nodeId,
-        node.nestling_id,
+        node.nestlingId,
         node.position.x,
         node.position.y,
         node.height,
         node.width,
         node.data.label,
         node.data.color,
-        node.data.text_color,
+        node.data.textColor,
         node.type,
       );
     },

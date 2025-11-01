@@ -17,6 +17,7 @@ export type EventType = {
   startHour: number;
   duration: number;
 };
+
 export default function PlannerView({
   selectedDate,
   variants,
@@ -44,11 +45,11 @@ export default function PlannerView({
     startHour: number;
   }) => {
     const newEvent: NewPlannerEventType = {
-      nestling_id: activeNestling.id,
+      nestlingId: activeNestling.id,
       date: format(clickedDate, "yyyy-MM-dd"),
       title: format(clickedDate, "yyyy-MM-dd"),
       description: null,
-      start_time: startHour,
+      startTime: startHour,
       duration: 1,
       color: getRandomElement(COLORS),
     };

@@ -26,7 +26,7 @@ export async function updatePlannerEvent({
   date,
   title,
   description,
-  start_time,
+  startTime,
   duration,
   color,
 }: {
@@ -34,7 +34,7 @@ export async function updatePlannerEvent({
   date: string;
   title: string;
   description: string | null;
-  start_time: number;
+  startTime: number;
   duration: number;
   color: string | null;
 }) {
@@ -43,7 +43,7 @@ export async function updatePlannerEvent({
     date,
     title,
     description,
-    startTime: start_time,
+    startTime: startTime,
     duration,
     color,
   });

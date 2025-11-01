@@ -8,15 +8,7 @@ import {
   Network,
   LucideIcon,
 } from "lucide-react";
-
-export type NestlingType =
-  | "note"
-  | "board"
-  | "calendar"
-  | "journal"
-  | "gallery"
-  | "mindmap"
-  | "database";
+import { NestlingType } from "../types/nestling";
 
 export type NestlingTypeOption = {
   value: NestlingType;

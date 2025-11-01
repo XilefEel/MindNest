@@ -26,9 +26,9 @@ export default function CalendarEditor() {
     currentData: useMemo(
       () => ({
         title,
-        folder_id: activeNestling.folder_id ?? null,
+        folderId: activeNestling.folderId ?? null,
       }),
-      [activeNestling.folder_id, title],
+      [activeNestling.folderId, title],
     ),
 
     saveFunction: (id, data) => updateNestling(id, data),
@@ -70,7 +70,11 @@ export default function CalendarEditor() {
             <ArrowLeft />
           </Button>
         </div>
-        <NestlingTitle title={title} setTitle={setTitle} />
+        <NestlingTitle
+          title={title}
+          setTitle={setTitle}
+          nestlingType={activeNestling.nestlingType}
+        />
       </div>
 
       <AnimatePresence mode="sync" initial={false} custom={direction}>

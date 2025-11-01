@@ -1,7 +1,7 @@
 import { WithBase } from "./base";
 
 export type NewNest = {
-  user_id: number;
+  userId: number;
   title: string;
 };
 

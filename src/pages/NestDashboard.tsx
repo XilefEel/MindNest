@@ -40,7 +40,7 @@ export default function NestDashboardPage() {
   );
 
   const backgroundUrl = activeBackgroundImage
-    ? convertFileSrc(activeBackgroundImage.file_path)
+    ? convertFileSrc(activeBackgroundImage.filePath)
     : null;
 
   useRestore({ id, setNest, setLoading });
@@ -163,7 +163,7 @@ export default function NestDashboardPage() {
           <main
             className={cn(
               "mx-3 flex-1 p-5 md:mx-8",
-              activeNestling?.nestling_type === "note"
+              activeNestling?.nestlingType === "note"
                 ? "overflow-hidden"
                 : "overflow-y-auto",
               activeBackgroundId
@@ -171,20 +171,18 @@ export default function NestDashboardPage() {
                 : "",
             )}
           >
-            {activeNestling && activeNestling.nestling_type === "note" ? (
+            {activeNestling && activeNestling.nestlingType === "note" ? (
               <NoteEditor key={activeNestling.id} />
-            ) : activeNestling && activeNestling?.nestling_type === "board" ? (
+            ) : activeNestling && activeNestling?.nestlingType === "board" ? (
               <BoardEditor key={activeNestling.id} />
             ) : activeNestling &&
-              activeNestling?.nestling_type === "calendar" ? (
+              activeNestling?.nestlingType === "calendar" ? (
               <CalendarEditor key={activeNestling.id} />
-            ) : activeNestling &&
-              activeNestling?.nestling_type === "journal" ? (
+            ) : activeNestling && activeNestling?.nestlingType === "journal" ? (
               <JournalEditor key={activeNestling.id} />
-            ) : activeNestling &&
-              activeNestling?.nestling_type === "gallery" ? (
+            ) : activeNestling && activeNestling?.nestlingType === "gallery" ? (
               <GalleryEditor key={activeNestling.id} />
-            ) : activeNestling?.nestling_type === "mindmap" ? (
+            ) : activeNestling?.nestlingType === "mindmap" ? (
               <MindmapEditor key={activeNestling.id} />
             ) : (
               <Home nestId={nest.id} />

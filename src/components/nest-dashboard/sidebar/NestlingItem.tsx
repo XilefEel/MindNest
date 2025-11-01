@@ -70,7 +70,10 @@ export default function NestlingItem({
       return;
     }
     if (title !== nestling.title) {
-      await updateNestling(nestling.id, { title });
+      await updateNestling(nestling.id, {
+        title,
+        folder_id: nestling.folder_id,
+      });
     }
   };
 

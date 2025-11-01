@@ -30,9 +30,9 @@ export default function NoteEditor() {
       () => ({
         title,
         content,
-        folder_id: activeNestling.folder_id ?? null,
+        folderId: activeNestling.folderId ?? null,
       }),
-      [activeNestling.folder_id, title, content],
+      [activeNestling.folderId, title, content],
     ),
 
     saveFunction: (id, data) => updateNestling(id, data),
@@ -137,7 +137,11 @@ export default function NoteEditor() {
 
   return (
     <div className="flex h-full w-full flex-col space-y-2 overflow-hidden">
-      <NestlingTitle title={title} setTitle={setTitle} />
+      <NestlingTitle
+        title={title}
+        setTitle={setTitle}
+        nestlingType={activeNestling.nestlingType}
+      />
 
       <div
         className={cn(

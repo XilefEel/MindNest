@@ -32,7 +32,7 @@ export default function MindmapContextMenu({
           ...node,
           data: {
             ...node.data,
-            text_color: color,
+            textColor: color,
           },
         });
       } else {
@@ -58,7 +58,7 @@ export default function MindmapContextMenu({
   const handleAddChild = async (currentNode: MindmapNode) => {
     try {
       const newNode = await addNode({
-        nestling_id: node.nestling_id,
+        nestlingId: node.nestlingId,
         position: {
           x: currentNode.position.x + Math.random() * 300,
           y: currentNode.position.y + Math.random() * 300,
@@ -68,7 +68,7 @@ export default function MindmapContextMenu({
         data: {
           label: `Node ${nodes.length + 1}`,
           color: getRandomElement(COLORS),
-          text_color: "#000000",
+          textColor: "#000000",
         },
         type: "custom",
       });
@@ -85,7 +85,7 @@ export default function MindmapContextMenu({
   const handleAddParent = async () => {
     try {
       const newParentNode = await addNode({
-        nestling_id: node.nestling_id,
+        nestlingId: node.nestlingId,
         position: {
           x: node.position.x + Math.random() * 300,
           y: node.position.y - Math.random() * 300,
@@ -95,7 +95,7 @@ export default function MindmapContextMenu({
         data: {
           label: `Node ${nodes.length + 1}`,
           color: getRandomElement(COLORS),
-          text_color: "#000000",
+          textColor: "#000000",
         },
         type: "custom",
       });
@@ -187,7 +187,7 @@ export default function MindmapContextMenu({
               <div
                 className="ml-auto h-3 w-3 rounded-full border border-gray-300 dark:border-gray-600"
                 style={{
-                  backgroundColor: node.data.text_color,
+                  backgroundColor: node.data.textColor,
                 }}
               />
             </ContextMenu.SubTrigger>
@@ -205,7 +205,7 @@ export default function MindmapContextMenu({
                         handleEditNode(color, true);
                       }}
                     >
-                      {node.data.text_color === color && (
+                      {node.data.textColor === color && (
                         <Check className="absolute inset-0 m-auto h-4 w-4 text-white drop-shadow" />
                       )}
                     </button>

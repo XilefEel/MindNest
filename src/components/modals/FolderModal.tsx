@@ -40,12 +40,12 @@ export default function AddFolderModal({
     setLoading(true);
     try {
       if (folderId) {
-        await updateFolder(folderId, folder.parent_id, title);
+        await updateFolder(folderId, folder.parentId, title);
         toast.success(`Folder Renamed to "${title}"`);
       } else {
         await addFolder({
-          nest_id: nestId,
-          parent_id: activeFolderId,
+          nestId,
+          parentId: activeFolderId,
           name: title,
         });
         toast.success(`Folder "${title}" created successfully!`);

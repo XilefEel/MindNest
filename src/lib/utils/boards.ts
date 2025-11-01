@@ -32,8 +32,8 @@ export function reorderArray<T>(
   return newArray;
 }
 
-export function updateOrderIndexes<T extends { order_index: number }>(
+export function updateOrderIndexes<T extends { orderIndex: number }>(
   items: T[],
 ) {
-  return items.map((item, index) => ({ ...item, order_index: index }));
+  return items.map((item, index) => ({ ...item, orderIndex: index }));
 }

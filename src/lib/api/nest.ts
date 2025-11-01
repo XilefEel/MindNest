@@ -4,7 +4,7 @@ import { Nest } from "../types/nest";
 export async function createNest(userId: number, title: string) {
   await invoke<void>("create_nest", {
     data: {
-      user_id: userId,
+      userId,
       title: title,
     },
   });

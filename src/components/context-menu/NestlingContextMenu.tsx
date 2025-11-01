@@ -1,5 +1,5 @@
 import * as ContextMenu from "@radix-ui/react-context-menu";
-import { Edit3, Trash2, Copy, Archive, Pin } from "lucide-react";
+import { Edit3, Trash2, Copy, Archive, Pin, PinOff } from "lucide-react";
 import DeleteModal from "../modals/DeleteModal";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
@@ -16,10 +16,16 @@ export default function NestlingContextMenu({
 }) {
   const { duplicateNestling, updateNestling, nestlings } = useNestlingStore();
   const nestling = nestlings.find((n) => n.id === nestlingId);
+  if (!nestling) return null;
+
+  const isPinned = nestling.isPinned;
 
   const handlePinNestling = () => {
     try {
-      updateNestling(nestlingId, { is_pinned: !nestling?.is_pinned });
+      updateNestling(nestlingId, {
+        folderId: nestling.folderId,
+        isPinned: !isPinned,
+      });
     } catch (error) {
       toast.error("Failed to pin nestling");
       console.error(error);
@@ -48,7 +54,11 @@ export default function NestlingContextMenu({
             action={() => duplicateNestling(nestlingId)}
           />
 
-          <ContextMenuItem Icon={Pin} text="Pin" action={handlePinNestling} />
+          <ContextMenuItem
+            Icon={isPinned ? PinOff : Pin}
+            text={isPinned ? "Unpin" : "Pin"}
+            action={handlePinNestling}
+          />
 
           <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
 

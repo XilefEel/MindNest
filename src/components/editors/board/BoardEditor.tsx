@@ -59,9 +59,9 @@ export default function BoardEditor() {
   const handleAddColumn = async () => {
     try {
       addColumn({
-        nestling_id: activeNestlingId!,
+        nestlingId: activeNestlingId!,
         title: "New Column",
-        order_index: boardData!.columns.length + 1,
+        orderIndex: boardData!.columns.length + 1,
         color: getRandomElement(COLORS),
       });
     } catch (error) {
@@ -82,9 +82,9 @@ export default function BoardEditor() {
     currentData: useMemo(
       () => ({
         title,
-        folder_id: activeNestling.folder_id ?? null,
+        folderId: activeNestling.folderId ?? null,
       }),
-      [activeNestling.folder_id, title],
+      [activeNestling.folderId, title],
     ),
 
     saveFunction: (id, data) => updateNestling(id, data),
@@ -92,7 +92,11 @@ export default function BoardEditor() {
 
   return (
     <div className="flex h-full flex-col gap-3">
-      <NestlingTitle title={title} setTitle={setTitle} />
+      <NestlingTitle
+        title={title}
+        setTitle={setTitle}
+        nestlingType={activeNestling.nestlingType}
+      />
 
       <div className="flex-1 overflow-x-auto overflow-y-visible">
         <DndContext

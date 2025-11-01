@@ -1,11 +1,11 @@
 import { WithBase } from "./base";
 
 export type NewPlannerEventType = {
-  nestling_id: number;
+  nestlingId: number;
   date: string;
   title: string;
   description: string | null;
-  start_time: number;
+  startTime: number;
   duration: number;
   color: string;
 };

@@ -35,13 +35,13 @@ export default function ImageContextMenu({
 
   const handleAddToFavorites = async (image: GalleryImage) => {
     try {
-      const newFavoriteState = !image.is_favorite;
+      const newFavoriteState = !image.isFavorite;
       await editImage({
         id: imageId,
-        albumId: image.album_id,
+        albumId: image.albumId,
         title: image.title,
         description: image.description,
-        is_favorite: newFavoriteState,
+        isFavorite: newFavoriteState,
       });
       newFavoriteState
         ? toast.success("Image added to favorites!")
@@ -68,7 +68,7 @@ export default function ImageContextMenu({
       albumId: id,
       title: null,
       description: null,
-      is_favorite: currentImage?.is_favorite || false,
+      isFavorite: currentImage?.isFavorite || false,
     });
     toast.success(
       `Image moved to album "${albums.find((a) => a.id === id)?.name}"!`,

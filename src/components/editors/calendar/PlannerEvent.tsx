@@ -38,7 +38,7 @@ export default function PlannerEvent({
         maxWidth={"100%"}
         position={{
           x: 0,
-          y: event.start_time * 64,
+          y: event.startTime * 64,
         }}
         enableResizing={{
           top: true,
@@ -70,7 +70,7 @@ export default function PlannerEvent({
           const baseWeekDate = startOfWeek(new Date(event.date));
           const newDate = getDateFromWeekDay(baseWeekDate, newDay);
 
-          updateEvent({ ...event, date: newDate, start_time: newHour });
+          updateEvent({ ...event, date: newDate, startTime: newHour });
         }}
         onResizeStop={(e, dir, ref, delta) => {
           console.log(e, dir, ref, delta);
@@ -80,7 +80,7 @@ export default function PlannerEvent({
             const movedHours = Math.round(delta.height / 64);
             updateEvent({
               ...event,
-              start_time: event.start_time - movedHours,
+              startTime: event.startTime - movedHours,
               duration: event.duration + movedHours,
             });
           } else {

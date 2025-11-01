@@ -99,7 +99,7 @@ export const useJournalStore = create<JournalState>((set) => ({
     set,
     async (nestlingId: number, template: JournalTemplate) => {
       const newEntry = await journalApi.createJournalEntry({
-        nestling_id: nestlingId,
+        nestlingId,
         title: template.name,
         content: template.content,
         entry_date: new Date().toISOString().split("T")[0],

@@ -53,11 +53,11 @@ export default function useRestore({
           .nestlings.find((n) => n.id === lastNestlingId);
 
         // Set last nestling and its folder as active
-        if (lastNestling && Number(id) === lastNestling.nest_id) {
+        if (lastNestling && Number(id) === lastNestling.nestId) {
           setActiveNestlingId(lastNestling.id);
-          if (lastNestling.folder_id) {
-            setActiveFolderId(lastNestling.folder_id);
-            setFolderOpen(lastNestling.folder_id, true);
+          if (lastNestling.folderId) {
+            setActiveFolderId(lastNestling.folderId);
+            setFolderOpen(lastNestling.folderId, true);
           }
         }
 

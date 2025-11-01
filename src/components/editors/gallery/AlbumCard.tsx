@@ -23,7 +23,7 @@ export default function AlbumCard({
     },
   });
   const { images } = useGalleryStore();
-  const albumImages = images.filter((img) => img.album_id === album.id);
+  const albumImages = images.filter((img) => img.albumId === album.id);
 
   return (
     <AlbumContextMenu album={album}>

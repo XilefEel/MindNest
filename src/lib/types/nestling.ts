@@ -1,10 +1,19 @@
 import { WithBase } from "./base";
 
+export type NestlingType =
+  | "note"
+  | "board"
+  | "calendar"
+  | "journal"
+  | "gallery"
+  | "mindmap"
+  | "database";
+
 export type NewNestling = {
-  nest_id: number;
-  folder_id: number | null;
-  nestling_type: string;
-  is_pinned: boolean;
+  nestId: number;
+  folderId: number | null;
+  nestlingType: NestlingType;
+  isPinned: boolean;
   title: string;
   content: string;
 };

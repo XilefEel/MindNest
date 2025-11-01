@@ -8,6 +8,7 @@ import { TextField } from "./TextField";
 import { cn } from "@/lib/utils/general";
 import { nestlingTypes } from "@/lib/utils/nestlings";
 import { useNestStore } from "@/stores/useNestStore";
+import { NestlingType } from "@/lib/types/nestling";
 
 export default function NestlingModal({
   children,
@@ -23,7 +24,7 @@ export default function NestlingModal({
   setIsOpen?: (isOpen: boolean) => void;
 }) {
   const [title, setTitle] = useState("");
-  const [nestlingType, setNestlingType] = useState("note");
+  const [nestlingType, setNestlingType] = useState<NestlingType>("note");
   const [loading, setLoading] = useState(false);
 
   const [internalOpen, setInternalOpen] = useState(false);
@@ -51,17 +52,17 @@ export default function NestlingModal({
       if (nestlingId) {
         await updateNestling(nestlingId, {
           title: finalTitle,
-          folder_id: nestling?.folder_id,
+          folderId: nestling?.folderId,
         });
         toast.success(`Nestling Renamed to "${finalTitle}"!`);
       } else {
         await addNestling({
-          nest_id: nestId!,
-          folder_id: activeFolderId,
+          nestId: nestId!,
+          folderId: activeFolderId,
           title: finalTitle,
           content: "",
-          is_pinned: false,
-          nestling_type: nestlingType,
+          isPinned: false,
+          nestlingType: nestlingType,
         });
         toast.success(`Nestling "${finalTitle}" created successfully!`);
       }

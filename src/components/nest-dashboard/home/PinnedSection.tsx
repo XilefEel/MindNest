@@ -18,6 +18,11 @@ export default function PinnedSection() {
       </div>
 
       <div className="space-y-3">
+        {pinnedNestlings.length === 0 && (
+          <p className="text-gray-500 dark:text-gray-400">
+            No pinned nestlings
+          </p>
+        )}
         {pinnedNestlings.map((nestling, i) => (
           <div
             key={i}

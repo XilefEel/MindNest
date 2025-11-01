@@ -35,28 +35,28 @@ export default function ImageLayout({
 
   const photos = useMemo(() => {
     const filtered = album
-      ? images.filter((img) => img.album_id == album.id)
+      ? images.filter((img) => img.albumId == album.id)
       : images;
 
     const mapped = filtered.map((img) => ({
       id: img.id,
-      album_id: img.album_id,
-      src: convertFileSrc(img.file_path),
+      albumId: img.albumId,
+      src: convertFileSrc(img.filePath),
       title: img.title ?? "Untitled",
       description: img.description ?? "No Description",
-      is_favorite: img.is_favorite!,
+      isFavorite: img.isFavorite!,
       width: img.width,
       height: img.height,
-      created_at: img.created_at,
+      createdAt: img.createdAt,
     }));
 
     // Sort by favorite and then by date
     mapped.sort((a, b) => {
-      if (a.is_favorite === b.is_favorite) {
+      if (a.isFavorite === b.isFavorite) {
         return (
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
-      } else return b.is_favorite ? 1 : -1;
+      } else return b.isFavorite ? 1 : -1;
     });
 
     return mapped;
@@ -73,14 +73,14 @@ export default function ImageLayout({
 
   const handleAddToFavorites = async (photo: any) => {
     try {
-      const newFavoriteState = !photo.is_favorite;
+      const newFavoriteState = !photo.isFavorite;
       console.log(photo);
       await editImage({
         id: photo.id,
-        albumId: photo.album_id,
+        albumId: photo.albumId,
         title: photo.title,
         description: photo.description,
-        is_favorite: newFavoriteState,
+        isFavorite: newFavoriteState,
       });
 
       newFavoriteState

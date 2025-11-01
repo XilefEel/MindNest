@@ -54,9 +54,9 @@ export default function MainView({
     currentData: useMemo(
       () => ({
         title,
-        folder_id: activeNestling.folder_id ?? null,
+        folderId: activeNestling.folderId ?? null,
       }),
-      [activeNestling.folder_id, title],
+      [activeNestling.folderId, title],
     ),
 
     saveFunction: (id, data) => updateNestling(id, data),
@@ -198,7 +198,7 @@ export default function MainView({
         {draggingImage && (
           <div className="pointer-events-none max-w-64 opacity-90">
             <img
-              src={convertFileSrc(draggingImage.file_path)}
+              src={convertFileSrc(draggingImage.filePath)}
               alt={draggingImage.title || "Image"}
               className="rounded-lg shadow-lg"
             />

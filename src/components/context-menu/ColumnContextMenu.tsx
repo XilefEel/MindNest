@@ -36,7 +36,7 @@ export default function ColumnContextMenu({
       await updateColumn({
         id: column.id,
         title: column.title,
-        order_index: column.order_index,
+        orderIndex: column.orderIndex,
         color: color,
       });
     } catch (error) {

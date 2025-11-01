@@ -20,7 +20,7 @@ type NestlingState = {
 
   setActiveNestlingId: (nestlingId: number | null) => void;
   setActiveFolderId: (folder: number | null) => void;
-  setFolderOpen: (folder_ids: number, isOpen: boolean) => void;
+  setFolderOpen: (folderIds: number, isOpen: boolean) => void;
   toggleFolder: (folderId: number) => void;
   toggleAllFolders: (toggle: boolean) => void;
 
@@ -90,8 +90,8 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   updateNestling: withStoreErrorHandler(set, async (id, updates) => {
     await nestlingApi.editNestling(
       id,
-      updates.folder_id ?? null,
-      updates.is_pinned,
+      updates.folderId ?? null,
+      updates.isPinned,
       updates.title,
       updates.content,
     );
@@ -102,8 +102,8 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
           n.id === id
             ? {
                 ...n,
-                folder_id: updates.folder_id ?? n.folder_id,
-                is_pinned: updates.is_pinned ?? n.is_pinned,
+                folderId: updates.folderId ?? n.folderId,
+                isPinned: updates.isPinned ?? n.isPinned,
                 title: updates.title ?? n.title,
                 content: updates.content ?? n.content,
               }
@@ -215,7 +215,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
         set((state) => ({
           nestlings: state.nestlings
             .map((n) =>
-              n.id === nestlingId ? { ...n, folder_id: newFolderId } : n,
+              n.id === nestlingId ? { ...n, folderId: newFolderId } : n,
             )
             .sort((a, b) => a.title.localeCompare(b.title)),
           activeNestlingId: nestlingId,
@@ -226,9 +226,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
         if (folderId === newParentId) return;
 
-        const folderMap = new Map(
-          get().folders.map((f) => [f.id, f.parent_id]),
-        );
+        const folderMap = new Map(get().folders.map((f) => [f.id, f.parentId]));
 
         // Check if the folder is an ancestor of the new parent
         let ancestorId: number | null = newParentId;

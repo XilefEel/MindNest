@@ -24,7 +24,7 @@ type GalleryState = {
   uploadImage: ({
     nestlingId,
     file,
-    album_id,
+    albumId,
   }: {
     nestlingId: number;
     file: {
@@ -32,7 +32,7 @@ type GalleryState = {
       name?: string;
       data?: Uint8Array;
     };
-    album_id?: number | null;
+    albumId?: number | null;
   }) => Promise<void>;
   duplicateImage: (id: number) => Promise<GalleryImage>;
   editImage: ({
@@ -40,24 +40,24 @@ type GalleryState = {
     albumId,
     title,
     description,
-    is_favorite,
+    isFavorite,
   }: {
     id: number;
     albumId: number | null;
     title: string | null;
     description: string | null;
-    is_favorite: boolean;
+    isFavorite: boolean;
   }) => Promise<void>;
   removeImage: (id: number) => Promise<void>;
   downloadImage: (id: number) => Promise<void>;
 
   fetchAlbums: (nestlingId: number) => Promise<void>;
   addAlbum: ({
-    nestling_id,
+    nestlingId,
     name,
     description,
   }: {
-    nestling_id: number;
+    nestlingId: number;
     name: string;
     description: string | null;
   }) => Promise<void>;
@@ -111,7 +111,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
         await get().uploadImage({
           nestlingId,
           file: { path: filePath },
-          album_id: albumId,
+          albumId: albumId,
         });
       }
       await get().fetchImages(nestlingId);
@@ -125,7 +125,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     async ({
       nestlingId,
       file,
-      album_id,
+      albumId,
     }: {
       nestlingId: number;
       file: {
@@ -133,16 +133,16 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
         name?: string;
         data?: Uint8Array;
       };
-      album_id?: number | null;
+      albumId?: number | null;
     }) => {
       let newImage: GalleryImage;
       newImage = file.path
-        ? await galleryApi.importImage(nestlingId, file.path, album_id)
+        ? await galleryApi.importImage(nestlingId, file.path, albumId)
         : await galleryApi.importImageData(
             nestlingId,
             file.name!,
             Array.from(file.data!),
-            album_id,
+            albumId,
           );
 
       set((state) => ({
@@ -166,35 +166,29 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       albumId,
       title,
       description,
-      is_favorite,
+      isFavorite,
     }: {
       id: number;
       albumId: number | null;
       title: string | null;
       description: string | null;
-      is_favorite: boolean;
+      isFavorite: boolean;
     }) => {
       set((state) => ({
         images: state.images.map((img) =>
           img.id === id
             ? {
                 ...img,
-                album_id: albumId,
+                albumId: albumId,
                 title,
                 description,
-                is_favorite,
+                isFavorite,
                 updated_at: new Date().toISOString(),
               }
             : img,
         ),
       }));
-      await galleryApi.updateImage(
-        id,
-        albumId,
-        title,
-        description,
-        is_favorite,
-      );
+      await galleryApi.updateImage(id, albumId, title, description, isFavorite);
     },
   ),
 
@@ -306,14 +300,14 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
           set({ error: "Image not found" });
           return;
         }
-        if (image.album_id === albumId) return;
+        if (image.albumId === albumId) return;
 
         await get().editImage({
           id: imageId,
           albumId,
           title: image.title,
           description: image.description,
-          is_favorite: image.is_favorite ?? false,
+          isFavorite: image.isFavorite ?? false,
         });
       } catch (error) {
         set({ error: String(error) });

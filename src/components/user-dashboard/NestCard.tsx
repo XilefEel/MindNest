@@ -36,7 +36,7 @@ export default function NestCard({ nest }: { nest: Nest }) {
           </div>
 
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Updated on <span className="font-bold">{nest.updated_at}</span>
+            Updated on <span className="font-bold">{nest.updatedAt}</span>
           </p>
         </div>
       </div>

@@ -72,7 +72,7 @@ export default function CardContextMenu({
 
             <ContextMenu.Portal>
               <ContextMenu.SubContent className="animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
-                {columns.filter((column) => column.column.id !== card.column_id)
+                {columns.filter((column) => column.column.id !== card.columnId)
                   .length === 0 ? (
                   <ContextMenuItem
                     action={() => {}}
@@ -81,7 +81,7 @@ export default function CardContextMenu({
                   />
                 ) : (
                   columns
-                    .filter((column) => column.column.id !== card.column_id)
+                    .filter((column) => column.column.id !== card.columnId)
                     .map((column) => (
                       <ContextMenuItem
                         key={column.column.id}

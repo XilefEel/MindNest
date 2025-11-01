@@ -38,7 +38,7 @@ export default function useAutoSave<T = any>({
 
       const updatedData = {
         ...currentFields,
-        updated_at: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
 
       try {
@@ -46,7 +46,7 @@ export default function useAutoSave<T = any>({
         setAutoSaveStatus("saved");
         setTimeout(() => setAutoSaveStatus("idle"), 1000);
 
-        if ((currentTarget as Nestling).nestling_type) {
+        if ((currentTarget as Nestling).nestlingType) {
           saveLastNestling(activeNestId!, currentTarget.id);
           fetchSidebar(activeNestId!);
           updateNestling(currentTarget.id, updatedData);

@@ -47,9 +47,9 @@ export default function GalleryEditor() {
     currentData: useMemo(
       () => ({
         title,
-        folder_id: activeNestling.folder_id ?? null,
+        folderId: activeNestling.folderId ?? null,
       }),
-      [activeNestling.folder_id, title],
+      [activeNestling.folderId, title],
     ),
 
     saveFunction: (id, data) => updateNestling(id, data),
@@ -90,7 +90,11 @@ export default function GalleryEditor() {
               <ArrowLeft />
             </div>
           )}
-          <NestlingTitle title={title} setTitle={setTitle} />
+          <NestlingTitle
+            title={title}
+            setTitle={setTitle}
+            nestlingType={activeNestling.nestlingType}
+          />
         </div>
 
         <div className="flex gap-3 text-sm">
@@ -110,7 +114,7 @@ export default function GalleryEditor() {
               {isUploading ? "Uploading..." : "Add Images"}
             </span>
           </button>
-          <AlbumModal nestling_id={activeNestling.id}>
+          <AlbumModal nestlingId={activeNestling.id}>
             <button
               className={cn(
                 "flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-white transition-colors hover:bg-teal-600",

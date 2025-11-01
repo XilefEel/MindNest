@@ -1,6 +1,5 @@
 import { Home } from "lucide-react";
 import FolderTree from "./FolderTree";
-import NestlingItem from "./NestlingItem";
 import { DndContext, rectIntersection } from "@dnd-kit/core";
 import LooseNestlings from "./LooseNestlings";
 import { useEffect, useMemo } from "react";
@@ -112,15 +111,10 @@ export default function Sidebar({
               />
             ))}
 
-            <LooseNestlings>
-              {looseNestlings.map((nestling) => (
-                <NestlingItem
-                  key={nestling.id}
-                  nestling={nestling}
-                  setIsSidebarOpen={setIsSidebarOpen}
-                />
-              ))}
-            </LooseNestlings>
+            <LooseNestlings
+              looseNestlings={looseNestlings}
+              setIsSidebarOpen={setIsSidebarOpen}
+            />
           </DndContext>
         </AnimatePresence>
       </aside>

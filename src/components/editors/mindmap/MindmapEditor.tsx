@@ -58,9 +58,9 @@ function MindmapEditorContent() {
     currentData: useMemo(
       () => ({
         title,
-        folder_id: activeNestling.folder_id ?? null,
+        folderId: activeNestling.folderId ?? null,
       }),
-      [activeNestling.folder_id, title],
+      [activeNestling.folderId, title],
     ),
 
     saveFunction: (id, data) => updateNestling(id, data),
@@ -210,14 +210,14 @@ function MindmapEditorContent() {
         });
 
         const newNode = await addNode({
-          nestling_id: activeNestlingId!,
+          nestlingId: activeNestlingId!,
           position,
           height: 50,
           width: 120,
           data: {
             label: `Node ${nodes.length + 1}`,
             color: getRandomElement(COLORS),
-            text_color: "#000000",
+            textColor: "#000000",
           },
           type: "custom",
         });
@@ -236,7 +236,7 @@ function MindmapEditorContent() {
   const handleAddNode = async () => {
     try {
       await addNode({
-        nestling_id: activeNestlingId!,
+        nestlingId: activeNestlingId!,
         position: {
           x: Math.random() * 300,
           y: Math.random() * 300,
@@ -246,7 +246,7 @@ function MindmapEditorContent() {
         data: {
           label: `Node ${nodes.length + 1}`,
           color: getRandomElement(COLORS),
-          text_color: "#000000",
+          textColor: "#000000",
         },
         type: "custom",
       });
@@ -276,7 +276,11 @@ function MindmapEditorContent() {
 
   return (
     <>
-      <NestlingTitle title={title} setTitle={setTitle} />
+      <NestlingTitle
+        title={title}
+        setTitle={setTitle}
+        nestlingType={activeNestling.nestlingType}
+      />
       <div className="h-full">
         <ReactFlow
           nodes={nodes}

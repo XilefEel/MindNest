@@ -41,8 +41,8 @@ export default function SessionRestorer() {
 
         if (lastNestling) {
           setActiveNestlingId(lastNestling.id);
-          if (lastNestling.folder_id != null) {
-            setFolderOpen(lastNestling.folder_id, true);
+          if (lastNestling.folderId != null) {
+            setFolderOpen(lastNestling.folderId, true);
           }
         }
       }

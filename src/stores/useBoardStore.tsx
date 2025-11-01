@@ -28,12 +28,12 @@ type BoardState = {
   updateColumn: ({
     id,
     title,
-    order_index,
+    orderIndex,
     color,
   }: {
     id: number;
     title: string;
-    order_index: number;
+    orderIndex: number;
     color: string;
   }) => Promise<void>;
   removeColumn: (columnId: number) => Promise<void>;
@@ -48,14 +48,14 @@ type BoardState = {
     id,
     title,
     description,
-    order_index,
-    column_id,
+    orderIndex,
+    columnId,
   }: {
     id: number;
     title: string;
     description: string | null;
-    order_index: number;
-    column_id: number;
+    orderIndex: number;
+    columnId: number;
   }) => Promise<void>;
   removeCard: (cardId: number) => Promise<void>;
   reorderCard: ({
@@ -113,19 +113,19 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     const originalColumn = boardData.columns[originalColumnIndex];
 
     const newColumn = await boardApi.createBoardColumn({
-      nestling_id: column.nestling_id,
+      nestlingId: column.nestlingId,
       title: column.title,
-      order_index: column.order_index + 1,
+      orderIndex: column.orderIndex + 1,
       color: column.color,
     });
 
     const duplicatedCards = await Promise.all(
       originalColumn.cards.map((card, index) =>
         boardApi.createBoardCard({
-          column_id: newColumn.id,
+          columnId: newColumn.id,
           title: card.title,
           description: card.description,
-          order_index: index,
+          orderIndex: index,
         }),
       ),
     );
@@ -141,7 +141,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
     const columnsWithNewIndexes = updatedColumns.map((col, index) => ({
       ...col,
-      column: { ...col.column, order_index: index },
+      column: { ...col.column, orderIndex: index },
     }));
 
     set({
@@ -156,7 +156,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         boardApi.updateBoardColumn({
           id: col.column.id,
           title: col.column.title,
-          order_index: col.column.order_index,
+          orderIndex: col.column.orderIndex,
           color: col.column.color,
         }),
       ),
@@ -165,8 +165,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
   updateColumn: withStoreErrorHandler(
     set,
-    async ({ id, title, order_index, color }) => {
-      await boardApi.updateBoardColumn({ id, title, order_index, color });
+    async ({ id, title, orderIndex, color }) => {
+      await boardApi.updateBoardColumn({ id, title, orderIndex, color });
 
       set((state) => {
         if (!state.boardData) return state;
@@ -178,7 +178,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
               col.column.id === id
                 ? {
                     ...col,
-                    column: { ...col.column, title, order_index, color: color },
+                    column: { ...col.column, title, orderIndex, color: color },
                   }
                 : col,
             ),
@@ -230,7 +230,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     );
     const columnsWithNewIndexes = reorderedColumns.map((col, index) => ({
       ...col,
-      column: { ...col.column, order_index: index },
+      column: { ...col.column, orderIndex: index },
     }));
 
     set((state) => ({
@@ -244,7 +244,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         boardApi.updateBoardColumn({
           id: column.column.id,
           title: column.column.title,
-          order_index: column.column.order_index,
+          orderIndex: column.column.orderIndex,
           color: column.column.color,
         }),
       ),
@@ -261,7 +261,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         boardData: {
           ...state.boardData,
           columns: state.boardData.columns.map((col) =>
-            col.column.id === card.column_id
+            col.column.id === card.columnId
               ? { ...col, cards: [...col.cards, newCard] }
               : col,
           ),
@@ -275,7 +275,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     if (!boardData) return;
 
     const originalCol = boardData.columns.find(
-      (col) => col.column.id === card.column_id,
+      (col) => col.column.id === card.columnId,
     );
     if (!originalCol) return;
 
@@ -283,28 +283,28 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     if (!originalCard) return;
 
     const newCard = await boardApi.createBoardCard({
-      column_id: card.column_id,
+      columnId: card.columnId,
       title: card.title,
       description: card.description,
-      order_index: card.order_index,
+      orderIndex: card.orderIndex,
     });
 
     const updatedCards = [...originalCol.cards].splice(
-      originalCard.order_index + 1,
+      originalCard.orderIndex + 1,
       0,
       newCard,
     );
 
     const cardsWithNewIndexes = updatedCards.map((card, index) => ({
       ...card,
-      order_index: index,
+      orderIndex: index,
     }));
 
     set({
       boardData: {
         ...boardData,
         columns: boardData.columns.map((col) =>
-          col.column.id === card.column_id
+          col.column.id === card.columnId
             ? { ...col, cards: cardsWithNewIndexes }
             : col,
         ),
@@ -317,8 +317,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
           id: card.id,
           title: card.title,
           description: card.description,
-          order_index: card.order_index,
-          column_id: card.column_id,
+          orderIndex: card.orderIndex,
+          columnId: card.columnId,
         }),
       ),
     );
@@ -326,13 +326,13 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
   updateCard: withStoreErrorHandler(
     set,
-    async ({ id, title, description, order_index, column_id }) => {
+    async ({ id, title, description, orderIndex, columnId }) => {
       await boardApi.updateBoardCard({
         id,
         title,
         description,
-        order_index,
-        column_id,
+        orderIndex,
+        columnId,
       });
       set((state) => {
         if (!state.boardData) return state;
@@ -344,7 +344,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
               ...col,
               cards: col.cards.map((card) =>
                 card.id === id
-                  ? { ...card, title, description, order_index, column_id }
+                  ? { ...card, title, description, orderIndex, columnId }
                   : card,
               ),
             })),
@@ -419,7 +419,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       );
       const targetCards = [...targetCol.cards];
 
-      movedCard.column_id = targetColumnId;
+      movedCard.columnId = targetColumnId;
       targetCards.splice(targetCardIndex, 0, movedCard);
 
       updatedColumns[originalColIndex] = {
@@ -448,8 +448,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
             id: card.id,
             title: card.title,
             description: card.description,
-            order_index: card.order_index,
-            column_id: card.column_id,
+            orderIndex: card.orderIndex,
+            columnId: card.columnId,
           }),
         ),
       );

@@ -40,16 +40,16 @@ export default function Column(col: BoardColumnData) {
 
   const cards = col.cards;
   const columnIds = cards.map(
-    (card) => `card-${card.id}-column-${card.column_id}`,
+    (card) => `card-${card.id}-column-${card.columnId}`,
   );
 
   const handleAddCard = async () => {
     try {
       addCard({
-        column_id: col.column.id,
+        columnId: col.column.id,
         title: "New Card",
         description: String(col.cards.length + 1),
-        order_index: col.cards.length + 1,
+        orderIndex: col.cards.length + 1,
       });
     } catch (error) {
       console.error("Error adding column:", error);
@@ -63,7 +63,7 @@ export default function Column(col: BoardColumnData) {
         await updateColumn({
           id: col.column.id,
           title: newTitle,
-          order_index: col.column.order_index,
+          orderIndex: col.column.orderIndex,
           color: col.column.color,
         });
       }

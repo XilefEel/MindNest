@@ -41,7 +41,7 @@ export default function FolderTree({
         <div
           ref={setNodeRef}
           className={cn(
-            "flex cursor-pointer flex-col gap-1 rounded py-1 font-medium",
+            "flex flex-col gap-1 rounded py-1 font-medium",
             isOver && "bg-teal-100 dark:bg-teal-400",
           )}
         >

@@ -1,7 +1,7 @@
 import { WithBase } from "./base";
 
 export type NewJournalEntry = {
-  nestling_id: number;
+  nestlingId: number;
   title: string;
   content: string;
   entry_date: string;
@@ -10,7 +10,7 @@ export type NewJournalEntry = {
 export type JournalEntry = WithBase<NewJournalEntry>;
 
 export type NewJournalTemplate = {
-  nestling_id: number;
+  nestlingId: number;
   name: string;
   content: string;
 };

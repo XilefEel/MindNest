@@ -16,7 +16,7 @@ export default function ImageCard({
     src: string;
     width: number;
     height: number;
-    is_favorite: boolean;
+    isFavorite: boolean;
   };
   handleImageDelete: (id: number) => Promise<void>;
   handleAddToFavorites: (photo: any) => Promise<void>;
@@ -53,7 +53,7 @@ export default function ImageCard({
           <div className="absolute top-2 left-2">
             <button
               className={`rounded-full p-1.5 shadow transition ${
-                photo.is_favorite
+                photo.isFavorite
                   ? "bg-yellow-400 text-white hover:bg-yellow-500"
                   : "bg-gray-200 text-gray-600 hover:bg-gray-300"
               }`}
@@ -64,7 +64,7 @@ export default function ImageCard({
             >
               <Star
                 size={16}
-                fill={photo.is_favorite ? "currentColor" : "none"}
+                fill={photo.isFavorite ? "currentColor" : "none"}
               />
             </button>
           </div>

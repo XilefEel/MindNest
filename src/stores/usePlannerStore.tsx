@@ -26,7 +26,7 @@ type PlannerState = {
     date,
     title,
     description,
-    start_time,
+    startTime,
     duration,
     color,
   }: {
@@ -34,7 +34,7 @@ type PlannerState = {
     date: string;
     title: string;
     description: string | null;
-    start_time: number;
+    startTime: number;
     duration: number;
     color: string | null;
   }) => Promise<void>;
@@ -80,7 +80,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
     date,
     title,
     description,
-    start_time,
+    startTime,
     duration,
     color,
   }: {
@@ -88,7 +88,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
     date: string;
     title: string;
     description: string | null;
-    start_time: number;
+    startTime: number;
     duration: number;
     color: string | null;
   }) => {
@@ -102,9 +102,9 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
                 date,
                 title,
                 description: description ?? e.description,
-                start_time,
+                startTime,
                 duration,
-                updated_at: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
                 color: color ?? e.color,
               }
             : e,
@@ -115,7 +115,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
         date,
         title,
         description,
-        start_time,
+        startTime,
         duration,
         color,
       });

@@ -1,9 +1,9 @@
 import { WithBase } from "./base";
 
 export type NewBackgroundImage = {
-  nest_id: number;
-  file_path: string;
-  is_selected: boolean;
+  nestId: number;
+  filePath: string;
+  isSelected: boolean;
   width: number;
   height: number;
 };

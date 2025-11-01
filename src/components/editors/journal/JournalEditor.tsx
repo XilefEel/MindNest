@@ -28,9 +28,9 @@ export default function JournalingApp() {
     currentData: useMemo(
       () => ({
         title,
-        folder_id: activeNestling.folder_id ?? null,
+        folderId: activeNestling.folderId ?? null,
       }),
-      [activeNestling.folder_id, title],
+      [activeNestling.folderId, title],
     ),
 
     saveFunction: (id, data) => updateNestling(id, data),
@@ -100,7 +100,11 @@ export default function JournalingApp() {
         <header className="rounded-lg px-6 py-3">
           <div className="items-center justify-between gap-y-4 sm:flex">
             <div className="min-w-0 flex-1">
-              <NestlingTitle title={title} setTitle={setTitle} />
+              <NestlingTitle
+                title={title}
+                setTitle={setTitle}
+                nestlingType={activeNestling.nestlingType}
+              />
             </div>
             <div className="flex items-center justify-between gap-3">
               <div className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">

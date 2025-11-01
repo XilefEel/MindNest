@@ -44,7 +44,7 @@ export default function AddTemplateModal({
         setIsOpen(false);
       } else {
         addTemplate({
-          nestling_id: activeNestling.id,
+          nestlingId: activeNestling.id,
           name: currentTitle,
           content: currentContent,
         });

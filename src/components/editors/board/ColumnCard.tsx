@@ -26,7 +26,7 @@ export default function ColumnCard(card: BoardCard) {
     transition,
     isDragging,
   } = useSortable({
-    id: `card-${card.id}-column-${card.column_id}`,
+    id: `card-${card.id}-column-${card.columnId}`,
   });
 
   const { activeDraggingId } = useBoardStore();
@@ -66,8 +66,8 @@ export default function ColumnCard(card: BoardCard) {
           id: card.id,
           title: newTitle,
           description: newDescription,
-          order_index: card.order_index,
-          column_id: card.column_id,
+          orderIndex: card.orderIndex,
+          columnId: card.columnId,
         });
       } catch (err) {
         console.error("Failed to update card:", err);

@@ -1,8 +1,8 @@
 import { WithBase } from "./base";
 
 export type NewFolder = {
-  nest_id: number;
-  parent_id: number | null;
+  nestId: number;
+  parentId: number | null;
   name: string;
 };
 

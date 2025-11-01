@@ -2,19 +2,19 @@ import { WithBase } from "./base";
 import { Nestling } from "./nestling";
 
 export type NewBoardColumn = {
-  nestling_id: number;
+  nestlingId: number;
   title: string;
-  order_index: number;
+  orderIndex: number;
   color: string;
 };
 
 export type BoardColumn = WithBase<NewBoardColumn>;
 
 export type NewBoardCard = {
-  column_id: number;
+  columnId: number;
   title: string;
   description: string | null;
-  order_index: number;
+  orderIndex: number;
 };
 
 export type BoardCard = WithBase<NewBoardCard>;

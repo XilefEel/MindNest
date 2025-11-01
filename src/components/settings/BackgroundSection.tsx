@@ -79,7 +79,7 @@ export default function BackgroundSection() {
               )}
             >
               <img
-                src={convertFileSrc(image.file_path)}
+                src={convertFileSrc(image.filePath)}
                 alt={`Background ${index + 1}`}
                 className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
                 onClick={() => handleSelectBackground(image.id)}
