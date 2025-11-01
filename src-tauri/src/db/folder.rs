@@ -80,7 +80,7 @@ pub fn update_folder_in_db(db: &AppDb, id: i64, parent_id: Option<i64>, name: Op
         .execute("
             UPDATE folders
             SET
-                parent_id = COALESCE(?1, parent_id),
+                parent_id = ?1,
                 name = COALESCE(?2, name),
                 updated_at = ?3
             WHERE id = ?4",

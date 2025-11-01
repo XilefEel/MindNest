@@ -27,6 +27,8 @@ export default function AddFolderModal({
 
   const { addFolder, updateFolder, folders, activeFolderId } =
     useNestlingStore();
+  const folder = folders.find((f) => f.id === folderId);
+  if (!folder) return null;
 
   const handleExit = async () => {
     setTitle("");
@@ -38,7 +40,7 @@ export default function AddFolderModal({
     setLoading(true);
     try {
       if (folderId) {
-        await updateFolder(folderId, title);
+        await updateFolder(folderId, folder.parent_id, title);
         toast.success(`Folder Renamed to "${title}"`);
       } else {
         await addFolder({
@@ -50,6 +52,7 @@ export default function AddFolderModal({
       }
       handleExit();
     } catch (err) {
+      toast.error("Failed to create folder");
       console.error("Failed to create Folder:", err);
     } finally {
       setLoading(false);
@@ -57,12 +60,7 @@ export default function AddFolderModal({
   };
 
   useEffect(() => {
-    if (folderId) {
-      const folder = folders.find((f) => f.id === folderId);
-      if (folder) {
-        setTitle(folder.name || "");
-      }
-    }
+    if (folderId) setTitle(folder.name || "");
   }, [folderId]);
 
   return (

@@ -31,7 +31,11 @@ type NestlingState = {
 
   addFolder: (folder: NewFolder) => Promise<void>;
   duplicateFolder: (folderId: number) => Promise<void>;
-  updateFolder: (id: number, name: string) => Promise<void>;
+  updateFolder: (
+    id: number,
+    parentId: number | null,
+    name: string,
+  ) => Promise<void>;
   deleteFolder: (folderId: number) => Promise<void>;
 
   fetchSidebar: (nestId: number) => Promise<void>;
@@ -137,8 +141,8 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     }));
   }),
 
-  updateFolder: withStoreErrorHandler(set, async (id, name) => {
-    await folderApi.updateFolder(id, undefined, name);
+  updateFolder: withStoreErrorHandler(set, async (id, parentId, name) => {
+    await folderApi.updateFolder(id, parentId, name);
     set((state) => ({
       folders: state.folders
         .map((f) => (f.id === id ? { ...f, name } : f))
@@ -233,6 +237,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
           ancestorId = folderMap.get(ancestorId) ?? null;
         }
 
+        console.log({ folderId, newParentId });
         await folderApi.updateFolder(folderId, newParentId);
 
         set((state) => ({

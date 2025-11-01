@@ -58,7 +58,7 @@ export default function FolderItem({
       return;
     }
     if (name !== folder.name) {
-      await updateFolder(folder.id, name);
+      await updateFolder(folder.id, folder.parent_id, name);
     }
   };
 
