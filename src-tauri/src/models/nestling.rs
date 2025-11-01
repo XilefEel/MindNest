@@ -5,6 +5,7 @@ pub struct NewNestling {
     pub nest_id: i64,
     pub folder_id: Option<i64>,
     pub nestling_type: String,
+    pub is_pinned: bool,
     pub title: String,
     pub content: String,
 }
@@ -15,6 +16,7 @@ pub struct Nestling {
     pub nest_id: i64,
     pub folder_id: Option<i64>,
     pub nestling_type: String,
+    pub is_pinned: bool,
     pub title: String,
     pub content: String,
     pub created_at: String,

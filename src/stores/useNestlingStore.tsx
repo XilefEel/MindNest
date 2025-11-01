@@ -87,6 +87,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     await nestlingApi.editNestling(
       id,
       updates.folder_id ?? null,
+      updates.is_pinned,
       updates.title,
       updates.content,
     );
@@ -98,6 +99,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
             ? {
                 ...n,
                 folder_id: updates.folder_id ?? n.folder_id,
+                is_pinned: updates.is_pinned ?? n.is_pinned,
                 title: updates.title ?? n.title,
                 content: updates.content ?? n.content,
               }

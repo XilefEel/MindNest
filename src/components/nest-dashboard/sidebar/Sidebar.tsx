@@ -12,6 +12,7 @@ import { useNestStore } from "@/stores/useNestStore";
 import { clearLastNestling } from "@/lib/storage/session";
 import useActiveNestling from "@/hooks/useActiveNestling";
 import ToolBar from "./ToolBar";
+import PinnedNestlings from "./PinnedNestlings";
 
 export default function Sidebar({
   nestId,
@@ -44,6 +45,10 @@ export default function Sidebar({
 
   const looseNestlings = useMemo(() => {
     return nestlings.filter((n) => n.folder_id === null);
+  }, [nestlings]);
+
+  const pinnedNestlings = useMemo(() => {
+    return nestlings.filter((n) => n.is_pinned);
   }, [nestlings]);
 
   const handleHomeClick = () => {
@@ -94,6 +99,11 @@ export default function Sidebar({
             onDragStart={handleDragStart}
             onDragEnd={(e) => handleDragEnd(e, nestId)}
           >
+            <PinnedNestlings
+              pinnedNestlings={pinnedNestlings}
+              setIsSidebarOpen={setIsSidebarOpen}
+            />
+
             {folderGroups.map((folder) => (
               <FolderTree
                 key={folder.id}

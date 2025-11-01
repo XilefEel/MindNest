@@ -60,6 +60,7 @@ export default function NestlingModal({
           folder_id: activeFolderId,
           title: finalTitle,
           content: "",
+          is_pinned: false,
           nestling_type: nestlingType,
         });
         toast.success(`Nestling "${finalTitle}" created successfully!`);

@@ -12,9 +12,9 @@ pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> Result<Nestling
 
     let mut statement = connection
         .prepare(
-            "INSERT INTO nestlings (nest_id, folder_id, type, title, content, created_at, updated_at)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
-             RETURNING id, nest_id, folder_id, type, title, content, created_at, updated_at;",
+            "INSERT INTO nestlings (nest_id, folder_id, type, is_pinned, title, content, created_at, updated_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
+             RETURNING id, nest_id, folder_id, type, is_pinned, title, content, created_at, updated_at;",
         )
         .map_err(|e| e.to_string())?;
 
@@ -24,6 +24,7 @@ pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> Result<Nestling
                 data.nest_id,
                 data.folder_id,
                 data.nestling_type,
+                data.is_pinned,
                 data.title,
                 data.content,
                 created_at,
@@ -35,10 +36,11 @@ pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> Result<Nestling
                     nest_id: row.get(1)?,
                     folder_id: row.get(2)?,
                     nestling_type: row.get(3)?,
-                    title: row.get(4)?,
-                    content: row.get(5)?,
-                    created_at: row.get(6)?,
-                    updated_at: row.get(7)?,
+                    is_pinned: row.get(4)?,
+                    title: row.get(5)?,
+                    content: row.get(6)?,
+                    created_at: row.get(7)?,
+                    updated_at: row.get(8)?,
                 })
             },
         )
@@ -52,7 +54,7 @@ pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> Result<Vec<Nestling>, 
 
     let mut statement = connection
         .prepare("
-        SELECT id, nest_id, folder_id, type, title, content, created_at, updated_at 
+        SELECT id, nest_id, folder_id, type, is_pinned, title, content, created_at, updated_at 
         FROM nestlings 
         WHERE nest_id = ?1 
         ORDER BY updated_at DESC",
@@ -66,10 +68,11 @@ pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> Result<Vec<Nestling>, 
                 nest_id: row.get(1)?,
                 folder_id: row.get(2)?,
                 nestling_type: row.get(3)?,
-                title: row.get(4)?,
-                content: row.get(5)?,
-                created_at: row.get(6)?,
-                updated_at: row.get(7)?,
+                is_pinned: row.get(4)?,
+                title: row.get(5)?,
+                content: row.get(6)?,
+                created_at: row.get(7)?,
+                updated_at: row.get(8)?,
             })
         })
         .map_err(|e| e.to_string())?;
@@ -85,7 +88,7 @@ pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> Result<Nestling, Stri
 
     let mut statement = connection
         .prepare(
-            "SELECT id, nest_id, folder_id, type, title, content, created_at, updated_at
+            "SELECT id, nest_id, folder_id, type, is_pinned, title, content, created_at, updated_at
              FROM nestlings
              WHERE id = ?1",
         )
@@ -98,10 +101,11 @@ pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> Result<Nestling, Stri
                 nest_id: row.get(1)?,
                 folder_id: row.get(2)?,
                 nestling_type: row.get(3)?,
-                title: row.get(4)?,
-                content: row.get(5)?,
-                created_at: row.get(6)?,
-                updated_at: row.get(7)?,
+                is_pinned: row.get(4)?,
+                title: row.get(5)?,
+                content: row.get(6)?,
+                created_at: row.get(7)?,
+                updated_at: row.get(8)?,
             })
         })
         .map_err(|e| e.to_string())?;
@@ -109,7 +113,7 @@ pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> Result<Nestling, Stri
     Ok(result)
 }
 
-pub fn update_nestling_in_db(db: &AppDb, id: i64, folder_id: Option<i64>, title: Option<String>, content: Option<String>) -> Result<(), String> {
+pub fn update_nestling_in_db(db: &AppDb, id: i64, folder_id: Option<i64>, is_pinned: Option<bool>, title: Option<String>, content: Option<String>) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
     let updated_at = chrono::Local::now()
         .naive_local()
@@ -119,12 +123,13 @@ pub fn update_nestling_in_db(db: &AppDb, id: i64, folder_id: Option<i64>, title:
     connection
         .execute("
             UPDATE nestlings
-            SET folder_id = ?1, 
-                title = COALESCE(?2, title), 
-                content = COALESCE(?3, content), 
-                updated_at = ?4
-            WHERE id = ?5",
-            params![folder_id, title, content, updated_at, id],
+            SET folder_id = ?1,
+                is_pinned = COALESCE(?2, is_pinned), 
+                title = COALESCE(?3, title), 
+                content = COALESCE(?4, content), 
+                updated_at = ?5
+            WHERE id = ?6",
+            params![folder_id, is_pinned, title, content, updated_at, id],
         )
         .map_err(|e| e.to_string())?;
 

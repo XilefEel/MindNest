@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS nestlings (
     nest_id INTEGER NOT NULL,
     folder_id INTEGER,
     type TEXT NOT NULL,
+    is_pinned BOOLEAN NOT NULL DEFAULT 0,
     title TEXT,
     content TEXT,
     created_at TEXT NOT NULL,

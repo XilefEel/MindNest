@@ -15,8 +15,8 @@ pub fn get_nestlings(db: tauri::State<AppDb>, nest_id: i64) -> Result<Vec<Nestli
 }
 
 #[tauri::command]
-pub fn update_nestling(db: tauri::State<AppDb>, id: i64, folder_id: Option<i64>, title: Option<String>, content: Option<String>) -> Result<(), String> {
-    update_nestling_in_db(&db, id, folder_id, title, content)
+pub fn update_nestling(db: tauri::State<AppDb>, id: i64, folder_id: Option<i64>, is_pinned: Option<bool>, title: Option<String>, content: Option<String>) -> Result<(), String> {
+    update_nestling_in_db(&db, id, folder_id, is_pinned, title, content)
 }
 
 #[tauri::command]

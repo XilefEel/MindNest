@@ -1,10 +1,11 @@
 import * as ContextMenu from "@radix-ui/react-context-menu";
-import { Edit3, Trash2, Copy, Star, Archive } from "lucide-react";
+import { Edit3, Trash2, Copy, Archive, Pin } from "lucide-react";
 import DeleteModal from "../modals/DeleteModal";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import NestlingModal from "../modals/NestlingModal";
+import { toast } from "sonner";
 
 export default function NestlingContextMenu({
   nestlingId,
@@ -13,7 +14,17 @@ export default function NestlingContextMenu({
   nestlingId: number;
   children: React.ReactNode;
 }) {
-  const { duplicateNestling } = useNestlingStore();
+  const { duplicateNestling, updateNestling, nestlings } = useNestlingStore();
+  const nestling = nestlings.find((n) => n.id === nestlingId);
+
+  const handlePinNestling = () => {
+    try {
+      updateNestling(nestlingId, { is_pinned: !nestling?.is_pinned });
+    } catch (error) {
+      toast.error("Failed to pin nestling");
+      console.error(error);
+    }
+  };
 
   return (
     <BaseContextMenu
@@ -37,18 +48,14 @@ export default function NestlingContextMenu({
             action={() => duplicateNestling(nestlingId)}
           />
 
-          <ContextMenuItem
-            Icon={Star}
-            text="Add to Favorites"
-            action={() => console.log("Star note", nestlingId)}
-          />
+          <ContextMenuItem Icon={Pin} text="Pin" action={handlePinNestling} />
 
           <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
 
           <ContextMenuItem
             Icon={Archive}
             text="Archive"
-            action={() => console.log("Archive note", nestlingId)}
+            action={() => console.log("Archive", nestlingId)}
           />
 
           <DeleteModal type="nestling" nestlingId={nestlingId}>
@@ -58,7 +65,7 @@ export default function NestlingContextMenu({
               className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm text-red-600 transition-colors duration-200 outline-none hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/40"
               onSelect={(e) => {
                 e.preventDefault();
-                console.log("Delete folder", nestlingId);
+                console.log("Delete", nestlingId);
               }}
             >
               <Trash2 className="h-4 w-4" />

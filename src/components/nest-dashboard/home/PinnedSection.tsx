@@ -1,14 +1,12 @@
 import { cn } from "@/lib/utils/general";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useNestStore } from "@/stores/useNestStore";
 import { ArrowRight, Folder, Pin } from "lucide-react";
 
 export default function PinnedSection() {
   const { activeBackgroundId } = useNestStore();
-
-  const pinned = [
-    { title: "🌱 July 24 Journal", folder: "Daily Logs" },
-    { title: "💡 Project Ideas", folder: "Personal Projects" },
-  ];
+  const { nestlings, setActiveNestlingId } = useNestlingStore();
+  const pinnedNestlings = nestlings.filter((n) => n.is_pinned === true);
 
   return (
     <div className="space-y-4">
@@ -20,9 +18,12 @@ export default function PinnedSection() {
       </div>
 
       <div className="space-y-3">
-        {pinned.map((item, i) => (
+        {pinnedNestlings.map((nestling, i) => (
           <div
             key={i}
+            onClick={() => {
+              setActiveNestlingId(nestling.id);
+            }}
             className={cn(
               "group cursor-pointer rounded-xl border border-l-4 p-4 hover:shadow-md",
               "bg-white dark:bg-gray-800",
@@ -35,11 +36,11 @@ export default function PinnedSection() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-semibold text-gray-900 dark:text-white">
-                  {item.title}
+                  {nestling.title}
                 </p>
                 <div className="mt-1 flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
                   <Folder className="h-4 w-4" />
-                  <span>{item.folder}</span>
+                  <span>{nestling.folder_id}</span>
                 </div>
               </div>
               <ArrowRight className="h-5 w-5 text-gray-300 transition" />

@@ -14,9 +14,11 @@ import { getNestlingIcon, NestlingType } from "@/lib/utils/nestlings";
 export default function NestlingItem({
   nestling,
   setIsSidebarOpen,
+  isPinnedShortcut = false,
 }: {
   nestling: Nestling;
   setIsSidebarOpen: (isOpen: boolean) => void;
+  isPinnedShortcut?: boolean;
 }) {
   const { setActiveFolderId, setActiveNestlingId, updateNestling } =
     useNestlingStore();
@@ -39,9 +41,11 @@ export default function NestlingItem({
   };
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: `nestling-${nestling.id}`,
-    });
+    useDraggable(
+      isPinnedShortcut
+        ? { id: `non-draggable-${nestling.id}`, disabled: true }
+        : { id: `nestling-${nestling.id}` },
+    );
 
   const style = {
     transform: transform
@@ -150,15 +154,17 @@ export default function NestlingItem({
             </div>
           </div>
 
-          <div
-            ref={setNodeRef}
-            {...listeners}
-            {...attributes}
-            onClick={(e) => e.stopPropagation()}
-            className="cursor-grab p-1"
-          >
-            <GripVertical className="size-4 text-gray-500 dark:text-gray-200" />
-          </div>
+          {!isPinnedShortcut && (
+            <div
+              ref={setNodeRef}
+              {...listeners}
+              {...attributes}
+              onClick={(e) => e.stopPropagation()}
+              className="cursor-grab p-1"
+            >
+              <GripVertical className="size-4 text-gray-500 dark:text-gray-200" />
+            </div>
+          )}
         </div>
       </motion.div>
     </NestlingContextMenu>
