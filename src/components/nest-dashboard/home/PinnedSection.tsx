@@ -6,7 +6,7 @@ import { ArrowRight, Folder, Pin } from "lucide-react";
 export default function PinnedSection() {
   const { activeBackgroundId } = useNestStore();
   const { nestlings, setActiveNestlingId } = useNestlingStore();
-  const pinnedNestlings = nestlings.filter((n) => n.is_pinned === true);
+  const pinnedNestlings = nestlings.filter((n) => n.isPinned === true);
 
   return (
     <div className="space-y-4">
@@ -45,7 +45,7 @@ export default function PinnedSection() {
                 </p>
                 <div className="mt-1 flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
                   <Folder className="h-4 w-4" />
-                  <span>{nestling.folder_id}</span>
+                  <span>{nestling.folderId}</span>
                 </div>
               </div>
               <ArrowRight className="h-5 w-5 text-gray-300 transition" />

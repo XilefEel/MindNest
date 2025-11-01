@@ -3,10 +3,8 @@ import { Nest } from "../types/nest";
 
 export async function createNest(userId: number, title: string) {
   await invoke<void>("create_nest", {
-    data: {
-      userId,
-      title: title,
-    },
+    userId,
+    title,
   });
 }
 

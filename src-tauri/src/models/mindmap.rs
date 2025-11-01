@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BaseModel {
     pub id: i64,
     pub created_at: String,
@@ -8,12 +9,14 @@ pub struct BaseModel {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Position {
     pub x: f64,
     pub y: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct MindmapNodeData {
     pub label: String,
     pub color: String,
@@ -21,6 +24,7 @@ pub struct MindmapNodeData {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NewMindmapNode {
     pub nestling_id: i64,
     pub position: Position,
@@ -31,8 +35,8 @@ pub struct NewMindmapNode {
     pub node_type: String,
 }
 
-// Mindmap Node (with id/timestamps as strings for frontend)
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct MindmapNode {
     pub id: String,
     pub nestling_id: i64,
@@ -47,6 +51,7 @@ pub struct MindmapNode {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct MindmapNodeDB {
     pub id: i64,
     pub nestling_id: i64,
@@ -64,6 +69,7 @@ pub struct MindmapNodeDB {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NewMindmapNodeDB {
     pub nestling_id: i64,
     pub position_x: f64,
@@ -78,12 +84,14 @@ pub struct NewMindmapNodeDB {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NewMindmapEdge {
     pub source: String,
     pub target: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct MindmapEdge {
     pub id: String,
     pub source: String,
@@ -93,6 +101,7 @@ pub struct MindmapEdge {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct MindmapEdgeDB {
     pub id: i64,
     pub source_id: i64,
@@ -102,6 +111,7 @@ pub struct MindmapEdgeDB {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NewMindmapEdgeDB {
     pub source_id: i64,
     pub target_id: i64,

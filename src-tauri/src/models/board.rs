@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::models::nestling::Nestling;
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NewBoardColumn {
     pub nestling_id: i64,
     pub title: String,
@@ -11,6 +12,7 @@ pub struct NewBoardColumn {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BoardColumn {
     pub id: i64,
     pub nestling_id: i64,
@@ -22,6 +24,7 @@ pub struct BoardColumn {
 }
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NewBoardCard {
     pub column_id: i64,
     pub title: String,
@@ -30,6 +33,7 @@ pub struct NewBoardCard {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BoardCard {
     pub id: i64,
     pub column_id: i64,
@@ -41,12 +45,14 @@ pub struct BoardCard {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BoardData {
     pub nestling: Nestling,
     pub columns: Vec<BoardColumnData>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BoardColumnData {
     pub column: BoardColumn,
     pub cards: Vec<BoardCard>,

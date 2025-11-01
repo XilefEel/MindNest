@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NewPlannerEvent {
     pub nestling_id: i64,
     pub date: String,
@@ -12,6 +13,7 @@ pub struct NewPlannerEvent {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PlannerEvent {
     pub id: i64,
     pub nestling_id: i64,

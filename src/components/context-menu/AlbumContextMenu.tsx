@@ -56,7 +56,7 @@ export default function AlbumContextMenu({
         <>
           {/* Using ContextMenu.Item instead of ContextMenuItem
               because modal triggers don't work with custom ContextMenuItem component*/}
-          <AlbumModal nestling_id={activeNestlingId} album={album}>
+          <AlbumModal nestlingId={activeNestlingId} album={album}>
             <ContextMenu.Item
               className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
               onSelect={(e) => {

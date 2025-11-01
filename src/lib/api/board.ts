@@ -55,8 +55,8 @@ export async function updateBoardCard({
     id,
     title,
     description,
-    orderIndex: orderIndex,
-    columnId: columnId,
+    orderIndex,
+    columnId,
   });
 }
 export async function deleteBoardCard(id: number) {

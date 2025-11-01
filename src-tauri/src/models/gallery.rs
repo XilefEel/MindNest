@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NewGalleryAlbum {
     pub nestling_id: i64,
     pub name: String,
@@ -8,6 +9,7 @@ pub struct NewGalleryAlbum {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GalleryAlbum {
     pub id: i64,
     pub nestling_id: i64,
@@ -18,6 +20,7 @@ pub struct GalleryAlbum {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NewGalleryImage {
     pub album_id: Option<i64>,
     pub nestling_id: i64,
@@ -30,6 +33,7 @@ pub struct NewGalleryImage {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GalleryImage {
     pub id: i64,
     pub album_id: Option<i64>,

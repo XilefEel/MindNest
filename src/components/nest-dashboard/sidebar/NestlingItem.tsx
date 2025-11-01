@@ -9,7 +9,7 @@ import { GripVertical } from "lucide-react";
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
-import { getNestlingIcon, NestlingType } from "@/lib/utils/nestlings";
+import { getNestlingIcon } from "@/lib/utils/nestlings";
 
 export default function NestlingItem({
   nestling,
@@ -30,12 +30,12 @@ export default function NestlingItem({
   const inputRef = useRef<HTMLInputElement>(null);
   const shouldSaveRef = useRef(true);
 
-  const Icon = getNestlingIcon(nestling.nestling_type as NestlingType);
+  const Icon = getNestlingIcon(nestling.nestlingType);
 
   const handleSelect = () => {
     if (isEditing) return;
     setActiveNestlingId(nestling.id);
-    setActiveFolderId(nestling.folder_id);
+    setActiveFolderId(nestling.folderId);
     saveLastNestling(activeNestId!, nestling.id);
     setIsSidebarOpen(false);
   };
@@ -72,7 +72,7 @@ export default function NestlingItem({
     if (title !== nestling.title) {
       await updateNestling(nestling.id, {
         title,
-        folder_id: nestling.folder_id,
+        folderId: nestling.folderId,
       });
     }
   };

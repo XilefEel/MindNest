@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NewBackgroundImage {
     pub nest_id: i64,
     pub file_path: String,
@@ -10,6 +11,7 @@ pub struct NewBackgroundImage {
 }
 
 #[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BackgroundImage {
     pub id: i64,
     pub nest_id: i64,

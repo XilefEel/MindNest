@@ -35,19 +35,19 @@ export default function Sidebar({
 
   const folderGroups = useMemo(() => {
     return folders
-      .filter((f) => f.parent_id === null)
+      .filter((f) => f.parentId === null)
       .map((folder) => ({
         ...folder,
-        nestlings: nestlings.filter((n) => n.folder_id === folder.id),
+        nestlings: nestlings.filter((n) => n.folderId === folder.id),
       }));
   }, [folders, nestlings]);
 
   const looseNestlings = useMemo(() => {
-    return nestlings.filter((n) => n.folder_id === null);
+    return nestlings.filter((n) => n.folderId === null);
   }, [nestlings]);
 
   const pinnedNestlings = useMemo(() => {
-    return nestlings.filter((n) => n.is_pinned);
+    return nestlings.filter((n) => n.isPinned);
   }, [nestlings]);
 
   const handleHomeClick = () => {

@@ -43,7 +43,7 @@ export async function updatePlannerEvent({
     date,
     title,
     description,
-    startTime: startTime,
+    startTime,
     duration,
     color,
   });

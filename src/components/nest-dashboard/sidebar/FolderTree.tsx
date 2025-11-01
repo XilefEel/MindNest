@@ -21,8 +21,8 @@ export default function FolderTree({
     id: `folder-${folder.id}`,
   });
 
-  const childFolders = folders.filter((f) => f.parent_id === folder.id);
-  const childNestlings = nestlings.filter((n) => n.folder_id === folder.id);
+  const childFolders = folders.filter((f) => f.parentId === folder.id);
+  const childNestlings = nestlings.filter((n) => n.folderId === folder.id);
 
   return (
     <FolderContextMenu folderId={folder.id}>

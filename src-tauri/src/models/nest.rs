@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Nest {
     pub id: i64,
     pub user_id: i64,
@@ -10,6 +11,7 @@ pub struct Nest {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NewNest {
     pub user_id: i64,
     pub title: String,
