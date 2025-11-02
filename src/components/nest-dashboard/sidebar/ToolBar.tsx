@@ -1,6 +1,6 @@
 import BaseToolTip from "@/components/BaseToolTip";
 import ToolBarItem from "@/components/editors/note/ToolBarItem";
-import AddFolderModal from "@/components/modals/FolderModal";
+import FolderModal from "@/components/modals/FolderModal";
 import NestlingModal from "@/components/modals/NestlingModal";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import { FilePlus, FolderPlus, Minimize2, Maximize2 } from "lucide-react";
@@ -10,15 +10,12 @@ export default function ToolBar({ nestId }: { nestId: number }) {
   return (
     <div className="mb-2.5 flex items-center border-b dark:border-white">
       <NestlingModal nestId={nestId}>
-        <div>
-          <ToolBarItem Icon={FilePlus} label="New Note" />
-        </div>
+        <ToolBarItem Icon={FilePlus} label="New Note" />
       </NestlingModal>
-      <AddFolderModal nestId={nestId}>
-        <div>
-          <ToolBarItem Icon={FolderPlus} label="New Folder" />
-        </div>
-      </AddFolderModal>
+
+      <FolderModal nestId={nestId}>
+        <ToolBarItem Icon={FolderPlus} label="New Folder" />
+      </FolderModal>
 
       <BaseToolTip label="Collapse All">
         <button

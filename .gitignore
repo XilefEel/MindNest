@@ -38,6 +38,9 @@ dist/
 /src-tauri/.cargo/
 /src-tauri/Cargo.lock
 
+target
+/target/rust-analyzer
+
 # macOS / Windows / Linux system files
 .DS_Store
 Thumbs.db

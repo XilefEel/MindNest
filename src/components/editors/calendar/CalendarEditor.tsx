@@ -73,7 +73,7 @@ export default function CalendarEditor() {
         <NestlingTitle
           title={title}
           setTitle={setTitle}
-          nestlingType={activeNestling.nestlingType}
+          nestling={activeNestling}
         />
       </div>
 

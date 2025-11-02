@@ -13,6 +13,7 @@ export type NewNestling = {
   nestId: number;
   folderId: number | null;
   nestlingType: NestlingType;
+  icon: string | null;
   isPinned: boolean;
   title: string;
   content: string;

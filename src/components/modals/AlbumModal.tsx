@@ -41,7 +41,6 @@ export default function AlbumModal({
           name: title,
           description,
         });
-
         toast.success(`Album "${title}" created successfully!`);
       }
       handleExit();

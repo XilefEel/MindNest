@@ -93,7 +93,7 @@ export default function GalleryEditor() {
           <NestlingTitle
             title={title}
             setTitle={setTitle}
-            nestlingType={activeNestling.nestlingType}
+            nestling={activeNestling}
           />
         </div>
 

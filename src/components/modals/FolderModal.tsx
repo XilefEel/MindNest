@@ -27,8 +27,7 @@ export default function AddFolderModal({
 
   const { addFolder, updateFolder, folders, activeFolderId } =
     useNestlingStore();
-  const folder = folders.find((f) => f.id === folderId);
-  if (!folder) return null;
+  const folder = folderId ? folders.find((f) => f.id === folderId) : undefined;
 
   const handleExit = async () => {
     setTitle("");
@@ -39,7 +38,7 @@ export default function AddFolderModal({
     if (!title.trim()) return;
     setLoading(true);
     try {
-      if (folderId) {
+      if (folderId && folder) {
         await updateFolder(folderId, folder.parentId, title);
         toast.success(`Folder Renamed to "${title}"`);
       } else {
@@ -60,8 +59,10 @@ export default function AddFolderModal({
   };
 
   useEffect(() => {
-    if (folderId) setTitle(folder.name || "");
-  }, [folderId]);
+    if (folderId && folder) {
+      setTitle(folder.name || "");
+    }
+  }, [folderId, folder]);
 
   return (
     <BaseModal

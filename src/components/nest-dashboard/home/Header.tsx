@@ -1,4 +1,4 @@
-import AddFolderModal from "@/components/modals/FolderModal";
+import FolderModal from "@/components/modals/FolderModal";
 import NestlingModal from "@/components/modals/NestlingModal";
 import { Plus } from "lucide-react";
 
@@ -21,11 +21,11 @@ export default function Header({ nestId }: { nestId: number }) {
             <Plus className="size-4" /> Nestling
           </div>
         </NestlingModal>
-        <AddFolderModal nestId={nestId}>
+        <FolderModal nestId={nestId}>
           <div className="flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 to-purple-600 px-4 py-2 text-white shadow-lg transition hover:scale-105 hover:shadow-xl">
             <Plus className="size-4" /> Folder
           </div>
-        </AddFolderModal>
+        </FolderModal>
       </div>
     </header>
   );

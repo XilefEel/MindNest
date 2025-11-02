@@ -12,14 +12,15 @@ export async function getNestlings(nestId: number) {
 export async function editNestling(
   id: number,
   folderId: number | null,
+  icon: string | null,
   isPinned?: boolean,
   title?: string | null,
   content?: string | null,
 ) {
-  console.log({ id, folderId, isPinned, title, content });
   await invoke<void>("update_nestling", {
     id,
     folderId,
+    icon,
     isPinned,
     title,
     content,

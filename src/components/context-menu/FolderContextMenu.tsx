@@ -3,7 +3,7 @@ import { Edit3, Trash2, FileText, FolderPlus, Copy } from "lucide-react";
 import DeleteModal from "../modals/DeleteModal";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
-import AddFolderModal from "../modals/FolderModal";
+import FolderModal from "../modals/FolderModal";
 import { useNestStore } from "@/stores/useNestStore";
 import NestlingModal from "../modals/NestlingModal";
 import { useNestlingStore } from "@/stores/useNestlingStore";
@@ -21,7 +21,7 @@ export default function FolderContextMenu({
     <BaseContextMenu
       content={
         <>
-          <AddFolderModal folderId={folderId} nestId={activeNestId!}>
+          <FolderModal folderId={folderId} nestId={activeNestId!}>
             <ContextMenu.Item
               className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
               onSelect={(e) => {
@@ -31,7 +31,7 @@ export default function FolderContextMenu({
               <Edit3 className="size-4" />
               Rename Folder
             </ContextMenu.Item>
-          </AddFolderModal>
+          </FolderModal>
 
           <ContextMenuItem
             action={() => duplicateFolder(folderId)}

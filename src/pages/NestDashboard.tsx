@@ -16,7 +16,7 @@ import GalleryEditor from "@/components/editors/gallery/GalleryEditor";
 import useRestore from "@/hooks/useRestore";
 import useActiveNestling from "@/hooks/useActiveNestling";
 import NestlingModal from "@/components/modals/NestlingModal";
-import AddFolderModal from "@/components/modals/FolderModal";
+import FolderModal from "@/components/modals/FolderModal";
 import MindmapEditor from "@/components/editors/mindmap/MindmapEditor";
 
 export default function NestDashboardPage() {
@@ -197,13 +197,13 @@ export default function NestDashboardPage() {
       >
         <div />
       </NestlingModal>
-      <AddFolderModal
+      <FolderModal
         nestId={nest.id}
         isOpen={isFolderModalOpen}
         setIsOpen={setIsFolderModalOpen}
       >
         <div />
-      </AddFolderModal>
+      </FolderModal>
     </div>
   );
 }

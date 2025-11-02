@@ -90,7 +90,8 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   updateNestling: withStoreErrorHandler(set, async (id, updates) => {
     await nestlingApi.editNestling(
       id,
-      updates.folderId ?? null,
+      updates.folderId!,
+      updates.icon!,
       updates.isPinned,
       updates.title,
       updates.content,
@@ -103,6 +104,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
             ? {
                 ...n,
                 folderId: updates.folderId ?? n.folderId,
+                icon: updates.icon ?? n.icon,
                 isPinned: updates.isPinned ?? n.isPinned,
                 title: updates.title ?? n.title,
                 content: updates.content ?? n.content,
@@ -208,7 +210,11 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
         const newFolderId = overType === "folder" ? Number(overIdStr) : null;
 
         Promise.all([
-          nestlingApi.editNestling(nestlingId, newFolderId),
+          nestlingApi.editNestling(
+            nestlingId,
+            newFolderId,
+            get().nestlings.find((n) => n.id === nestlingId)?.icon!,
+          ),
           saveLastNestling(nestId, nestlingId),
         ]);
 

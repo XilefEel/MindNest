@@ -95,7 +95,7 @@ export default function BoardEditor() {
       <NestlingTitle
         title={title}
         setTitle={setTitle}
-        nestlingType={activeNestling.nestlingType}
+        nestling={activeNestling}
       />
 
       <div className="flex-1 overflow-x-auto overflow-y-visible">

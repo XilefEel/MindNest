@@ -133,7 +133,11 @@ export default function NestlingItem({
             className="flex min-w-0 flex-1 items-center gap-1.5"
             onDoubleClick={handleDoubleClick}
           >
-            <Icon className="size-4 flex-shrink-0" />
+            {nestling.icon ? (
+              <p>{nestling.icon}</p>
+            ) : (
+              <Icon className="size-4 flex-shrink-0" />
+            )}
             <div
               className={cn(
                 "min-w-0 flex-1 rounded transition-all duration-200",

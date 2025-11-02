@@ -140,7 +140,7 @@ export default function NoteEditor() {
       <NestlingTitle
         title={title}
         setTitle={setTitle}
-        nestlingType={activeNestling.nestlingType}
+        nestling={activeNestling}
       />
 
       <div

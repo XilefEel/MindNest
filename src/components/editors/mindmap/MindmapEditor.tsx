@@ -279,7 +279,7 @@ function MindmapEditorContent() {
       <NestlingTitle
         title={title}
         setTitle={setTitle}
-        nestlingType={activeNestling.nestlingType}
+        nestling={activeNestling}
       />
       <div className="h-full">
         <ReactFlow

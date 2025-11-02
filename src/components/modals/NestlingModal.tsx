@@ -61,6 +61,7 @@ export default function NestlingModal({
           folderId: activeFolderId,
           title: finalTitle,
           content: "",
+          icon: "",
           isPinned: false,
           nestlingType: nestlingType,
         });

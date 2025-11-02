@@ -103,7 +103,7 @@ export default function JournalingApp() {
               <NestlingTitle
                 title={title}
                 setTitle={setTitle}
-                nestlingType={activeNestling.nestlingType}
+                nestling={activeNestling}
               />
             </div>
             <div className="flex items-center justify-between gap-3">
