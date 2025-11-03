@@ -90,10 +90,10 @@ pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> Result<Nestling, Stri
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
-        .prepare(
-            "SELECT id, nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at
-             FROM nestlings
-             WHERE id = ?1",
+        .prepare("
+            SELECT id, nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at
+            FROM nestlings
+            WHERE id = ?1",
         )
         .map_err(|e| e.to_string())?;
 
@@ -137,9 +137,9 @@ pub fn update_nestling_in_db(
             UPDATE nestlings
             SET folder_id = ?1,
                 icon = ?2,
-                is_pinned = COALESCE(?3, is_pinned), 
-                title = COALESCE(?4, title), 
-                content = COALESCE(?5, content), 
+                is_pinned = ?3, 
+                title = ?4, 
+                content = ?5, 
                 updated_at = ?6
             WHERE id = ?7",
             params![folder_id, icon, is_pinned, title, content, updated_at, id],

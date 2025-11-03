@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import CardContextMenu from "@/components/context-menu/CardContextMenu";
 
 export default function ColumnCard(card: BoardCard) {
-  const { updateCard, removeCard } = useBoardStore();
+  const { updateCard, deleteCard } = useBoardStore();
   const [title, setTitle] = useState(card.title);
   const [description, setDescription] = useState(card.description || "");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -168,7 +168,7 @@ export default function ColumnCard(card: BoardCard) {
           </div>
           <Button
             variant="ghost"
-            onClick={() => removeCard(card.id)}
+            onClick={() => deleteCard(card.id)}
             className="cursor-pointer rounded-lg p-1 text-red-500 transition duration-200 hover:bg-red-100 focus-visible:ring-red-400 dark:hover:bg-red-200"
           >
             <Trash />

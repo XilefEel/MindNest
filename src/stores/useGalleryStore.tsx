@@ -16,7 +16,7 @@ type GalleryState = {
   loading: boolean;
   error: string | null;
 
-  fetchImages: (nestlingId: number) => Promise<void>;
+  getImages: (nestlingId: number) => Promise<void>;
   selectImages: (
     nestlingId: number,
     albumId?: number | null,
@@ -35,7 +35,7 @@ type GalleryState = {
     albumId?: number | null;
   }) => Promise<void>;
   duplicateImage: (id: number) => Promise<GalleryImage>;
-  editImage: ({
+  updateImage: ({
     id,
     albumId,
     title,
@@ -71,7 +71,7 @@ type GalleryState = {
     name: string | null;
     description: string | null;
   }) => Promise<void>;
-  removeAlbum: (id: number) => Promise<void>;
+  deleteAlbum: (id: number) => Promise<void>;
 
   handleDragStart: (event: DragStartEvent) => void;
   handleDragEnd: (event: DragEndEvent) => Promise<void>;
@@ -85,7 +85,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   loading: false,
   error: null,
 
-  fetchImages: withStoreErrorHandler(set, async (nestlingId: number) => {
+  getImages: withStoreErrorHandler(set, async (nestlingId: number) => {
     const images = await galleryApi.getImages(nestlingId);
     set({ images });
   }),
@@ -114,7 +114,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
           albumId: albumId,
         });
       }
-      await get().fetchImages(nestlingId);
+      await get().getImages(nestlingId);
 
       return true;
     },
@@ -159,7 +159,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     return image;
   }),
 
-  editImage: withStoreErrorHandler(
+  updateImage: withStoreErrorHandler(
     set,
     async ({
       id,
@@ -193,7 +193,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   ),
 
   removeImage: withStoreErrorHandler(set, async (id: number) => {
-    await galleryApi.deleteImage(id);
+    await galleryApi.removeImage(id);
     set((state) => ({
       images: state.images.filter((image) => image.id !== id),
     }));
@@ -268,7 +268,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     },
   ),
 
-  removeAlbum: withStoreErrorHandler(set, async (id: number) => {
+  deleteAlbum: withStoreErrorHandler(set, async (id: number) => {
     await galleryApi.deleteAlbum(id);
     set((state) => ({
       albums: state.albums.filter((album) => album.id !== id),
@@ -302,7 +302,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
         }
         if (image.albumId === albumId) return;
 
-        await get().editImage({
+        await get().updateImage({
           id: imageId,
           albumId,
           title: image.title,

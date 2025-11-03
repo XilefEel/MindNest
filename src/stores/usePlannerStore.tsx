@@ -11,8 +11,8 @@ type PlannerState = {
   loading: boolean;
   error: string | null;
 
-  addEvent: (event: NewPlannerEventType) => Promise<void>;
-  fetchEvents: ({
+  createEvent: (event: NewPlannerEventType) => Promise<void>;
+  getEvents: ({
     nestlingId,
     start,
     end,
@@ -46,7 +46,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
   loading: false,
   error: null,
 
-  fetchEvents: withStoreErrorHandler(
+  getEvents: withStoreErrorHandler(
     set,
     async ({
       nestlingId,
@@ -66,7 +66,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
     },
   ),
 
-  addEvent: withStoreErrorHandler(
+  createEvent: withStoreErrorHandler(
     set,
     async (newEvent: NewPlannerEventType) => {
       const event = await calendarApi.createPlannerEvent(newEvent);

@@ -32,8 +32,8 @@ export default function BoardEditor() {
   const [title, setTitle] = useState(activeNestling.title);
   const {
     boardData,
-    fetchBoard,
-    addColumn,
+    getBoard,
+    createColumn,
     handleDragStart,
     handleDragEnd,
     activeDraggingId,
@@ -58,7 +58,7 @@ export default function BoardEditor() {
 
   const handleAddColumn = async () => {
     try {
-      addColumn({
+      createColumn({
         nestlingId: activeNestlingId!,
         title: "New Column",
         orderIndex: boardData!.columns.length + 1,
@@ -70,8 +70,8 @@ export default function BoardEditor() {
   };
 
   useEffect(() => {
-    fetchBoard(activeNestlingId!);
-  }, [fetchBoard, activeNestlingId]);
+    getBoard(activeNestlingId!);
+  }, [getBoard, activeNestlingId]);
 
   useEffect(() => {
     setTitle(activeNestling.title);
@@ -82,11 +82,10 @@ export default function BoardEditor() {
     currentData: useMemo(
       () => ({
         title,
-        folderId: activeNestling.folderId ?? null,
+        folderId: activeNestling.folderId,
       }),
       [activeNestling.folderId, title],
     ),
-
     saveFunction: (id, data) => updateNestling(id, data),
   });
 

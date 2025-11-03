@@ -21,9 +21,9 @@ type BoardState = {
   loading: boolean;
   error: string | null;
 
-  fetchBoard: (nestlingId: number) => Promise<void>;
+  getBoard: (nestlingId: number) => Promise<void>;
 
-  addColumn: (column: NewBoardColumn) => Promise<void>;
+  createColumn: (column: NewBoardColumn) => Promise<void>;
   duplicateColumn: (column: BoardColumn) => Promise<void>;
   updateColumn: ({
     id,
@@ -42,7 +42,7 @@ type BoardState = {
     targetColumnId: number,
   ) => Promise<void>;
 
-  addCard: (card: NewBoardCard) => Promise<void>;
+  createCard: (card: NewBoardCard) => Promise<void>;
   duplicateCard: (card: BoardCard) => Promise<void>;
   updateCard: ({
     id,
@@ -57,7 +57,7 @@ type BoardState = {
     orderIndex: number;
     columnId: number;
   }) => Promise<void>;
-  removeCard: (cardId: number) => Promise<void>;
+  deleteCard: (cardId: number) => Promise<void>;
   reorderCard: ({
     activeCardId,
     targetCardId,
@@ -78,12 +78,12 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   error: null,
   activeDraggingId: null,
 
-  fetchBoard: withStoreErrorHandler(set, async (nestlingId) => {
+  getBoard: withStoreErrorHandler(set, async (nestlingId) => {
     const data = await boardApi.getBoard(nestlingId);
     set({ boardData: data });
   }),
 
-  addColumn: withStoreErrorHandler(set, async (column) => {
+  createColumn: withStoreErrorHandler(set, async (column) => {
     const newColumn = await boardApi.createBoardColumn(column);
 
     set((state) => {
@@ -251,7 +251,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     );
   },
 
-  addCard: withStoreErrorHandler(set, async (card) => {
+  createCard: withStoreErrorHandler(set, async (card) => {
     const newCard = await boardApi.createBoardCard(card);
 
     set((state) => {
@@ -354,7 +354,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     },
   ),
 
-  removeCard: withStoreErrorHandler(set, async (cardId) => {
+  deleteCard: withStoreErrorHandler(set, async (cardId) => {
     await boardApi.deleteBoardCard(cardId);
     set((state) => {
       if (!state.boardData) return state;

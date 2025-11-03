@@ -17,7 +17,7 @@ export default function AlbumContextMenu({
 }) {
   const { activeNestlingId } = useNestlingStore();
   if (!activeNestlingId) return;
-  const { downloadAlbum, selectImages, removeAlbum } = useGalleryStore();
+  const { downloadAlbum, selectImages, deleteAlbum } = useGalleryStore();
 
   const handleSelectImage = async (albumId: number) => {
     try {
@@ -43,7 +43,7 @@ export default function AlbumContextMenu({
 
   const handleDeleteAlbum = async (id: number) => {
     try {
-      await removeAlbum(id);
+      await deleteAlbum(id);
       toast.success("Album deleted successfully!");
     } catch (error) {
       toast.error("Failed to delete album");

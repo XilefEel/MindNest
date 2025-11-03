@@ -14,7 +14,7 @@ import { BoardColumnData } from "@/lib/types/board";
 import ColumnContextMenu from "@/components/context-menu/ColumnContextMenu";
 
 export default function Column(col: BoardColumnData) {
-  const { addCard, updateColumn, removeColumn, activeDraggingId } =
+  const { createCard, updateColumn, removeColumn, activeDraggingId } =
     useBoardStore();
   const [title, setTitle] = useState(col.column.title);
   const [isEditing, setIsEditing] = useState(false);
@@ -45,7 +45,7 @@ export default function Column(col: BoardColumnData) {
 
   const handleAddCard = async () => {
     try {
-      addCard({
+      createCard({
         columnId: col.column.id,
         title: "New Card",
         description: String(col.cards.length + 1),

@@ -13,10 +13,10 @@ export default function PlannerEventContextMenu({
   event: PlannerEventType;
   children: React.ReactNode;
 }) {
-  const { addEvent, updateEvent, deleteEvent } = usePlannerStore();
+  const { createEvent, updateEvent, deleteEvent } = usePlannerStore();
 
   const onDuplicate = () => {
-    addEvent(event);
+    createEvent(event);
   };
   const onChangeColor = (color: string) => {
     updateEvent({ ...event, color });

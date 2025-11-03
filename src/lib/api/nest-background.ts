@@ -16,6 +16,6 @@ export async function getBackgrounds(nestId: number) {
   return await invoke<BackgroundImage[]>("get_backgrounds", { nestId });
 }
 
-export async function deleteBackground(id: number) {
+export async function removeBackground(id: number) {
   await invoke<void>("delete_background", { id });
 }

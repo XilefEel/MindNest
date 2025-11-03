@@ -8,12 +8,12 @@ export default function NestSection() {
   const { user } = useAuth();
   const userId = user?.id;
 
-  const { nests, fetchNests } = useNestStore();
+  const { nests, getNests } = useNestStore();
 
   useEffect(() => {
     if (!userId) return;
-    fetchNests(userId);
-  }, [fetchNests, userId]);
+    getNests(userId);
+  }, [getNests, userId]);
 
   if (nests.length === 0) {
     return (

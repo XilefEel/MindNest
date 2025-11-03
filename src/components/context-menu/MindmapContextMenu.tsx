@@ -22,7 +22,7 @@ export default function MindmapContextMenu({
   children: React.ReactNode;
   node: MindmapNode;
 }) {
-  const { nodes, edges, addNode, addEdge, updateNode, deleteNode } =
+  const { nodes, edges, createNode, createEdge, updateNode, deleteNode } =
     useMindmapStore();
 
   const handleEditNode = async (color: string, text?: boolean) => {
@@ -57,7 +57,7 @@ export default function MindmapContextMenu({
 
   const handleAddChild = async (currentNode: MindmapNode) => {
     try {
-      const newNode = await addNode({
+      const newNode = await createNode({
         nestlingId: node.nestlingId,
         position: {
           x: currentNode.position.x + Math.random() * 300,
@@ -73,7 +73,7 @@ export default function MindmapContextMenu({
         type: "custom",
       });
 
-      await addEdge({
+      await createEdge({
         source: currentNode.id,
         target: newNode.id,
       });
@@ -84,7 +84,7 @@ export default function MindmapContextMenu({
 
   const handleAddParent = async () => {
     try {
-      const newParentNode = await addNode({
+      const newParentNode = await createNode({
         nestlingId: node.nestlingId,
         position: {
           x: node.position.x + Math.random() * 300,
@@ -100,7 +100,7 @@ export default function MindmapContextMenu({
         type: "custom",
       });
 
-      await addEdge({
+      await createEdge({
         source: newParentNode.id,
         target: node.id,
       });

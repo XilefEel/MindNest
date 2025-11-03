@@ -18,16 +18,14 @@ type MindmapStore = {
   setNodes: (node: MindmapNode[]) => void;
   setEdges: (edges: MindmapEdge[]) => void;
 
-  addNode: (node: NewMindmapNode) => Promise<MindmapNode>;
-  fetchNodes: (nestlingId: number) => Promise<void>;
+  createNode: (node: NewMindmapNode) => Promise<MindmapNode>;
+  getNodes: (nestlingId: number) => Promise<void>;
   updateNode: (nodeId: number, node: NewMindmapNode) => Promise<void>;
   deleteNode: (nodeId: number) => Promise<void>;
 
-  addEdge: (edge: NewMindmapEdge) => Promise<MindmapEdge>;
-  fetchEdges: (nestlingId: number) => Promise<void>;
+  createEdge: (edge: NewMindmapEdge) => Promise<MindmapEdge>;
+  getEdges: (nestlingId: number) => Promise<void>;
   deleteEdge: (id: number) => Promise<void>;
-
-  resetMindmap: () => void;
 };
 
 export const useMindmapStore = create<MindmapStore>((set) => ({
@@ -41,7 +39,7 @@ export const useMindmapStore = create<MindmapStore>((set) => ({
   setNodes: (nodes) => set({ nodes }),
   setEdges: (edges) => set({ edges }),
 
-  addNode: withStoreErrorHandler(set, async (node: NewMindmapNode) => {
+  createNode: withStoreErrorHandler(set, async (node: NewMindmapNode) => {
     const newNode = await mindmapApi.createNode(node);
     set((state) => ({
       nodes: [...state.nodes, newNode],
@@ -49,7 +47,7 @@ export const useMindmapStore = create<MindmapStore>((set) => ({
     return newNode;
   }),
 
-  fetchNodes: withStoreErrorHandler(set, async (nestlingId: number) => {
+  getNodes: withStoreErrorHandler(set, async (nestlingId: number) => {
     const nodes = await mindmapApi.getNodes(nestlingId);
     set({ nodes, loading: false });
   }),
@@ -90,7 +88,7 @@ export const useMindmapStore = create<MindmapStore>((set) => ({
     }));
   }),
 
-  addEdge: withStoreErrorHandler(set, async (edge: NewMindmapEdge) => {
+  createEdge: withStoreErrorHandler(set, async (edge: NewMindmapEdge) => {
     const newEdge = await mindmapApi.createEdge(edge);
     set((state) => ({
       edges: [...state.edges, newEdge],
@@ -98,7 +96,7 @@ export const useMindmapStore = create<MindmapStore>((set) => ({
     return newEdge;
   }),
 
-  fetchEdges: withStoreErrorHandler(set, async (nestlingId: number) => {
+  getEdges: withStoreErrorHandler(set, async (nestlingId: number) => {
     const edges = await mindmapApi.getEdges(nestlingId);
     set({ edges });
   }),
@@ -109,13 +107,4 @@ export const useMindmapStore = create<MindmapStore>((set) => ({
       edges: state.edges.filter((e) => e.id !== id.toString()),
     }));
   }),
-
-  resetMindmap: () =>
-    set({
-      nodes: [],
-      edges: [],
-      activeNode: null,
-      loading: false,
-      error: null,
-    }),
 }));

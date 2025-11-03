@@ -13,13 +13,13 @@ export default function CardContextMenu({
   card: BoardCard;
   children: React.ReactNode;
 }) {
-  const { removeCard, duplicateCard, boardData, reorderCard } = useBoardStore();
+  const { deleteCard, duplicateCard, boardData, reorderCard } = useBoardStore();
   if (!boardData) return null;
   const columns = boardData.columns;
 
   const handleDeleteCard = async () => {
     try {
-      await removeCard(card.id);
+      await deleteCard(card.id);
     } catch (error) {
       toast.error("Failed to delete card");
       console.error(error);

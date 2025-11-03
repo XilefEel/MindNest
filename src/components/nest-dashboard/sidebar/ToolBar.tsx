@@ -10,11 +10,15 @@ export default function ToolBar({ nestId }: { nestId: number }) {
   return (
     <div className="mb-2.5 flex items-center border-b dark:border-white">
       <NestlingModal nestId={nestId}>
-        <ToolBarItem Icon={FilePlus} label="New Note" />
+        <div>
+          <ToolBarItem Icon={FilePlus} label="New Note" />
+        </div>
       </NestlingModal>
 
       <FolderModal nestId={nestId}>
-        <ToolBarItem Icon={FolderPlus} label="New Folder" />
+        <div>
+          <ToolBarItem Icon={FolderPlus} label="New Folder" />
+        </div>
       </FolderModal>
 
       <BaseToolTip label="Collapse All">

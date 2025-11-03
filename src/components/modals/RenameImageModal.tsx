@@ -12,7 +12,7 @@ export default function RenameImageModal({
   children: React.ReactNode;
   imageId: number;
 }) {
-  const { images, editImage } = useGalleryStore();
+  const { images, updateImage } = useGalleryStore();
   const currentImage = images.find((img) => img.id === imageId);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +23,7 @@ export default function RenameImageModal({
 
   const handleEditImage = () => {
     try {
-      editImage({
+      updateImage({
         id: imageId,
         albumId: currentImage?.albumId ?? null,
         title,

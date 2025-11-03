@@ -26,7 +26,7 @@ export function NewEntryButton({
   const { activeNestling } = useActiveNestling();
 
   const { activeBackgroundId } = useNestStore();
-  const { templates, useTemplate, fetchTemplates, deleteTemplate } =
+  const { templates, useTemplate, getTemplates, deleteTemplate } =
     useJournalStore();
 
   const [isAddTemplateOpen, setIsAddTemplateOpen] = useState(false);
@@ -48,8 +48,8 @@ export function NewEntryButton({
   };
 
   useEffect(() => {
-    fetchTemplates(activeNestling.id);
-  }, [fetchTemplates, activeNestling.id]);
+    getTemplates(activeNestling.id);
+  }, [getTemplates, activeNestling.id]);
 
   return (
     <div className="flex rounded-lg bg-teal-500 shadow-sm">

@@ -39,7 +39,7 @@ export default function GalleryEditor() {
     setTitle(activeNestling.title);
   }, [activeNestling.title]);
 
-  const { fetchImages, fetchAlbums, selectImages } = useGalleryStore();
+  const { getImages, fetchAlbums, selectImages } = useGalleryStore();
 
   const { updateNestling } = useNestlingStore();
   useAutoSave({
@@ -47,7 +47,7 @@ export default function GalleryEditor() {
     currentData: useMemo(
       () => ({
         title,
-        folderId: activeNestling.folderId ?? null,
+        folderId: activeNestling.folderId,
       }),
       [activeNestling.folderId, title],
     ),
@@ -57,8 +57,8 @@ export default function GalleryEditor() {
 
   useEffect(() => {
     fetchAlbums(activeNestling.id);
-    fetchImages(activeNestling.id);
-  }, [fetchImages, activeNestling.id]);
+    getImages(activeNestling.id);
+  }, [getImages, activeNestling.id]);
 
   const handleSelectImage = async () => {
     try {

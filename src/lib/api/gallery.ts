@@ -74,7 +74,7 @@ export async function updateImage(
   });
 }
 
-export async function deleteImage(id: number) {
+export async function removeImage(id: number) {
   await invoke<void>("delete_image", { id });
 }
 

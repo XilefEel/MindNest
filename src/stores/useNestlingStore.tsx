@@ -5,7 +5,7 @@ import { Folder, NewFolder } from "@/lib/types/folder";
 import { Nestling, NewNestling } from "@/lib/types/nestling";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 import { saveLastNestling } from "@/lib/storage/session";
-import { withStoreErrorHandler } from "@/lib/utils/general";
+import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 
 type NestlingState = {
   nestlings: Nestling[];
@@ -88,29 +88,23 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   }),
 
   updateNestling: withStoreErrorHandler(set, async (id, updates) => {
+    const current = get().nestlings.find((n) => n.id === id);
+    if (!current) throw new Error("Nestling not found");
+
+    const updated = mergeWithCurrent(current, updates);
+
     await nestlingApi.editNestling(
       id,
-      updates.folderId!,
-      updates.icon!,
-      updates.isPinned,
-      updates.title,
-      updates.content,
+      updated.folderId,
+      updated.icon,
+      updated.isPinned,
+      updated.title,
+      updated.content,
     );
 
     set((state) => ({
       nestlings: state.nestlings
-        .map((n) =>
-          n.id === id
-            ? {
-                ...n,
-                folderId: updates.folderId ?? n.folderId,
-                icon: updates.icon ?? n.icon,
-                isPinned: updates.isPinned ?? n.isPinned,
-                title: updates.title ?? n.title,
-                content: updates.content ?? n.content,
-              }
-            : n,
-        )
+        .map((n) => (n.id === id ? updated : n))
         .sort((a, b) => a.title.localeCompare(b.title)),
     }));
   }),
@@ -192,7 +186,6 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   },
 
   handleDragStart: (event) => {
-    console.log("DRAG START", event);
     set({ activeDraggingNestlingId: event.active.id as number });
   },
 
@@ -209,23 +202,11 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
         const nestlingId = Number(activeIdStr);
         const newFolderId = overType === "folder" ? Number(overIdStr) : null;
 
-        Promise.all([
-          nestlingApi.editNestling(
-            nestlingId,
-            newFolderId,
-            get().nestlings.find((n) => n.id === nestlingId)?.icon!,
-          ),
+        set({ activeNestlingId: nestlingId });
+        await Promise.all([
+          get().updateNestling(nestlingId, { folderId: newFolderId }),
           saveLastNestling(nestId, nestlingId),
         ]);
-
-        set((state) => ({
-          nestlings: state.nestlings
-            .map((n) =>
-              n.id === nestlingId ? { ...n, folderId: newFolderId } : n,
-            )
-            .sort((a, b) => a.title.localeCompare(b.title)),
-          activeNestlingId: nestlingId,
-        }));
       } else if (activeType === "folder") {
         const folderId = Number(activeIdStr);
         const newParentId = overType === "folder" ? Number(overIdStr) : null;
@@ -234,20 +215,18 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
         const folderMap = new Map(get().folders.map((f) => [f.id, f.parentId]));
 
-        // Check if the folder is an ancestor of the new parent
         let ancestorId: number | null = newParentId;
         while (ancestorId !== null) {
           if (ancestorId === folderId) return;
           ancestorId = folderMap.get(ancestorId) ?? null;
         }
 
-        console.log({ folderId, newParentId });
         await folderApi.updateFolder(folderId, newParentId);
 
         set((state) => ({
           folders: state.folders
             .map((f) =>
-              f.id === folderId ? { ...f, parent_id: newParentId } : f,
+              f.id === folderId ? { ...f, parentId: newParentId } : f,
             )
             .sort((a, b) => a.name.localeCompare(b.name)),
         }));

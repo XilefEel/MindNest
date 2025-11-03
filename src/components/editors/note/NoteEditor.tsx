@@ -30,11 +30,10 @@ export default function NoteEditor() {
       () => ({
         title,
         content,
-        folderId: activeNestling.folderId ?? null,
+        folderId: activeNestling.folderId,
       }),
       [activeNestling.folderId, title, content],
     ),
-
     saveFunction: (id, data) => updateNestling(id, data),
   });
 

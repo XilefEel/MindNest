@@ -50,3 +50,14 @@ export const withStoreErrorHandler = <
     }
   };
 };
+
+export const mergeWithCurrent = <T extends Record<string, any>>(
+  current: T,
+  updates: Partial<T>,
+): T => {
+  const result = { ...current };
+  for (const key in updates) {
+    if (updates[key] !== undefined) result[key] = updates[key];
+  }
+  return result;
+};

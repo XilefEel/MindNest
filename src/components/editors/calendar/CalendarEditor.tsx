@@ -26,11 +26,10 @@ export default function CalendarEditor() {
     currentData: useMemo(
       () => ({
         title,
-        folderId: activeNestling.folderId ?? null,
+        folderId: activeNestling.folderId,
       }),
       [activeNestling.folderId, title],
     ),
-
     saveFunction: (id, data) => updateNestling(id, data),
   });
 

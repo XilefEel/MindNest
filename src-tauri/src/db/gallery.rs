@@ -85,15 +85,12 @@ fn copy_image_to_app_dir(
         .ok_or("Could not get filename")?
         .to_string_lossy();
 
-    // Add timestamp (milliseconds) to filename to avoid collisions
     let timestamp = Local::now().timestamp_millis();
     let new_filename = format!("{}_{}", timestamp, filename);
 
-    // Create destination path
     let destination = images_dir.join(&new_filename);
     let destination_str = destination.to_string_lossy().to_string();
 
-    // Copy the file
     fs::copy(file_path, &destination).map_err(|e| format!("Failed to copy file: {}", e))?;
 
     Ok(destination_str)
@@ -249,7 +246,7 @@ fn get_image_by_id(db: &AppDb, id: i64) -> Result<GalleryImage, String> {
                 file_path: row.get(3)?,
                 title: row.get(4)?,
                 description: row.get(5)?,
-                is_favorite: row.get(6)?, // ✅ updated
+                is_favorite: row.get(6)?,
                 width: row.get(7)?,
                 height: row.get(8)?,
                 created_at: row.get(9)?,
@@ -279,7 +276,7 @@ fn get_images_by_album_id(db: &AppDb, album_id: i64) -> Result<Vec<GalleryImage>
                 file_path: row.get(3)?,
                 title: row.get(4)?,
                 description: row.get(5)?,
-                is_favorite: row.get(6)?, // ✅ updated
+                is_favorite: row.get(6)?,
                 width: row.get(7)?,
                 height: row.get(8)?,
                 created_at: row.get(9)?,

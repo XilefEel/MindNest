@@ -38,11 +38,11 @@ function MindmapEditorContent() {
     edges,
     setNodes,
     setEdges,
-    addNode,
-    fetchNodes,
+    createNode,
+    getNodes,
     updateNode,
-    addEdge,
-    fetchEdges,
+    createEdge,
+    getEdges,
     deleteEdge,
     deleteNode,
   } = useMindmapStore();
@@ -58,11 +58,10 @@ function MindmapEditorContent() {
     currentData: useMemo(
       () => ({
         title,
-        folderId: activeNestling.folderId ?? null,
+        folderId: activeNestling.folderId,
       }),
       [activeNestling.folderId, title],
     ),
-
     saveFunction: (id, data) => updateNestling(id, data),
   });
 
@@ -153,7 +152,7 @@ function MindmapEditorContent() {
 
         await Promise.all(
           edgesToCreate.map((edge) =>
-            addEdge({
+            createEdge({
               source: edge.source,
               target: edge.target,
             }),
@@ -164,7 +163,7 @@ function MindmapEditorContent() {
         toast.error("Failed to delete node");
       }
     },
-    [nodes, edges, setEdges, deleteNode, addEdge],
+    [nodes, edges, setEdges, deleteNode, createEdge],
   );
 
   const onEdgesChange = useCallback(
@@ -185,7 +184,7 @@ function MindmapEditorContent() {
       setEdges(newEdge);
 
       try {
-        await addEdge({
+        await createEdge({
           source: params.source,
           target: params.target,
         });
@@ -195,7 +194,7 @@ function MindmapEditorContent() {
         toast.error("Failed to create edge");
       }
     },
-    [edges, setEdges, addEdge],
+    [edges, setEdges, createEdge],
   );
 
   const onConnectEnd: OnConnectEnd = useCallback(
@@ -209,7 +208,7 @@ function MindmapEditorContent() {
           y: clientY,
         });
 
-        const newNode = await addNode({
+        const newNode = await createNode({
           nestlingId: activeNestlingId!,
           position,
           height: 50,
@@ -223,19 +222,25 @@ function MindmapEditorContent() {
         });
 
         if (connectionState.fromNode) {
-          await addEdge({
+          await createEdge({
             source: connectionState.fromNode.id,
             target: newNode.id,
           });
         }
       }
     },
-    [screenToFlowPosition, addNode, addEdge, nodes.length, activeNestlingId],
+    [
+      screenToFlowPosition,
+      createNode,
+      createEdge,
+      nodes.length,
+      activeNestlingId,
+    ],
   );
 
-  const handleAddNode = async () => {
+  const handleCreateNode = async () => {
     try {
-      await addNode({
+      await createNode({
         nestlingId: activeNestlingId!,
         position: {
           x: Math.random() * 300,
@@ -270,9 +275,9 @@ function MindmapEditorContent() {
 
   useEffect(() => {
     if (!activeNestlingId) return;
-    fetchNodes(activeNestlingId);
-    fetchEdges(activeNestlingId);
-  }, [activeNestlingId, fetchNodes, fetchEdges]);
+    getNodes(activeNestlingId);
+    getEdges(activeNestlingId);
+  }, [activeNestlingId, getNodes, getEdges]);
 
   return (
     <>
@@ -296,7 +301,7 @@ function MindmapEditorContent() {
           fitView
         >
           <Background />
-          <Toolbar onAddNode={handleAddNode} onDeleteAll={handleDeleteAll} />
+          <Toolbar onAddNode={handleCreateNode} onDeleteAll={handleDeleteAll} />
         </ReactFlow>
       </div>
     </>

@@ -17,7 +17,7 @@ export default function ImageContextMenu({
     albums,
     images,
     duplicateImage,
-    editImage,
+    updateImage,
     removeImage,
     downloadImage,
   } = useGalleryStore();
@@ -36,7 +36,7 @@ export default function ImageContextMenu({
   const handleAddToFavorites = async (image: GalleryImage) => {
     try {
       const newFavoriteState = !image.isFavorite;
-      await editImage({
+      await updateImage({
         id: imageId,
         albumId: image.albumId,
         title: image.title,
@@ -63,7 +63,7 @@ export default function ImageContextMenu({
   };
 
   const handleMoveImage = (id: number) => {
-    editImage({
+    updateImage({
       id: imageId,
       albumId: id,
       title: null,

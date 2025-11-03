@@ -23,7 +23,7 @@ export default function ImageLayout({
 }) {
   const { activeNestling } = useActiveNestling();
   if (!activeNestling) return null;
-  const { images, editImage, uploadImage, removeImage } = useGalleryStore();
+  const { images, updateImage, uploadImage, removeImage } = useGalleryStore();
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -75,7 +75,7 @@ export default function ImageLayout({
     try {
       const newFavoriteState = !photo.isFavorite;
       console.log(photo);
-      await editImage({
+      await updateImage({
         id: photo.id,
         albumId: photo.albumId,
         title: photo.title,

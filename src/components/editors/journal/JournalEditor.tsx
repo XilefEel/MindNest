@@ -12,7 +12,7 @@ import { useNestlingStore } from "@/stores/useNestlingStore";
 
 export default function JournalingApp() {
   const { activeBackgroundId } = useNestStore();
-  const { activeEntry, entries, fetchEntries, updateEntry } = useJournalStore();
+  const { activeEntry, entries, getEntries, updateEntry } = useJournalStore();
 
   const { activeNestling } = useActiveNestling();
   const [title, setTitle] = useState(activeNestling.title);
@@ -28,11 +28,10 @@ export default function JournalingApp() {
     currentData: useMemo(
       () => ({
         title,
-        folderId: activeNestling.folderId ?? null,
+        folderId: activeNestling.folderId,
       }),
       [activeNestling.folderId, title],
     ),
-
     saveFunction: (id, data) => updateNestling(id, data),
   });
 
@@ -72,10 +71,9 @@ export default function JournalingApp() {
   };
 
   useEffect(() => {
-    fetchEntries(activeNestling.id);
-  }, [fetchEntries, activeNestling.id]);
+    getEntries(activeNestling.id);
+  }, [getEntries, activeNestling.id]);
 
-  // Add this useEffect
   useEffect(() => {
     if (activeEntry) {
       setCurrentTitle(activeEntry.title);
@@ -94,9 +92,7 @@ export default function JournalingApp() {
 
   return (
     <div className="flex h-full gap-5">
-      {/* Main Writing Area */}
       <div className="flex flex-1 flex-col">
-        {/* Header */}
         <header className="rounded-lg px-6 py-3">
           <div className="items-center justify-between gap-y-4 sm:flex">
             <div className="min-w-0 flex-1">
@@ -151,7 +147,6 @@ export default function JournalingApp() {
                 />
               </div>
 
-              {/* Text Area */}
               <div className="flex-1 p-5">
                 <textarea
                   value={currentContent}
@@ -171,7 +166,6 @@ export default function JournalingApp() {
         )}
       </div>
 
-      {/* Sidebar */}
       <JournalSidebar setIsEntryOpen={setIsEntryOpen} />
     </div>
   );

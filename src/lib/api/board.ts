@@ -7,6 +7,10 @@ import {
   BoardData,
 } from "../types/board";
 
+export async function getBoard(nestlingId: number) {
+  return await invoke<BoardData>("get_board_data", { nestlingId });
+}
+
 export async function createBoardColumn(data: NewBoardColumn) {
   return await invoke<BoardColumn>("create_board_column", { data });
 }
@@ -61,8 +65,4 @@ export async function updateBoardCard({
 }
 export async function deleteBoardCard(id: number) {
   await invoke<void>("delete_board_card", { id });
-}
-
-export async function getBoard(nestlingId: number) {
-  return await invoke<BoardData>("get_board_data", { nestlingId });
 }

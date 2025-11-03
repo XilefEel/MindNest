@@ -17,7 +17,7 @@ type JournalState = {
 
   setActiveEntry: (entry: JournalEntry) => void;
   addEntry: (entry: NewJournalEntry) => Promise<JournalEntry>;
-  fetchEntries: (nestlingId: number) => Promise<void>;
+  getEntries: (nestlingId: number) => Promise<void>;
   updateEntry: (entry: JournalEntry) => Promise<JournalEntry>;
   deleteEntry: (id: number) => Promise<void>;
 
@@ -26,7 +26,7 @@ type JournalState = {
     nestlingId: number,
     template: JournalTemplate,
   ) => Promise<JournalEntry>;
-  fetchTemplates: (nestlingId: number) => Promise<void>;
+  getTemplates: (nestlingId: number) => Promise<void>;
   updateTemplate: (template: JournalTemplate) => Promise<JournalTemplate>;
   deleteTemplate: (id: number) => Promise<void>;
 };
@@ -50,7 +50,7 @@ export const useJournalStore = create<JournalState>((set) => ({
     return newEntry;
   }),
 
-  fetchEntries: withStoreErrorHandler(set, async (nestlingId: number) => {
+  getEntries: withStoreErrorHandler(set, async (nestlingId: number) => {
     const entries = await journalApi.getJournalEntries(nestlingId);
     set({ entries, loading: false });
   }),
@@ -112,7 +112,7 @@ export const useJournalStore = create<JournalState>((set) => ({
     },
   ),
 
-  fetchTemplates: withStoreErrorHandler(set, async (nestlingId: number) => {
+  getTemplates: withStoreErrorHandler(set, async (nestlingId: number) => {
     const templates = await journalApi.getJournalTemplates(nestlingId);
     set({ templates, loading: false });
   }),

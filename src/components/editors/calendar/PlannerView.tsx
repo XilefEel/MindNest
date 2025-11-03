@@ -35,7 +35,7 @@ export default function PlannerView({
 
   const { activeBackgroundId } = useNestStore();
   const { activeNestling } = useActiveNestling();
-  const { events, addEvent } = usePlannerStore();
+  const { events, createEvent } = usePlannerStore();
 
   const handleDoubleClick = ({
     clickedDate,
@@ -54,7 +54,7 @@ export default function PlannerView({
       color: getRandomElement(COLORS),
     };
     console.log(newEvent);
-    addEvent(newEvent);
+    createEvent(newEvent);
   };
 
   useEffect(() => {

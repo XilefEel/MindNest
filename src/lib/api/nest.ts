@@ -8,7 +8,7 @@ export async function createNest(userId: number, title: string) {
   });
 }
 
-export async function getUserNests(userId: number) {
+export async function getNests(userId: number) {
   return await invoke<Nest[]>("get_user_nests", {
     userId,
   });

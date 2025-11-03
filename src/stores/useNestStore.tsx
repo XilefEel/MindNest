@@ -22,7 +22,7 @@ type NestState = {
   setActiveBackgroundId: (backgroundId: number | null) => Promise<void>;
   clearActiveBackgroundId: () => void;
 
-  fetchNests: (userId: number) => Promise<void>;
+  getNests: (userId: number) => Promise<void>;
   createNest: (userId: number, title: string) => Promise<void>;
   updateNest: (nestId: number, newTitle: string) => Promise<void>;
   deleteNest: (nestId: number) => Promise<void>;
@@ -63,14 +63,14 @@ export const useNestStore = create<NestState>((set, get) => ({
     set({ activeBackgroundId: null });
   },
 
-  fetchNests: withStoreErrorHandler(set, async (userId) => {
-    const nests = await nestApi.getUserNests(userId);
+  getNests: withStoreErrorHandler(set, async (userId) => {
+    const nests = await nestApi.getNests(userId);
     set({ nests: nests });
   }),
 
   createNest: withStoreErrorHandler(set, async (userId, title) => {
     await nestApi.createNest(userId, title);
-    await get().fetchNests(userId);
+    await get().getNests(userId);
   }),
 
   updateNest: withStoreErrorHandler(set, async (nestId, newTitle) => {
@@ -145,7 +145,7 @@ export const useNestStore = create<NestState>((set, get) => ({
 
   deleteBackground: withStoreErrorHandler(set, async (backgroundId: number) => {
     const activeNestId = get().activeNestId;
-    await backgroundApi.deleteBackground(backgroundId);
+    await backgroundApi.removeBackground(backgroundId);
 
     if (backgroundId === get().activeBackgroundId) {
       await clearLastBackgroundImage(activeNestId!);

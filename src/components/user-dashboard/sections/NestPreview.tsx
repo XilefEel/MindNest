@@ -11,11 +11,11 @@ export default function NestPreview() {
   const userId = user?.id;
   if (!userId) return;
 
-  const { nests, fetchNests } = useNestStore();
+  const { nests, getNests } = useNestStore();
 
   useEffect(() => {
-    fetchNests(userId);
-  }, [fetchNests, userId]);
+    getNests(userId);
+  }, [getNests, userId]);
 
   return (
     <div className="flex flex-col gap-5 overflow-y-auto rounded-lg border-l-4 border-teal-500 bg-white p-6 dark:bg-gray-800">
