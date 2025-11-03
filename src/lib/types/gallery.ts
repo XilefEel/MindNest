@@ -14,7 +14,7 @@ export type NewGalleryImage = {
   filePath: string;
   title: string | null;
   description: string | null;
-  isFavorite?: boolean;
+  isFavorite: boolean;
   width: number;
   height: number;
 };

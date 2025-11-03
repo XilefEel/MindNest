@@ -16,12 +16,12 @@ export default function AlbumModal({
   album?: GalleryAlbum | null;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [title, setTitle] = useState("");
+  const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const { addAlbum, editAlbum, loading } = useGalleryStore();
+  const { addAlbum, updateAlbum, loading } = useGalleryStore();
 
   const handleExit = async () => {
-    setTitle("");
+    setName("");
     setDescription("");
     setIsOpen(false);
   };
@@ -29,19 +29,15 @@ export default function AlbumModal({
   const handleSaveAlbum = async () => {
     try {
       if (album) {
-        await editAlbum({
-          ...album,
-          name: title,
-          description,
-        });
-        toast.success(`Album "${title}" updated successfully!`);
+        await updateAlbum(album.id, { name, description });
+        toast.success(`Album "${name}" updated successfully!`);
       } else {
         await addAlbum({
           nestlingId,
-          name: title,
+          name,
           description,
         });
-        toast.success(`Album "${title}" created successfully!`);
+        toast.success(`Album "${name}" created successfully!`);
       }
       handleExit();
     } catch (error) {
@@ -52,10 +48,10 @@ export default function AlbumModal({
 
   useEffect(() => {
     if (isOpen && album) {
-      setTitle(album.name || "");
+      setName(album.name || "");
       setDescription(album.description || "");
     } else if (isOpen && !album) {
-      setTitle("");
+      setName("");
       setDescription("");
     }
   }, [album, isOpen]);
@@ -73,9 +69,9 @@ export default function AlbumModal({
       body={
         <>
           <TextField
-            label="Album Title"
-            text={title}
-            setText={setTitle}
+            label="Album Name"
+            text={name}
+            setText={setName}
             placeholder="e.g. Family, Vacation, Work"
           />
 
@@ -90,7 +86,7 @@ export default function AlbumModal({
       footer={
         <Button
           onClick={handleSaveAlbum}
-          disabled={loading || !title.trim()}
+          disabled={loading || !name.trim()}
           className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
         >
           {loading ? "Saving..." : album ? "Update Album" : "Create Album"}

@@ -14,12 +14,17 @@ export async function getJournalEntries(nestlingId: number) {
   return await invoke<JournalEntry[]>("get_journal_entries", { nestlingId });
 }
 
-export async function updateJournalEntry(
-  id: number,
-  title: string,
-  content: string,
-  entryDate: string,
-) {
+export async function updateJournalEntry({
+  id,
+  title,
+  content,
+  entryDate,
+}: {
+  id: number;
+  title: string;
+  content: string;
+  entryDate: string;
+}) {
   await invoke<void>("update_journal_entry", {
     id,
     title,
@@ -42,11 +47,15 @@ export async function getJournalTemplates(nestlingId: number) {
   });
 }
 
-export async function updateJournalTemplate(
-  id: number,
-  name: string,
-  content: string,
-) {
+export async function updateJournalTemplate({
+  id,
+  name,
+  content,
+}: {
+  id: number;
+  name: string;
+  content: string;
+}) {
   await invoke<void>("update_journal_template", { id, name, content });
 }
 

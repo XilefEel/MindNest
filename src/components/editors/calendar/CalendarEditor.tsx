@@ -23,13 +23,7 @@ export default function CalendarEditor() {
   const { updateNestling } = useNestlingStore();
   useAutoSave({
     target: activeNestling,
-    currentData: useMemo(
-      () => ({
-        title,
-        folderId: activeNestling.folderId,
-      }),
-      [activeNestling.folderId, title],
-    ),
+    currentData: useMemo(() => ({ title }), [title]),
     saveFunction: (id, data) => updateNestling(id, data),
   });
 

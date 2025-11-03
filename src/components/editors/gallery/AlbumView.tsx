@@ -20,7 +20,7 @@ export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
   const [description, setDescription] = useState(album.description ?? "");
   const [layoutMode, setLayoutMode] = useState<"row" | "column">("row");
 
-  const { images, downloadAlbum, editAlbum } = useGalleryStore();
+  const { images, downloadAlbum, updateAlbum } = useGalleryStore();
 
   const handleDownloadAlbum = async (id: number) => {
     try {
@@ -41,11 +41,7 @@ export default function AlbumView({ album }: { album: GalleryAlbum | null }) {
       [title, description],
     ),
     saveFunction: async (id, data) => {
-      await editAlbum({
-        id,
-        name: data.name,
-        description: data.description,
-      });
+      await updateAlbum(id, data);
     },
   });
 

@@ -113,7 +113,7 @@ export default function JournalSidebarContent({
                 <p className="mb-3 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                   <Clock className="h-3 w-3 flex-shrink-0" />
                   <span className="truncate">
-                    {new Date(entry.entry_date).toLocaleDateString()}
+                    {new Date(entry.entryDate).toLocaleDateString()}
                   </span>
                 </p>
 

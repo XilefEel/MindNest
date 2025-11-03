@@ -37,7 +37,7 @@ export default function MonthGrid({
   const { activeBackgroundId } = useNestStore();
   const { activeNestling } = useActiveNestling();
 
-  const { fetchEvents } = usePlannerStore();
+  const { getEvents } = usePlannerStore();
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -76,6 +76,18 @@ export default function MonthGrid({
     }
   };
 
+  const handleDayClick = (day: Date) => {
+    setSelectedDate(day);
+    setMode("planner");
+
+    const { start, end } = getWeekRange(day);
+    getEvents({
+      nestlingId: activeNestling!.id,
+      start,
+      end,
+    });
+  };
+
   return (
     <AnimatePresence mode="sync" initial={false} custom={direction}>
       <motion.div
@@ -96,17 +108,7 @@ export default function MonthGrid({
             {week.map((day) => (
               <div
                 key={day.toString()}
-                onClick={() => {
-                  setSelectedDate(day);
-                  setMode("planner");
-
-                  const { start, end } = getWeekRange(day);
-                  fetchEvents({
-                    nestlingId: activeNestling!.id,
-                    start,
-                    end,
-                  });
-                }}
+                onClick={() => handleDayClick(day)}
                 className={cn(
                   "flex h-16 items-center justify-center rounded-lg transition duration-150 hover:bg-gray-100 dark:hover:bg-gray-800",
                   activeBackgroundId &&

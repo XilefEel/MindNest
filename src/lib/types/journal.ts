@@ -4,7 +4,7 @@ export type NewJournalEntry = {
   nestlingId: number;
   title: string;
   content: string;
-  entry_date: string;
+  entryDate: string;
 };
 
 export type JournalEntry = WithBase<NewJournalEntry>;

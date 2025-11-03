@@ -29,7 +29,6 @@ export default function MindmapContextMenu({
     try {
       if (text) {
         await updateNode(parseInt(node.id), {
-          ...node,
           data: {
             ...node.data,
             textColor: color,
@@ -37,7 +36,6 @@ export default function MindmapContextMenu({
         });
       } else {
         await updateNode(parseInt(node.id), {
-          ...node,
           data: {
             ...node.data,
             color,

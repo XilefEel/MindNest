@@ -22,22 +22,34 @@ export default function DateSelect({
   months: string[];
 }) {
   const { activeBackgroundId } = useNestStore();
+
+  const onMonthChange = (value: string) => {
+    const monthIndex = Number(value);
+    const newDate = new Date(currentDate);
+    newDate.setMonth(monthIndex);
+
+    setDirection(monthIndex > currentDate.getMonth() ? 1 : -1);
+    setCurrentDate(newDate);
+  };
+
+  const onYearChange = (value: string) => {
+    const yearIndex = Number(value);
+    const newDate = new Date(currentDate);
+    newDate.setFullYear(yearIndex);
+
+    setDirection(newDate > currentDate ? 1 : -1);
+    setCurrentDate(newDate);
+  };
   return (
     <div className="flex items-center space-x-2">
       <Select
         value={String(currentDate.getMonth())}
-        onValueChange={(value) => {
-          const monthIndex = Number(value);
-          const newDate = new Date(currentDate);
-          newDate.setMonth(monthIndex);
-
-          setDirection(monthIndex > currentDate.getMonth() ? 1 : -1);
-          setCurrentDate(newDate);
-        }}
+        onValueChange={onMonthChange}
       >
         <SelectTrigger className="w-[140px] border-0 shadow-none">
           <SelectValue />
         </SelectTrigger>
+
         <SelectContent
           className={cn(
             "border-0 bg-white dark:bg-gray-800",
@@ -63,18 +75,12 @@ export default function DateSelect({
 
       <Select
         value={String(currentDate.getFullYear())}
-        onValueChange={(value) => {
-          const yearIndex = Number(value);
-          const newDate = new Date(currentDate);
-          newDate.setFullYear(yearIndex);
-
-          setDirection(newDate > currentDate ? 1 : -1);
-          setCurrentDate(newDate);
-        }}
+        onValueChange={onYearChange}
       >
         <SelectTrigger className="w-[100px] border-0 shadow-none">
           <SelectValue />
         </SelectTrigger>
+
         <SelectContent
           className={cn(
             "border-0 bg-white dark:bg-gray-800",

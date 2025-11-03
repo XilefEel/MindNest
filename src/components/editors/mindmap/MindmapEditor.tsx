@@ -55,13 +55,7 @@ function MindmapEditorContent() {
 
   useAutoSave({
     target: activeNestling,
-    currentData: useMemo(
-      () => ({
-        title,
-        folderId: activeNestling.folderId,
-      }),
-      [activeNestling.folderId, title],
-    ),
+    currentData: useMemo(() => ({ title }), [title]),
     saveFunction: (id, data) => updateNestling(id, data),
   });
 
@@ -79,7 +73,6 @@ function MindmapEditorContent() {
           const node = nodes.find((n) => n.id === change.id);
           if (node) {
             updateNode(parseInt(node.id), {
-              ...node,
               position: change.position,
             });
           }
@@ -92,8 +85,6 @@ function MindmapEditorContent() {
           const node = nodes.find((n) => n.id === change.id);
           if (node) {
             updateNode(parseInt(node.id), {
-              ...node,
-              position: node.position,
               width: change.dimensions.width,
               height: change.dimensions.height,
             });

@@ -75,14 +75,7 @@ export default function ImageLayout({
     try {
       const newFavoriteState = !photo.isFavorite;
       console.log(photo);
-      await updateImage({
-        id: photo.id,
-        albumId: photo.albumId,
-        title: photo.title,
-        description: photo.description,
-        isFavorite: newFavoriteState,
-      });
-
+      await updateImage(photo.id, { isFavorite: newFavoriteState });
       newFavoriteState
         ? toast.success("Image added to favorites!")
         : toast.success("Image removed from favorites!");

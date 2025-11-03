@@ -23,13 +23,7 @@ export default function RenameImageModal({
 
   const handleEditImage = () => {
     try {
-      updateImage({
-        id: imageId,
-        albumId: currentImage?.albumId ?? null,
-        title,
-        description,
-        isFavorite: currentImage?.isFavorite ?? false,
-      });
+      updateImage(imageId, { title, description });
       setIsOpen(false);
       toast.success("Image updated successfully!");
     } catch (error) {

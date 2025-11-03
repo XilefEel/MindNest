@@ -93,14 +93,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
     const updated = mergeWithCurrent(current, updates);
 
-    await nestlingApi.editNestling(
-      id,
-      updated.folderId,
-      updated.icon,
-      updated.isPinned,
-      updated.title,
-      updated.content,
-    );
+    await nestlingApi.editNestling({ ...updated, id });
 
     set((state) => ({
       nestlings: state.nestlings

@@ -7,7 +7,7 @@ import {
 import * as galleryApi from "@/lib/api/gallery";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { withStoreErrorHandler } from "@/lib/utils/general";
+import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 
 type GalleryState = {
   images: GalleryImage[];
@@ -35,23 +35,11 @@ type GalleryState = {
     albumId?: number | null;
   }) => Promise<void>;
   duplicateImage: (id: number) => Promise<GalleryImage>;
-  updateImage: ({
-    id,
-    albumId,
-    title,
-    description,
-    isFavorite,
-  }: {
-    id: number;
-    albumId: number | null;
-    title: string | null;
-    description: string | null;
-    isFavorite: boolean;
-  }) => Promise<void>;
+  updateImage: (id: number, updates: Partial<GalleryImage>) => Promise<void>;
   removeImage: (id: number) => Promise<void>;
   downloadImage: (id: number) => Promise<void>;
 
-  fetchAlbums: (nestlingId: number) => Promise<void>;
+  getAlbums: (nestlingId: number) => Promise<void>;
   addAlbum: ({
     nestlingId,
     name,
@@ -62,15 +50,7 @@ type GalleryState = {
     description: string | null;
   }) => Promise<void>;
   downloadAlbum: (id: number) => Promise<void>;
-  editAlbum: ({
-    id,
-    name,
-    description,
-  }: {
-    id: number;
-    name: string | null;
-    description: string | null;
-  }) => Promise<void>;
+  updateAlbum: (id: number, updates: Partial<GalleryAlbum>) => Promise<void>;
   deleteAlbum: (id: number) => Promise<void>;
 
   handleDragStart: (event: DragStartEvent) => void;
@@ -159,38 +139,18 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     return image;
   }),
 
-  updateImage: withStoreErrorHandler(
-    set,
-    async ({
-      id,
-      albumId,
-      title,
-      description,
-      isFavorite,
-    }: {
-      id: number;
-      albumId: number | null;
-      title: string | null;
-      description: string | null;
-      isFavorite: boolean;
-    }) => {
-      set((state) => ({
-        images: state.images.map((img) =>
-          img.id === id
-            ? {
-                ...img,
-                albumId: albumId,
-                title,
-                description,
-                isFavorite,
-                updated_at: new Date().toISOString(),
-              }
-            : img,
-        ),
-      }));
-      await galleryApi.updateImage(id, albumId, title, description, isFavorite);
-    },
-  ),
+  updateImage: withStoreErrorHandler(set, async (id, updates) => {
+    const currentImage = get().images.find((img) => img.id === id);
+    if (!currentImage) throw new Error("Image not found");
+
+    const updated = mergeWithCurrent(currentImage, updates);
+
+    set((state) => ({
+      images: state.images.map((img) => (img.id === id ? updated : img)),
+    }));
+
+    await galleryApi.updateImage({ ...updated, id });
+  }),
 
   removeImage: withStoreErrorHandler(set, async (id: number) => {
     await galleryApi.removeImage(id);
@@ -216,7 +176,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     await galleryApi.downloadImage(id, filePath);
   }),
 
-  fetchAlbums: withStoreErrorHandler(set, async (nestlingId: number) => {
+  getAlbums: withStoreErrorHandler(set, async (nestlingId: number) => {
     const albums = await galleryApi.getAlbums(nestlingId);
     set({ albums });
   }),
@@ -241,32 +201,17 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     set({ loading: false });
   }),
 
-  editAlbum: withStoreErrorHandler(
-    set,
-    async ({
-      id,
-      name,
-      description,
-    }: {
-      id: number;
-      name: string | null;
-      description: string | null;
-    }) => {
-      await galleryApi.updateAlbum(id, name, description);
-      set((state) => ({
-        albums: state.albums.map((album) =>
-          album.id === id
-            ? {
-                ...album,
-                name: name ?? album.name,
-                description: description ?? album.description,
-                updated_at: new Date().toISOString(),
-              }
-            : album,
-        ),
-      }));
-    },
-  ),
+  updateAlbum: withStoreErrorHandler(set, async (id, updates) => {
+    const current = get().albums.find((album) => album.id === id);
+    if (!current) throw new Error("Album not found");
+
+    const updated = mergeWithCurrent(current, updates);
+
+    await galleryApi.updateAlbum({ ...updated, id });
+    set((state) => ({
+      albums: state.albums.map((album) => (album.id === id ? updated : album)),
+    }));
+  }),
 
   deleteAlbum: withStoreErrorHandler(set, async (id: number) => {
     await galleryApi.deleteAlbum(id);
@@ -277,7 +222,6 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
 
   handleDragStart: (event: DragStartEvent) => {
     set({ activeDraggingImageId: event.active.id as string });
-    console.log("DRAG START");
   },
 
   handleDragEnd: async (event: DragEndEvent) => {
@@ -293,22 +237,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       const albumId = parseInt(over.id as string, 10);
 
       try {
-        const { images } = get();
-        const image = images.find((img) => img.id === imageId);
-
-        if (!image) {
-          set({ error: "Image not found" });
-          return;
-        }
-        if (image.albumId === albumId) return;
-
-        await get().updateImage({
-          id: imageId,
-          albumId,
-          title: image.title,
-          description: image.description,
-          isFavorite: image.isFavorite ?? false,
-        });
+        await get().updateImage(imageId, { albumId });
       } catch (error) {
         set({ error: String(error) });
       }

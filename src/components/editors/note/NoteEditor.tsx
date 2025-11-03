@@ -26,14 +26,7 @@ export default function NoteEditor() {
 
   const { autoSaveStatus } = useAutoSave({
     target: activeNestling,
-    currentData: useMemo(
-      () => ({
-        title,
-        content,
-        folderId: activeNestling.folderId,
-      }),
-      [activeNestling.folderId, title, content],
-    ),
+    currentData: useMemo(() => ({ title }), [title]),
     saveFunction: (id, data) => updateNestling(id, data),
   });
 

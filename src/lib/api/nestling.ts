@@ -9,14 +9,21 @@ export async function getNestlings(nestId: number) {
   return await invoke<Nestling[]>("get_nestlings", { nestId });
 }
 
-export async function editNestling(
-  id: number,
-  folderId: number | null,
-  icon: string | null,
-  isPinned?: boolean,
-  title?: string | null,
-  content?: string | null,
-) {
+export async function editNestling({
+  id,
+  folderId,
+  icon,
+  isPinned,
+  title,
+  content,
+}: {
+  id: number;
+  folderId: number | null;
+  icon: string | null;
+  isPinned: boolean;
+  title: string | null;
+  content: string | null;
+}) {
   await invoke<void>("update_nestling", {
     id,
     folderId,

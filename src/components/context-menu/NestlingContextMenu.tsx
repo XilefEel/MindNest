@@ -23,7 +23,6 @@ export default function NestlingContextMenu({
   const handlePinNestling = () => {
     try {
       updateNestling(nestlingId, {
-        folderId: nestling.folderId,
         isPinned: !isPinned,
       });
     } catch (error) {

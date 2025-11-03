@@ -5,7 +5,7 @@ import {
   NewMindmapNode,
   NewMindmapEdge,
 } from "@/lib/types/mindmap";
-import { withStoreErrorHandler } from "@/lib/utils/general";
+import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
 
 type MindmapStore = {
@@ -20,7 +20,7 @@ type MindmapStore = {
 
   createNode: (node: NewMindmapNode) => Promise<MindmapNode>;
   getNodes: (nestlingId: number) => Promise<void>;
-  updateNode: (nodeId: number, node: NewMindmapNode) => Promise<void>;
+  updateNode: (nodeId: number, updates: Partial<MindmapNode>) => Promise<void>;
   deleteNode: (nodeId: number) => Promise<void>;
 
   createEdge: (edge: NewMindmapEdge) => Promise<MindmapEdge>;
@@ -28,7 +28,7 @@ type MindmapStore = {
   deleteEdge: (id: number) => Promise<void>;
 };
 
-export const useMindmapStore = create<MindmapStore>((set) => ({
+export const useMindmapStore = create<MindmapStore>((set, get) => ({
   nodes: [],
   edges: [],
   activeNode: null,
@@ -52,31 +52,28 @@ export const useMindmapStore = create<MindmapStore>((set) => ({
     set({ nodes, loading: false });
   }),
 
-  updateNode: withStoreErrorHandler(
-    set,
-    async (nodeId: number, node: NewMindmapNode) => {
-      set((state) => ({
-        nodes: state.nodes.map((n) =>
-          n.id === nodeId.toString()
-            ? { ...n, ...node, id: nodeId.toString() }
-            : n,
-        ),
-      }));
+  updateNode: withStoreErrorHandler(set, async (nodeId, updates) => {
+    const current = get().nodes.find((n) => n.id === nodeId.toString());
+    if (!current) throw new Error("Node not found");
+    const updated = mergeWithCurrent(current, updates);
 
-      await mindmapApi.updateNode(
-        nodeId,
-        node.nestlingId,
-        node.position.x,
-        node.position.y,
-        node.height,
-        node.width,
-        node.data.label,
-        node.data.color,
-        node.data.textColor,
-        node.type,
-      );
-    },
-  ),
+    set((state) => ({
+      nodes: state.nodes.map((n) => (n.id === nodeId.toString() ? updated : n)),
+    }));
+
+    await mindmapApi.updateNode(
+      nodeId,
+      updated.nestlingId,
+      updated.position.x,
+      updated.position.y,
+      updated.height,
+      updated.width,
+      updated.data.label,
+      updated.data.color,
+      updated.data.textColor,
+      updated.type,
+    );
+  }),
 
   deleteNode: withStoreErrorHandler(set, async (nodeId: number) => {
     await mindmapApi.deleteNode(nodeId);

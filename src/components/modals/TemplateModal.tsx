@@ -36,8 +36,7 @@ export default function AddTemplateModal({
   const handleSave = () => {
     try {
       if (template) {
-        updateTemplate({
-          ...template,
+        updateTemplate(template.id, {
           name: currentTitle,
           content: currentContent,
         });

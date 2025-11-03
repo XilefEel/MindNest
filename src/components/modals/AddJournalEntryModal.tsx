@@ -36,7 +36,7 @@ export default function AddJournalEntryModal({
         nestlingId: activeNestling.id,
         title: title,
         content: "",
-        entry_date: new Date().toISOString().split("T")[0],
+        entryDate: new Date().toISOString().split("T")[0],
       });
       setActiveEntry(newEntry);
       handleExit();

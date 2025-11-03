@@ -4,7 +4,7 @@ import type {
   NewPlannerEventType,
 } from "@/lib/types/calendar";
 import * as calendarApi from "@/lib/api/calendar";
-import { withStoreErrorHandler } from "@/lib/utils/general";
+import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 
 type PlannerState = {
   events: PlannerEventType[];
@@ -21,23 +21,10 @@ type PlannerState = {
     start: string;
     end: string;
   }) => Promise<void>;
-  updateEvent: ({
-    id,
-    date,
-    title,
-    description,
-    startTime,
-    duration,
-    color,
-  }: {
-    id: number;
-    date: string;
-    title: string;
-    description: string | null;
-    startTime: number;
-    duration: number;
-    color: string | null;
-  }) => Promise<void>;
+  updateEvent: (
+    id: number,
+    updates: Partial<PlannerEventType>,
+  ) => Promise<void>;
   deleteEvent: (id: number) => Promise<void>;
 };
 
@@ -75,50 +62,16 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
   ),
 
   // not using withStoreErrorHandler since we want optimistic update
-  updateEvent: async ({
-    id,
-    date,
-    title,
-    description,
-    startTime,
-    duration,
-    color,
-  }: {
-    id: number;
-    date: string;
-    title: string;
-    description: string | null;
-    startTime: number;
-    duration: number;
-    color: string | null;
-  }) => {
+  updateEvent: async (id, updates) => {
     const prevEvent = get().events;
+    const current = prevEvent.find((e) => e.id === id);
+    if (!current) throw new Error("Event not found");
+
+    const updated = mergeWithCurrent(current, updates);
+
     try {
-      set({
-        events: prevEvent.map((e) =>
-          e.id === id
-            ? {
-                ...e,
-                date,
-                title,
-                description: description ?? e.description,
-                startTime,
-                duration,
-                updatedAt: new Date().toISOString(),
-                color: color ?? e.color,
-              }
-            : e,
-        ),
-      });
-      await calendarApi.updatePlannerEvent({
-        id,
-        date,
-        title,
-        description,
-        startTime,
-        duration,
-        color,
-      });
+      set({ events: prevEvent.map((e) => (e.id === id ? updated : e)) });
+      await calendarApi.updatePlannerEvent({ ...updated, id });
     } catch (error) {
       set({ events: prevEvent, error: String(error) });
       throw error;

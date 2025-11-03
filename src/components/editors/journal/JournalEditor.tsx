@@ -25,13 +25,7 @@ export default function JournalingApp() {
   const { updateNestling } = useNestlingStore();
   useAutoSave({
     target: activeNestling,
-    currentData: useMemo(
-      () => ({
-        title,
-        folderId: activeNestling.folderId,
-      }),
-      [activeNestling.folderId, title],
-    ),
+    currentData: useMemo(() => ({ title }), [title]),
     saveFunction: (id, data) => updateNestling(id, data),
   });
 
@@ -46,17 +40,7 @@ export default function JournalingApp() {
     }, [currentTitle, currentContent]),
     context: activeEntry,
     saveFunction: async (id, data, entry) => {
-      console.log(id);
-      if (entry) {
-        await updateEntry({
-          ...entry,
-          title: data.title,
-          content: data.content,
-        });
-        console.log("Entry updated!");
-      } else {
-        console.log("No entry passed");
-      }
+      if (entry) await updateEntry(id, data);
     },
   });
 

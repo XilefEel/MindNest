@@ -5,7 +5,7 @@ import {
   NewJournalEntry,
   NewJournalTemplate,
 } from "@/lib/types/journal";
-import { withStoreErrorHandler } from "@/lib/utils/general";
+import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
 
 type JournalState = {
@@ -18,7 +18,7 @@ type JournalState = {
   setActiveEntry: (entry: JournalEntry) => void;
   addEntry: (entry: NewJournalEntry) => Promise<JournalEntry>;
   getEntries: (nestlingId: number) => Promise<void>;
-  updateEntry: (entry: JournalEntry) => Promise<JournalEntry>;
+  updateEntry: (id: number, updates: Partial<JournalEntry>) => Promise<void>;
   deleteEntry: (id: number) => Promise<void>;
 
   addTemplate: (template: NewJournalTemplate) => Promise<JournalTemplate>;
@@ -27,11 +27,14 @@ type JournalState = {
     template: JournalTemplate,
   ) => Promise<JournalEntry>;
   getTemplates: (nestlingId: number) => Promise<void>;
-  updateTemplate: (template: JournalTemplate) => Promise<JournalTemplate>;
+  updateTemplate: (
+    id: number,
+    updates: Partial<JournalTemplate>,
+  ) => Promise<void>;
   deleteTemplate: (id: number) => Promise<void>;
 };
 
-export const useJournalStore = create<JournalState>((set) => ({
+export const useJournalStore = create<JournalState>((set, get) => ({
   activeEntry: null,
   entries: [],
   templates: [],
@@ -55,27 +58,18 @@ export const useJournalStore = create<JournalState>((set) => ({
     set({ entries, loading: false });
   }),
 
-  updateEntry: withStoreErrorHandler(set, async (entry: JournalEntry) => {
-    await journalApi.updateJournalEntry(
-      entry.id,
-      entry.title,
-      entry.content,
-      entry.entry_date,
-    );
-    const updatedEntries = {
-      ...entry,
-      updated_at: new Date().toISOString(),
-    };
+  updateEntry: withStoreErrorHandler(set, async (id, entry) => {
+    const current = get().entries.find((e) => e.id === entry.id)!;
+    if (!current) throw new Error("Entry not found");
+    const updated = mergeWithCurrent(current, entry);
+
+    await journalApi.updateJournalEntry({ ...updated, id });
 
     set((state) => ({
-      entries: state.entries.map((e) =>
-        e.id === entry.id ? updatedEntries : e,
-      ),
-      activeEntry: state.activeEntry?.id === entry.id ? updatedEntries : null,
+      entries: state.entries.map((e) => (e.id === entry.id ? updated : e)),
     }));
-
-    return updatedEntries;
   }),
+
   deleteEntry: withStoreErrorHandler(set, async (id: number) => {
     await journalApi.deleteJournalEntry(id);
     set((state) => ({
@@ -102,7 +96,7 @@ export const useJournalStore = create<JournalState>((set) => ({
         nestlingId,
         title: template.name,
         content: template.content,
-        entry_date: new Date().toISOString().split("T")[0],
+        entryDate: new Date().toISOString().split("T")[0],
       });
       set((state) => ({
         entries: [...state.entries, newEntry],
@@ -117,28 +111,17 @@ export const useJournalStore = create<JournalState>((set) => ({
     set({ templates, loading: false });
   }),
 
-  updateTemplate: withStoreErrorHandler(
-    set,
-    async (template: JournalTemplate) => {
-      await journalApi.updateJournalTemplate(
-        template.id,
-        template.name,
-        template.content,
-      );
-      const updatedTemplates = {
-        ...template,
-        updated_at: new Date().toISOString(),
-      };
+  updateTemplate: withStoreErrorHandler(set, async (id, updates) => {
+    const current = get().templates.find((t) => t.id === id)!;
+    if (!current) throw new Error("Template not found");
+    const updated = mergeWithCurrent(current, updates);
 
-      set((state) => ({
-        templates: state.templates.map((t) =>
-          t.id === template.id ? updatedTemplates : t,
-        ),
-      }));
+    await journalApi.updateJournalTemplate({ ...updated, id });
 
-      return updatedTemplates;
-    },
-  ),
+    set((state) => ({
+      templates: state.templates.map((t) => (t.id === id ? updated : t)),
+    }));
+  }),
 
   deleteTemplate: withStoreErrorHandler(set, async (id: number) => {
     await journalApi.deleteJournalTemplate(id);

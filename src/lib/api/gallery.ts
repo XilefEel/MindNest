@@ -58,13 +58,19 @@ export async function downloadAlbum(id: number, savePath: string) {
   await invoke<void>("download_album", { id, savePath });
 }
 
-export async function updateImage(
-  id: number,
-  albumId: number | null,
-  title: string | null,
-  description: string | null,
-  isFavorite: boolean,
-) {
+export async function updateImage({
+  id,
+  albumId,
+  title,
+  description,
+  isFavorite,
+}: {
+  id: number;
+  albumId: number | null;
+  title: string | null;
+  description: string | null;
+  isFavorite: boolean;
+}) {
   await invoke<void>("update_image", {
     id,
     albumId,
@@ -86,11 +92,15 @@ export async function getAlbums(nestlingId: number) {
   return await invoke<GalleryAlbum[]>("get_albums", { nestlingId });
 }
 
-export async function updateAlbum(
-  id: number,
-  name: string | null,
-  description: string | null,
-) {
+export async function updateAlbum({
+  id,
+  name,
+  description,
+}: {
+  id: number;
+  name: string | null;
+  description: string | null;
+}) {
   await invoke<void>("update_album", { id, name, description });
 }
 
