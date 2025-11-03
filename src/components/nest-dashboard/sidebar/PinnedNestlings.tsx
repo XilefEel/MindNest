@@ -30,12 +30,12 @@ export default function PinnedNestlings({
           onDoubleClick={(e) => {
             e.stopPropagation();
           }}
-          className="flex cursor-pointer items-center justify-between rounded px-2 py-1 hover:bg-teal-50 dark:hover:bg-gray-700"
+          className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 font-medium hover:bg-teal-50 dark:hover:bg-gray-700"
         >
-          <div className="flex items-center gap-2 font-medium">
+          <div className="rounded-lg bg-linear-to-r from-amber-500 to-amber-600 p-1.5 text-white">
             <Pin className="size-4" />
-            <span>Pinned</span>
           </div>
+          <span>Pinned</span>
         </div>
 
         {isPinnedOpen && (

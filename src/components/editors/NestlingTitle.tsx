@@ -27,6 +27,15 @@ export default function NestlingTitle({
     }
   };
 
+  const handleClearEmoji = () => {
+    try {
+      updateNestling(nestling.id, { icon: null });
+      setShowPicker(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -41,11 +50,11 @@ export default function NestlingTitle({
   }, [showPicker]);
 
   return (
-    <div className="flex flex-row items-center gap-3">
+    <div className="flex flex-row items-center gap-2">
       <div className="relative" ref={pickerRef}>
         <button
           onClick={() => setShowPicker(!showPicker)}
-          className="cursor-pointer text-3xl font-bold transition-opacity hover:opacity-70"
+          className="flex cursor-pointer items-center text-3xl font-bold transition-opacity hover:opacity-70"
           type="button"
         >
           {nestling.icon ? <p>{nestling.icon}</p> : <Icon className="size-8" />}
@@ -54,6 +63,12 @@ export default function NestlingTitle({
         {showPicker && (
           <div className="absolute top-12 left-0 z-50">
             <EmojiPicker onEmojiClick={handleEmojiClick} lazyLoadEmojis />
+            <div
+              onClick={handleClearEmoji}
+              className="absolute right-4 bottom-4 z-50 cursor-pointer rounded-lg bg-red-500 px-3 py-1 text-white transition-all duration-150 hover:scale-105 hover:bg-red-700"
+            >
+              Clear
+            </div>
           </div>
         )}
       </div>

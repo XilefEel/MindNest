@@ -91,6 +91,7 @@ export default function Topbar({
         )}
       >
         <TopbarButton action={handleExit} Icon={ArrowLeft} />
+
         <TopbarButton
           action={() => setIsSidebarOpen(!isSidebarOpen)}
           Icon={Menu}

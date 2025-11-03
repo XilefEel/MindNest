@@ -195,7 +195,6 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
         const nestlingId = Number(activeIdStr);
         const newFolderId = overType === "folder" ? Number(overIdStr) : null;
 
-        set({ activeNestlingId: nestlingId });
         await Promise.all([
           get().updateNestling(nestlingId, { folderId: newFolderId }),
           saveLastNestling(nestId, nestlingId),

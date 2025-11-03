@@ -9,7 +9,9 @@ import { GripVertical } from "lucide-react";
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 
 export default function NestlingItem({
   nestling,
@@ -27,8 +29,13 @@ export default function NestlingItem({
 
   const [title, setTitle] = useState(nestling.title);
   const [isEditing, setIsEditing] = useState(false);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const shouldSaveRef = useRef(true);
+  const [showPicker, setShowPicker] = useState(false);
+  const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
+  const pickerRef = useRef<HTMLDivElement>(null);
+  const emojiButtonRef = useRef<HTMLButtonElement>(null);
 
   const Icon = getNestlingIcon(nestling.nestlingType);
 
@@ -86,6 +93,38 @@ export default function NestlingItem({
     }
   };
 
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    try {
+      updateNestling(nestling.id, { icon: emojiData.emoji });
+      setShowPicker(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleClearEmoji = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      updateNestling(nestling.id, { icon: null });
+      setShowPicker(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const toggleEmojiPicker = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!showPicker && emojiButtonRef.current) {
+      const rect = emojiButtonRef.current.getBoundingClientRect();
+      setPickerPosition({
+        top: rect.top - 225,
+        left: rect.left + 100,
+      });
+    }
+    setShowPicker((prev) => !prev);
+  };
+
   useEffect(() => {
     setTitle(nestling.title);
   }, [nestling.title]);
@@ -96,6 +135,20 @@ export default function NestlingItem({
       inputRef.current.select();
     }
   }, [isEditing]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        pickerRef.current &&
+        !pickerRef.current.contains(event.target as Node) &&
+        emojiButtonRef.current &&
+        !emojiButtonRef.current.contains(event.target as Node)
+      )
+        setShowPicker(false);
+    }
+    if (showPicker) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showPicker]);
 
   return (
     <NestlingContextMenu nestlingId={nestling.id}>
@@ -130,11 +183,19 @@ export default function NestlingItem({
             className="flex min-w-0 flex-1 items-center gap-1.5"
             onDoubleClick={handleDoubleClick}
           >
-            {nestling.icon ? (
-              <p>{nestling.icon}</p>
-            ) : (
-              <Icon className="size-4 flex-shrink-0" />
-            )}
+            <button
+              ref={emojiButtonRef}
+              onClick={toggleEmojiPicker}
+              className="cursor-pointer transition-opacity hover:opacity-70"
+              type="button"
+            >
+              {nestling.icon ? (
+                <p>{nestling.icon}</p>
+              ) : (
+                <Icon className="size-4 flex-shrink-0" />
+              )}
+            </button>
+
             <div
               className={cn(
                 "min-w-0 flex-1 rounded transition-all duration-200",
@@ -170,6 +231,30 @@ export default function NestlingItem({
             </div>
           )}
         </div>
+
+        {showPicker &&
+          createPortal(
+            <div
+              ref={pickerRef}
+              className="fixed z-50"
+              style={{
+                top: `${pickerPosition.top}px`,
+                left: `${pickerPosition.left}px`,
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <EmojiPicker onEmojiClick={handleEmojiClick} lazyLoadEmojis />
+              {nestling.icon && (
+                <button
+                  onClick={handleClearEmoji}
+                  className="absolute right-4 bottom-4 z-50 cursor-pointer rounded-lg bg-red-500 px-3 py-1 text-sm font-medium text-white transition-all duration-150 hover:scale-105 hover:bg-red-700"
+                >
+                  Clear
+                </button>
+              )}
+            </div>,
+            document.body,
+          )}
       </motion.div>
     </NestlingContextMenu>
   );

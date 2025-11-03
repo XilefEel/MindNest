@@ -76,7 +76,7 @@ export default function Sidebar({
 
         <div
           className={cn(
-            "flex cursor-pointer items-center gap-1 rounded px-2 py-1 font-medium transition-colors duration-150 ease-in-out",
+            "flex cursor-pointer items-center gap-2 rounded px-2 py-1 font-medium transition-colors duration-150 ease-in-out",
             activeBackgroundId
               ? activeNestlingId === null
                 ? "bg-white/50 font-bold dark:bg-black/50"
@@ -88,9 +88,16 @@ export default function Sidebar({
           onClick={handleHomeClick}
           onDoubleClick={(e) => e.stopPropagation()}
         >
-          <Home className="size-4" />
+          <div className="rounded-lg bg-linear-to-r from-teal-500 to-teal-600 p-1.5 text-white">
+            <Home className="size-4" />
+          </div>
           <span>Home</span>
         </div>
+
+        <PinnedNestlings
+          pinnedNestlings={pinnedNestlings}
+          setIsSidebarOpen={setIsSidebarOpen}
+        />
 
         <AnimatePresence mode="popLayout">
           <DndContext
@@ -98,11 +105,6 @@ export default function Sidebar({
             onDragStart={handleDragStart}
             onDragEnd={(e) => handleDragEnd(e, nestId)}
           >
-            <PinnedNestlings
-              pinnedNestlings={pinnedNestlings}
-              setIsSidebarOpen={setIsSidebarOpen}
-            />
-
             {folderGroups.map((folder) => (
               <FolderTree
                 key={folder.id}
