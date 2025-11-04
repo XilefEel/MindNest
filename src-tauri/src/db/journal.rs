@@ -2,14 +2,11 @@ use crate::models::journal::{JournalEntry, JournalTemplate, NewJournalEntry, New
 use crate::utils::db::AppDb;
 use rusqlite::params;
 
-use chrono::Local;
+use chrono::Utc;
 
 pub fn insert_journal_entry_into_db(db: &AppDb, data: NewJournalEntry) -> Result<JournalEntry, String> {
     let connection = db.connection.lock().unwrap();
-    let created_at = chrono::Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare("
         INSERT INTO journal_entries (nestling_id, title, content, entry_date, created_at, updated_at)
@@ -81,10 +78,8 @@ pub fn update_journal_entry_in_db(
     entry_date: String,
 ) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
-    let updated_at = Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let updated_at = Utc::now().to_rfc3339();
+    
     connection
         .execute(
             "
@@ -114,10 +109,7 @@ pub fn insert_journal_template_into_db(
     data: NewJournalTemplate,
 ) -> Result<JournalTemplate, String> {
     let connection = db.connection.lock().unwrap();
-    let timestamp = chrono::Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let timestamp = Utc::now().to_rfc3339();
 
     let mut statement = connection
         .prepare(
@@ -186,10 +178,7 @@ pub fn get_journal_templates_by_nestling(db: &AppDb, nestling_id: i64) -> Result
 
 pub fn update_journal_template_in_db(db: &AppDb, id: i64, name: String, content: String) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
-    let updated_at = chrono::Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let updated_at = Utc::now().to_rfc3339();
 
     connection
         .execute(

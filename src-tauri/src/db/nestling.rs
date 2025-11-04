@@ -1,14 +1,11 @@
 use crate::{models::nestling::{Nestling, NewNestling}, utils::db::AppDb};
 use rusqlite::params;
 
-use chrono;
+use chrono::Utc;
 
 pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> Result<Nestling, String> {
     let connection = db.connection.lock().unwrap();
-    let created_at = chrono::Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
         .prepare(
@@ -127,10 +124,7 @@ pub fn update_nestling_in_db(
     content: Option<String>
 ) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
-    let updated_at = chrono::Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let updated_at = Utc::now().to_rfc3339();
 
     connection
         .execute("

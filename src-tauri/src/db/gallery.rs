@@ -2,7 +2,7 @@ use crate::models::gallery::{GalleryAlbum, GalleryImage, NewGalleryAlbum, NewGal
 use crate::utils::db::AppDb;
 use rusqlite::params;
 
-use chrono::Local;
+use chrono::{Utc, Local};
 use imagesize::size;
 use zip::ZipWriter;
 use std::fs;
@@ -12,10 +12,7 @@ use tauri::Manager;
 
 pub fn add_image_into_db(db: &AppDb, data: NewGalleryImage) -> Result<GalleryImage, String> {
     let connection = db.connection.lock().unwrap();
-    let created_at = Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare("
         INSERT INTO gallery_images (
@@ -348,10 +345,7 @@ pub fn update_image_in_db(
     is_favorite: bool,
 ) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
-    let updated_at = Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let updated_at = Utc::now().to_rfc3339();
 
     connection.execute(
         "
@@ -394,10 +388,7 @@ pub fn delete_image_from_app(db: &AppDb, id: i64) -> Result<(), String> {
 
 pub fn add_album_to_db(db: &AppDb, data: NewGalleryAlbum) -> Result<GalleryAlbum, String> {
     let connection = db.connection.lock().unwrap();
-    let created_at = Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
         .prepare(
@@ -470,10 +461,7 @@ pub fn update_album_in_db(
     description: Option<String>,
 ) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
-    let updated_at = Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let updated_at = Utc::now().to_rfc3339();
 
     connection
         .execute(

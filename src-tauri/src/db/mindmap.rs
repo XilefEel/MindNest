@@ -1,6 +1,6 @@
 use crate::utils::db::AppDb;
 use rusqlite::params;
-use chrono;
+use chrono::Utc;
 use crate::models::mindmap::{
     MindmapNode, MindmapNodeDB, NewMindmapNodeDB,
     MindmapEdge, MindmapEdgeDB, NewMindmapEdgeDB,
@@ -8,10 +8,7 @@ use crate::models::mindmap::{
 
 pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> Result<MindmapNode, String> {
     let connection = db.connection.lock().unwrap();
-    let created_at = chrono::Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare("
         INSERT INTO mindmap_nodes (
@@ -106,10 +103,7 @@ pub fn update_node_in_db(
     node_type: String,
 ) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
-    let updated_at = chrono::Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let updated_at = Utc::now().to_rfc3339();
 
     connection
         .execute("
@@ -147,10 +141,7 @@ pub fn delete_node_from_db(db: &AppDb, id: i64) -> Result<(), String> {
 
 pub fn insert_edge_into_db(db: &AppDb, data: NewMindmapEdgeDB) -> Result<MindmapEdge, String> {
     let connection = db.connection.lock().unwrap();
-    let created_at = chrono::Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare("
         INSERT INTO mindmap_edges (

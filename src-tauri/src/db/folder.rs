@@ -3,13 +3,12 @@ use rusqlite::params;
 use crate::utils::db::AppDb;
 use crate::models::folder::{Folder, NewFolder};
 
+use chrono::Utc;
+
 pub fn insert_folder_into_db(db: &AppDb, data: NewFolder) -> Result<Folder, String> {
     let connection = db.connection.lock().unwrap();
 
-    let created_at = chrono::Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
         .prepare(
@@ -71,10 +70,7 @@ pub fn get_folders_by_nest(db: &AppDb, nest_id: i64) -> Result<Vec<Folder>, Stri
 
 pub fn update_folder_in_db(db: &AppDb, id: i64, parent_id: Option<i64>, name: Option<String>) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
-    let updated_at = chrono::Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let updated_at = Utc::now().to_rfc3339();
 
     connection
         .execute("

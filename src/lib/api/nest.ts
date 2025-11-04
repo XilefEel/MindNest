@@ -2,9 +2,12 @@ import { invoke } from "@tauri-apps/api/core";
 import { Nest } from "../types/nest";
 
 export async function createNest(userId: number, title: string) {
+  console.log("🌳 Creating nest...");
   await invoke<void>("create_nest", {
-    userId,
-    title,
+    data: {
+      userId,
+      title,
+    },
   });
 }
 

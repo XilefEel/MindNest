@@ -1,27 +1,24 @@
 use crate::{models::nest::{Nest, NewNest}, utils::db::AppDb};
 use rusqlite::params;
 
-use chrono::Local;
+use chrono::Utc;
 
 pub fn create_nest_in_db(db: &AppDb, data: NewNest) -> Result<Nest, String> {
-    let created_at = Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
-    
     let connection = db.connection.lock().unwrap();
+    let created_at = Utc::now().to_rfc3339();
+
+    println!("🌳 Creating nest...");
 
     let mut statement = connection
         .prepare(
             "INSERT INTO nests (user_id, title, created_at, updated_at)
-            VALUES (?1, ?2, ?3, ?3)
+            VALUES (?1, ?2, ?3, ?4)
             RETURNING id, user_id, title, created_at, updated_at",
         )
-        .map_err(|e| e.to_string()
-        )?;
+        .map_err(|e| e.to_string())?;
 
     let nest = statement
-        .query_row(params![data.user_id, data.title, created_at], |row| {
+        .query_row(params![data.user_id, data.title, created_at, created_at], |row| {
             Ok(Nest {
                 id: row.get(0)?,
                 user_id: row.get(1)?,
@@ -30,9 +27,8 @@ pub fn create_nest_in_db(db: &AppDb, data: NewNest) -> Result<Nest, String> {
                 updated_at: row.get(4)?,
             })
         })
-
         .map_err(|e| e.to_string())?;
-
+        
     Ok(nest)
 }
 
@@ -65,9 +61,11 @@ pub fn get_nests_by_user(db: &AppDb, user_id: i64) -> Result<Vec<Nest>, String> 
 
 pub fn update_nest_title(db: &AppDb, nest_id: i64, new_title: String) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
+    let updated_at = Utc::now().to_rfc3339();
+
     connection.execute(
-        "UPDATE nests SET title = ?1 WHERE id = ?2",
-        params![new_title, nest_id],
+        "UPDATE nests SET title = ?1, updated_at = ?2 WHERE id = ?3",
+        params![new_title, updated_at, nest_id],
     )
     .map_err(|e| e.to_string())?;
     Ok(())

@@ -1,7 +1,7 @@
 use crate::models::nest_background::{BackgroundImage, NewBackgroundImage};
 use crate::utils::db::AppDb;
 
-use chrono::Local;
+use chrono::{Utc, Local};
 use imagesize::size;
 use rusqlite::params;
 use std::fs;
@@ -10,10 +10,7 @@ use tauri::Manager;
 
 pub fn add_background_into_db(db: &AppDb, data: NewBackgroundImage) -> Result<BackgroundImage, String> {
     let connection = db.connection.lock().unwrap();
-    let created_at = Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare("
         INSERT INTO background_images (

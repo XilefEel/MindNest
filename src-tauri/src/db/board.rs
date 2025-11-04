@@ -3,17 +3,13 @@ use crate::models::board::{
     BoardCard, BoardColumn, BoardColumnData, BoardData, NewBoardCard, NewBoardColumn,
 };
 use crate::utils::db::AppDb;
-use chrono;
+use chrono::Utc;
 use rusqlite::params;
 use std::collections::HashMap;
 
 pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> Result<BoardColumn, String> {
     let connection = db.connection.lock().unwrap();
-
-    let created_at = chrono::Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
         .prepare(
@@ -51,10 +47,11 @@ pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> Result<B
 
 pub fn update_board_column_in_db(db: &AppDb, id: i64, title: String, order_index: i64, color: String) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
+    let updated_at = Utc::now().to_rfc3339();
 
     connection.execute(
-        "UPDATE board_columns SET title = ?1, order_index = ?2, color = ?3, updated_at = CURRENT_TIMESTAMP WHERE id = ?4",
-        params![title, order_index, color, id],
+        "UPDATE board_columns SET title = ?1, order_index = ?2, color = ?3, updated_at = ?4 WHERE id = ?5",
+        params![title, order_index, color, updated_at, id],
     ).map_err(|e| e.to_string())?;
     Ok(())
 }
@@ -71,11 +68,7 @@ pub fn delete_board_column_from_db(db: &AppDb, id: i64) -> Result<(), String> {
 
 pub fn insert_board_card_into_db(db: &AppDb, data: NewBoardCard) -> Result<BoardCard, String> {
     let connection = db.connection.lock().unwrap();
-
-    let created_at = chrono::Local::now()
-        .naive_local()
-        .format("%Y-%m-%d %H:%M:%S")
-        .to_string();
+    let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare(
         "INSERT INTO board_cards (column_id, title, description, order_index, created_at, updated_at)
@@ -118,12 +111,13 @@ pub fn update_board_card_in_db(
     column_id: i64,
 ) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
+    let updated_at = Utc::now().to_rfc3339();
 
     connection.execute(
         "UPDATE board_cards 
-         SET title = ?1, description = ?2, order_index = ?3, column_id = ?4, updated_at = CURRENT_TIMESTAMP 
-         WHERE id = ?5",
-        params![title, description, order_index, column_id, id],
+         SET title = ?1, description = ?2, order_index = ?3, column_id = ?4, updated_at = ?5 
+         WHERE id = ?6",
+        params![title, description, order_index, column_id, updated_at, id],
     ).map_err(|e| e.to_string())?;
 
     Ok(())
@@ -217,14 +211,10 @@ pub fn get_board_data_from_db(db: &AppDb, nestling_id: i64) -> Result<BoardData,
             .push(card);
     }
 
-    // Build the final structure, preserving column order
     let mut column_data_list = Vec::new();
     for col in columns {
         let mut cards = cards_by_column.remove(&col.id).unwrap_or_else(Vec::new);
-
-        // Sort cards by order_index to maintain correct order within each column
         cards.sort_by_key(|card| card.order_index);
-
         column_data_list.push(BoardColumnData { column: col, cards });
     }
 
