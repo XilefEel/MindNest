@@ -28,7 +28,7 @@ export default function RecentSection() {
               "border-gray-200 border-l-blue-500 hover:border-blue-500 dark:border-gray-800 dark:border-l-blue-500 dark:hover:hover:border-blue-500",
               "transition hover:scale-105",
               activeBackgroundId &&
-                "bg-white/10 backdrop-blur-sm dark:bg-black/10",
+                "border-t-0 border-r-0 border-b-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
             )}
           >
             <div className="flex items-center justify-between">

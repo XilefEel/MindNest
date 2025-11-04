@@ -199,8 +199,11 @@ export default function NestlingItem({
             <div
               className={cn(
                 "min-w-0 flex-1 rounded transition-all duration-200",
-                isEditing &&
-                  "bg-white px-2 py-0.5 shadow-md ring-2 ring-teal-500 dark:bg-gray-800",
+                isEditing
+                  ? activeBackgroundId
+                    ? "bg-white/10 px-2 py-0.5 shadow-md ring-2 ring-teal-500 backdrop-blur-sm dark:bg-black/10"
+                    : "bg-white px-2 py-0.5 shadow-md ring-2 ring-teal-500 dark:bg-gray-800"
+                  : "",
               )}
             >
               <input

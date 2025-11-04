@@ -1,4 +1,6 @@
+import { findFolderPath } from "@/lib/utils/folders";
 import { cn } from "@/lib/utils/general";
+import { getNestlingIcon } from "@/lib/utils/nestlings";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import { useNestStore } from "@/stores/useNestStore";
 import { ArrowRight, Folder, Pin } from "lucide-react";
@@ -6,9 +8,6 @@ import { ArrowRight, Folder, Pin } from "lucide-react";
 export default function PinnedSection() {
   const { activeBackgroundId } = useNestStore();
   const { nestlings, folders, setActiveNestlingId } = useNestlingStore();
-
-  const findFolderPath = (folderId: number | null) =>
-    folders.find((f) => f.id === folderId)?.name ?? "No folder";
 
   const pinnedNestlings = nestlings.filter((n) => n.isPinned === true);
 
@@ -27,35 +26,43 @@ export default function PinnedSection() {
             No pinned nestlings
           </p>
         )}
-        {pinnedNestlings.map((nestling, i) => (
-          <div
-            key={i}
-            onClick={() => {
-              setActiveNestlingId(nestling.id);
-            }}
-            className={cn(
-              "group cursor-pointer rounded-xl border border-l-4 p-4 hover:shadow-md",
-              "bg-white dark:bg-gray-800",
-              "border-gray-200 border-l-pink-500 hover:border-pink-500 dark:border-gray-800 dark:border-l-pink-500 dark:hover:hover:border-pink-500",
-              "transition hover:scale-105",
-              activeBackgroundId &&
-                "bg-white/10 backdrop-blur-sm dark:bg-black/10",
-            )}
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-semibold text-gray-900 dark:text-white">
-                  {nestling.title}
-                </p>
-                <div className="mt-1 flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                  <Folder className="h-4 w-4" />
-                  <span>{findFolderPath(nestling.folderId)}</span>
+
+        {pinnedNestlings.map((nestling, i) => {
+          const Icon = getNestlingIcon(nestling.nestlingType);
+
+          return (
+            <div
+              key={i}
+              onClick={() => setActiveNestlingId(nestling.id)}
+              className={cn(
+                "group cursor-pointer rounded-xl border border-l-4 p-4 hover:shadow-md",
+                "bg-white dark:bg-gray-800",
+                "border-gray-200 border-l-pink-500 hover:border-pink-500 dark:border-gray-800 dark:border-l-pink-500 dark:hover:hover:border-pink-500",
+                "transition hover:scale-105",
+                activeBackgroundId &&
+                  "border-t-0 border-r-0 border-b-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-1 font-semibold">
+                    {nestling.icon ? (
+                      <p>{nestling.icon}</p>
+                    ) : (
+                      <Icon className="size-4 flex-shrink-0" />
+                    )}
+                    <span>{nestling.title}</span>
+                  </div>
+                  <div className="mt-1 flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                    <Folder className="h-4 w-4" />
+                    <span>{findFolderPath(nestling.folderId, folders)}</span>
+                  </div>
                 </div>
+                <ArrowRight className="h-5 w-5 text-gray-300 transition" />
               </div>
-              <ArrowRight className="h-5 w-5 text-gray-300 transition" />
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

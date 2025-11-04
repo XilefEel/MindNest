@@ -4,7 +4,7 @@ import * as folderApi from "@/lib/api/folder";
 import { Folder, NewFolder } from "@/lib/types/folder";
 import { Nestling, NewNestling } from "@/lib/types/nestling";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
-import { saveLastNestling } from "@/lib/storage/session";
+import { saveLastNestling, saveRecentNestling } from "@/lib/storage/session";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 
 type NestlingState = {
@@ -94,6 +94,10 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     const updated = mergeWithCurrent(current, updates);
 
     await nestlingApi.editNestling({ ...updated, id });
+    saveRecentNestling(updated.nestId, {
+      id: updated.id,
+      updatedAt: updated.updatedAt,
+    });
 
     set((state) => ({
       nestlings: state.nestlings

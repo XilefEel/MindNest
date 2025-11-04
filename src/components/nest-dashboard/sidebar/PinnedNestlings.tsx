@@ -2,6 +2,8 @@ import { useState } from "react";
 import NestlingItem from "./NestlingItem";
 import { Pin } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNestStore } from "@/stores/useNestStore";
+import { cn } from "@/lib/utils/general";
 
 export default function PinnedNestlings({
   pinnedNestlings,
@@ -10,6 +12,8 @@ export default function PinnedNestlings({
   pinnedNestlings: any[];
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
+  const { activeBackgroundId } = useNestStore();
+
   const [isPinnedOpen, setIsPinnedOpen] = useState(true);
 
   return (
@@ -30,9 +34,12 @@ export default function PinnedNestlings({
           onDoubleClick={(e) => {
             e.stopPropagation();
           }}
-          className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 font-medium hover:bg-teal-50 dark:hover:bg-gray-700"
+          className={cn(
+            "flex cursor-pointer items-center gap-2 rounded px-2 py-1 font-medium transition-all duration-150 ease-in-out hover:bg-teal-50 dark:hover:bg-gray-700",
+            activeBackgroundId && "hover:bg-white/20 dark:hover:bg-black/20",
+          )}
         >
-          <div className="rounded-lg bg-linear-to-r from-amber-500 to-amber-600 p-1.5 text-white">
+          <div className="rounded-lg bg-linear-to-r from-pink-400 to-pink-500 p-1.5 text-white">
             <Pin className="size-4" />
           </div>
           <span>Pinned</span>

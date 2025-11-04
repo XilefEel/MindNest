@@ -24,7 +24,7 @@ export default function StatsSection() {
             "border-gray-200 border-b-orange-500 hover:border-orange-500 dark:border-gray-800 dark:border-b-orange-500 dark:hover:hover:border-orange-500",
             "transition hover:scale-105",
             activeBackgroundId &&
-              "bg-white/10 backdrop-blur-sm dark:bg-black/10",
+              "border-t-0 border-r-0 border-l-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
           )}
         >
           <div className="mb-3 text-4xl">{stat.icon}</div>

@@ -6,6 +6,9 @@ let storePromise: Promise<Store> | null = null;
 type LastNestlings = Record<string, number>;
 type LastBackgroundImages = Record<string, number>;
 
+type RecentNestling = { id: number; updatedAt: string };
+type RecentNestlings = Record<string, RecentNestling[]>;
+
 function getStore() {
   if (!storePromise) {
     storePromise = Store.load(".mindnest-auth.dat");
@@ -98,4 +101,36 @@ export async function clearLastBackgroundImage(nestId: number) {
     (await getItem<LastBackgroundImages>("lastBackgroundImage")) || {};
   delete current[nestId.toString()];
   await setItem<LastBackgroundImages>("lastBackgroundImage", current);
+}
+
+export async function saveRecentNestling(
+  nestId: number,
+  RecentNestling: RecentNestling,
+) {
+  const current = (await getItem<RecentNestlings>("recentNestlings")) || {};
+
+  const key = nestId.toString();
+  const currentList = current[key] ?? [];
+
+  const updatedList = [
+    RecentNestling,
+    ...currentList.filter((item) => item.id !== RecentNestling.id),
+  ];
+  current[key] = updatedList.slice(0, 10);
+
+  await setItem<RecentNestlings>("recentNestlings", current);
+}
+
+export async function getRecentNestlings(
+  nestId: number | null,
+): Promise<RecentNestling[] | null> {
+  if (nestId == null) return [];
+  const current = (await getItem<RecentNestlings>("recentNestlings")) || {};
+  return current[nestId.toString()] ?? [];
+}
+
+export async function clearRecentNestlings(nestId: number) {
+  const current = (await getItem<RecentNestlings>("recentNestlings")) || {};
+  delete current[nestId.toString()];
+  await setItem<RecentNestlings>("recentNestlings", current);
 }
