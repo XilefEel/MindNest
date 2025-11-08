@@ -22,14 +22,13 @@ export default function PinnedSection() {
 
       <div className="space-y-3">
         {pinnedNestlings.length === 0 && (
-          <p className="text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             No pinned nestlings
           </p>
         )}
 
         {pinnedNestlings.map((nestling, i) => {
           const Icon = getNestlingIcon(nestling.nestlingType);
-
           return (
             <div
               key={i}
@@ -44,7 +43,7 @@ export default function PinnedSection() {
               )}
             >
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-1 font-semibold">
                     {nestling.icon ? (
                       <p>{nestling.icon}</p>
@@ -53,7 +52,7 @@ export default function PinnedSection() {
                     )}
                     <span>{nestling.title}</span>
                   </div>
-                  <div className="mt-1 flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
                     <Folder className="h-4 w-4" />
                     <span>{findFolderPath(nestling.folderId, folders)}</span>
                   </div>
