@@ -57,8 +57,7 @@ export default function NestlingTitle({
         <div className="relative" ref={pickerRef}>
           <button
             onClick={() => setShowPicker(!showPicker)}
-            className="flex cursor-pointer items-center text-3xl font-bold transition-opacity hover:opacity-70"
-            type="button"
+            className="flex w-10 cursor-pointer items-center justify-center text-3xl font-bold transition-opacity hover:opacity-70"
           >
             {nestling.icon ? (
               <p>{nestling.icon}</p>
@@ -87,9 +86,9 @@ export default function NestlingTitle({
           placeholder="Title..."
         />
       </div>
-      <div className="mt-1 flex items-center gap-2">
-        <Folder className="size-5" />
-        <span>{findFolderPath(nestling.folderId, folders)}</span>
+      <div className="mt-2 flex items-center gap-2">
+        <Folder className="h-5 w-10" />
+        <span>{findFolderPath(nestling.folderId, folders) || "No folder"}</span>
       </div>
     </div>
   );

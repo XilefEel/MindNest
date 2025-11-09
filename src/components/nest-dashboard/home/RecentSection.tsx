@@ -27,7 +27,7 @@ export default function RecentSection() {
       const recentIds = (await getRecentNestlings(activeNestId)) || [];
 
       const recents = recentIds
-        .map((recent) => nestlings.find((n) => n.id === recent.id))
+        .map((recent) => nestlings.find((n) => n.id === recent))
         .filter((n): n is Nestling => Boolean(n));
 
       setRecentNestlings(recents);
@@ -81,16 +81,21 @@ export default function RecentSection() {
               <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-1 font-semibold">
-                    {nestling.icon ? (
-                      <p>{nestling.icon}</p>
-                    ) : (
-                      <Icon className="size-4 flex-shrink-0" />
-                    )}
+                    <div className="flex w-6 items-center justify-center">
+                      {nestling.icon ? (
+                        <p>{nestling.icon}</p>
+                      ) : (
+                        <Icon className="size-4 flex-shrink-0" />
+                      )}
+                    </div>
                     <span>{nestling.title}</span>
                   </div>
                   <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                    <Folder className="h-4 w-4" />
-                    <span>{findFolderPath(nestling.folderId, folders)}</span>
+                    <Folder className="h-4 w-6" />
+                    <span>
+                      {findFolderPath(nestling.folderId, folders) ||
+                        "No Folder"}
+                    </span>
                   </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     {formatDistanceToNow(new Date(nestling.updatedAt), {

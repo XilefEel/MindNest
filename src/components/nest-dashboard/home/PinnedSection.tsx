@@ -45,15 +45,18 @@ export default function PinnedSection() {
               <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-1 font-semibold">
-                    {nestling.icon ? (
-                      <p>{nestling.icon}</p>
-                    ) : (
-                      <Icon className="size-4 flex-shrink-0" />
-                    )}
+                    <div className="flex w-6 items-center justify-center">
+                      {nestling.icon ? (
+                        <p>{nestling.icon}</p>
+                      ) : (
+                        <Icon className="size-4 flex-shrink-0" />
+                      )}
+                    </div>
+
                     <span>{nestling.title}</span>
                   </div>
                   <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                    <Folder className="h-4 w-4" />
+                    <Folder className="h-4 w-6" />
                     <span>{findFolderPath(nestling.folderId, folders)}</span>
                   </div>
                 </div>

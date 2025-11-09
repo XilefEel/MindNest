@@ -186,8 +186,7 @@ export default function NestlingItem({
             <button
               ref={emojiButtonRef}
               onClick={toggleEmojiPicker}
-              className="cursor-pointer transition-opacity hover:opacity-70"
-              type="button"
+              className="flex w-5 cursor-pointer items-center justify-center transition-opacity hover:opacity-70"
             >
               {nestling.icon ? (
                 <p>{nestling.icon}</p>

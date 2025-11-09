@@ -55,9 +55,19 @@ export default function useRestore({
         // Set last nestling and its folder as active
         if (lastNestling && Number(id) === lastNestling.nestId) {
           setActiveNestlingId(lastNestling.id);
+
           if (lastNestling.folderId) {
+            let currentFolderId: number | null = lastNestling.folderId;
+
+            while (currentFolderId) {
+              setFolderOpen(currentFolderId, true);
+              const currentFolder = useNestlingStore
+                .getState()
+                .folders.find((f) => f.id === currentFolderId);
+              currentFolderId = currentFolder?.parentId || null;
+            }
+
             setActiveFolderId(lastNestling.folderId);
-            setFolderOpen(lastNestling.folderId, true);
           }
         }
 

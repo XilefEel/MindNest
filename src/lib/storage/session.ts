@@ -5,9 +5,7 @@ let storePromise: Promise<Store> | null = null;
 
 type LastNestlings = Record<string, number>;
 type LastBackgroundImages = Record<string, number>;
-
-type RecentNestling = { id: number; updatedAt: string };
-type RecentNestlings = Record<string, RecentNestling[]>;
+type RecentNestlings = Record<string, number[]>;
 
 function getStore() {
   if (!storePromise) {
@@ -105,7 +103,7 @@ export async function clearLastBackgroundImage(nestId: number) {
 
 export async function saveRecentNestling(
   nestId: number,
-  RecentNestling: RecentNestling,
+  recentNestlingId: number,
 ) {
   const current = (await getItem<RecentNestlings>("recentNestlings")) || {};
 
@@ -113,8 +111,8 @@ export async function saveRecentNestling(
   const currentList = current[key] ?? [];
 
   const updatedList = [
-    RecentNestling,
-    ...currentList.filter((item) => item.id !== RecentNestling.id),
+    recentNestlingId,
+    ...currentList.filter((item) => item !== recentNestlingId),
   ];
   current[key] = updatedList.slice(0, 10);
 
@@ -123,7 +121,7 @@ export async function saveRecentNestling(
 
 export async function getRecentNestlings(
   nestId: number | null,
-): Promise<RecentNestling[] | null> {
+): Promise<number[] | null> {
   if (nestId == null) return [];
   const current = (await getItem<RecentNestlings>("recentNestlings")) || {};
   return current[nestId.toString()] ?? [];

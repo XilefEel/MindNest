@@ -8,7 +8,7 @@ export default function Header({ nestId }: { nestId: number }) {
       <div>
         <h1 className="relative inline-block text-2xl font-bold tracking-tight text-slate-900 md:text-3xl dark:text-white">
           Welcome back 👋
-          <span className="absolute -bottom-2 left-0 h-1 w-40 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-300 dark:to-teal-400"></span>
+          <span className="absolute -bottom-2 left-0 h-1 w-full rounded-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-300 dark:to-teal-400"></span>
         </h1>
         <p className="mt-3 text-sm text-slate-600 md:text-base dark:text-slate-400">
           Pick up where you left off or start something new.

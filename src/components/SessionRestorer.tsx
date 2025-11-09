@@ -34,14 +34,24 @@ export default function SessionRestorer() {
 
       const lastNestlingId = await getLastNestling(lastNestId);
 
-      if (lastNestlingId != null) {
+      if (lastNestlingId) {
         const lastNestling = useNestlingStore
           .getState()
           .nestlings.find((n) => n.id === lastNestlingId);
 
         if (lastNestling) {
           setActiveNestlingId(lastNestling.id);
-          if (lastNestling.folderId != null) {
+          if (lastNestling.folderId) {
+            let currentFolderId: number | null = lastNestling.folderId;
+
+            while (currentFolderId) {
+              setFolderOpen(currentFolderId, true);
+              const currentFolder = useNestlingStore
+                .getState()
+                .folders.find((f) => f.id === currentFolderId);
+              currentFolderId = currentFolder?.parentId || null;
+            }
+
             setFolderOpen(lastNestling.folderId, true);
           }
         }
