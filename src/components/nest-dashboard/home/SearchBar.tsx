@@ -39,7 +39,13 @@ export default function SearchBar() {
           </div>
 
           {searchQuery && (
-            <div className="absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+            <div
+              className={cn(
+                "absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800",
+                activeBackgroundId &&
+                  "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/30",
+              )}
+            >
               {filteredNestlings.length > 0 ? (
                 filteredNestlings.map((nestling) => {
                   const Icon = getNestlingIcon(nestling.nestlingType);
@@ -50,7 +56,11 @@ export default function SearchBar() {
                         setActiveNestlingId(nestling.id);
                         setSearchQuery("");
                       }}
-                      className="flex cursor-pointer flex-row items-center p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      className={cn(
+                        "flex cursor-pointer flex-row items-center p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
+                        activeBackgroundId &&
+                          "hover:bg-white/30 hover:dark:bg-black/30",
+                      )}
                     >
                       <div className="flex items-center gap-1">
                         <div className="flex w-6 items-center justify-center">

@@ -18,6 +18,7 @@ import useActiveNestling from "@/hooks/useActiveNestling";
 import NestlingModal from "@/components/modals/NestlingModal";
 import FolderModal from "@/components/modals/FolderModal";
 import MindmapEditor from "@/components/editors/mindmap/MindmapEditor";
+import SearchModal from "@/components/modals/SearchModal";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -31,6 +32,7 @@ export default function NestDashboardPage() {
 
   const [isNestlingModalOpen, setIsNestlingModalOpen] = useState(false);
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
   const { activeNestling } = useActiveNestling();
   const { activeBackgroundId, backgrounds } = useNestStore();
@@ -74,6 +76,10 @@ export default function NestDashboardPage() {
 
           case "f":
             setIsFolderModalOpen(!isFolderModalOpen);
+            break;
+
+          case "k":
+            setIsSearchModalOpen(!isSearchModalOpen);
             break;
         }
       }
@@ -204,6 +210,9 @@ export default function NestDashboardPage() {
       >
         <div />
       </FolderModal>
+      <SearchModal isOpen={isSearchModalOpen} setIsOpen={setIsSearchModalOpen}>
+        <div />
+      </SearchModal>
     </div>
   );
 }
