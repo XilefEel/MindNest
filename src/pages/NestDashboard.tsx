@@ -50,14 +50,14 @@ export default function NestDashboardPage() {
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
-        e.preventDefault();
-
         switch (e.key) {
           case "t":
+            e.preventDefault();
             setIsTopbarCollapsed(!isTopbarCollapsed);
             break;
 
           case "s":
+            e.preventDefault();
             const isMobile = window.innerWidth < 768;
             if (isMobile) {
               setIsSidebarOpen(!isSidebarOpen);
@@ -67,18 +67,22 @@ export default function NestDashboardPage() {
             break;
 
           case "h":
+            e.preventDefault();
             setIsCardHidden(!isCardHidden);
             break;
 
           case "n":
+            e.preventDefault();
             setIsNestlingModalOpen(!isNestlingModalOpen);
             break;
 
           case "f":
+            e.preventDefault();
             setIsFolderModalOpen(!isFolderModalOpen);
             break;
 
           case "k":
+            e.preventDefault();
             setIsSearchModalOpen(!isSearchModalOpen);
             break;
         }
@@ -168,7 +172,7 @@ export default function NestDashboardPage() {
 
           <main
             className={cn(
-              "mx-3 flex-1 p-5 md:mx-8",
+              "relative mx-3 flex-1 p-5 md:mx-8",
               activeNestling?.nestlingType === "note"
                 ? "overflow-hidden"
                 : "overflow-y-auto",
@@ -210,9 +214,10 @@ export default function NestDashboardPage() {
       >
         <div />
       </FolderModal>
-      <SearchModal isOpen={isSearchModalOpen} setIsOpen={setIsSearchModalOpen}>
-        <div />
-      </SearchModal>
+      <SearchModal
+        isOpen={isSearchModalOpen}
+        setIsOpen={setIsSearchModalOpen}
+      />
     </div>
   );
 }

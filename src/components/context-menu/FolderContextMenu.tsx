@@ -7,6 +7,7 @@ import FolderModal from "../modals/FolderModal";
 import { useNestStore } from "@/stores/useNestStore";
 import NestlingModal from "../modals/NestlingModal";
 import { useNestlingStore } from "@/stores/useNestlingStore";
+import { cn } from "@/lib/utils/general";
 
 export default function FolderContextMenu({
   folderId,
@@ -15,7 +16,7 @@ export default function FolderContextMenu({
   folderId: number;
   children: React.ReactNode;
 }) {
-  const { activeNestId } = useNestStore();
+  const { activeNestId, activeBackgroundId } = useNestStore();
   const { duplicateFolder } = useNestlingStore();
   return (
     <BaseContextMenu
@@ -23,7 +24,11 @@ export default function FolderContextMenu({
         <>
           <FolderModal folderId={folderId} nestId={activeNestId!}>
             <ContextMenu.Item
-              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
+              className={cn(
+                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
+                activeBackgroundId &&
+                  "hover:bg-white/30 dark:hover:bg-black/30",
+              )}
               onSelect={(e) => {
                 e.preventDefault();
               }}
@@ -43,7 +48,11 @@ export default function FolderContextMenu({
 
           <NestlingModal nestId={activeNestId!}>
             <ContextMenu.Item
-              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
+              className={cn(
+                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
+                activeBackgroundId &&
+                  "hover:bg-white/30 dark:hover:bg-black/30",
+              )}
               onSelect={(e) => {
                 e.preventDefault();
               }}

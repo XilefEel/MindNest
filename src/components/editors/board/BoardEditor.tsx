@@ -22,6 +22,7 @@ import { useNestlingStore } from "@/stores/useNestlingStore";
 import { COLORS } from "@/lib/utils/constants";
 import { getRandomElement } from "@/lib/utils/general";
 import ColumnCard from "./ColumnCard";
+import { createPortal } from "react-dom";
 
 export default function BoardEditor() {
   const { activeNestling, activeNestlingId } = useActiveNestling();
@@ -84,7 +85,7 @@ export default function BoardEditor() {
   });
 
   return (
-    <div className="flex h-full flex-col gap-3">
+    <div className="relative flex h-full flex-col gap-3">
       <NestlingTitle
         title={title}
         setTitle={setTitle}
@@ -117,13 +118,13 @@ export default function BoardEditor() {
               </button>
             </div>
           </SortableContext>
-          <DragOverlay dropAnimation={null}>
-            {activeCard && (
-              <div className="w-72">
-                <ColumnCard {...activeCard} />
-              </div>
-            )}
-          </DragOverlay>
+
+          {createPortal(
+            <DragOverlay dropAnimation={null}>
+              {activeCard && <ColumnCard {...activeCard} />}
+            </DragOverlay>,
+            document.body,
+          )}
         </DndContext>
       </div>
     </div>

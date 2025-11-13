@@ -155,7 +155,12 @@ export default function NestlingModal({
                         </p>
                       </div>
                       {isSelected && (
-                        <div className="absolute top-2 right-2 size-2 rounded-full bg-teal-500" />
+                        <div
+                          className={cn(
+                            "absolute top-2 right-2 size-2 rounded-full",
+                            type.color,
+                          )}
+                        />
                       )}
                     </button>
                   );

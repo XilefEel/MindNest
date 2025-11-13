@@ -50,7 +50,6 @@ export default function ImageLayout({
       createdAt: img.createdAt,
     }));
 
-    // Sort by favorite and then by date
     mapped.sort((a, b) => {
       if (a.isFavorite === b.isFavorite) {
         return (
@@ -136,14 +135,13 @@ export default function ImageLayout({
       onDragOver={handleDropOver}
       onDragLeave={handleDropLeave}
       className={cn(
-        "p-2",
-        isDragOver
-          ? "inset-0 border-2 border-dashed border-teal-400 bg-teal-100/80 dark:bg-teal-900/80"
-          : "",
+        "pt-2 pb-8",
+        isDragOver &&
+          "inset-0 border-2 border-dashed border-teal-400 bg-teal-100/80 dark:bg-teal-900/80",
       )}
     >
       {photos.length === 0 && !isUploading ? (
-        <div className="flex h-48 flex-col items-center justify-center text-gray-500">
+        <div className="flex h-96 flex-col items-center justify-center text-gray-500">
           <Upload className="mb-4 size-16" />
           <p className="text-lg font-medium">No images yet</p>
           <p className="text-sm">

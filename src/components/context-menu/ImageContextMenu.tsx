@@ -6,6 +6,8 @@ import ContextMenuItem from "./ContextMenuItem";
 import RenameImageModal from "../modals/RenameImageModal";
 import { GalleryImage } from "@/lib/types/gallery";
 import BaseContextMenu from "./BaseContextMenu";
+import { cn } from "@/lib/utils/general";
+import { useNestStore } from "@/stores/useNestStore";
 export default function ImageContextMenu({
   imageId,
   children,
@@ -13,6 +15,8 @@ export default function ImageContextMenu({
   imageId: number;
   children: React.ReactNode;
 }) {
+  const { activeBackgroundId } = useNestStore();
+
   const {
     albums,
     images,
@@ -79,7 +83,11 @@ export default function ImageContextMenu({
         <>
           <RenameImageModal imageId={imageId}>
             <ContextMenu.Item
-              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
+              className={cn(
+                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
+                activeBackgroundId &&
+                  "hover:bg-white/30 dark:hover:bg-black/30",
+              )}
               onSelect={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
@@ -106,14 +114,24 @@ export default function ImageContextMenu({
                 e.preventDefault();
                 e.stopPropagation();
               }}
-              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
+              className={cn(
+                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
+                activeBackgroundId &&
+                  "hover:bg-white/30 dark:hover:bg-black/30",
+              )}
             >
               <Folder className="h-4 w-4" />
               <span>Move to Album</span>
             </ContextMenu.SubTrigger>
 
             <ContextMenu.Portal>
-              <ContextMenu.SubContent className="animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+              <ContextMenu.SubContent
+                className={cn(
+                  "animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800",
+                  activeBackgroundId &&
+                    "border-0 bg-white/30 backdrop-blur-sm hover:bg-white/30 dark:bg-black/30 dark:hover:bg-black/30",
+                )}
+              >
                 {albums.length === 0 ? (
                   <ContextMenuItem
                     action={() => {}}
@@ -139,7 +157,12 @@ export default function ImageContextMenu({
             Icon={Download}
             text="Download"
           />
-          <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
+          <ContextMenu.Separator
+            className={cn(
+              "mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700",
+              activeBackgroundId && "bg-white/10 dark:bg-black/10",
+            )}
+          />
 
           <ContextMenuItem
             action={() => handleDeleteImage(imageId)}

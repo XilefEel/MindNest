@@ -7,6 +7,8 @@ import { useNestlingStore } from "@/stores/useNestlingStore";
 import { toast } from "sonner";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
+import { cn } from "@/lib/utils/general";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function AlbumContextMenu({
   album,
@@ -15,6 +17,7 @@ export default function AlbumContextMenu({
   album: GalleryAlbum;
   children: React.ReactNode;
 }) {
+  const { activeBackgroundId } = useNestStore();
   const { activeNestlingId } = useNestlingStore();
   if (!activeNestlingId) return;
   const { downloadAlbum, selectImages, deleteAlbum } = useGalleryStore();
@@ -58,7 +61,11 @@ export default function AlbumContextMenu({
               because modal triggers don't work with custom ContextMenuItem component*/}
           <AlbumModal nestlingId={activeNestlingId} album={album}>
             <ContextMenu.Item
-              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
+              className={cn(
+                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
+                activeBackgroundId &&
+                  "hover:bg-white/30 dark:hover:bg-black/30",
+              )}
               onSelect={(e) => {
                 e.preventDefault();
                 console.log("Rename album");

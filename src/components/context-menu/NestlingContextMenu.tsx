@@ -6,6 +6,8 @@ import BaseContextMenu from "./BaseContextMenu";
 import { useNestlingStore } from "@/stores/useNestlingStore";
 import NestlingModal from "../modals/NestlingModal";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils/general";
+import { useNestStore } from "@/stores/useNestStore";
 
 export default function NestlingContextMenu({
   nestlingId,
@@ -15,6 +17,7 @@ export default function NestlingContextMenu({
   children: React.ReactNode;
 }) {
   const { duplicateNestling, updateNestling, nestlings } = useNestlingStore();
+  const { activeBackgroundId } = useNestStore();
   const nestling = nestlings.find((n) => n.id === nestlingId);
   if (!nestling) return null;
 
@@ -37,7 +40,11 @@ export default function NestlingContextMenu({
         <>
           <NestlingModal nestlingId={nestlingId}>
             <ContextMenu.Item
-              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
+              className={cn(
+                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
+                activeBackgroundId &&
+                  "hover:bg-white/30 dark:hover:bg-black/30",
+              )}
               onSelect={(e) => {
                 e.preventDefault();
               }}
@@ -71,7 +78,7 @@ export default function NestlingContextMenu({
             {/* Using ContextMenu.Item instead of ContextMenuItem
               because modal triggers don't work with custom ContextMenuItem component*/}
             <ContextMenu.Item
-              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm text-red-600 transition-colors duration-200 outline-none hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/40"
+              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm text-red-600 transition-colors duration-200 outline-none hover:bg-red-100/40 dark:text-red-400 dark:hover:bg-red-800/40"
               onSelect={(e) => {
                 e.preventDefault();
                 console.log("Delete", nestlingId);

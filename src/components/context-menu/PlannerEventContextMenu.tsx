@@ -19,7 +19,7 @@ export default function PlannerEventContextMenu({
     createEvent(event);
   };
   const onChangeColor = (color: string) => {
-    updateEvent({ ...event, color });
+    updateEvent(event.id, { color });
   };
   return (
     <BaseContextMenu

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useGalleryStore } from "@/stores/useGalleryStore";
 import { ArrowLeft, Plus, Upload } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import NestlingTitle from "../NestlingTitle";
 import useAutoSave from "@/hooks/useAutoSave";
 import "react-photo-album/rows.css";
@@ -69,7 +69,7 @@ export default function GalleryEditor() {
   };
 
   return (
-    <div className="relative space-y-4 p-4">
+    <div className="relative space-y-4">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-4">
           {currentView === "album" && (
@@ -124,34 +124,19 @@ export default function GalleryEditor() {
       <div className="relative">
         <AnimatePresence mode="sync" initial={false} custom={direction}>
           {currentView === "main" ? (
-            <motion.div
-              key="main"
+            <MainView
               variants={viewVariants}
-              custom={direction}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.3 }}
-              className="absolute inset-0"
-            >
-              <MainView
-                setCurrentView={setCurrentView}
-                setAlbumId={setAlbumId}
-              />
-            </motion.div>
+              direction={direction}
+              setCurrentView={setCurrentView}
+              setAlbumId={setAlbumId}
+            />
           ) : (
-            <motion.div
+            <AlbumView
               key="album"
+              album={currentAlbum}
               variants={viewVariants}
-              custom={direction}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.3 }}
-              className="absolute inset-0"
-            >
-              <AlbumView album={currentAlbum} />
-            </motion.div>
+              direction={direction}
+            />
           )}
         </AnimatePresence>
       </div>
