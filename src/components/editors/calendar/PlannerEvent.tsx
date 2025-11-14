@@ -21,12 +21,61 @@ export default function PlannerEvent({
 
   const handleSubmit = async () => {
     const newTitle = title.trim();
+
     if (newTitle && newTitle !== event.title) {
-      await updateEvent({ ...event, title: newTitle }).catch((err) =>
-        console.error("Failed to update event:", err),
-      );
+      try {
+        await updateEvent(event.id, { title: newTitle });
+      } catch (err) {
+        console.error("Failed to update event:", err);
+      }
     }
+
     setIsEditing(false);
+  };
+
+  const onDragStop = (e: any, d: any) => {
+    const currentDay = getDayFromDate(event.date);
+    console.log(e);
+    const absoluteX = currentDay * colWidth + d.x;
+    const absoluteY = d.y;
+
+    const newDay = Math.max(0, Math.min(6, Math.round(absoluteX / colWidth)));
+    const newHour = Math.max(0, Math.min(23, Math.round(absoluteY / 64)));
+
+    const baseWeekDate = startOfWeek(new Date(event.date));
+    const newDate = getDateFromWeekDay(baseWeekDate, newDay);
+
+    updateEvent(event.id, {
+      date: newDate,
+      startTime: newHour,
+    });
+  };
+
+  const onResizeStop = (e: any, dir: any, ref: any, delta: any) => {
+    console.log(e);
+    const newDuration = Math.round(ref.offsetHeight / 64);
+
+    if (dir === "top") {
+      const movedHours = Math.round(delta.height / 64);
+      updateEvent(event.id, {
+        startTime: event.startTime - movedHours,
+        duration: event.duration + movedHours,
+      });
+    } else {
+      updateEvent(event.id, { duration: newDuration });
+    }
+  };
+
+  const onKeyDown = (e: any) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit();
+    }
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setTitle(event.title);
+      setIsEditing(false);
+    }
   };
 
   return (
@@ -35,7 +84,7 @@ export default function PlannerEvent({
         key={event.id}
         size={{ width: "100%", height: event.duration * 64 }}
         minWidth="100%"
-        maxWidth={"100%"}
+        maxWidth="100%"
         position={{
           x: 0,
           y: event.startTime * 64,
@@ -50,43 +99,8 @@ export default function PlannerEvent({
           bottomLeft: false,
           topLeft: false,
         }}
-        onDragStop={(e, d) => {
-          const currentDay = getDayFromDate(event.date); // 0–6
-          console.log(e);
-          // Absolute positions
-          const absoluteX = currentDay * colWidth + d.x;
-          const absoluteY = d.y;
-
-          // New day (0–6)
-          const newDay = Math.max(
-            0,
-            Math.min(6, Math.round(absoluteX / colWidth)),
-          );
-
-          // New hour (0–23)
-          const newHour = Math.max(0, Math.min(23, Math.round(absoluteY / 64)));
-
-          // Convert newDay → new date
-          const baseWeekDate = startOfWeek(new Date(event.date));
-          const newDate = getDateFromWeekDay(baseWeekDate, newDay);
-
-          updateEvent({ ...event, date: newDate, startTime: newHour });
-        }}
-        onResizeStop={(e, dir, ref, delta) => {
-          console.log(e, dir, ref, delta);
-          const newDuration = Math.round(ref.offsetHeight / 64);
-
-          if (dir === "top") {
-            const movedHours = Math.round(delta.height / 64);
-            updateEvent({
-              ...event,
-              startTime: event.startTime - movedHours,
-              duration: event.duration + movedHours,
-            });
-          } else {
-            updateEvent({ ...event, duration: newDuration });
-          }
-        }}
+        onDragStop={(e, d) => onDragStop(e, d)}
+        onResizeStop={(e, dir, ref, delta) => onResizeStop(e, dir, ref, delta)}
         className="absolute z-10 rounded-lg border border-none p-2 text-sm shadow-lg"
         style={{
           backgroundColor: event.color,
@@ -98,17 +112,7 @@ export default function PlannerEvent({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onBlur={handleSubmit}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleSubmit();
-              }
-              if (e.key === "Escape") {
-                e.preventDefault();
-                setTitle(event.title);
-                setIsEditing(false);
-              }
-            }}
+            onKeyDown={(e) => onKeyDown(e)}
             className="w-full bg-transparent font-semibold transition-colors duration-200 outline-none focus:ring-0"
             autoFocus
             onFocus={(e) => e.target.select()}

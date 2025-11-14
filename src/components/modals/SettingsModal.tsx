@@ -7,10 +7,17 @@ import { useNestStore } from "@/stores/useNestStore";
 
 export default function SettingsModal({
   children,
+  isOpen,
+  setIsOpen,
 }: {
   children: React.ReactNode;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isActuallyOpen = isOpen ?? internalOpen;
+  const setOpen = setIsOpen ?? setInternalOpen;
+
   const [activeTab, setActiveTab] = useState("general");
   const { activeNestId } = useNestStore();
 
@@ -21,8 +28,8 @@ export default function SettingsModal({
 
   return (
     <BaseModal
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
+      isOpen={isActuallyOpen}
+      setIsOpen={setOpen}
       title="Settings"
       showCancel={false}
       body={

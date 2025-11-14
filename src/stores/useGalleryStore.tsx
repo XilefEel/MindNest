@@ -94,7 +94,6 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
           albumId: albumId,
         });
       }
-      await get().getImages(nestlingId);
 
       return true;
     },

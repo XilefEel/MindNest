@@ -57,7 +57,9 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
     set,
     async (newEvent: NewPlannerEventType) => {
       const event = await calendarApi.createPlannerEvent(newEvent);
-      set({ events: [...get().events, event] });
+      set((state) => ({
+        events: [...state.events, event],
+      }));
     },
   ),
 
@@ -82,6 +84,8 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
 
   deleteEvent: withStoreErrorHandler(set, async (id) => {
     await calendarApi.deletePlannerEvent(id);
-    set({ events: get().events.filter((e) => e.id !== id) });
+    set((state) => ({
+      events: state.events.filter((e) => e.id !== id),
+    }));
   }),
 }));

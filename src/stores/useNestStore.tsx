@@ -65,7 +65,7 @@ export const useNestStore = create<NestState>((set, get) => ({
 
   getNests: withStoreErrorHandler(set, async (userId) => {
     const nests = await nestApi.getNests(userId);
-    set({ nests: nests });
+    set({ nests });
   }),
 
   createNest: withStoreErrorHandler(set, async (userId, title) => {

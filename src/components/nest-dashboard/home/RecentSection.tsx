@@ -11,6 +11,7 @@ import { useNestStore } from "@/stores/useNestStore";
 import { ArrowRight, Clock, Folder } from "lucide-react";
 import { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
+import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
 
 export default function RecentSection() {
   const { activeBackgroundId, activeNestId } = useNestStore();
@@ -50,7 +51,7 @@ export default function RecentSection() {
         {recentNestlings.length > 0 && (
           <div
             onClick={handleClear}
-            className="cursor-pointer text-xs text-gray-500 transition-all duration-100 hover:text-gray-300"
+            className="cursor-pointer text-xs text-gray-500 transition-all duration-100 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-300"
           >
             Clear all
           </div>
@@ -66,46 +67,48 @@ export default function RecentSection() {
         {recentNestlings.map((nestling, i) => {
           const Icon = getNestlingIcon(nestling.nestlingType);
           return (
-            <div
-              key={i}
-              onClick={() => setActiveNestlingId(nestling.id)}
-              className={cn(
-                "group cursor-pointer rounded-xl border border-l-4 p-4 hover:shadow-md",
-                "bg-white dark:bg-gray-800",
-                "border-gray-200 border-l-blue-500 hover:border-blue-500 dark:border-gray-800 dark:border-l-blue-500 dark:hover:hover:border-blue-500",
-                "transition hover:scale-105",
-                activeBackgroundId &&
-                  "border-t-0 border-r-0 border-b-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
-              )}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-1 font-semibold">
-                    <div className="flex w-6 items-center justify-center">
-                      {nestling.icon ? (
-                        <p>{nestling.icon}</p>
-                      ) : (
-                        <Icon className="size-4 flex-shrink-0" />
-                      )}
+            <NestlingContextMenu nestlingId={nestling.id}>
+              <div
+                key={i}
+                onClick={() => setActiveNestlingId(nestling.id)}
+                className={cn(
+                  "group cursor-pointer rounded-xl border border-l-4 p-4 hover:shadow-md",
+                  "bg-white dark:bg-gray-800",
+                  "border-gray-200 border-l-blue-500 hover:border-blue-500 dark:border-gray-800 dark:border-l-blue-500 dark:hover:hover:border-blue-500",
+                  "transition hover:scale-105",
+                  activeBackgroundId &&
+                    "border-t-0 border-r-0 border-b-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+                )}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-1 font-semibold">
+                      <div className="flex w-6 items-center justify-center">
+                        {nestling.icon ? (
+                          <p>{nestling.icon}</p>
+                        ) : (
+                          <Icon className="size-4 flex-shrink-0" />
+                        )}
+                      </div>
+                      <span>{nestling.title}</span>
                     </div>
-                    <span>{nestling.title}</span>
+                    <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                      <Folder className="h-4 w-6" />
+                      <span>
+                        {findFolderPath(nestling.folderId, folders) ||
+                          "No Folder"}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {formatDistanceToNow(new Date(nestling.updatedAt), {
+                        addSuffix: true,
+                      })}
+                    </p>
                   </div>
-                  <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                    <Folder className="h-4 w-6" />
-                    <span>
-                      {findFolderPath(nestling.folderId, folders) ||
-                        "No Folder"}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {formatDistanceToNow(new Date(nestling.updatedAt), {
-                      addSuffix: true,
-                    })}
-                  </p>
+                  <ArrowRight className="h-5 w-5 text-gray-300 transition" />
                 </div>
-                <ArrowRight className="h-5 w-5 text-gray-300 transition" />
               </div>
-            </div>
+            </NestlingContextMenu>
           );
         })}
       </div>
