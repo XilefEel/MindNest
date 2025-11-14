@@ -7,6 +7,7 @@ import {
 } from "@/lib/types/journal";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
+import { useNestlingStore } from "./useNestlingStore";
 
 type JournalState = {
   activeEntry: JournalEntry | null;
@@ -49,7 +50,7 @@ export const useJournalStore = create<JournalState>((set, get) => ({
       entries: [...state.entries, newEntry],
       activeEntry: newEntry,
     }));
-
+    useNestlingStore.getState().updateNestlingTimestamp(newEntry.nestlingId);
     return newEntry;
   }),
 
@@ -64,10 +65,10 @@ export const useJournalStore = create<JournalState>((set, get) => ({
     const updated = mergeWithCurrent(current, entry);
 
     await journalApi.updateJournalEntry({ ...updated, id });
-
     set((state) => ({
       entries: state.entries.map((e) => (e.id === entry.id ? updated : e)),
     }));
+    useNestlingStore.getState().updateNestlingTimestamp(updated.nestlingId);
   }),
 
   deleteEntry: withStoreErrorHandler(set, async (id: number) => {
@@ -76,6 +77,11 @@ export const useJournalStore = create<JournalState>((set, get) => ({
       entries: state.entries.filter((e) => e.id !== id),
       activeEntry: state.activeEntry?.id === id ? null : state.activeEntry,
     }));
+    useNestlingStore
+      .getState()
+      .updateNestlingTimestamp(
+        get().entries.find((e) => e.id === id)!.nestlingId,
+      );
   }),
 
   addTemplate: withStoreErrorHandler(
@@ -85,6 +91,9 @@ export const useJournalStore = create<JournalState>((set, get) => ({
       set((state) => ({
         templates: [...state.templates, newTemplate],
       }));
+      useNestlingStore
+        .getState()
+        .updateNestlingTimestamp(newTemplate.nestlingId);
       return newTemplate;
     },
   ),
@@ -121,6 +130,7 @@ export const useJournalStore = create<JournalState>((set, get) => ({
     set((state) => ({
       templates: state.templates.map((t) => (t.id === id ? updated : t)),
     }));
+    useNestlingStore.getState().updateNestlingTimestamp(updated.nestlingId);
   }),
 
   deleteTemplate: withStoreErrorHandler(set, async (id: number) => {
@@ -128,5 +138,10 @@ export const useJournalStore = create<JournalState>((set, get) => ({
     set((state) => ({
       templates: state.templates.filter((e) => e.id !== id),
     }));
+    useNestlingStore
+      .getState()
+      .updateNestlingTimestamp(
+        get().templates.find((t) => t.id === id)!.nestlingId,
+      );
   }),
 }));

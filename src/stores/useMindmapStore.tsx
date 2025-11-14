@@ -7,6 +7,7 @@ import {
 } from "@/lib/types/mindmap";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
+import { useNestlingStore } from "./useNestlingStore";
 
 type MindmapStore = {
   nodes: MindmapNode[];
@@ -44,6 +45,7 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
     set((state) => ({
       nodes: [...state.nodes, newNode],
     }));
+    useNestlingStore.getState().updateNestlingTimestamp(newNode.nestlingId);
     return newNode;
   }),
 
@@ -73,6 +75,8 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
       updated.data.textColor,
       updated.type,
     );
+
+    useNestlingStore.getState().updateNestlingTimestamp(updated.nestlingId);
   }),
 
   deleteNode: withStoreErrorHandler(set, async (nodeId: number) => {
@@ -83,6 +87,11 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
         (e) => e.source !== nodeId.toString() && e.target !== nodeId.toString(),
       ),
     }));
+    useNestlingStore
+      .getState()
+      .updateNestlingTimestamp(
+        get().nodes.find((n) => n.id === nodeId.toString())!.nestlingId,
+      );
   }),
 
   createEdge: withStoreErrorHandler(set, async (edge: NewMindmapEdge) => {

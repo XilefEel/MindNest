@@ -14,6 +14,7 @@ import {
   reorderArray,
   updateOrderIndexes,
 } from "@/lib/utils/boards";
+import { useNestlingStore } from "./useNestlingStore";
 
 type BoardState = {
   boardData: BoardData | null;
@@ -99,6 +100,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         },
       };
     });
+
+    useNestlingStore.getState().updateNestlingTimestamp(newColumn.nestlingId);
   }),
 
   duplicateColumn: withStoreErrorHandler(set, async (column) => {
@@ -161,6 +164,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         }),
       ),
     );
+    useNestlingStore.getState().updateNestlingTimestamp(newColumn.nestlingId);
   }),
 
   updateColumn: withStoreErrorHandler(
@@ -185,6 +189,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
           },
         };
       });
+      useNestlingStore
+        .getState()
+        .updateNestlingTimestamp(get().boardData!.nestling.id);
     },
   ),
 
@@ -203,6 +210,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         },
       };
     });
+
+    useNestlingStore
+      .getState()
+      .updateNestlingTimestamp(get().boardData!.nestling.id);
   }),
 
   reorderColumn: async (activeColumnId, targetColumnId) => {
@@ -249,6 +260,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         }),
       ),
     );
+
+    useNestlingStore
+      .getState()
+      .updateNestlingTimestamp(get().boardData!.nestling.id);
   },
 
   createCard: withStoreErrorHandler(set, async (card) => {
@@ -268,6 +283,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         },
       };
     });
+    useNestlingStore
+      .getState()
+      .updateNestlingTimestamp(get().boardData!.nestling.id);
   }),
 
   duplicateCard: withStoreErrorHandler(set, async (card) => {
@@ -322,6 +340,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         }),
       ),
     );
+    useNestlingStore
+      .getState()
+      .updateNestlingTimestamp(get().boardData!.nestling.id);
   }),
 
   updateCard: withStoreErrorHandler(
@@ -351,6 +372,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
           },
         };
       });
+      useNestlingStore
+        .getState()
+        .updateNestlingTimestamp(get().boardData!.nestling.id);
     },
   ),
 
@@ -369,6 +393,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         },
       };
     });
+    useNestlingStore
+      .getState()
+      .updateNestlingTimestamp(get().boardData!.nestling.id);
   }),
 
   reorderCard: async ({ activeCardId, targetCardId, targetColumnId }) => {
@@ -453,6 +480,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
           }),
         ),
       );
+      useNestlingStore
+        .getState()
+        .updateNestlingTimestamp(get().boardData!.nestling.id);
     } catch (error) {
       set({ boardData, error: String(error) });
     }

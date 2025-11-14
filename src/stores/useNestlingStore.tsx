@@ -6,6 +6,7 @@ import { Nestling, NewNestling } from "@/lib/types/nestling";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 import { saveLastNestling, saveRecentNestling } from "@/lib/storage/session";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
+import { getActiveNestId } from "@/lib/utils/nests";
 
 type NestlingState = {
   nestlings: Nestling[];
@@ -27,6 +28,7 @@ type NestlingState = {
   addNestling: (nestling: NewNestling) => Promise<void>;
   duplicateNestling: (nestlingId: number) => Promise<void>;
   updateNestling: (id: number, updates: Partial<Nestling>) => Promise<void>;
+  updateNestlingTimestamp: (nestlingId: number) => Promise<void>;
   deleteNestling: (nestlingId: number) => Promise<void>;
 
   addFolder: (folder: NewFolder) => Promise<void>;
@@ -95,7 +97,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
     const updated = mergeWithCurrent(current, updates);
 
-    await nestlingApi.editNestling({ ...updated, id });
+    await nestlingApi.updateNestling({ ...updated, id });
     saveRecentNestling(updated.nestId, updated.id);
 
     set((state) => ({
@@ -104,6 +106,29 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
         .sort((a, b) => a.title.localeCompare(b.title)),
     }));
   }),
+
+  updateNestlingTimestamp: withStoreErrorHandler(
+    set,
+    async (nestlingId: number) => {
+      const nestId = getActiveNestId();
+
+      await Promise.all([
+        saveRecentNestling(nestId, nestlingId),
+        nestlingApi.updateNestlingTimestamp(nestlingId),
+      ]);
+
+      set((state) => ({
+        nestlings: state.nestlings.map((n) =>
+          n.id === nestlingId
+            ? {
+                ...n,
+                updatedAt: new Date().toISOString().replace("Z", "+00:00"),
+              }
+            : n,
+        ),
+      }));
+    },
+  ),
 
   deleteNestling: withStoreErrorHandler(set, async (nestlingId) => {
     await nestlingApi.deleteNestling(nestlingId);

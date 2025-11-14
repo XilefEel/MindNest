@@ -5,6 +5,7 @@ import type {
 } from "@/lib/types/calendar";
 import * as calendarApi from "@/lib/api/calendar";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
+import { useNestlingStore } from "./useNestlingStore";
 
 type PlannerState = {
   events: PlannerEventType[];
@@ -60,6 +61,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
       set((state) => ({
         events: [...state.events, event],
       }));
+      useNestlingStore.getState().updateNestlingTimestamp(event.nestlingId);
     },
   ),
 
@@ -80,6 +82,8 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
     } finally {
       set({ loading: false });
     }
+
+    useNestlingStore.getState().updateNestlingTimestamp(updated.nestlingId);
   },
 
   deleteEvent: withStoreErrorHandler(set, async (id) => {
@@ -87,5 +91,10 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
     set((state) => ({
       events: state.events.filter((e) => e.id !== id),
     }));
+    useNestlingStore
+      .getState()
+      .updateNestlingTimestamp(
+        get().events.find((e) => e.id === id)!.nestlingId,
+      );
   }),
 }));

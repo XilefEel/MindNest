@@ -7,7 +7,7 @@ use tauri::Manager;
 use handler::nest::{create_nest, delete_nest, get_nest_by_id, get_user_nests, update_nest};
 
 use handler::nestling::{
-    create_nestling, get_nestlings, update_nestling, delete_nestling,
+    create_nestling, get_nestlings, update_nestling, update_nestling_timestamp, delete_nestling,
 };
 
 use handler::folder::{
@@ -86,6 +86,7 @@ pub fn run() {
             create_nestling,
             get_nestlings,
             update_nestling,
+            update_nestling_timestamp,
             delete_nestling,
             create_folder,
             get_folders,

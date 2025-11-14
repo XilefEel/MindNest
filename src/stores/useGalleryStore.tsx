@@ -8,6 +8,7 @@ import * as galleryApi from "@/lib/api/gallery";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
+import { useNestlingStore } from "./useNestlingStore";
 
 type GalleryState = {
   images: GalleryImage[];
@@ -127,6 +128,8 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       set((state) => ({
         images: [...state.images, newImage],
       }));
+
+      useNestlingStore.getState().updateNestlingTimestamp(newImage.nestlingId);
     },
   ),
 
@@ -135,6 +138,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     set((state) => ({
       images: [...state.images, image],
     }));
+    useNestlingStore.getState().updateNestlingTimestamp(image.nestlingId);
     return image;
   }),
 
@@ -149,6 +153,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     }));
 
     await galleryApi.updateImage({ ...updated, id });
+    useNestlingStore.getState().updateNestlingTimestamp(updated.nestlingId);
   }),
 
   removeImage: withStoreErrorHandler(set, async (id: number) => {
@@ -156,6 +161,11 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     set((state) => ({
       images: state.images.filter((image) => image.id !== id),
     }));
+    useNestlingStore
+      .getState()
+      .updateNestlingTimestamp(
+        get().images.find((i) => i.id === id)!.nestlingId,
+      );
   }),
 
   downloadImage: withStoreErrorHandler(set, async (id: number) => {
@@ -185,6 +195,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     set((state) => ({
       albums: [...state.albums, newAlbum],
     }));
+    useNestlingStore.getState().updateNestlingTimestamp(newAlbum.nestlingId);
   }),
 
   downloadAlbum: withStoreErrorHandler(set, async (id: number) => {
@@ -210,6 +221,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     set((state) => ({
       albums: state.albums.map((album) => (album.id === id ? updated : album)),
     }));
+    useNestlingStore.getState().updateNestlingTimestamp(updated.nestlingId);
   }),
 
   deleteAlbum: withStoreErrorHandler(set, async (id: number) => {
@@ -217,6 +229,11 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     set((state) => ({
       albums: state.albums.filter((album) => album.id !== id),
     }));
+    useNestlingStore
+      .getState()
+      .updateNestlingTimestamp(
+        get().albums.find((a) => a.id === id)!.nestlingId,
+      );
   }),
 
   handleDragStart: (event: DragStartEvent) => {

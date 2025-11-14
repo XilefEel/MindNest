@@ -143,6 +143,18 @@ pub fn update_nestling_in_db(
     Ok(())
 }
 
+pub fn update_nestling_timestamp_in_db(db: &AppDb, id: i64) -> Result<(), String> {
+    let connection = db.connection.lock().unwrap();
+    let updated_at = Utc::now().to_rfc3339();
+
+    connection.execute(
+        "UPDATE nestlings SET updated_at = ?1 WHERE id = ?2",
+        params![updated_at, id],
+    ).map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
 pub fn delete_nestling_from_db(db: &AppDb, id: i64) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
 
