@@ -1,4 +1,5 @@
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
+import { saveLastNestling } from "@/lib/storage/session";
 import { findFolderPath } from "@/lib/utils/folders";
 import { cn } from "@/lib/utils/general";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
@@ -7,16 +8,22 @@ import {
   useNestlingActions,
   useNestlings,
 } from "@/stores/useNestlingStore";
-import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 import { ArrowRight, Folder, Pin } from "lucide-react";
 
 export default function PinnedSection() {
+  const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
   const nestlings = useNestlings();
   const folders = useFolders();
   const { setActiveNestlingId } = useNestlingActions();
 
   const pinnedNestlings = nestlings.filter((n) => n.isPinned === true);
+
+  const handleClick = (nestlingId: number) => {
+    setActiveNestlingId(nestlingId);
+    saveLastNestling(activeNestId!, nestlingId);
+  };
 
   return (
     <div className="space-y-4">
@@ -40,7 +47,7 @@ export default function PinnedSection() {
             <NestlingContextMenu nestlingId={nestling.id}>
               <div
                 key={i}
-                onClick={() => setActiveNestlingId(nestling.id)}
+                onClick={() => handleClick(nestling.id)}
                 className={cn(
                   "group cursor-pointer rounded-xl border border-l-4 p-4 hover:shadow-md",
                   "bg-white dark:bg-gray-800",

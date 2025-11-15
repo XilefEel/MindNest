@@ -1,6 +1,7 @@
 import {
   clearRecentNestlings,
   getRecentNestlings,
+  saveLastNestling,
 } from "@/lib/storage/session";
 import { Nestling } from "@/lib/types/nestling";
 import { findFolderPath } from "@/lib/utils/folders";
@@ -29,6 +30,11 @@ export default function RecentSection() {
   const handleClear = async () => {
     await clearRecentNestlings(activeNestId!);
     setRecentNestlings([]);
+  };
+
+  const handleClick = (nestlingId: number) => {
+    setActiveNestlingId(nestlingId);
+    saveLastNestling(activeNestId!, nestlingId);
   };
 
   useEffect(() => {
@@ -78,7 +84,7 @@ export default function RecentSection() {
             <NestlingContextMenu nestlingId={nestling.id}>
               <div
                 key={i}
-                onClick={() => setActiveNestlingId(nestling.id)}
+                onClick={() => handleClick(nestling.id)}
                 className={cn(
                   "group cursor-pointer rounded-xl border border-l-4 p-4 hover:shadow-md",
                   "bg-white dark:bg-gray-800",

@@ -104,6 +104,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
 }));
 
 export const useEvents = () => usePlannerStore((state) => state.events);
+
 export const usePlannerActions = () =>
   usePlannerStore(
     useShallow((state) => ({

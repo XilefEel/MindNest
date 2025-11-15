@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import {
   CommandDialog,
   CommandInput,
@@ -9,10 +8,11 @@ import {
   CommandItem,
   CommandSeparator,
 } from "../ui/command";
-import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
+import { saveLastNestling } from "@/lib/storage/session";
 
 export default function SearchModal({
   isOpen,
@@ -21,6 +21,7 @@ export default function SearchModal({
   isOpen?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
 }) {
+  const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
   const nestlings = useNestlings();
   const { setActiveNestlingId } = useNestlingActions();
@@ -32,6 +33,7 @@ export default function SearchModal({
 
   const handleSelectNestling = (nestlingId: number) => {
     setActiveNestlingId(nestlingId);
+    saveLastNestling(activeNestId!, nestlingId);
     setSearchQuery("");
     setIsOpen?.(false);
   };
