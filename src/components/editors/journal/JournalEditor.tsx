@@ -23,26 +23,15 @@ export default function JournalingApp() {
   const [isEntryOpen, setIsEntryOpen] = useState(false);
 
   const { updateNestling } = useNestlingStore();
-  useAutoSave({
-    target: activeNestling,
-    currentData: useMemo(() => ({ title }), [title]),
-    saveFunction: (id, data) => updateNestling(id, data),
-  });
+  const nestlingData = useMemo(() => ({ title }), [title]);
+  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
-  useAutoSave({
-    target: activeEntry as any,
-    currentData: useMemo(() => {
-      const data = {
-        title: currentTitle,
-        content: currentContent,
-      };
-      return data;
-    }, [currentTitle, currentContent]),
-    context: activeEntry,
-    saveFunction: async (id, data, entry) => {
-      if (entry) await updateEntry(id, data);
-    },
-  });
+  const entryData = useMemo(
+    () => ({ title: currentTitle, content: currentContent }),
+    [currentTitle, currentContent],
+  );
+
+  useAutoSave(activeEntry?.id!, entryData, updateEntry);
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;

@@ -78,11 +78,8 @@ export default function BoardEditor() {
     setTitle(activeNestling.title);
   }, [activeNestling.title]);
 
-  useAutoSave({
-    target: activeNestling,
-    currentData: useMemo(() => ({ title }), [title]),
-    saveFunction: (id, data) => updateNestling(id, data),
-  });
+  const nestlingData = useMemo(() => ({ title }), [title]);
+  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
   return (
     <div className="relative flex h-full flex-col gap-3">

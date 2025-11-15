@@ -87,14 +87,17 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
   },
 
   deleteEvent: withStoreErrorHandler(set, async (id) => {
+    const event = get().events.find((e) => e.id === id);
+    const nestlingId = event?.nestlingId;
+
     await calendarApi.deletePlannerEvent(id);
+
     set((state) => ({
       events: state.events.filter((e) => e.id !== id),
     }));
-    useNestlingStore
-      .getState()
-      .updateNestlingTimestamp(
-        get().events.find((e) => e.id === id)!.nestlingId,
-      );
+
+    if (nestlingId) {
+      useNestlingStore.getState().updateNestlingTimestamp(nestlingId);
+    }
   }),
 }));

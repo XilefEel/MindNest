@@ -53,11 +53,8 @@ function MindmapEditorContent() {
   if (!activeNestling) return;
   const [title, setTitle] = useState(activeNestling.title);
 
-  useAutoSave({
-    target: activeNestling,
-    currentData: useMemo(() => ({ title }), [title]),
-    saveFunction: (id, data) => updateNestling(id, data),
-  });
+  const nestlingData = useMemo(() => ({ title }), [title]);
+  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
   const onNodesChange = useCallback(
     (changes: NodeChange<MindmapNode>[]) => {

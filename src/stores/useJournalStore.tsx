@@ -59,29 +59,30 @@ export const useJournalStore = create<JournalState>((set, get) => ({
     set({ entries, loading: false });
   }),
 
-  updateEntry: withStoreErrorHandler(set, async (id, entry) => {
-    const current = get().entries.find((e) => e.id === entry.id)!;
+  updateEntry: withStoreErrorHandler(set, async (id, updates) => {
+    const current = get().entries.find((e) => e.id === id)!;
     if (!current) throw new Error("Entry not found");
-    const updated = mergeWithCurrent(current, entry);
+    const updated = mergeWithCurrent(current, updates);
 
     await journalApi.updateJournalEntry({ ...updated, id });
     set((state) => ({
-      entries: state.entries.map((e) => (e.id === entry.id ? updated : e)),
+      entries: state.entries.map((e) => (e.id === id ? updated : e)),
     }));
     useNestlingStore.getState().updateNestlingTimestamp(updated.nestlingId);
   }),
 
   deleteEntry: withStoreErrorHandler(set, async (id: number) => {
+    const nestlingId = get().entries.find((e) => e.id === id)?.nestlingId;
+
     await journalApi.deleteJournalEntry(id);
     set((state) => ({
       entries: state.entries.filter((e) => e.id !== id),
       activeEntry: state.activeEntry?.id === id ? null : state.activeEntry,
     }));
-    useNestlingStore
-      .getState()
-      .updateNestlingTimestamp(
-        get().entries.find((e) => e.id === id)!.nestlingId,
-      );
+
+    if (nestlingId) {
+      useNestlingStore.getState().updateNestlingTimestamp(nestlingId);
+    }
   }),
 
   addTemplate: withStoreErrorHandler(
@@ -111,6 +112,7 @@ export const useJournalStore = create<JournalState>((set, get) => ({
         entries: [...state.entries, newEntry],
         activeEntry: newEntry,
       }));
+      useNestlingStore.getState().updateNestlingTimestamp(newEntry.nestlingId);
       return newEntry;
     },
   ),
@@ -134,14 +136,15 @@ export const useJournalStore = create<JournalState>((set, get) => ({
   }),
 
   deleteTemplate: withStoreErrorHandler(set, async (id: number) => {
+    const nestlingId = get().templates.find((t) => t.id === id)?.nestlingId;
+
     await journalApi.deleteJournalTemplate(id);
     set((state) => ({
       templates: state.templates.filter((e) => e.id !== id),
     }));
-    useNestlingStore
-      .getState()
-      .updateNestlingTimestamp(
-        get().templates.find((t) => t.id === id)!.nestlingId,
-      );
+
+    if (nestlingId) {
+      useNestlingStore.getState().updateNestlingTimestamp(nestlingId);
+    }
   }),
 }));

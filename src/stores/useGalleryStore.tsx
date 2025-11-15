@@ -157,15 +157,16 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   }),
 
   removeImage: withStoreErrorHandler(set, async (id: number) => {
+    const nestlingId = get().images.find((i) => i.id === id)?.nestlingId;
+
     await galleryApi.removeImage(id);
     set((state) => ({
       images: state.images.filter((image) => image.id !== id),
     }));
-    useNestlingStore
-      .getState()
-      .updateNestlingTimestamp(
-        get().images.find((i) => i.id === id)!.nestlingId,
-      );
+
+    if (nestlingId) {
+      useNestlingStore.getState().updateNestlingTimestamp(nestlingId);
+    }
   }),
 
   downloadImage: withStoreErrorHandler(set, async (id: number) => {
@@ -225,15 +226,16 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   }),
 
   deleteAlbum: withStoreErrorHandler(set, async (id: number) => {
+    const nestlingId = get().albums.find((a) => a.id === id)?.nestlingId;
+
     await galleryApi.deleteAlbum(id);
     set((state) => ({
       albums: state.albums.filter((album) => album.id !== id),
     }));
-    useNestlingStore
-      .getState()
-      .updateNestlingTimestamp(
-        get().albums.find((a) => a.id === id)!.nestlingId,
-      );
+
+    if (nestlingId) {
+      useNestlingStore.getState().updateNestlingTimestamp(nestlingId);
+    }
   }),
 
   handleDragStart: (event: DragStartEvent) => {

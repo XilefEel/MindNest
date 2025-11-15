@@ -1,98 +1,42 @@
-import { saveLastNestling } from "@/lib/storage/session";
-import { Nestling } from "@/lib/types/nestling";
-import { debounce } from "@/lib/utils/general";
-import { useNestlingStore } from "@/stores/useNestlingStore";
-import { useNestStore } from "@/stores/useNestStore";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type AutoSaveStatus = "idle" | "saving" | "saved" | "error";
 
-export default function useAutoSave<T = any>({
-  target,
-  currentData,
-  saveFunction,
-  context,
-}: {
-  target: { id: number } & Record<string, any>;
-  currentData: Record<string, any>;
-  saveFunction: (
-    id: number,
-    data: Record<string, any>,
-    context?: T,
-  ) => Promise<void>;
-  context?: T;
-}) {
+export default function useAutoSave(
+  id: number,
+  data: Record<string, any>,
+  updateFunction: (id: number, data: Record<string, any>) => Promise<void>,
+  options?: { debounceTime?: number },
+) {
+  const { debounceTime = 500 } = options || {};
+
   const [autoSaveStatus, setAutoSaveStatus] = useState<AutoSaveStatus>("idle");
-  const latestTargetRef = useRef(target);
-  const latestDataRef = useRef(currentData);
-  const latestContextRef = useRef(context);
+  const timeoutRef = useRef<NodeJS.Timeout>();
+  const previousDataRef = useRef<string>();
 
-  const { fetchSidebar, updateNestling } = useNestlingStore();
-  const { activeNestId } = useNestStore();
+  useEffect(() => {
+    if (!id || id < 0) return;
+    const currentDataStr = JSON.stringify(data);
+    if (currentDataStr === previousDataRef.current) return;
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setAutoSaveStatus("saving");
 
-  const debouncedSave = useRef(
-    debounce(async () => {
-      const currentTarget = latestTargetRef.current;
-      const currentFields = latestDataRef.current;
-      const currentContext = latestContextRef.current;
-
-      const updatedData = {
-        ...currentFields,
-        updatedAt: new Date().toISOString(),
-      };
-
+    timeoutRef.current = setTimeout(async () => {
       try {
-        await saveFunction(currentTarget.id, currentFields, currentContext);
+        await updateFunction(id, data);
+        previousDataRef.current = currentDataStr;
         setAutoSaveStatus("saved");
         setTimeout(() => setAutoSaveStatus("idle"), 1000);
-
-        if ((currentTarget as Nestling).nestlingType) {
-          saveLastNestling(activeNestId!, currentTarget.id);
-          fetchSidebar(activeNestId!);
-          updateNestling(currentTarget.id, updatedData);
-        }
-      } catch (err) {
-        console.error("Failed to autosave: ", err);
+      } catch (error) {
+        console.error("Auto-save failed:", error);
         setAutoSaveStatus("error");
       }
-    }, 400),
-  ).current;
+    }, debounceTime);
 
-  // Update refs on every render
-  useEffect(() => {
-    latestTargetRef.current = target;
-    latestDataRef.current = currentData;
-    latestContextRef.current = context;
-  }, [target, currentData, context]);
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [id, data, updateFunction, debounceTime]);
 
-  // Cancel debounced save on nestling id change
-  useEffect(() => {
-    debouncedSave.cancel();
-  }, [target?.id]);
-
-  // Memoize keys to avoid recalculating on every render
-  const dataKeys = useMemo(() => Object.keys(currentData), [currentData]);
-
-  // Track previous data to avoid unnecessary re-renders
-  const prevDataRef = useRef<string>();
-
-  useEffect(() => {
-    if (!target) return;
-
-    // Only proceed if data actually changed
-    const currentDataStr = JSON.stringify(currentData);
-    if (currentDataStr === prevDataRef.current) return;
-
-    const hasChanges = dataKeys.some((key) => {
-      return currentData[key] !== (target as any)[key];
-    });
-
-    if (!hasChanges) return;
-
-    prevDataRef.current = currentDataStr;
-    setAutoSaveStatus("saving");
-    debouncedSave();
-  }, [currentData, target?.id]);
-
-  return { autoSaveStatus, debouncedSave };
+  return autoSaveStatus;
 }

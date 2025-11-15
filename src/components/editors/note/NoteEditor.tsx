@@ -24,11 +24,12 @@ export default function NoteEditor() {
   const content = useNoteStore((s) => s.present);
   const { updateNote, undo, redo } = useNoteStore();
 
-  const { autoSaveStatus } = useAutoSave({
-    target: activeNestling,
-    currentData: useMemo(() => ({ title }), [title]),
-    saveFunction: (id, data) => updateNestling(id, data),
-  });
+  const nestlingData = useMemo(() => ({ title }), [title]);
+  const autoSaveStatus = useAutoSave(
+    activeNestling.id!,
+    nestlingData,
+    updateNestling,
+  );
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 

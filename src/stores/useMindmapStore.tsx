@@ -80,6 +80,10 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
   }),
 
   deleteNode: withStoreErrorHandler(set, async (nodeId: number) => {
+    const nestlingId = get().nodes.find(
+      (n) => n.id === nodeId.toString(),
+    )?.nestlingId;
+
     await mindmapApi.deleteNode(nodeId);
     set((state) => ({
       nodes: state.nodes.filter((n) => n.id !== nodeId.toString()),
@@ -87,11 +91,10 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
         (e) => e.source !== nodeId.toString() && e.target !== nodeId.toString(),
       ),
     }));
-    useNestlingStore
-      .getState()
-      .updateNestlingTimestamp(
-        get().nodes.find((n) => n.id === nodeId.toString())!.nestlingId,
-      );
+
+    if (nestlingId) {
+      useNestlingStore.getState().updateNestlingTimestamp(nestlingId);
+    }
   }),
 
   createEdge: withStoreErrorHandler(set, async (edge: NewMindmapEdge) => {

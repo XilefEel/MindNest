@@ -21,11 +21,8 @@ export default function CalendarEditor() {
   const [mode, setMode] = useState<"calendar" | "planner">("calendar");
 
   const { updateNestling } = useNestlingStore();
-  useAutoSave({
-    target: activeNestling,
-    currentData: useMemo(() => ({ title }), [title]),
-    saveFunction: (id, data) => updateNestling(id, data),
-  });
+  const nestlingData = useMemo(() => ({ title }), [title]);
+  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
   const viewVariants = {
     monthEnter: (direction: number) => ({

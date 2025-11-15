@@ -4,7 +4,7 @@ import * as folderApi from "@/lib/api/folder";
 import { Folder, NewFolder } from "@/lib/types/folder";
 import { Nestling, NewNestling } from "@/lib/types/nestling";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
-import { saveLastNestling, saveRecentNestling } from "@/lib/storage/session";
+import * as storage from "@/lib/storage/session";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { getActiveNestId } from "@/lib/utils/nests";
 
@@ -71,7 +71,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
   addNestling: withStoreErrorHandler(set, async (nestling: NewNestling) => {
     const newNestling = await nestlingApi.createNestling(nestling);
-    saveRecentNestling(newNestling.nestId, newNestling.id);
+    await storage.saveRecentNestling(newNestling.nestId, newNestling.id);
 
     set((state) => ({
       nestlings: [...state.nestlings, newNestling].sort((a, b) =>
@@ -97,8 +97,10 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
     const updated = mergeWithCurrent(current, updates);
 
-    await nestlingApi.updateNestling({ ...updated, id });
-    saveRecentNestling(updated.nestId, updated.id);
+    await Promise.all([
+      nestlingApi.updateNestling({ ...updated, id }),
+      storage.saveRecentNestling(updated.nestId, updated.id),
+    ]);
 
     set((state) => ({
       nestlings: state.nestlings
@@ -113,7 +115,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
       const nestId = getActiveNestId();
 
       await Promise.all([
-        saveRecentNestling(nestId, nestlingId),
+        storage.saveRecentNestling(nestId, nestlingId),
         nestlingApi.updateNestlingTimestamp(nestlingId),
       ]);
 
@@ -225,7 +227,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
         await Promise.all([
           get().updateNestling(nestlingId, { folderId: newFolderId }),
-          saveLastNestling(nestId, nestlingId),
+          storage.saveLastNestling(nestId, nestlingId),
         ]);
       } else if (activeType === "folder") {
         const folderId = Number(activeIdStr);

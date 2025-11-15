@@ -42,11 +42,8 @@ export default function GalleryEditor() {
   const { getImages, getAlbums, selectImages } = useGalleryStore();
 
   const { updateNestling } = useNestlingStore();
-  useAutoSave({
-    target: activeNestling,
-    currentData: useMemo(() => ({ title }), [title]),
-    saveFunction: (id, data) => updateNestling(id, data),
-  });
+  const nestlingData = useMemo(() => ({ title }), [title]);
+  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
   useEffect(() => {
     getAlbums(activeNestling.id);
