@@ -4,9 +4,9 @@ import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, Folder as FolderIcon, GripVertical } from "lucide-react";
 import FolderContextMenu from "@/components/context-menu/FolderContextMenu";
 import { motion } from "framer-motion";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useState, useRef, useEffect } from "react";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import { useNestlingActions } from "@/stores/useNestlingStore";
 
 export default function FolderItem({
   folder,
@@ -17,8 +17,8 @@ export default function FolderItem({
   isFolderOpen: boolean;
   toggleFolder: (id: number) => void;
 }) {
-  const { activeBackgroundId } = useNestStore();
-  const { updateFolder } = useNestlingStore();
+  const activeBackgroundId = useActiveBackgroundId();
+  const { updateFolder } = useNestlingActions();
 
   const [name, setName] = useState(folder.name);
   const [isEditing, setIsEditing] = useState(false);

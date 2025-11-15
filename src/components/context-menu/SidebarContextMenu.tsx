@@ -4,7 +4,7 @@ import FolderModal from "../modals/FolderModal";
 import NestlingModal from "../modals/NestlingModal";
 import BaseContextMenu from "./BaseContextMenu";
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export function SidebarContextMenu({
   nestId,
@@ -13,7 +13,7 @@ export function SidebarContextMenu({
   nestId: number;
   children: React.ReactNode;
 }) {
-  const { activeBackgroundId } = useNestStore();
+  const activeBackgroundId = useActiveBackgroundId();
   return (
     <BaseContextMenu
       content={

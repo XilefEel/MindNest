@@ -2,16 +2,19 @@ import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { getLastNestId, getLastNestling } from "@/lib/storage/session";
-import { useNestlingStore } from "@/stores/useNestlingStore";
-import { useNestStore } from "@/stores/useNestStore";
+import {
+  useNestlingActions,
+  useNestlingStore,
+} from "@/stores/useNestlingStore";
+import { useNestActions } from "@/stores/useNestStore";
 
 export default function SessionRestorer() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { setActiveNestId } = useNestStore();
-  const { setActiveNestlingId, setFolderOpen } = useNestlingStore();
+  const { setActiveNestId } = useNestActions();
+  const { setActiveNestlingId, setFolderOpen } = useNestlingActions();
 
   const hasRestoredRef = useRef(false);
 

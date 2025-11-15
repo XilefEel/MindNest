@@ -8,6 +8,7 @@ import {
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
 import { useNestlingStore } from "./useNestlingStore";
+import { useShallow } from "zustand/react/shallow";
 
 type MindmapStore = {
   nodes: MindmapNode[];
@@ -33,7 +34,6 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
   nodes: [],
   edges: [],
   activeNode: null,
-  nestlingId: null,
   loading: false,
   error: null,
 
@@ -117,3 +117,24 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
     }));
   }),
 }));
+
+export const useMindmapNodes = () => useMindmapStore((state) => state.nodes);
+
+export const useMindmapEdges = () => useMindmapStore((state) => state.edges);
+
+export const useMindmapActions = () =>
+  useMindmapStore(
+    useShallow((state) => ({
+      setNodes: state.setNodes,
+      setEdges: state.setEdges,
+
+      createNode: state.createNode,
+      getNodes: state.getNodes,
+      updateNode: state.updateNode,
+      deleteNode: state.deleteNode,
+
+      createEdge: state.createEdge,
+      getEdges: state.getEdges,
+      deleteEdge: state.deleteEdge,
+    })),
+  );

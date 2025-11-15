@@ -4,11 +4,11 @@ import { addDays, format, startOfWeek } from "date-fns";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import PlannerEvent from "./PlannerEvent";
-import { usePlannerStore } from "@/stores/usePlannerStore";
+import { useEvents, usePlannerActions } from "@/stores/usePlannerStore";
 import { NewPlannerEventType } from "@/lib/types/calendar";
-import { useNestStore } from "@/stores/useNestStore";
-import useActiveNestling from "@/hooks/useActiveNestling";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { COLORS } from "@/lib/utils/constants";
+import { useActiveNestling } from "@/stores/useNestlingStore";
 
 export type EventType = {
   id: number;
@@ -25,6 +25,12 @@ export default function PlannerView({
   selectedDate: Date;
   variants: any;
 }) {
+  const activeNestling = useActiveNestling();
+  if (!activeNestling) return;
+
+  const { createEvent } = usePlannerActions();
+  const events = useEvents();
+
   const colRef = useRef<HTMLDivElement>(null);
   const [colWidth, setColWidth] = useState(1);
 
@@ -33,9 +39,7 @@ export default function PlannerView({
     addDays(weekStart, i),
   );
 
-  const { activeBackgroundId } = useNestStore();
-  const { activeNestling } = useActiveNestling();
-  const { events, createEvent } = usePlannerStore();
+  const activeBackgroundId = useActiveBackgroundId();
 
   const handleDoubleClick = ({
     clickedDate,

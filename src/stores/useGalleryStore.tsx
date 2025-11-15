@@ -9,6 +9,7 @@ import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { useNestlingStore } from "./useNestlingStore";
+import { useShallow } from "zustand/react/shallow";
 
 type GalleryState = {
   images: GalleryImage[];
@@ -262,3 +263,28 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     }
   },
 }));
+
+export const useImages = () => useGalleryStore((state) => state.images);
+export const useAlbums = () => useGalleryStore((state) => state.albums);
+
+export const useGalleryActions = () =>
+  useGalleryStore(
+    useShallow((state) => ({
+      getImages: state.getImages,
+      selectImages: state.selectImages,
+      uploadImage: state.uploadImage,
+      duplicateImage: state.duplicateImage,
+      updateImage: state.updateImage,
+      removeImage: state.removeImage,
+      downloadImage: state.downloadImage,
+
+      getAlbums: state.getAlbums,
+      addAlbum: state.addAlbum,
+      downloadAlbum: state.downloadAlbum,
+      updateAlbum: state.updateAlbum,
+      deleteAlbum: state.deleteAlbum,
+
+      handleDragStart: state.handleDragStart,
+      handleDragEnd: state.handleDragEnd,
+    })),
+  );

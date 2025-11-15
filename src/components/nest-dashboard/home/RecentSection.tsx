@@ -6,16 +6,24 @@ import { Nestling } from "@/lib/types/nestling";
 import { findFolderPath } from "@/lib/utils/folders";
 import { cn } from "@/lib/utils/general";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
-import { useNestlingStore } from "@/stores/useNestlingStore";
-import { useNestStore } from "@/stores/useNestStore";
+import {
+  useFolders,
+  useNestlingActions,
+  useNestlings,
+} from "@/stores/useNestlingStore";
+import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 import { ArrowRight, Clock, Folder } from "lucide-react";
 import { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
 
 export default function RecentSection() {
-  const { activeBackgroundId, activeNestId } = useNestStore();
-  const { nestlings, folders, setActiveNestlingId } = useNestlingStore();
+  const activeNestId = useActiveNestId();
+  const activeBackgroundId = useActiveBackgroundId();
+  const nestlings = useNestlings();
+  const folders = useFolders();
+  const { setActiveNestlingId } = useNestlingActions();
+
   const [recentNestlings, setRecentNestlings] = useState<Nestling[]>([]);
 
   const handleClear = async () => {

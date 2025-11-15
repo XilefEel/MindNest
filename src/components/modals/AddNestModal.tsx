@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useNestStore } from "@/stores/useNestStore";
+import { useNestActions } from "@/stores/useNestStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 
@@ -16,7 +16,7 @@ export default function AddNestModal({
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { createNest } = useNestStore();
+  const { createNest } = useNestActions();
 
   const handleExit = () => {
     setTitle("");

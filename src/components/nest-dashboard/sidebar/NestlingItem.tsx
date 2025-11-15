@@ -1,9 +1,11 @@
-import useActiveNestling from "@/hooks/useActiveNestling";
+import {
+  useActiveNestling,
+  useNestlingActions,
+} from "@/stores/useNestlingStore";
 import { saveLastNestling } from "@/lib/storage/session";
 import { Nestling } from "@/lib/types/nestling";
 import { cn } from "@/lib/utils/general";
-import { useNestlingStore } from "@/stores/useNestlingStore";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 import { useDraggable } from "@dnd-kit/core";
 import { GripVertical } from "lucide-react";
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
@@ -23,9 +25,10 @@ export default function NestlingItem({
   isPinnedShortcut?: boolean;
 }) {
   const { setActiveFolderId, setActiveNestlingId, updateNestling } =
-    useNestlingStore();
-  const { activeNestling } = useActiveNestling();
-  const { activeNestId, activeBackgroundId } = useNestStore();
+    useNestlingActions();
+  const activeNestling = useActiveNestling();
+  const activeNestId = useActiveNestId();
+  const activeBackgroundId = useActiveBackgroundId();
 
   const [title, setTitle] = useState(nestling.title);
   const [isEditing, setIsEditing] = useState(false);

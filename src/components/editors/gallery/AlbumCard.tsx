@@ -2,7 +2,7 @@ import { GalleryAlbum } from "@/lib/types/gallery";
 import { useDroppable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils/general";
 import AlbumContextMenu from "@/components/context-menu/AlbumContextMenu";
-import { useGalleryStore } from "@/stores/useGalleryStore";
+import { useImages } from "@/stores/useGalleryStore";
 
 export default function AlbumCard({
   album,
@@ -22,7 +22,7 @@ export default function AlbumCard({
       album,
     },
   });
-  const { images } = useGalleryStore();
+  const images = useImages();
   const albumImages = images.filter((img) => img.albumId === album.id);
 
   return (

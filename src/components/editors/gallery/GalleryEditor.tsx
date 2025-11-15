@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useGalleryStore } from "@/stores/useGalleryStore";
+import { useAlbums, useGalleryActions } from "@/stores/useGalleryStore";
 import { ArrowLeft, Plus, Upload } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import NestlingTitle from "../NestlingTitle";
@@ -11,17 +11,23 @@ import AlbumView from "./AlbumView";
 import { cn } from "@/lib/utils/general";
 import AlbumModal from "@/components/modals/AlbumModal";
 import { toast } from "sonner";
-import useActiveNestling from "@/hooks/useActiveNestling";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import {
+  useActiveNestling,
+  useNestlingActions,
+} from "@/stores/useNestlingStore";
 
 export default function GalleryEditor() {
-  const { activeNestling } = useActiveNestling();
-  const { albums } = useGalleryStore();
+  const activeNestling = useActiveNestling();
+  if (!activeNestling) return;
+
+  const albums = useAlbums();
+  const { getImages, getAlbums, selectImages } = useGalleryActions();
 
   const [title, setTitle] = useState(activeNestling.title);
+  const [albumId, setAlbumId] = useState<number | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [currentView, setCurrentView] = useState<"main" | "album">("main");
-  const [albumId, setAlbumId] = useState<number | null>(null);
+
   const currentAlbum = albums.find((album) => album.id === albumId) ?? null;
 
   const direction = currentView === "album" ? 1 : -1;
@@ -34,21 +40,6 @@ export default function GalleryEditor() {
       x: direction > 0 ? "-150%" : "150%",
     }),
   };
-
-  useEffect(() => {
-    setTitle(activeNestling.title);
-  }, [activeNestling.title]);
-
-  const { getImages, getAlbums, selectImages } = useGalleryStore();
-
-  const { updateNestling } = useNestlingStore();
-  const nestlingData = useMemo(() => ({ title }), [title]);
-  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
-
-  useEffect(() => {
-    getAlbums(activeNestling.id);
-    getImages(activeNestling.id);
-  }, [getImages, activeNestling.id]);
 
   const handleSelectImage = async () => {
     try {
@@ -64,6 +55,19 @@ export default function GalleryEditor() {
       toast.error("Failed to upload image");
     }
   };
+
+  const { updateNestling } = useNestlingActions();
+  const nestlingData = useMemo(() => ({ title }), [title]);
+  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
+
+  useEffect(() => {
+    setTitle(activeNestling.title);
+  }, [activeNestling.title]);
+
+  useEffect(() => {
+    getAlbums(activeNestling.id);
+    getImages(activeNestling.id);
+  }, [getImages, activeNestling.id]);
 
   return (
     <div className="relative space-y-4">

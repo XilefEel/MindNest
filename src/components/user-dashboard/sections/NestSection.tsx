@@ -1,6 +1,6 @@
 import { Nest } from "@/lib/types/nest";
 import NestCard from "../NestCard";
-import { useNestStore } from "@/stores/useNestStore";
+import { useNestActions, useNests } from "@/stores/useNestStore";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -8,7 +8,8 @@ export default function NestSection() {
   const { user } = useAuth();
   const userId = user?.id;
 
-  const { nests, getNests } = useNestStore();
+  const nests = useNests();
+  const { getNests } = useNestActions();
 
   useEffect(() => {
     if (!userId) return;

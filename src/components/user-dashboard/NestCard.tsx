@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import EditNestModal from "../modals/EditNestModal";
 import { Nest } from "@/lib/types/nest";
-import { useNestStore } from "@/stores/useNestStore";
+import { useNestActions } from "@/stores/useNestStore";
 import { EllipsisVertical } from "lucide-react";
 
 export default function NestCard({ nest }: { nest: Nest }) {
-  const { setActiveNestId } = useNestStore();
+  const { setActiveNestId } = useNestActions();
   const navigate = useNavigate();
   const handleNavigate = (nestId: number) => {
     setActiveNestId(nestId);

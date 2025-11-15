@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 import { Button } from "../ui/button";
 
@@ -31,7 +31,7 @@ export default function BaseModal({
   setIsOpen: (isOpen: boolean) => void;
   showCancel?: boolean;
 }) {
-  const { activeBackgroundId } = useNestStore();
+  const activeBackgroundId = useActiveBackgroundId();
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

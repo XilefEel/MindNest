@@ -5,8 +5,11 @@ import {
   getLastBackgroundImage,
 } from "@/lib/storage/session";
 import { Nest } from "@/lib/types/nest";
-import { useNestlingStore } from "@/stores/useNestlingStore";
-import { useNestStore } from "@/stores/useNestStore";
+import {
+  useNestlingActions,
+  useNestlingStore,
+} from "@/stores/useNestlingStore";
+import { useNestActions } from "@/stores/useNestStore";
 import { useEffect } from "react";
 
 export default function useRestore({
@@ -23,9 +26,9 @@ export default function useRestore({
     setActiveFolderId,
     setFolderOpen,
     fetchSidebar,
-  } = useNestlingStore();
+  } = useNestlingActions();
   const { setActiveNestId, setActiveBackgroundId, fetchBackgrounds } =
-    useNestStore();
+    useNestActions();
 
   if (!id) return;
 

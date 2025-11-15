@@ -8,6 +8,7 @@ import {
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
 import { useNestlingStore } from "./useNestlingStore";
+import { useShallow } from "zustand/react/shallow";
 
 type JournalState = {
   activeEntry: JournalEntry | null;
@@ -148,3 +149,24 @@ export const useJournalStore = create<JournalState>((set, get) => ({
     }
   }),
 }));
+
+export const useEntries = () => useJournalStore((state) => state.entries);
+
+export const useTemplates = () => useJournalStore((state) => state.templates);
+
+export const useJournalActions = () =>
+  useJournalStore(
+    useShallow((state) => ({
+      setActiveEntry: state.setActiveEntry,
+      addEntry: state.addEntry,
+      getEntries: state.getEntries,
+      updateEntry: state.updateEntry,
+      deleteEntry: state.deleteEntry,
+
+      addTemplate: state.addTemplate,
+      useTemplate: state.useTemplate,
+      getTemplates: state.getTemplates,
+      updateTemplate: state.updateTemplate,
+      deleteTemplate: state.deleteTemplate,
+    })),
+  );

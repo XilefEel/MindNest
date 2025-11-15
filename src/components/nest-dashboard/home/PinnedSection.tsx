@@ -2,13 +2,19 @@ import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
 import { findFolderPath } from "@/lib/utils/folders";
 import { cn } from "@/lib/utils/general";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
-import { useNestlingStore } from "@/stores/useNestlingStore";
-import { useNestStore } from "@/stores/useNestStore";
+import {
+  useFolders,
+  useNestlingActions,
+  useNestlings,
+} from "@/stores/useNestlingStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { ArrowRight, Folder, Pin } from "lucide-react";
 
 export default function PinnedSection() {
-  const { activeBackgroundId } = useNestStore();
-  const { nestlings, folders, setActiveNestlingId } = useNestlingStore();
+  const activeBackgroundId = useActiveBackgroundId();
+  const nestlings = useNestlings();
+  const folders = useFolders();
+  const { setActiveNestlingId } = useNestlingActions();
 
   const pinnedNestlings = nestlings.filter((n) => n.isPinned === true);
 

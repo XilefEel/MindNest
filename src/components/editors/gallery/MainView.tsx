@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { useGalleryStore } from "@/stores/useGalleryStore";
+import {
+  useAlbums,
+  useGalleryActions,
+  useGalleryStore,
+  useImages,
+} from "@/stores/useGalleryStore";
 import { Columns3, Folder, Grid, Image, List, Rows3 } from "lucide-react";
 import { cn } from "@/lib/utils/general";
 import useAutoSave from "@/hooks/useAutoSave";
@@ -20,8 +25,10 @@ import {
 } from "@dnd-kit/core";
 import ImageLayout from "./ImageLayout";
 import { toast } from "sonner";
-import useActiveNestling from "@/hooks/useActiveNestling";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import {
+  useActiveNestling,
+  useNestlingActions,
+} from "@/stores/useNestlingStore";
 import BaseToolTip from "@/components/BaseToolTip";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
@@ -37,29 +44,23 @@ export default function MainView({
   setCurrentView: (view: "main" | "album") => void;
   setAlbumId: (id: number | null) => void;
 }) {
-  const { activeNestling } = useActiveNestling();
+  const activeNestling = useActiveNestling();
+  if (!activeNestling) return;
+
   const [title, setTitle] = useState(activeNestling.title);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [layoutMode, setLayoutMode] = useState<"row" | "column">("row");
 
-  useEffect(() => {
-    setTitle(activeNestling.title);
-  }, [activeNestling.title]);
+  const images = useImages();
+  const albums = useAlbums();
+  const activeDraggingImageId = useGalleryStore(
+    (state) => state.activeDraggingImageId,
+  );
+  const { handleDragStart, handleDragEnd } = useGalleryActions();
 
-  const {
-    images,
-    activeDraggingImageId,
-    albums,
-    handleDragStart,
-    handleDragEnd,
-  } = useGalleryStore();
-
-  const { updateNestling } = useNestlingStore();
-  useAutoSave({
-    target: activeNestling,
-    currentData: useMemo(() => ({ title }), [title]),
-    saveFunction: (id, data) => updateNestling(id, data),
-  });
+  const { updateNestling } = useNestlingActions();
+  const nestlingData = useMemo(() => ({ title }), [title]);
+  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -85,6 +86,10 @@ export default function MainView({
   const draggingImage = activeDraggingImageId
     ? images.find((img) => img.id === parseInt(activeDraggingImageId))
     : null;
+
+  useEffect(() => {
+    setTitle(activeNestling.title);
+  }, [activeNestling.title]);
 
   return (
     <motion.div

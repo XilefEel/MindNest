@@ -1,7 +1,7 @@
 import { Nestling } from "@/lib/types/nestling";
 import { findFolderPath } from "@/lib/utils/folders";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import { useFolders, useNestlingActions } from "@/stores/useNestlingStore";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { Folder } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -15,9 +15,11 @@ export default function NestlingTitle({
   setTitle: (title: string) => void;
   nestling: Nestling;
 }) {
+  const folders = useFolders();
+  const { updateNestling } = useNestlingActions();
+
   const [showPicker, setShowPicker] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
-  const { updateNestling, folders } = useNestlingStore();
   const Icon = getNestlingIcon(nestling.nestlingType);
 
   const handleEmojiClick = (emojiData: EmojiClickData) => {

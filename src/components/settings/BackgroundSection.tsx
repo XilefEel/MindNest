@@ -1,19 +1,24 @@
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import {
+  useActiveBackgroundId,
+  useActiveNestId,
+  useBackgrounds,
+  useNestActions,
+} from "@/stores/useNestStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function BackgroundSection() {
+  const activeNestId = useActiveNestId();
+  const backgrounds = useBackgrounds();
+  const activeBackgroundId = useActiveBackgroundId();
   const {
-    activeNestId,
-    backgrounds,
-    activeBackgroundId,
     setActiveBackgroundId,
     clearActiveBackgroundId,
     selectBackground,
     deleteBackground,
-  } = useNestStore();
+  } = useNestActions();
 
   const handleUploadBackground = async () => {
     try {

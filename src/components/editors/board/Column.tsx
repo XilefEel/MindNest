@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Trash, Plus } from "lucide-react";
-import { useBoardStore } from "@/stores/useBoardStore";
+import { useActiveDraggingId, useBoardActions } from "@/stores/useBoardStore";
 import ColumnCard from "./ColumnCard";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -14,11 +14,12 @@ import { BoardColumnData } from "@/lib/types/board";
 import ColumnContextMenu from "@/components/context-menu/ColumnContextMenu";
 
 export default function Column(col: BoardColumnData) {
-  const { createCard, updateColumn, removeColumn, activeDraggingId } =
-    useBoardStore();
   const [title, setTitle] = useState(col.column.title);
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const { createCard, updateColumn, removeColumn } = useBoardActions();
+  const activeDraggingId = useActiveDraggingId();
 
   const {
     attributes,

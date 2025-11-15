@@ -15,6 +15,7 @@ import {
   updateOrderIndexes,
 } from "@/lib/utils/boards";
 import { useNestlingStore } from "./useNestlingStore";
+import { useShallow } from "zustand/react/shallow";
 
 type BoardState = {
   boardData: BoardData | null;
@@ -522,3 +523,30 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     }
   },
 }));
+
+export const useBoardData = () => useBoardStore((state) => state.boardData);
+
+export const useActiveDraggingId = () =>
+  useBoardStore((state) => state.activeDraggingId);
+
+export const useBoardActions = () =>
+  useBoardStore(
+    useShallow((state) => ({
+      getBoard: state.getBoard,
+
+      createColumn: state.createColumn,
+      duplicateColumn: state.duplicateColumn,
+      updateColumn: state.updateColumn,
+      removeColumn: state.removeColumn,
+      reorderColumn: state.reorderColumn,
+
+      createCard: state.createCard,
+      duplicateCard: state.duplicateCard,
+      updateCard: state.updateCard,
+      reorderCard: state.reorderCard,
+      deleteCard: state.deleteCard,
+
+      handleDragStart: state.handleDragStart,
+      handleDragEnd: state.handleDragEnd,
+    })),
+  );

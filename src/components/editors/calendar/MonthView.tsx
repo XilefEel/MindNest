@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { addMonths, subMonths } from "date-fns";
 import MonthGrid from "./MonthGrid";
 import { useState } from "react";
-import useActiveNestling from "@/hooks/useActiveNestling";
+import { useActiveNestling } from "@/stores/useNestlingStore";
 
 export default function MonthView({
   selectedDate,
@@ -22,10 +22,10 @@ export default function MonthView({
   setMode: (mode: "calendar" | "planner") => void;
   setDirection: (direction: number) => void;
 }) {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const activeNestling = useActiveNestling();
+  if (!activeNestling) return;
 
-  const { activeNestling } = useActiveNestling();
-  if (!activeNestling) return null;
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   const years = Array.from({ length: 50 }, (_, i) => 2000 + i); // 2000–2049
 

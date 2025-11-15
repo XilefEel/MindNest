@@ -1,7 +1,7 @@
 import { Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BoardCard } from "@/lib/types/board";
-import { useBoardStore } from "@/stores/useBoardStore";
+import { useActiveDraggingId, useBoardActions } from "@/stores/useBoardStore";
 import { useEffect, useRef, useState } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
@@ -9,11 +9,13 @@ import { motion } from "framer-motion";
 import CardContextMenu from "@/components/context-menu/CardContextMenu";
 
 export default function ColumnCard(card: BoardCard) {
-  const { updateCard, deleteCard } = useBoardStore();
   const [title, setTitle] = useState(card.title);
   const [description, setDescription] = useState(card.description || "");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
+
+  const { updateCard, deleteCard } = useBoardActions();
+  const activeDraggingId = useActiveDraggingId();
 
   const titleRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLInputElement>(null);
@@ -28,8 +30,6 @@ export default function ColumnCard(card: BoardCard) {
   } = useSortable({
     id: `card-${card.id}-column-${card.columnId}`,
   });
-
-  const { activeDraggingId } = useBoardStore();
 
   const style = {
     transform: CSS.Transform.toString(transform),

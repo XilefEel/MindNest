@@ -10,13 +10,16 @@ import { useHotkeys } from "react-hotkeys-hook";
 import useAutoSave from "@/hooks/useAutoSave";
 import NestlingTitle from "../NestlingTitle";
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
-import useActiveNestling from "@/hooks/useActiveNestling";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
+import {
+  useActiveNestling,
+  useNestlingActions,
+} from "@/stores/useNestlingStore";
 
 export default function NoteEditor() {
-  const { activeNestling } = useActiveNestling();
-  const { updateNestling } = useNestlingStore();
+  const activeNestling = useActiveNestling();
+  if (!activeNestling) return;
+  const { updateNestling } = useNestlingActions();
 
   const [title, setTitle] = useState(activeNestling.title);
   const [previewMode, setPreviewMode] = useState(false);
@@ -116,7 +119,7 @@ export default function NoteEditor() {
     }, 0);
   };
 
-  const { activeBackgroundId } = useNestStore();
+  const activeBackgroundId = useActiveBackgroundId();
 
   useEffect(() => {
     if (activeNestling) {

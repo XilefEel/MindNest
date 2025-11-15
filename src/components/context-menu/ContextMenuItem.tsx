@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { ElementType, ReactNode } from "react";
 
@@ -16,7 +16,7 @@ export default function ContextMenuItem({
   isDelete?: boolean;
   children?: ReactNode;
 }) {
-  const { activeBackgroundId } = useNestStore();
+  const activeBackgroundId = useActiveBackgroundId();
   return (
     <ContextMenu.Item
       className={cn(

@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { Maximize, Minus, X } from "lucide-react";
 
 export default function Titlebar() {
   const appWindow = getCurrentWindow();
-  const { activeBackgroundId } = useNestStore();
+  const activeBackgroundId = useActiveBackgroundId();
   return (
     <div
       data-tauri-drag-region

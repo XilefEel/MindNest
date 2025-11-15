@@ -1,4 +1,8 @@
-import { useGalleryStore } from "@/stores/useGalleryStore";
+import {
+  useAlbums,
+  useGalleryActions,
+  useImages,
+} from "@/stores/useGalleryStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, Copy, Star, Folder, Download, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -7,7 +11,7 @@ import RenameImageModal from "../modals/RenameImageModal";
 import { GalleryImage } from "@/lib/types/gallery";
 import BaseContextMenu from "./BaseContextMenu";
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 export default function ImageContextMenu({
   imageId,
   children,
@@ -15,16 +19,12 @@ export default function ImageContextMenu({
   imageId: number;
   children: React.ReactNode;
 }) {
-  const { activeBackgroundId } = useNestStore();
+  const activeBackgroundId = useActiveBackgroundId();
 
-  const {
-    albums,
-    images,
-    duplicateImage,
-    updateImage,
-    removeImage,
-    downloadImage,
-  } = useGalleryStore();
+  const albums = useAlbums();
+  const images = useImages();
+  const { duplicateImage, updateImage, removeImage, downloadImage } =
+    useGalleryActions();
 
   const currentImage = images.find((i) => i.id === imageId);
 

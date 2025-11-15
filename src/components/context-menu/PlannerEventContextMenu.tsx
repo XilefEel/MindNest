@@ -1,6 +1,6 @@
 import { PlannerEventType } from "@/lib/types/calendar";
 import { COLORS } from "@/lib/utils/constants";
-import { usePlannerStore } from "@/stores/usePlannerStore";
+import { usePlannerActions } from "@/stores/usePlannerStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Copy, Trash, Check, Palette } from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";
@@ -13,14 +13,12 @@ export default function PlannerEventContextMenu({
   event: PlannerEventType;
   children: React.ReactNode;
 }) {
-  const { createEvent, updateEvent, deleteEvent } = usePlannerStore();
+  const { createEvent, updateEvent, deleteEvent } = usePlannerActions();
 
-  const onDuplicate = () => {
-    createEvent(event);
-  };
-  const onChangeColor = (color: string) => {
-    updateEvent(event.id, { color });
-  };
+  const onDuplicate = () => createEvent(event);
+
+  const onChangeColor = (color: string) => updateEvent(event.id, { color });
+
   return (
     <BaseContextMenu
       content={

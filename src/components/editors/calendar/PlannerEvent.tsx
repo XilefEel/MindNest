@@ -4,7 +4,7 @@ import { startOfWeek } from "date-fns";
 import { getDateFromWeekDay, getDayFromDate } from "@/lib/utils/date";
 import PlannerEventContextMenu from "@/components/context-menu/PlannerEventContextMenu";
 import { useRef, useState } from "react";
-import { usePlannerStore } from "@/stores/usePlannerStore";
+import { usePlannerActions } from "@/stores/usePlannerStore";
 
 export default function PlannerEvent({
   event,
@@ -17,7 +17,7 @@ export default function PlannerEvent({
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { updateEvent } = usePlannerStore();
+  const { updateEvent } = usePlannerActions();
 
   const handleSubmit = async () => {
     const newTitle = title.trim();

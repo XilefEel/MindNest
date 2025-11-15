@@ -3,7 +3,7 @@ import GeneralSettings from "../settings/GeneralSettings";
 import NestSettings from "../settings/NestSettings";
 import { cn } from "@/lib/utils/general";
 import BaseModal from "./BaseModal";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveNestId } from "@/stores/useNestStore";
 
 export default function SettingsModal({
   children,
@@ -11,15 +11,15 @@ export default function SettingsModal({
   setIsOpen,
 }: {
   children: React.ReactNode;
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+  isOpen?: boolean;
+  setIsOpen?: (isOpen: boolean) => void;
 }) {
   const [internalOpen, setInternalOpen] = useState(false);
   const isActuallyOpen = isOpen ?? internalOpen;
   const setOpen = setIsOpen ?? setInternalOpen;
 
   const [activeTab, setActiveTab] = useState("general");
-  const { activeNestId } = useNestStore();
+  const activeNestId = useActiveNestId();
 
   const tabs = [
     { id: "general", label: "General Settings" },

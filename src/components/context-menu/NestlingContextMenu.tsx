@@ -3,11 +3,11 @@ import { Edit3, Trash2, Copy, Archive, Pin, PinOff } from "lucide-react";
 import DeleteModal from "../modals/DeleteModal";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
 import NestlingModal from "../modals/NestlingModal";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export default function NestlingContextMenu({
   nestlingId,
@@ -16,8 +16,10 @@ export default function NestlingContextMenu({
   nestlingId: number;
   children: React.ReactNode;
 }) {
-  const { duplicateNestling, updateNestling, nestlings } = useNestlingStore();
-  const { activeBackgroundId } = useNestStore();
+  const nestlings = useNestlings();
+  const activeBackgroundId = useActiveBackgroundId();
+  const { duplicateNestling, updateNestling } = useNestlingActions();
+
   const nestling = nestlings.find((n) => n.id === nestlingId);
   if (!nestling) return null;
 

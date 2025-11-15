@@ -9,9 +9,9 @@ import {
   CommandItem,
   CommandSeparator,
 } from "../ui/command";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
 
 export default function SearchModal({
@@ -21,8 +21,9 @@ export default function SearchModal({
   isOpen?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
 }) {
-  const { activeBackgroundId } = useNestStore();
-  const { nestlings, setActiveNestlingId } = useNestlingStore();
+  const activeBackgroundId = useActiveBackgroundId();
+  const nestlings = useNestlings();
+  const { setActiveNestlingId } = useNestlingActions();
 
   const [searchQuery, setSearchQuery] = useState("");
   const filteredNestlings = nestlings.filter((nestling) =>

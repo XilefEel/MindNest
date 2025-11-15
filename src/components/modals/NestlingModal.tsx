@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import {
+  useNestlingActions,
+  useNestlings,
+  useNestlingStore,
+} from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 import { cn } from "@/lib/utils/general";
 import { nestlingTypes } from "@/lib/utils/nestlings";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { NestlingType } from "@/lib/types/nestling";
 
 export default function NestlingModal({
@@ -23,6 +27,11 @@ export default function NestlingModal({
   isOpen?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
 }) {
+  const nestlings = useNestlings();
+  const activeFolderId = useNestlingStore((state) => state.activeFolderId);
+  const { addNestling, updateNestling } = useNestlingActions();
+  const activeBackgroundId = useActiveBackgroundId();
+
   const [title, setTitle] = useState("");
   const [nestlingType, setNestlingType] = useState<NestlingType>("note");
   const [loading, setLoading] = useState(false);
@@ -31,9 +40,6 @@ export default function NestlingModal({
   const isActuallyOpen = isOpen ?? internalOpen;
   const setOpen = setIsOpen ?? setInternalOpen;
 
-  const { addNestling, activeFolderId, updateNestling, nestlings } =
-    useNestlingStore();
-  const { activeBackgroundId } = useNestStore();
   const nestling = nestlings.find((n) => n.id === nestlingId);
 
   const handleExit = async () => {

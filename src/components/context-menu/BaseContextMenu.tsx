@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 
 export default function BaseContextMenu({
@@ -9,7 +9,7 @@ export default function BaseContextMenu({
   children: React.ReactNode;
   content: React.ReactNode;
 }) {
-  const { activeBackgroundId } = useNestStore();
+  const activeBackgroundId = useActiveBackgroundId();
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>

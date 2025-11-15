@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import SettingsModal from "../../modals/SettingsModal";
 import { clearLastNestId } from "@/lib/storage/session";
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import { useActiveBackgroundId, useNestActions } from "@/stores/useNestStore";
+import { useNestlingActions } from "@/stores/useNestlingStore";
 import TopbarButton from "./TopbarButton";
 import { useEffect, useRef, useState } from "react";
 
@@ -20,9 +20,10 @@ export default function Topbar({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const navigate = useNavigate();
-  const { setActiveNestlingId } = useNestlingStore();
-  const { activeBackgroundId, setActiveBackgroundId, setActiveNestId } =
-    useNestStore();
+  const activeBackgroundId = useActiveBackgroundId();
+  const { setActiveNestlingId } = useNestlingActions();
+  const { setActiveBackgroundId, setActiveNestId, updateNest } =
+    useNestActions();
 
   const handleExit = () => {
     navigate("/dashboard");
@@ -31,8 +32,6 @@ export default function Topbar({
     setActiveNestlingId(null);
     setActiveNestId(null);
   };
-
-  const { updateNest } = useNestStore();
 
   const [title, setTitle] = useState(nest.title);
   const [isEditing, setIsEditing] = useState(false);

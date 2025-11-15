@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
 import { toast } from "sonner";
-import { useNestStore } from "@/stores/useNestStore";
+import { useNestActions } from "@/stores/useNestStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 import { clearLastNestling } from "@/lib/storage/session";
@@ -18,7 +18,7 @@ export default function EditNestModal({
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState(nest?.title ?? "");
 
-  const { updateNest, deleteNest } = useNestStore();
+  const { updateNest, deleteNest } = useNestActions();
 
   const handleEdit = async () => {
     if (!nest) return;

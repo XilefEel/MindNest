@@ -4,9 +4,9 @@ import { Trash, Palette, Copy, Check } from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { BoardColumn } from "@/lib/types/board";
-import { useBoardStore } from "@/stores/useBoardStore";
+import { useBoardActions } from "@/stores/useBoardStore";
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export default function ColumnContextMenu({
   column,
@@ -15,8 +15,8 @@ export default function ColumnContextMenu({
   column: BoardColumn;
   children: React.ReactNode;
 }) {
-  const { activeBackgroundId } = useNestStore();
-  const { updateColumn, removeColumn, duplicateColumn } = useBoardStore();
+  const activeBackgroundId = useActiveBackgroundId();
+  const { updateColumn, removeColumn, duplicateColumn } = useBoardActions();
 
   const handleDeleteColumn = async () => {
     try {

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useNestlingStore } from "@/stores/useNestlingStore";
-import { useJournalStore } from "@/stores/useJournalStore";
+import { useNestlingActions } from "@/stores/useNestlingStore";
+import { useJournalActions, useJournalStore } from "@/stores/useJournalStore";
 import { JournalEntry } from "@/lib/types/journal";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 import { toast } from "sonner";
-import { useNestStore } from "@/stores/useNestStore";
-import useActiveNestling from "@/hooks/useActiveNestling";
+import { useActiveNestId } from "@/stores/useNestStore";
+import { useActiveNestling } from "@/stores/useNestlingStore";
 
 export default function AddJournalEntryModal({
   setActiveEntry,
@@ -16,13 +16,16 @@ export default function AddJournalEntryModal({
   setActiveEntry: (entry: JournalEntry) => void;
   children: React.ReactNode;
 }) {
+  const activeNestId = useActiveNestId();
+  const activeNestling = useActiveNestling();
+  if (!activeNestling) return;
+
+  const { fetchSidebar } = useNestlingActions();
+  const { addEntry } = useJournalActions();
+  const loading = useJournalStore((state) => state.loading);
+
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
-
-  const { activeNestId } = useNestStore();
-  const { activeNestling } = useActiveNestling();
-  const { fetchSidebar } = useNestlingStore();
-  const { addEntry, loading } = useJournalStore();
 
   const handleExit = async () => {
     await fetchSidebar(activeNestId!);

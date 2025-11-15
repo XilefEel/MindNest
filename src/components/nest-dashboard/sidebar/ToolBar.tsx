@@ -2,13 +2,13 @@ import BaseToolTip from "@/components/BaseToolTip";
 import FolderModal from "@/components/modals/FolderModal";
 import NestlingModal from "@/components/modals/NestlingModal";
 import { cn } from "@/lib/utils/general";
-import { useNestlingStore } from "@/stores/useNestlingStore";
-import { useNestStore } from "@/stores/useNestStore";
+import { useNestlingActions } from "@/stores/useNestlingStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { FilePlus, FolderPlus, Minimize2, Maximize2 } from "lucide-react";
 
 export default function ToolBar({ nestId }: { nestId: number }) {
-  const { toggleAllFolders } = useNestlingStore();
-  const { activeBackgroundId } = useNestStore();
+  const { toggleAllFolders } = useNestlingActions();
+  const activeBackgroundId = useActiveBackgroundId();
   return (
     <div className="mb-2.5 flex items-center border-b dark:border-white">
       <NestlingModal nestId={nestId}>

@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Nest } from "@/lib/types/nest";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId, useBackgrounds } from "@/stores/useNestStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { cn } from "@/lib/utils/general";
 import Topbar from "@/components/nest-dashboard/topbar/Topbar";
@@ -14,12 +14,12 @@ import CalendarEditor from "@/components/editors/calendar/CalendarEditor";
 import JournalEditor from "@/components/editors/journal/JournalEditor";
 import GalleryEditor from "@/components/editors/gallery/GalleryEditor";
 import useRestore from "@/hooks/useRestore";
-import useActiveNestling from "@/hooks/useActiveNestling";
 import NestlingModal from "@/components/modals/NestlingModal";
 import FolderModal from "@/components/modals/FolderModal";
 import MindmapEditor from "@/components/editors/mindmap/MindmapEditor";
 import SearchModal from "@/components/modals/SearchModal";
 import SettingsModal from "@/components/modals/SettingsModal";
+import { useActiveNestling } from "@/stores/useNestlingStore";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -36,8 +36,9 @@ export default function NestDashboardPage() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
-  const { activeNestling } = useActiveNestling();
-  const { activeBackgroundId, backgrounds } = useNestStore();
+  const activeNestling = useActiveNestling();
+  const backgrounds = useBackgrounds();
+  const activeBackgroundId = useActiveBackgroundId();
 
   const activeBackgroundImage = backgrounds.find(
     (background) => background.id === activeBackgroundId,

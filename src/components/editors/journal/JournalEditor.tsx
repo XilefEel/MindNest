@@ -1,28 +1,38 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Calendar } from "lucide-react";
 import NestlingTitle from "../NestlingTitle";
-import { useJournalStore } from "@/stores/useJournalStore";
+import {
+  useEntries,
+  useJournalActions,
+  useJournalStore,
+} from "@/stores/useJournalStore";
 import JournalSidebar from "./JournalSidebar";
 import useAutoSave from "@/hooks/useAutoSave";
 import { NewEntryButton } from "./NewEntryButton";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
-import useActiveNestling from "@/hooks/useActiveNestling";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import {
+  useActiveNestling,
+  useNestlingActions,
+} from "@/stores/useNestlingStore";
 
 export default function JournalingApp() {
-  const { activeBackgroundId } = useNestStore();
-  const { activeEntry, entries, getEntries, updateEntry } = useJournalStore();
+  const activeNestling = useActiveNestling();
+  if (!activeNestling) return;
 
-  const { activeNestling } = useActiveNestling();
+  const activeBackgroundId = useActiveBackgroundId();
+
+  const activeEntry = useJournalStore((state) => state.activeEntry);
+  const entries = useEntries();
+  const { getEntries, updateEntry } = useJournalActions();
+
   const [title, setTitle] = useState(activeNestling.title);
-
   const [currentTitle, setCurrentTitle] = useState("");
   const [currentContent, setCurrentContent] = useState("");
   const [wordCount, setWordCount] = useState(0);
   const [isEntryOpen, setIsEntryOpen] = useState(false);
 
-  const { updateNestling } = useNestlingStore();
+  const { updateNestling } = useNestlingActions();
   const nestlingData = useMemo(() => ({ title }), [title]);
   useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
@@ -30,7 +40,6 @@ export default function JournalingApp() {
     () => ({ title: currentTitle, content: currentContent }),
     [currentTitle, currentContent],
   );
-
   useAutoSave(activeEntry?.id!, entryData, updateEntry);
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

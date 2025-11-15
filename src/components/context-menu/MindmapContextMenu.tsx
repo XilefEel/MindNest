@@ -12,7 +12,11 @@ import {
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { MindmapNode } from "@/lib/types/mindmap";
-import { useMindmapStore } from "@/stores/useMindmapStore";
+import {
+  useMindmapActions,
+  useMindmapEdges,
+  useMindmapNodes,
+} from "@/stores/useMindmapStore";
 import { getRandomElement } from "@/lib/utils/general";
 
 export default function MindmapContextMenu({
@@ -22,8 +26,10 @@ export default function MindmapContextMenu({
   children: React.ReactNode;
   node: MindmapNode;
 }) {
-  const { nodes, edges, createNode, createEdge, updateNode, deleteNode } =
-    useMindmapStore();
+  const { createNode, createEdge, updateNode, deleteNode } =
+    useMindmapActions();
+  const nodes = useMindmapNodes();
+  const edges = useMindmapEdges();
 
   const handleEditNode = async (color: string, text?: boolean) => {
     try {

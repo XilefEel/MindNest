@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import {
+  useFolders,
+  useNestlingActions,
+  useNestlingStore,
+} from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 
@@ -18,6 +22,10 @@ export default function AddFolderModal({
   isOpen?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
 }) {
+  const folders = useFolders();
+  const activeFolderId = useNestlingStore((state) => state.activeFolderId);
+  const { addFolder, updateFolder } = useNestlingActions();
+
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,8 +33,6 @@ export default function AddFolderModal({
   const isActuallyOpen = isOpen ?? internalOpen;
   const setOpen = setIsOpen ?? setInternalOpen;
 
-  const { addFolder, updateFolder, folders, activeFolderId } =
-    useNestlingStore();
   const folder = folderId ? folders.find((f) => f.id === folderId) : undefined;
 
   const handleExit = async () => {

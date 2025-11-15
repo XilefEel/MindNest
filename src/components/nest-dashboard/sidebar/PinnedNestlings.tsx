@@ -2,7 +2,7 @@ import { useState } from "react";
 import NestlingItem from "./NestlingItem";
 import { Pin } from "lucide-react";
 import { motion } from "framer-motion";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 
 export default function PinnedNestlings({
@@ -12,7 +12,7 @@ export default function PinnedNestlings({
   pinnedNestlings: any[];
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
-  const { activeBackgroundId } = useNestStore();
+  const activeBackgroundId = useActiveBackgroundId();
 
   const [isPinnedOpen, setIsPinnedOpen] = useState(true);
 

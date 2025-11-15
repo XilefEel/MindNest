@@ -8,19 +8,21 @@ import useAutoSave from "@/hooks/useAutoSave";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils/general";
-import useActiveNestling from "@/hooks/useActiveNestling";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import {
+  useActiveNestling,
+  useNestlingActions,
+} from "@/stores/useNestlingStore";
 
 export default function CalendarEditor() {
-  const { activeNestling } = useActiveNestling();
-
+  const activeNestling = useActiveNestling();
+  if (!activeNestling) return;
   const [title, setTitle] = useState(activeNestling.title);
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [direction, setDirection] = useState(1);
   const [mode, setMode] = useState<"calendar" | "planner">("calendar");
 
-  const { updateNestling } = useNestlingStore();
+  const { updateNestling } = useNestlingActions();
   const nestlingData = useMemo(() => ({ title }), [title]);
   useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 

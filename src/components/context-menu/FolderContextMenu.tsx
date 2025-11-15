@@ -4,9 +4,9 @@ import DeleteModal from "../modals/DeleteModal";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import FolderModal from "../modals/FolderModal";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 import NestlingModal from "../modals/NestlingModal";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import { useNestlingActions } from "@/stores/useNestlingStore";
 import { cn } from "@/lib/utils/general";
 
 export default function FolderContextMenu({
@@ -16,8 +16,10 @@ export default function FolderContextMenu({
   folderId: number;
   children: React.ReactNode;
 }) {
-  const { activeNestId, activeBackgroundId } = useNestStore();
-  const { duplicateFolder } = useNestlingStore();
+  const activeNestId = useActiveNestId();
+  const activeBackgroundId = useActiveBackgroundId();
+  const { duplicateFolder } = useNestlingActions();
+
   return (
     <BaseContextMenu
       content={

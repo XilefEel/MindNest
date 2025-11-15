@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import NestlingTitle from "@/components/editors/NestlingTitle";
-import { useBoardStore } from "@/stores/useBoardStore";
+import {
+  useActiveDraggingId,
+  useBoardActions,
+  useBoardData,
+} from "@/stores/useBoardStore";
 import Column from "@/components/editors/board/Column";
 import { AnimatePresence } from "framer-motion";
 import useAutoSave from "@/hooks/useAutoSave";
@@ -17,29 +21,27 @@ import {
   SortableContext,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import useActiveNestling from "@/hooks/useActiveNestling";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import {
+  useActiveNestling,
+  useNestlingActions,
+} from "@/stores/useNestlingStore";
 import { COLORS } from "@/lib/utils/constants";
 import { getRandomElement } from "@/lib/utils/general";
 import ColumnCard from "./ColumnCard";
 import { createPortal } from "react-dom";
 
 export default function BoardEditor() {
-  const { activeNestling, activeNestlingId } = useActiveNestling();
-  const { updateNestling } = useNestlingStore();
-
+  const activeNestling = useActiveNestling();
   if (!activeNestling) return;
 
-  const [title, setTitle] = useState(activeNestling.title);
-  const {
-    boardData,
-    getBoard,
-    createColumn,
-    handleDragStart,
-    handleDragEnd,
-    activeDraggingId,
-  } = useBoardStore();
+  const boardData = useBoardData();
+  const activeDraggingId = useActiveDraggingId();
+  const { getBoard, createColumn, handleDragStart, handleDragEnd } =
+    useBoardActions();
 
+  const { updateNestling } = useNestlingActions();
+
+  const [title, setTitle] = useState(activeNestling.title);
   const columns = boardData?.columns || [];
   const columnIds = columns.map((col) => `column-${col.column.id}`);
 
@@ -60,7 +62,7 @@ export default function BoardEditor() {
   const handleAddColumn = async () => {
     try {
       createColumn({
-        nestlingId: activeNestlingId!,
+        nestlingId: activeNestling.id!,
         title: "New Column",
         orderIndex: boardData!.columns.length + 1,
         color: getRandomElement(COLORS),
@@ -70,16 +72,16 @@ export default function BoardEditor() {
     }
   };
 
+  const nestlingData = useMemo(() => ({ title }), [title]);
+  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
+
   useEffect(() => {
-    getBoard(activeNestlingId!);
-  }, [getBoard, activeNestlingId]);
+    getBoard(activeNestling.id!);
+  }, [getBoard, activeNestling.id]);
 
   useEffect(() => {
     setTitle(activeNestling.title);
   }, [activeNestling.title]);
-
-  const nestlingData = useMemo(() => ({ title }), [title]);
-  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
   return (
     <div className="relative flex h-full flex-col gap-3">

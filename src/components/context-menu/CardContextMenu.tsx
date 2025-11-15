@@ -3,10 +3,10 @@ import { Trash, Copy, CornerDownRight, Folder, Columns } from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { BoardCard } from "@/lib/types/board";
-import { useBoardStore } from "@/stores/useBoardStore";
+import { useBoardActions, useBoardData } from "@/stores/useBoardStore";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export default function CardContextMenu({
   card,
@@ -15,9 +15,12 @@ export default function CardContextMenu({
   card: BoardCard;
   children: React.ReactNode;
 }) {
-  const { deleteCard, duplicateCard, boardData, reorderCard } = useBoardStore();
-  const { activeBackgroundId } = useNestStore();
+  const boardData = useBoardData();
+  const { deleteCard, duplicateCard, reorderCard } = useBoardActions();
+
+  const activeBackgroundId = useActiveBackgroundId();
   if (!boardData) return null;
+
   const columns = boardData.columns;
 
   const handleDeleteCard = async () => {

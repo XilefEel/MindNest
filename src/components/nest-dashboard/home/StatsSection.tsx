@@ -1,10 +1,12 @@
 import { cn } from "@/lib/utils/general";
-import { useNestlingStore } from "@/stores/useNestlingStore";
-import { useNestStore } from "@/stores/useNestStore";
+import { useFolders, useNestlings } from "@/stores/useNestlingStore";
+import { useActiveBackgroundId, useBackgrounds } from "@/stores/useNestStore";
 
 export default function StatsSection() {
-  const { nestlings, folders } = useNestlingStore();
-  const { backgrounds, activeBackgroundId } = useNestStore();
+  const nestlings = useNestlings();
+  const folders = useFolders();
+  const backgrounds = useBackgrounds();
+  const activeBackgroundId = useActiveBackgroundId();
 
   const stats = [
     { label: "Nestlings", value: nestlings.length, icon: "🪺" },

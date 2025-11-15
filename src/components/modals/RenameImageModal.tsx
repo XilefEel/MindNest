@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useGalleryStore } from "@/stores/useGalleryStore";
+import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import BaseModal from "./BaseModal";
@@ -12,7 +12,9 @@ export default function RenameImageModal({
   children: React.ReactNode;
   imageId: number;
 }) {
-  const { images, updateImage } = useGalleryStore();
+  const images = useImages();
+  const { updateImage } = useGalleryActions();
+
   const currentImage = images.find((img) => img.id === imageId);
 
   const [isOpen, setIsOpen] = useState(false);

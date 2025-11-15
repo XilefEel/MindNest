@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export default function DateSelect({
   currentDate,
@@ -21,7 +21,7 @@ export default function DateSelect({
   years: number[];
   months: string[];
 }) {
-  const { activeBackgroundId } = useNestStore();
+  const activeBackgroundId = useActiveBackgroundId();
 
   const onMonthChange = (value: string) => {
     const monthIndex = Number(value);

@@ -1,7 +1,7 @@
 import { JournalEntry } from "@/lib/types/journal";
 import { cn } from "@/lib/utils/general";
-import { useJournalStore } from "@/stores/useJournalStore";
-import { useNestStore } from "@/stores/useNestStore";
+import { useEntries, useJournalActions } from "@/stores/useJournalStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { Clock, Search, Trash } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -15,8 +15,9 @@ export default function JournalSidebarContent({
   const [searchQuery, setSearchQuery] = useState("");
   const [isSwitching, setIsSwitching] = useState(false);
 
-  const { activeBackgroundId } = useNestStore();
-  const { entries, setActiveEntry, deleteEntry } = useJournalStore();
+  const activeBackgroundId = useActiveBackgroundId();
+  const entries = useEntries();
+  const { setActiveEntry, deleteEntry } = useJournalActions();
 
   const filteredEntries = useMemo(() => {
     if (!searchQuery.trim()) return entries;

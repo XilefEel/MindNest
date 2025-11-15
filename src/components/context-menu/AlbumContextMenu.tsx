@@ -1,14 +1,14 @@
 import { GalleryAlbum } from "@/lib/types/gallery";
-import { useGalleryStore } from "@/stores/useGalleryStore";
+import { useGalleryActions } from "@/stores/useGalleryStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, PlusSquare, Download, Trash2 } from "lucide-react";
 import AlbumModal from "../modals/AlbumModal";
-import { useNestlingStore } from "@/stores/useNestlingStore";
 import { toast } from "sonner";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { useActiveNestlingId } from "@/stores/useNestlingStore";
 
 export default function AlbumContextMenu({
   album,
@@ -17,10 +17,11 @@ export default function AlbumContextMenu({
   album: GalleryAlbum;
   children: React.ReactNode;
 }) {
-  const { activeBackgroundId } = useNestStore();
-  const { activeNestlingId } = useNestlingStore();
+  const activeBackgroundId = useActiveBackgroundId();
+  const activeNestlingId = useActiveNestlingId();
   if (!activeNestlingId) return;
-  const { downloadAlbum, selectImages, deleteAlbum } = useGalleryStore();
+
+  const { downloadAlbum, selectImages, deleteAlbum } = useGalleryActions();
 
   const handleSelectImage = async (albumId: number) => {
     try {

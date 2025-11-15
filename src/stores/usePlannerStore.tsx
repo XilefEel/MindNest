@@ -6,6 +6,7 @@ import type {
 import * as calendarApi from "@/lib/api/calendar";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { useNestlingStore } from "./useNestlingStore";
+import { useShallow } from "zustand/react/shallow";
 
 type PlannerState = {
   events: PlannerEventType[];
@@ -101,3 +102,14 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
     }
   }),
 }));
+
+export const useEvents = () => usePlannerStore((state) => state.events);
+export const usePlannerActions = () =>
+  usePlannerStore(
+    useShallow((state) => ({
+      createEvent: state.createEvent,
+      getEvents: state.getEvents,
+      updateEvent: state.updateEvent,
+      deleteEvent: state.deleteEvent,
+    })),
+  );

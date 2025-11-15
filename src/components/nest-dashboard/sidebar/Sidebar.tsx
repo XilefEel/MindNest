@@ -2,13 +2,17 @@ import FolderTree from "./FolderTree";
 import { DndContext, rectIntersection } from "@dnd-kit/core";
 import LooseNestlings from "./LooseNestlings";
 import { useEffect, useMemo } from "react";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import {
+  useActiveNestlingId,
+  useFolders,
+  useNestlingActions,
+  useNestlings,
+} from "@/stores/useNestlingStore";
 import { SidebarContextMenu } from "../../context-menu/SidebarContextMenu";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { clearLastNestling } from "@/lib/storage/session";
-import useActiveNestling from "@/hooks/useActiveNestling";
 import ToolBar from "./ToolBar";
 import PinnedNestlings from "./PinnedNestlings";
 import HomeItem from "./HomeItem";
@@ -21,17 +25,13 @@ export default function Sidebar({
   isSidebarOpen: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
-  const {
-    folders,
-    nestlings,
-    handleDragStart,
-    handleDragEnd,
-    fetchSidebar,
-    setActiveNestlingId,
-  } = useNestlingStore();
+  const nestlings = useNestlings();
+  const folders = useFolders();
+  const { handleDragStart, handleDragEnd, fetchSidebar, setActiveNestlingId } =
+    useNestlingActions();
 
-  const { activeNestlingId } = useActiveNestling();
-  const { activeBackgroundId } = useNestStore();
+  const activeNestlingId = useActiveNestlingId();
+  const activeBackgroundId = useActiveBackgroundId();
 
   const folderGroups = useMemo(() => {
     return folders

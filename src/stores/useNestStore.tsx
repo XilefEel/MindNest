@@ -9,6 +9,7 @@ import {
   clearLastBackgroundImage,
 } from "@/lib/storage/session";
 import { withStoreErrorHandler } from "@/lib/utils/general";
+import { useShallow } from "zustand/react/shallow";
 
 type NestState = {
   nests: Nest[];
@@ -159,3 +160,39 @@ export const useNestStore = create<NestState>((set, get) => ({
     }));
   }),
 }));
+
+export const useNestActions = () =>
+  useNestStore(
+    useShallow((state) => ({
+      setActiveNestId: state.setActiveNestId,
+      setActiveBackgroundId: state.setActiveBackgroundId,
+      clearActiveBackgroundId: state.clearActiveBackgroundId,
+
+      getNests: state.getNests,
+      createNest: state.createNest,
+      updateNest: state.updateNest,
+      deleteNest: state.deleteNest,
+      refreshNest: state.refreshNest,
+
+      selectBackground: state.selectBackground,
+      uploadBackground: state.uploadBackground,
+      fetchBackgrounds: state.fetchBackgrounds,
+      deleteBackground: state.deleteBackground,
+    })),
+  );
+
+export const useNests = () => useNestStore((state) => state.nests);
+
+export const useActiveNestId = () =>
+  useNestStore((state) => state.activeNestId);
+
+export const useActiveNest = () =>
+  useNestStore((state) => {
+    const { activeNestId, nests } = state;
+    return nests.find((n) => n.id === activeNestId) ?? null;
+  });
+
+export const useBackgrounds = () => useNestStore((state) => state.backgrounds);
+
+export const useActiveBackgroundId = () =>
+  useNestStore((state) => state.activeBackgroundId);

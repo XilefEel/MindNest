@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { LucideIcon } from "lucide-react";
 
 export default function ({
@@ -12,7 +12,7 @@ export default function ({
   Icon: LucideIcon;
   isHidden?: boolean;
 }) {
-  const { activeBackgroundId } = useNestStore();
+  const activeBackgroundId = useActiveBackgroundId();
 
   return (
     <Button

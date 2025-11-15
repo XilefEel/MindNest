@@ -7,6 +7,7 @@ import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 import * as storage from "@/lib/storage/session";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { getActiveNestId } from "@/lib/utils/nests";
+import { useShallow } from "zustand/react/shallow";
 
 type NestlingState = {
   nestlings: Nestling[];
@@ -259,3 +260,45 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     }
   },
 }));
+
+export const useNestlingActions = () =>
+  useNestlingStore(
+    useShallow((state) => ({
+      setActiveNestlingId: state.setActiveNestlingId,
+      setActiveFolderId: state.setActiveFolderId,
+      setFolderOpen: state.setFolderOpen,
+      toggleFolder: state.toggleFolder,
+      toggleAllFolders: state.toggleAllFolders,
+
+      addNestling: state.addNestling,
+      duplicateNestling: state.duplicateNestling,
+      updateNestling: state.updateNestling,
+      updateNestlingTimestamp: state.updateNestlingTimestamp,
+      deleteNestling: state.deleteNestling,
+
+      addFolder: state.addFolder,
+      duplicateFolder: state.duplicateFolder,
+      updateFolder: state.updateFolder,
+      deleteFolder: state.deleteFolder,
+
+      fetchSidebar: state.fetchSidebar,
+      handleDragStart: state.handleDragStart,
+      handleDragEnd: state.handleDragEnd,
+    })),
+  );
+
+export const useNestlings = () => useNestlingStore((state) => state.nestlings);
+
+export const useActiveNestlingId = () =>
+  useNestlingStore((state) => state.activeNestlingId);
+
+export const useActiveNestling = () =>
+  useNestlingStore((state) => {
+    const { activeNestlingId, nestlings } = state;
+    return nestlings.find((n) => n.id === activeNestlingId) ?? null;
+  });
+
+export const useFolders = () => useNestlingStore((state) => state.folders);
+
+export const useActiveFolderId = () =>
+  useNestlingStore((state) => state.activeFolderId);

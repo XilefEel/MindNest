@@ -1,5 +1,5 @@
 import MindmapContextMenu from "@/components/context-menu/MindmapContextMenu";
-import { useMindmapStore } from "@/stores/useMindmapStore";
+import { useMindmapActions, useMindmapNodes } from "@/stores/useMindmapStore";
 import { Handle, Position, NodeResizer } from "@xyflow/react";
 import { useState } from "react";
 
@@ -13,7 +13,8 @@ export default function ResizableNodeSelected({
   id: string;
 }) {
   const [label, setLabel] = useState(data.label);
-  const { nodes, updateNode } = useMindmapStore();
+  const nodes = useMindmapNodes();
+  const { updateNode } = useMindmapActions();
 
   const currentNode = nodes.find((n) => n.id === id);
   if (!currentNode) return;

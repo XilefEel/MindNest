@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils/general";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { Input } from "../ui/input";
 
 export function TextField({
@@ -13,7 +13,7 @@ export function TextField({
   text: string;
   setText: (text: string) => void;
 }) {
-  const { activeBackgroundId } = useNestStore();
+  const activeBackgroundId = useActiveBackgroundId();
 
   return (
     <div className="space-y-1">

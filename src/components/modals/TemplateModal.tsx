@@ -10,9 +10,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { useJournalStore } from "@/stores/useJournalStore";
 import { JournalTemplate } from "@/lib/types/journal";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
-import useActiveNestling from "@/hooks/useActiveNestling";
+import { useActiveNestling } from "@/stores/useNestlingStore";
 
 export default function AddTemplateModal({
   children,
@@ -25,8 +25,9 @@ export default function AddTemplateModal({
   setIsOpen: (isOpen: boolean) => void;
   template?: JournalTemplate | null;
 }) {
-  const { activeNestling } = useActiveNestling();
-  const { activeBackgroundId } = useNestStore();
+  const activeNestling = useActiveNestling();
+  if (!activeNestling) return;
+  const activeBackgroundId = useActiveBackgroundId();
 
   const [currentTitle, setCurrentTitle] = useState("");
   const [currentContent, setCurrentContent] = useState("");

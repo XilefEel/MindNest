@@ -10,7 +10,7 @@ import {
 import { useState } from "react";
 import JournalSidebarContent from "./JournalSidebarContent";
 import { ChevronUp } from "lucide-react";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 
 export default function JournalSidebar({
@@ -18,7 +18,7 @@ export default function JournalSidebar({
 }: {
   setIsEntryOpen: (isOpen: boolean) => void;
 }) {
-  const { activeBackgroundId } = useNestStore();
+  const activeBackgroundId = useActiveBackgroundId();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (

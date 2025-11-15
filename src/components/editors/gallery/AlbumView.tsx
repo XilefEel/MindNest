@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useGalleryStore } from "@/stores/useGalleryStore";
+import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
 import { Columns3, Download, Folder, Image, Rows3 } from "lucide-react";
 import useAutoSave from "@/hooks/useAutoSave";
 import "react-photo-album/rows.css";
@@ -9,9 +9,9 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import ImageLayout from "./ImageLayout";
 import { cn } from "@/lib/utils/general";
-import useActiveNestling from "@/hooks/useActiveNestling";
 import { motion } from "framer-motion";
 import BaseToolTip from "@/components/BaseToolTip";
+import { useActiveNestling } from "@/stores/useNestlingStore";
 
 export default function AlbumView({
   album,
@@ -22,14 +22,15 @@ export default function AlbumView({
   variants: any;
   direction: any;
 }) {
-  const { activeNestling } = useActiveNestling();
+  const activeNestling = useActiveNestling();
   if (!activeNestling || !album) return null;
 
   const [title, setTitle] = useState(album.name);
   const [description, setDescription] = useState(album.description ?? "");
   const [layoutMode, setLayoutMode] = useState<"row" | "column">("row");
 
-  const { images, downloadAlbum, updateAlbum } = useGalleryStore();
+  const { downloadAlbum, updateAlbum } = useGalleryActions();
+  const images = useImages();
 
   const handleDownloadAlbum = async (id: number) => {
     try {
@@ -40,19 +41,15 @@ export default function AlbumView({
     }
   };
 
-  useAutoSave({
-    target: album,
-    currentData: useMemo(
-      () => ({
-        name: title,
-        description,
-      }),
-      [title, description],
-    ),
-    saveFunction: async (id, data) => {
-      await updateAlbum(id, data);
-    },
-  });
+  const albumData = useMemo(
+    () => ({
+      name: title,
+      description,
+    }),
+    [title, description],
+  );
+
+  useAutoSave(album.id, albumData, updateAlbum);
 
   useEffect(() => {
     setTitle(album.name);

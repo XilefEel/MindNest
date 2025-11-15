@@ -1,7 +1,7 @@
 import AddNestModal from "../../modals/AddNestModal";
 import { Nest } from "@/lib/types/nest";
 import NestCard from "../NestCard";
-import { useNestStore } from "@/stores/useNestStore";
+import { useNestActions, useNests } from "@/stores/useNestStore";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Home, Plus } from "lucide-react";
@@ -11,7 +11,8 @@ export default function NestPreview() {
   const userId = user?.id;
   if (!userId) return;
 
-  const { nests, getNests } = useNestStore();
+  const nests = useNests();
+  const { getNests } = useNestActions();
 
   useEffect(() => {
     getNests(userId);

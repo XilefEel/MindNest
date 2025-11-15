@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useGalleryStore } from "@/stores/useGalleryStore";
+import { useGalleryActions, useGalleryStore } from "@/stores/useGalleryStore";
 import { GalleryAlbum } from "@/lib/types/gallery";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
@@ -15,10 +15,12 @@ export default function AlbumModal({
   children: React.ReactNode;
   album?: GalleryAlbum | null;
 }) {
+  const loading = useGalleryStore((state) => state.loading);
+  const { addAlbum, updateAlbum } = useGalleryActions();
+
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const { addAlbum, updateAlbum, loading } = useGalleryStore();
 
   const handleExit = async () => {
     setName("");

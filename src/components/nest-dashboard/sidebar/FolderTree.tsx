@@ -3,7 +3,12 @@ import NestlingItem from "../sidebar/NestlingItem";
 import { useDroppable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils/general";
 import FolderContextMenu from "../../context-menu/FolderContextMenu";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import {
+  useFolders,
+  useNestlingActions,
+  useNestlings,
+  useNestlingStore,
+} from "@/stores/useNestlingStore";
 import FolderItem from "./FolderItem";
 import { motion } from "framer-motion";
 
@@ -14,7 +19,11 @@ export default function FolderTree({
   folder: Folder;
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
-  const { toggleFolder, openFolders, nestlings, folders } = useNestlingStore();
+  const { toggleFolder } = useNestlingActions();
+  const nestlings = useNestlings();
+  const folders = useFolders();
+  const openFolders = useNestlingStore((state) => state.openFolders);
+
   const isFolderOpen = openFolders[folder.id] || false;
 
   const { setNodeRef, isOver } = useDroppable({

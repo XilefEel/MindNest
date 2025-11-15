@@ -18,13 +18,19 @@ import {
 import "@xyflow/react/dist/style.css";
 import CustomNode from "./CustomNode";
 import { MindmapNode, MindmapEdge } from "@/lib/types/mindmap";
-import { useMindmapStore } from "@/stores/useMindmapStore";
-import useActiveNestling from "@/hooks/useActiveNestling";
+import {
+  useMindmapActions,
+  useMindmapEdges,
+  useMindmapNodes,
+} from "@/stores/useMindmapStore";
+import {
+  useActiveNestling,
+  useNestlingActions,
+} from "@/stores/useNestlingStore";
 import { toast } from "sonner";
 import Toolbar from "./Toolbar";
 import { getRandomElement } from "@/lib/utils/general";
 import { COLORS } from "@/lib/utils/constants";
-import { useNestlingStore } from "@/stores/useNestlingStore";
 import useAutoSave from "@/hooks/useAutoSave";
 import NestlingTitle from "../NestlingTitle";
 
@@ -34,8 +40,6 @@ const nodeTypes = {
 
 function MindmapEditorContent() {
   const {
-    nodes,
-    edges,
     setNodes,
     setEdges,
     createNode,
@@ -45,12 +49,16 @@ function MindmapEditorContent() {
     getEdges,
     deleteEdge,
     deleteNode,
-  } = useMindmapStore();
+  } = useMindmapActions();
+  const nodes = useMindmapNodes();
+  const edges = useMindmapEdges();
+
   const { screenToFlowPosition } = useReactFlow();
 
-  const { activeNestling, activeNestlingId } = useActiveNestling();
-  const { updateNestling } = useNestlingStore();
+  const activeNestling = useActiveNestling();
   if (!activeNestling) return;
+
+  const { updateNestling } = useNestlingActions();
   const [title, setTitle] = useState(activeNestling.title);
 
   const nestlingData = useMemo(() => ({ title }), [title]);
@@ -197,7 +205,7 @@ function MindmapEditorContent() {
         });
 
         const newNode = await createNode({
-          nestlingId: activeNestlingId!,
+          nestlingId: activeNestling.id!,
           position,
           height: 50,
           width: 120,
@@ -222,14 +230,14 @@ function MindmapEditorContent() {
       createNode,
       createEdge,
       nodes.length,
-      activeNestlingId,
+      activeNestling.id,
     ],
   );
 
   const handleCreateNode = async () => {
     try {
       await createNode({
-        nestlingId: activeNestlingId!,
+        nestlingId: activeNestling.id!,
         position: {
           x: Math.random() * 300,
           y: Math.random() * 300,
@@ -262,10 +270,10 @@ function MindmapEditorContent() {
   };
 
   useEffect(() => {
-    if (!activeNestlingId) return;
-    getNodes(activeNestlingId);
-    getEdges(activeNestlingId);
-  }, [activeNestlingId, getNodes, getEdges]);
+    if (!activeNestling.id) return;
+    getNodes(activeNestling.id);
+    getEdges(activeNestling.id);
+  }, [activeNestling.id, getNodes, getEdges]);
 
   return (
     <>

@@ -13,9 +13,9 @@ import {
 } from "date-fns";
 import { cn } from "@/lib/utils/general";
 import { getWeekRange } from "@/lib/utils/date";
-import { useNestStore } from "@/stores/useNestStore";
-import { usePlannerStore } from "@/stores/usePlannerStore";
-import useActiveNestling from "@/hooks/useActiveNestling";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { usePlannerActions } from "@/stores/usePlannerStore";
+import { useActiveNestling } from "@/stores/useNestlingStore";
 
 export default function MonthGrid({
   currentDate,
@@ -34,10 +34,11 @@ export default function MonthGrid({
   setMode: (mode: "calendar" | "planner") => void;
   setDirection: (direction: number) => void;
 }) {
-  const { activeBackgroundId } = useNestStore();
-  const { activeNestling } = useActiveNestling();
+  const activeBackgroundId = useActiveBackgroundId();
+  const activeNestling = useActiveNestling();
+  if (!activeNestling) return;
 
-  const { getEvents } = usePlannerStore();
+  const { getEvents } = usePlannerActions();
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);

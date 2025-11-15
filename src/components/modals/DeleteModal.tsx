@@ -2,9 +2,9 @@ import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useNestlingStore } from "@/stores/useNestlingStore";
+import { useNestlingActions } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
-import { useNestStore } from "@/stores/useNestStore";
+import { useActiveNestId } from "@/stores/useNestStore";
 import { clearLastNestling, getLastNestling } from "@/lib/storage/session";
 export default function DeleteModal({
   type,
@@ -19,9 +19,9 @@ export default function DeleteModal({
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { activeNestId } = useNestStore();
+  const activeNestId = useActiveNestId();
   const { setActiveNestlingId, deleteNestling, deleteFolder } =
-    useNestlingStore();
+    useNestlingActions();
 
   const handleExit = async () => {
     setIsOpen(false);

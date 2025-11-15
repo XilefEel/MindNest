@@ -1,14 +1,15 @@
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils/general";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
-import { useNestlingStore } from "@/stores/useNestlingStore";
-import { useNestStore } from "@/stores/useNestStore";
+import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { Search } from "lucide-react";
 import { useState } from "react";
 
 export default function SearchBar() {
-  const { activeBackgroundId } = useNestStore();
-  const { nestlings, setActiveNestlingId } = useNestlingStore();
+  const activeBackgroundId = useActiveBackgroundId();
+  const nestlings = useNestlings();
+  const { setActiveNestlingId } = useNestlingActions();
 
   const [searchQuery, setSearchQuery] = useState("");
   const filteredNestlings = nestlings.filter((nestling) =>
