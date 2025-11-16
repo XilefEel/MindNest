@@ -1,39 +1,24 @@
-export type DragType = "column" | "card";
+import { BoardColumn, BoardCard } from "../types/board";
 
-export type ParsedDragId = {
-  type: DragType;
-  id: number;
-  columnId?: number;
-};
-
-export function parseDragId(dragId: string | number): ParsedDragId | null {
-  const parts = dragId.toString().split("-");
-  const type = parts[0] as DragType;
-
-  if (type === "column") {
-    // column-colId
-    return { type, id: Number(parts[1]) };
-  } else if (type === "card") {
-    // card-cardId-column-colId
-    return { type, id: Number(parts[1]), columnId: Number(parts[3]) };
+export function parseDragData(item: { id: string | number; data: any }) {
+  if (item.data.current.type === "column") {
+    return {
+      type: "column",
+      id: item.id,
+      column: item.data.current.column as BoardColumn,
+    };
+  } else if (item.data.current.type === "card") {
+    return {
+      type: "card",
+      id: item.id,
+      card: item.data.current.card as BoardCard,
+    };
   }
-
   return null;
 }
 
-export function reorderArray<T>(
-  arr: T[],
-  fromIndex: number,
-  toIndex: number,
-): T[] {
-  const newArray = [...arr];
-  const [movedItems] = newArray.splice(fromIndex, 1);
-  newArray.splice(toIndex, 0, movedItems);
-  return newArray;
-}
-
-export function updateOrderIndexes<T extends { orderIndex: number }>(
-  items: T[],
-) {
-  return items.map((item, index) => ({ ...item, orderIndex: index }));
-}
+export const sortCards = (cards: BoardCard[]) =>
+  cards.sort((a, b) => {
+    if (a.columnId !== b.columnId) return a.columnId - b.columnId;
+    return a.orderIndex - b.orderIndex;
+  });

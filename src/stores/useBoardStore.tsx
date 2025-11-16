@@ -9,15 +9,15 @@ import {
 import { withStoreErrorHandler } from "@/lib/utils/general";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { create } from "zustand";
-import {
-  parseDragId,
-  reorderArray,
-  updateOrderIndexes,
-} from "@/lib/utils/boards";
-import { useNestlingStore } from "./useNestlingStore";
+import { parseDragData, sortCards } from "@/lib/utils/boards";
 import { useShallow } from "zustand/react/shallow";
+import { updateNestlingTimestamp } from "@/lib/api/nestling";
+import { arrayMove } from "@dnd-kit/sortable";
 
 type BoardState = {
+  columns: BoardColumn[];
+  cards: BoardCard[];
+
   boardData: BoardData | null;
   activeDraggingId: string | null;
   loading: boolean;
@@ -39,10 +39,6 @@ type BoardState = {
     color: string;
   }) => Promise<void>;
   removeColumn: (columnId: number) => Promise<void>;
-  reorderColumn: (
-    activeColumnId: number,
-    targetColumnId: number,
-  ) => Promise<void>;
 
   createCard: (card: NewBoardCard) => Promise<void>;
   duplicateCard: (card: BoardCard) => Promise<void>;
@@ -60,21 +56,14 @@ type BoardState = {
     columnId: number;
   }) => Promise<void>;
   deleteCard: (cardId: number) => Promise<void>;
-  reorderCard: ({
-    activeCardId,
-    targetCardId,
-    targetColumnId,
-  }: {
-    activeCardId: number;
-    targetCardId: number | null;
-    targetColumnId: number;
-  }) => Promise<void>;
 
   handleDragStart: (event: DragStartEvent) => void;
   handleDragEnd: (event: DragEndEvent) => Promise<void>;
 };
 
 export const useBoardStore = create<BoardState>((set, get) => ({
+  columns: [],
+  cards: [],
   boardData: null,
   loading: false,
   error: null,
@@ -82,49 +71,37 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
   getBoard: withStoreErrorHandler(set, async (nestlingId) => {
     const data = await boardApi.getBoard(nestlingId);
-    set({ boardData: data });
+
+    const columns: BoardColumn[] = data.columns.map((col) => col.column);
+    const cards: BoardCard[] = data.columns.flatMap((col) => col.cards);
+
+    set({ boardData: data, columns, cards });
   }),
 
   createColumn: withStoreErrorHandler(set, async (column) => {
     const newColumn = await boardApi.createBoardColumn(column);
-
-    set((state) => {
-      if (!state.boardData) return state;
-
-      return {
-        boardData: {
-          ...state.boardData,
-          columns: [
-            ...state.boardData.columns,
-            { column: newColumn, cards: [] },
-          ],
-        },
-      };
-    });
-
-    useNestlingStore.getState().updateNestlingTimestamp(newColumn.nestlingId);
+    set((state) => ({
+      columns: [...state.columns, newColumn],
+    }));
+    updateNestlingTimestamp(newColumn.nestlingId);
   }),
 
   duplicateColumn: withStoreErrorHandler(set, async (column) => {
-    const { boardData } = get();
-    if (!boardData) return;
+    const { columns, cards } = get();
 
-    const originalColumnIndex = boardData.columns.findIndex(
-      (col) => col.column.id === column.id,
-    );
-    if (originalColumnIndex === -1) return;
-
-    const originalColumn = boardData.columns[originalColumnIndex];
+    const originalIdx = columns.findIndex((c) => c.id === column.id);
+    if (originalIdx === -1) return;
 
     const newColumn = await boardApi.createBoardColumn({
       nestlingId: column.nestlingId,
-      title: column.title,
+      title: `Copy of ${column.title}`,
       orderIndex: column.orderIndex + 1,
       color: column.color,
     });
 
+    const originalCards = cards.filter((c) => c.columnId === column.id);
     const duplicatedCards = await Promise.all(
-      originalColumn.cards.map((card, index) =>
+      originalCards.map((card, index) =>
         boardApi.createBoardCard({
           columnId: newColumn.id,
           title: card.title,
@@ -134,38 +111,24 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       ),
     );
 
-    const updatedColumns = [...boardData.columns].splice(
-      originalColumnIndex + 1,
-      0,
-      {
-        column: newColumn,
-        cards: duplicatedCards,
-      },
-    );
-
-    const columnsWithNewIndexes = updatedColumns.map((col, index) => ({
-      ...col,
-      column: { ...col.column, orderIndex: index },
-    }));
+    const updatedColumns = [
+      ...columns.slice(0, originalIdx + 1),
+      newColumn,
+      ...columns.slice(originalIdx + 1),
+    ].map((col, i) => ({ ...col, orderIndex: i }));
 
     set({
-      boardData: {
-        ...boardData,
-        columns: columnsWithNewIndexes,
-      },
+      columns: updatedColumns,
+      cards: [...cards, ...duplicatedCards],
     });
 
     await Promise.all(
-      columnsWithNewIndexes.slice(originalColumnIndex + 1).map((col) =>
-        boardApi.updateBoardColumn({
-          id: col.column.id,
-          title: col.column.title,
-          orderIndex: col.column.orderIndex,
-          color: col.column.color,
-        }),
-      ),
+      updatedColumns
+        .slice(originalIdx + 1)
+        .map((col) => boardApi.updateBoardColumn(col)),
     );
-    useNestlingStore.getState().updateNestlingTimestamp(newColumn.nestlingId);
+
+    updateNestlingTimestamp(newColumn.nestlingId);
   }),
 
   updateColumn: withStoreErrorHandler(
@@ -173,177 +136,68 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     async ({ id, title, orderIndex, color }) => {
       await boardApi.updateBoardColumn({ id, title, orderIndex, color });
 
-      set((state) => {
-        if (!state.boardData) return state;
-
-        return {
-          boardData: {
-            ...state.boardData,
-            columns: state.boardData.columns.map((col) =>
-              col.column.id === id
-                ? {
-                    ...col,
-                    column: { ...col.column, title, orderIndex, color: color },
-                  }
-                : col,
-            ),
-          },
-        };
-      });
-      useNestlingStore
-        .getState()
-        .updateNestlingTimestamp(get().boardData!.nestling.id);
+      set((state) => ({
+        columns: state.columns.map((col) =>
+          col.id === id ? { ...col, title, orderIndex, color } : col,
+        ),
+      }));
+      updateNestlingTimestamp(id);
     },
   ),
 
   removeColumn: withStoreErrorHandler(set, async (columnId) => {
     await boardApi.deleteBoardColumn(columnId);
 
-    set((state) => {
-      if (!state.boardData) return state;
-
-      return {
-        boardData: {
-          ...state.boardData,
-          columns: state.boardData.columns.filter(
-            (col) => col.column.id !== columnId,
-          ),
-        },
-      };
-    });
-
-    useNestlingStore
-      .getState()
-      .updateNestlingTimestamp(get().boardData!.nestling.id);
-  }),
-
-  reorderColumn: async (activeColumnId, targetColumnId) => {
-    const { boardData } = get();
-    if (!boardData) return;
-
-    const activeColumnIndex = boardData.columns.findIndex(
-      (column) => column.column.id === activeColumnId,
-    );
-    const targetColumnIndex = boardData.columns.findIndex(
-      (column) => column.column.id === targetColumnId,
-    );
-
-    if (
-      activeColumnIndex === -1 ||
-      targetColumnIndex === -1 ||
-      activeColumnIndex === targetColumnIndex
-    )
-      return;
-
-    const reorderedColumns = reorderArray(
-      boardData.columns,
-      activeColumnIndex,
-      targetColumnIndex,
-    );
-    const columnsWithNewIndexes = reorderedColumns.map((col, index) => ({
-      ...col,
-      column: { ...col.column, orderIndex: index },
-    }));
-
     set((state) => ({
-      boardData: state.boardData
-        ? { ...state.boardData, columns: columnsWithNewIndexes }
-        : null,
+      columns: state.columns.filter((col) => col.id !== columnId),
     }));
 
-    await Promise.all(
-      columnsWithNewIndexes.map((column) =>
-        boardApi.updateBoardColumn({
-          id: column.column.id,
-          title: column.column.title,
-          orderIndex: column.column.orderIndex,
-          color: column.column.color,
-        }),
-      ),
+    updateNestlingTimestamp(
+      get().columns.find((col) => col.id === columnId)!.nestlingId,
     );
-
-    useNestlingStore
-      .getState()
-      .updateNestlingTimestamp(get().boardData!.nestling.id);
-  },
+  }),
 
   createCard: withStoreErrorHandler(set, async (card) => {
     const newCard = await boardApi.createBoardCard(card);
 
-    set((state) => {
-      if (!state.boardData) return { error: "Board data not loaded" };
-
-      return {
-        boardData: {
-          ...state.boardData,
-          columns: state.boardData.columns.map((col) =>
-            col.column.id === card.columnId
-              ? { ...col, cards: [...col.cards, newCard] }
-              : col,
-          ),
-        },
-      };
-    });
-    useNestlingStore
-      .getState()
-      .updateNestlingTimestamp(get().boardData!.nestling.id);
+    set((state) => ({
+      cards: [...state.cards, newCard],
+    }));
+    updateNestlingTimestamp(
+      get().columns.find((col) => col.id === card.columnId)!.nestlingId,
+    );
   }),
 
   duplicateCard: withStoreErrorHandler(set, async (card) => {
-    const { boardData } = get();
-    if (!boardData) return;
+    const { cards } = get();
 
-    const originalCol = boardData.columns.find(
-      (col) => col.column.id === card.columnId,
-    );
-    if (!originalCol) return;
-
-    const originalCard = originalCol.cards.find((c) => c.id === card.id);
-    if (!originalCard) return;
+    const originalIdx = cards.findIndex((c) => c.id === card.id);
+    if (originalIdx === -1) return;
 
     const newCard = await boardApi.createBoardCard({
       columnId: card.columnId,
-      title: card.title,
+      title: `Copy of ${card.title}`,
       description: card.description,
-      orderIndex: card.orderIndex,
+      orderIndex: card.orderIndex + 1,
     });
 
-    const updatedCards = [...originalCol.cards].splice(
-      originalCard.orderIndex + 1,
-      0,
+    const updatedCards = [
+      ...cards.slice(0, originalIdx + 1),
       newCard,
-    );
+      ...cards.slice(originalIdx + 1),
+    ].map((card, i) => ({ ...card, orderIndex: i }));
 
-    const cardsWithNewIndexes = updatedCards.map((card, index) => ({
-      ...card,
-      orderIndex: index,
-    }));
-
-    set({
-      boardData: {
-        ...boardData,
-        columns: boardData.columns.map((col) =>
-          col.column.id === card.columnId
-            ? { ...col, cards: cardsWithNewIndexes }
-            : col,
-        ),
-      },
-    });
+    set({ cards: sortCards(updatedCards) });
 
     await Promise.all(
-      cardsWithNewIndexes.map((card) =>
-        boardApi.updateBoardCard({
-          id: card.id,
-          title: card.title,
-          description: card.description,
-          orderIndex: card.orderIndex,
-          columnId: card.columnId,
-        }),
-      ),
+      updatedCards
+        .slice(originalIdx + 1)
+        .map((card) => boardApi.updateBoardCard(card)),
     );
-    useNestlingStore
-      .getState()
-      .updateNestlingTimestamp(get().boardData!.nestling.id);
+
+    updateNestlingTimestamp(
+      get().columns.find((col) => col.id === card.columnId)!.nestlingId,
+    );
   }),
 
   updateCard: withStoreErrorHandler(
@@ -356,138 +210,30 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         orderIndex,
         columnId,
       });
-      set((state) => {
-        if (!state.boardData) return state;
-
-        return {
-          boardData: {
-            ...state.boardData,
-            columns: state.boardData.columns.map((col) => ({
-              ...col,
-              cards: col.cards.map((card) =>
-                card.id === id
-                  ? { ...card, title, description, orderIndex, columnId }
-                  : card,
-              ),
-            })),
-          },
-        };
-      });
-      useNestlingStore
-        .getState()
-        .updateNestlingTimestamp(get().boardData!.nestling.id);
+      set((state) => ({
+        cards: state.cards.map((card) =>
+          card.id === id
+            ? { ...card, title, description, orderIndex, columnId }
+            : card,
+        ),
+      }));
+      updateNestlingTimestamp(
+        get().columns.find((col) => col.id === columnId)!.nestlingId,
+      );
     },
   ),
 
   deleteCard: withStoreErrorHandler(set, async (cardId) => {
     await boardApi.deleteBoardCard(cardId);
-    set((state) => {
-      if (!state.boardData) return state;
 
-      return {
-        boardData: {
-          ...state.boardData,
-          columns: state.boardData.columns.map((col) => ({
-            ...col,
-            cards: col.cards.filter((card) => card.id !== cardId),
-          })),
-        },
-      };
-    });
-    useNestlingStore
-      .getState()
-      .updateNestlingTimestamp(get().boardData!.nestling.id);
+    set((state) => ({
+      cards: state.cards.filter((card) => card.id !== cardId),
+    }));
+    const currentCard = get().cards.find((card) => card.id === cardId)!;
+    updateNestlingTimestamp(
+      get().columns.find((col) => col.id === currentCard.columnId)!.nestlingId,
+    );
   }),
-
-  reorderCard: async ({ activeCardId, targetCardId, targetColumnId }) => {
-    const { boardData } = get();
-    if (!boardData || activeCardId === targetCardId) return;
-
-    const originalColIndex = boardData.columns.findIndex((col) =>
-      col.cards.some((card) => card.id === activeCardId),
-    );
-    const targetColIndex = boardData.columns.findIndex(
-      (col) => col.column.id === targetColumnId,
-    );
-
-    if (originalColIndex === -1 || targetColIndex === -1) return;
-
-    const originalCol = boardData.columns[originalColIndex];
-    const targetCol = boardData.columns[targetColIndex];
-    const isSameColumn = originalColIndex === targetColIndex;
-
-    const activeCardIndex = originalCol.cards.findIndex(
-      (card) => card.id === activeCardId,
-    );
-    const targetCardIndex =
-      targetCardId === null
-        ? targetCol.cards.length
-        : targetCol.cards.findIndex((card) => card.id === targetCardId);
-
-    if (activeCardIndex === -1 || targetCardIndex === -1) return;
-
-    const updatedColumns = [...boardData.columns];
-    const movedCard = { ...originalCol.cards[activeCardIndex] };
-
-    if (isSameColumn) {
-      const reorderedCards = reorderArray(
-        originalCol.cards,
-        activeCardIndex,
-        targetCardIndex,
-      );
-      const cardsWithIndexes = updateOrderIndexes(reorderedCards);
-
-      updatedColumns[originalColIndex] = {
-        ...originalCol,
-        cards: cardsWithIndexes,
-      };
-    } else {
-      const sourceCards = originalCol.cards.filter(
-        (card) => card.id !== activeCardId,
-      );
-      const targetCards = [...targetCol.cards];
-
-      movedCard.columnId = targetColumnId;
-      targetCards.splice(targetCardIndex, 0, movedCard);
-
-      updatedColumns[originalColIndex] = {
-        ...originalCol,
-        cards: updateOrderIndexes(sourceCards),
-      };
-      updatedColumns[targetColIndex] = {
-        ...targetCol,
-        cards: updateOrderIndexes(targetCards),
-      };
-    }
-
-    set({ boardData: { ...boardData, columns: updatedColumns } });
-
-    try {
-      const cardsToUpdate = isSameColumn
-        ? updatedColumns[originalColIndex].cards
-        : [
-            ...updatedColumns[originalColIndex].cards,
-            ...updatedColumns[targetColIndex].cards,
-          ];
-
-      await Promise.all(
-        cardsToUpdate.map((card) =>
-          boardApi.updateBoardCard({
-            id: card.id,
-            title: card.title,
-            description: card.description,
-            orderIndex: card.orderIndex,
-            columnId: card.columnId,
-          }),
-        ),
-      );
-      useNestlingStore
-        .getState()
-        .updateNestlingTimestamp(get().boardData!.nestling.id);
-    } catch (error) {
-      set({ boardData, error: String(error) });
-    }
-  },
 
   handleDragStart: (event) => {
     set({ activeDraggingId: event.active.id as string });
@@ -496,35 +242,76 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   handleDragEnd: async (event) => {
     const { active, over } = event;
     set({ activeDraggingId: null });
+
     if (!over || active.id === over.id) return;
 
-    const activeData = parseDragId(active.id);
-    const targetData = parseDragId(over.id);
-
+    const activeData = parseDragData(active);
+    const targetData = parseDragData(over);
     if (!activeData || !targetData) return;
 
-    const targetColumnId =
-      targetData.type === "column" ? targetData.id : targetData.columnId!;
-
+    // column to column
     if (activeData.type === "column") {
-      get().reorderColumn(activeData.id, targetColumnId);
+      const { columns } = get();
+      const activeIdx = columns.findIndex((c) => c.id === activeData.id);
+      const targetIdx = columns.findIndex((c) => c.id === targetData.id);
+
+      const reorderedCols = arrayMove(columns, activeIdx, targetIdx);
+      const colsWithNewIndexes = reorderedCols.map((col, i) => ({
+        ...col,
+        orderIndex: i,
+      }));
+
+      set({ columns: colsWithNewIndexes });
+
+      await Promise.all(
+        colsWithNewIndexes.map((col) => boardApi.updateBoardColumn(col)),
+      );
       return;
     }
-
+    // card to col/card
     if (activeData.type === "card") {
-      const targetCardId = targetData.type === "card" ? targetData.id : null;
+      const { cards } = get();
+      const activeIdx = cards.findIndex((c) => c.id === activeData.id);
 
-      get().reorderCard({
-        activeCardId: activeData.id,
-        targetCardId,
-        targetColumnId,
+      const targetColumnId =
+        targetData.type === "card" ? targetData.card!.columnId : targetData.id;
+
+      const updated = [...cards];
+      updated[activeIdx].columnId = Number(targetColumnId);
+
+      const targetIdx =
+        targetData.type === "card"
+          ? cards.findIndex((c) => c.id === targetData.id)
+          : updated.filter((c) => c.columnId === targetColumnId).length;
+
+      const reordered = arrayMove(updated, activeIdx, targetIdx);
+
+      const affectedColumnIds = [cards[activeIdx].columnId, targetColumnId];
+
+      const cardsWithNewIndexes = reordered.map((card) => {
+        if (!affectedColumnIds.includes(card.columnId)) {
+          return card;
+        }
+        const idx = reordered
+          .filter((c) => c.columnId === card.columnId)
+          .findIndex((c) => c.id === card.id);
+        return { ...card, orderIndex: idx };
       });
-      return;
+
+      set({ cards: sortCards(cardsWithNewIndexes) });
+
+      await Promise.all(
+        cardsWithNewIndexes
+          .filter((card) => affectedColumnIds.includes(card.columnId))
+          .map((card) => boardApi.updateBoardCard(card)),
+      );
     }
   },
 }));
 
-export const useBoardData = () => useBoardStore((state) => state.boardData);
+export const useBoardColumns = () => useBoardStore((state) => state.columns);
+
+export const useBoardCards = () => useBoardStore((state) => state.cards);
 
 export const useActiveDraggingId = () =>
   useBoardStore((state) => state.activeDraggingId);
@@ -538,12 +325,10 @@ export const useBoardActions = () =>
       duplicateColumn: state.duplicateColumn,
       updateColumn: state.updateColumn,
       removeColumn: state.removeColumn,
-      reorderColumn: state.reorderColumn,
 
       createCard: state.createCard,
       duplicateCard: state.duplicateCard,
       updateCard: state.updateCard,
-      reorderCard: state.reorderCard,
       deleteCard: state.deleteCard,
 
       handleDragStart: state.handleDragStart,

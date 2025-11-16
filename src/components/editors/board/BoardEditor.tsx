@@ -3,12 +3,11 @@ import NestlingTitle from "@/components/editors/NestlingTitle";
 import {
   useActiveDraggingId,
   useBoardActions,
-  useBoardData,
+  useBoardCards,
+  useBoardColumns,
 } from "@/stores/useBoardStore";
 import Column from "@/components/editors/board/Column";
-import { AnimatePresence } from "framer-motion";
 import useAutoSave from "@/hooks/useAutoSave";
-
 import {
   DndContext,
   rectIntersection,
@@ -34,7 +33,8 @@ export default function BoardEditor() {
   const activeNestling = useActiveNestling();
   if (!activeNestling) return;
 
-  const boardData = useBoardData();
+  const columns = useBoardColumns();
+  const cards = useBoardCards();
   const activeDraggingId = useActiveDraggingId();
   const { getBoard, createColumn, handleDragStart, handleDragEnd } =
     useBoardActions();
@@ -42,14 +42,9 @@ export default function BoardEditor() {
   const { updateNestling } = useNestlingActions();
 
   const [title, setTitle] = useState(activeNestling.title);
-  const columns = boardData?.columns || [];
-  const columnIds = columns.map((col) => `column-${col.column.id}`);
 
-  const activeCard = activeDraggingId?.startsWith("card-")
-    ? columns
-        .flatMap((col) => col.cards)
-        .find((card) => activeDraggingId.includes(`card-${card.id}`))
-    : null;
+  const columnIds = columns.map((col) => col.id);
+  const activeCard = cards.find((card) => card.id === Number(activeDraggingId));
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -63,8 +58,8 @@ export default function BoardEditor() {
     try {
       createColumn({
         nestlingId: activeNestling.id!,
-        title: "New Column",
-        orderIndex: boardData!.columns.length + 1,
+        title: `New Column ${columns.length + 1}`,
+        orderIndex: columns.length + 1,
         color: getRandomElement(COLORS),
       });
     } catch (error) {
@@ -103,11 +98,9 @@ export default function BoardEditor() {
             strategy={horizontalListSortingStrategy}
           >
             <div className="flex flex-row items-start gap-4 p-2">
-              <AnimatePresence>
-                {columns.map((col) => (
-                  <Column key={col.column.id} {...col} />
-                ))}
-              </AnimatePresence>
+              {columns.map((col) => (
+                <Column key={col.id} column={col} />
+              ))}
 
               <button
                 onClick={handleAddColumn}
@@ -120,7 +113,7 @@ export default function BoardEditor() {
 
           {createPortal(
             <DragOverlay dropAnimation={null}>
-              {activeCard && <ColumnCard {...activeCard} />}
+              {activeCard && <ColumnCard card={activeCard} />}
             </DragOverlay>,
             document.body,
           )}

@@ -8,7 +8,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { motion } from "framer-motion";
 import CardContextMenu from "@/components/context-menu/CardContextMenu";
 
-export default function ColumnCard(card: BoardCard) {
+export default function ColumnCard({ card }: { card: BoardCard }) {
   const [title, setTitle] = useState(card.title);
   const [description, setDescription] = useState(card.description || "");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -28,7 +28,11 @@ export default function ColumnCard(card: BoardCard) {
     transition,
     isDragging,
   } = useSortable({
-    id: `card-${card.id}-column-${card.columnId}`,
+    id: card.id,
+    data: {
+      type: "card",
+      card: card,
+    },
   });
 
   const style = {
@@ -96,22 +100,22 @@ export default function ColumnCard(card: BoardCard) {
       <motion.div
         key={card.id}
         layout={activeDraggingId == null}
-        initial={{ opacity: 0, scale: 0.9, y: 10 }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          transition: {
-            type: "spring",
-            stiffness: 400,
-            damping: 28,
-          },
-        }}
-        exit={{
-          opacity: 0,
-          scale: 0.8,
-          transition: { duration: 0.15 },
-        }}
+        // initial={{ opacity: 0, scale: 0.9, y: 10 }}
+        // animate={{
+        //   opacity: 1,
+        //   scale: 1,
+        //   y: 0,
+        //   transition: {
+        //     type: "spring",
+        //     stiffness: 400,
+        //     damping: 28,
+        //   },
+        // }}
+        // exit={{
+        //   opacity: 0,
+        //   scale: 0.8,
+        //   transition: { duration: 0.15 },
+        // }}
         className="flex flex-1 flex-col px-3 py-2"
       >
         <div

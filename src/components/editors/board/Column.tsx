@@ -1,20 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Trash, Plus } from "lucide-react";
-import { useActiveDraggingId, useBoardActions } from "@/stores/useBoardStore";
+import {
+  useActiveDraggingId,
+  useBoardActions,
+  useBoardCards,
+} from "@/stores/useBoardStore";
 import ColumnCard from "./ColumnCard";
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useSortable } from "@dnd-kit/sortable";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { toast } from "sonner";
-import { BoardColumnData } from "@/lib/types/board";
+import { BoardColumn } from "@/lib/types/board";
 import ColumnContextMenu from "@/components/context-menu/ColumnContextMenu";
 
-export default function Column(col: BoardColumnData) {
-  const [title, setTitle] = useState(col.column.title);
+export default function Column({ column }: { column: BoardColumn }) {
+  const [title, setTitle] = useState(column.title);
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -29,28 +33,32 @@ export default function Column(col: BoardColumnData) {
     transition,
     isDragging,
   } = useSortable({
-    id: `column-${col.column.id}`,
+    id: column.id,
+    data: {
+      type: "column",
+      column: column,
+    },
   });
 
   const style = {
     transform: transform ? `translateX(${transform.x}px)` : undefined,
     transition,
     opacity: isDragging ? 0.5 : 1,
-    backgroundColor: col.column.color,
+    backgroundColor: column.color,
   };
 
-  const cards = col.cards;
-  const columnIds = cards.map(
-    (card) => `card-${card.id}-column-${card.columnId}`,
-  );
+  const cards = useBoardCards();
+  const filteredCards = cards.filter((card) => card.columnId === column.id);
+
+  const cardIds = filteredCards.map((card) => card.id);
 
   const handleAddCard = async () => {
     try {
       createCard({
-        columnId: col.column.id,
-        title: "New Card",
-        description: String(col.cards.length + 1),
-        orderIndex: col.cards.length + 1,
+        columnId: column.id,
+        title: `New Card ${cards.length + 1}`,
+        description: String(cards.length + 1),
+        orderIndex: cards.length + 1,
       });
     } catch (error) {
       console.error("Error adding column:", error);
@@ -60,12 +68,12 @@ export default function Column(col: BoardColumnData) {
   const handleSubmit = async () => {
     try {
       const newTitle = title.trim();
-      if (newTitle && newTitle !== col.column.title) {
+      if (newTitle && newTitle !== column.title) {
         await updateColumn({
-          id: col.column.id,
+          id: column.id,
           title: newTitle,
-          orderIndex: col.column.orderIndex,
-          color: col.column.color,
+          orderIndex: column.orderIndex,
+          color: column.color,
         });
       }
     } catch (error) {
@@ -79,7 +87,7 @@ export default function Column(col: BoardColumnData) {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") handleSubmit();
     if (e.key === "Escape") {
-      setTitle(col.column.title);
+      setTitle(column.title);
       setIsEditing(false);
     }
   };
@@ -91,31 +99,31 @@ export default function Column(col: BoardColumnData) {
   }, [isEditing]);
 
   useEffect(() => {
-    setTitle(col.column.title);
-  }, [col.column.title]);
+    setTitle(column.title);
+  }, [column.title]);
 
   return (
-    <ColumnContextMenu column={col.column}>
+    <ColumnContextMenu column={column}>
       <motion.div
-        key={col.column.id}
+        key={column.id}
         layout={activeDraggingId == null}
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          transition: {
-            type: "spring",
-            stiffness: 300,
-            damping: 25,
-          },
-        }}
-        exit={{
-          opacity: 0,
-          scale: 0.9,
-          y: 20,
-          transition: { duration: 0.15 },
-        }}
+        // initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        // animate={{
+        //   opacity: 1,
+        //   scale: 1,
+        //   y: 0,
+        //   transition: {
+        //     type: "spring",
+        //     stiffness: 300,
+        //     damping: 25,
+        //   },
+        // }}
+        // exit={{
+        //   opacity: 0,
+        //   scale: 0.9,
+        //   y: 20,
+        //   transition: { duration: 0.15 },
+        // }}
         whileHover={{
           scale: 1.02,
           transition: { duration: 0.15 },
@@ -145,18 +153,18 @@ export default function Column(col: BoardColumnData) {
                 className="flex-1 cursor-pointer text-sm font-semibold"
                 onClick={() => setIsEditing(true)}
               >
-                {col.column.title}
+                {column.title}
               </h3>
             )}
 
             <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium dark:bg-gray-700">
-              {cards.length}
+              {filteredCards.length}
             </span>
 
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => removeColumn(col.column.id)}
+              onClick={() => removeColumn(column.id)}
               className="size-8 text-red-400 hover:bg-red-100 hover:text-red-500 dark:hover:bg-red-950 dark:hover:text-red-400"
             >
               <Trash className="size-4" />
@@ -165,17 +173,15 @@ export default function Column(col: BoardColumnData) {
 
           <div className="py-2">
             <SortableContext
-              items={columnIds}
+              items={cardIds}
               strategy={verticalListSortingStrategy}
             >
-              <AnimatePresence>
-                {cards.map((card) => (
-                  <ColumnCard key={card.id} {...card} />
-                ))}
-              </AnimatePresence>
+              {filteredCards.map((card) => (
+                <ColumnCard key={card.id} card={card} />
+              ))}
             </SortableContext>
 
-            {cards.length === 0 && (
+            {filteredCards.length === 0 && (
               <div className="border-gray-00 flex min-h-[120px] items-center justify-center rounded-lg border-2 border-dashed text-sm dark:border-gray-600">
                 Drop cards here
               </div>

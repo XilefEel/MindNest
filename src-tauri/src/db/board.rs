@@ -168,13 +168,12 @@ fn get_all_cards_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<BoardCa
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
-        .prepare(
-            "SELECT cards.id, cards.column_id, cards.title, cards.description, 
-                cards.order_index, cards.created_at, cards.updated_at
-         FROM board_cards cards
-         JOIN board_columns columns ON cards.column_id = columns.id
-         WHERE columns.nestling_id = ?1
-         ORDER BY columns.order_index ASC, cards.order_index ASC",
+        .prepare("
+            SELECT cards.id, cards.column_id, cards.title, cards.description, cards.order_index, cards.created_at, cards.updated_at
+            FROM board_cards cards
+            JOIN board_columns columns ON cards.column_id = columns.id
+            WHERE columns.nestling_id = ?1
+            ORDER BY columns.order_index ASC, cards.order_index ASC",
         )
         .map_err(|e| e.to_string())?;
 

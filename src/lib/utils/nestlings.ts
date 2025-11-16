@@ -9,6 +9,7 @@ import {
   LucideIcon,
 } from "lucide-react";
 import { NestlingType } from "../types/nestling";
+import { useNestlingStore } from "@/stores/useNestlingStore";
 
 export type NestlingTypeOption = {
   value: NestlingType;
@@ -39,4 +40,8 @@ export const nestlingTypes: NestlingTypeOption[] = [
 
 export const getNestlingIcon = (type: NestlingType) => {
   return nestlingTypes.find((t) => t.value === type)?.icon || FileText;
+};
+
+export const updateNestlingTimestamp = (nestlingId: number) => {
+  useNestlingStore.getState().updateNestlingTimestamp(nestlingId);
 };
