@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Trash, Plus } from "lucide-react";
 import {
+  setActiveDraggingId,
   useActiveDraggingId,
   useBoardActions,
   useBoardCards,
 } from "@/stores/useBoardStore";
 import ColumnCard from "./ColumnCard";
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useSortable } from "@dnd-kit/sortable";
 import {
   SortableContext,
@@ -53,8 +54,9 @@ export default function Column({ column }: { column: BoardColumn }) {
   const cardIds = filteredCards.map((card) => card.id);
 
   const handleAddCard = async () => {
+    setActiveDraggingId("adding");
     try {
-      createCard({
+      await createCard({
         columnId: column.id,
         title: `New Card ${cards.length + 1}`,
         description: String(cards.length + 1),
@@ -62,6 +64,8 @@ export default function Column({ column }: { column: BoardColumn }) {
       });
     } catch (error) {
       console.error("Error adding column:", error);
+    } finally {
+      setActiveDraggingId(null);
     }
   };
 
@@ -106,27 +110,11 @@ export default function Column({ column }: { column: BoardColumn }) {
     <ColumnContextMenu column={column}>
       <motion.div
         key={column.id}
-        layout={activeDraggingId == null}
-        // initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        // animate={{
-        //   opacity: 1,
-        //   scale: 1,
-        //   y: 0,
-        //   transition: {
-        //     type: "spring",
-        //     stiffness: 300,
-        //     damping: 25,
-        //   },
-        // }}
-        // exit={{
-        //   opacity: 0,
-        //   scale: 0.9,
-        //   y: 20,
-        //   transition: { duration: 0.15 },
-        // }}
-        whileHover={{
-          scale: 1.02,
-          transition: { duration: 0.15 },
+        layout={!activeDraggingId}
+        exit={{ opacity: 0 }}
+        transition={{
+          layout: { duration: 0.25, ease: "easeInOut" },
+          duration: 0.15,
         }}
       >
         <div
@@ -171,17 +159,19 @@ export default function Column({ column }: { column: BoardColumn }) {
             </Button>
           </div>
 
-          <div className="py-2">
-            <SortableContext
-              items={cardIds}
-              strategy={verticalListSortingStrategy}
-            >
-              {filteredCards.map((card) => (
-                <ColumnCard key={card.id} card={card} />
-              ))}
-            </SortableContext>
-
-            {filteredCards.length === 0 && (
+          <div className="py-2 transition-all duration-200">
+            {filteredCards.length > 0 ? (
+              <SortableContext
+                items={cardIds}
+                strategy={verticalListSortingStrategy}
+              >
+                <AnimatePresence mode="popLayout">
+                  {filteredCards.map((card) => (
+                    <ColumnCard key={card.id} card={card} />
+                  ))}
+                </AnimatePresence>
+              </SortableContext>
+            ) : (
               <div className="border-gray-00 flex min-h-[120px] items-center justify-center rounded-lg border-2 border-dashed text-sm dark:border-gray-600">
                 Drop cards here
               </div>

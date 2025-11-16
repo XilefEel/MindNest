@@ -28,6 +28,7 @@ import { COLORS } from "@/lib/utils/constants";
 import { getRandomElement } from "@/lib/utils/general";
 import ColumnCard from "./ColumnCard";
 import { createPortal } from "react-dom";
+import { AnimatePresence } from "framer-motion";
 
 export default function BoardEditor() {
   const activeNestling = useActiveNestling();
@@ -98,9 +99,11 @@ export default function BoardEditor() {
             strategy={horizontalListSortingStrategy}
           >
             <div className="flex flex-row items-start gap-4 p-2">
-              {columns.map((col) => (
-                <Column key={col.id} column={col} />
-              ))}
+              <AnimatePresence mode="sync">
+                {columns.map((col) => (
+                  <Column key={col.id} column={col} />
+                ))}
+              </AnimatePresence>
 
               <button
                 onClick={handleAddColumn}

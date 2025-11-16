@@ -313,6 +313,10 @@ export const useBoardColumns = () => useBoardStore((state) => state.columns);
 
 export const useBoardCards = () => useBoardStore((state) => state.cards);
 
+export const setActiveDraggingId = (id: string | null) => {
+  useBoardStore.setState({ activeDraggingId: id });
+};
+
 export const useActiveDraggingId = () =>
   useBoardStore((state) => state.activeDraggingId);
 

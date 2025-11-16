@@ -1,7 +1,7 @@
 import { Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BoardCard } from "@/lib/types/board";
-import { useActiveDraggingId, useBoardActions } from "@/stores/useBoardStore";
+import { setActiveDraggingId, useBoardActions } from "@/stores/useBoardStore";
 import { useEffect, useRef, useState } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
@@ -15,7 +15,6 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
   const [isEditingDescription, setIsEditingDescription] = useState(false);
 
   const { updateCard, deleteCard } = useBoardActions();
-  const activeDraggingId = useActiveDraggingId();
 
   const titleRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLInputElement>(null);
@@ -81,6 +80,17 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
     setIsEditingDescription(false);
   };
 
+  const handleDelete = async () => {
+    setActiveDraggingId("deleting");
+    try {
+      await deleteCard(card.id);
+    } catch (err) {
+      console.error("Failed to delete card:", err);
+    } finally {
+      setActiveDraggingId(null);
+    }
+  };
+
   useEffect(() => {
     if (isEditingTitle && titleRef.current) {
       titleRef.current.focus();
@@ -98,85 +108,72 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
   return (
     <CardContextMenu card={card}>
       <motion.div
-        key={card.id}
-        layout={activeDraggingId == null}
-        // initial={{ opacity: 0, scale: 0.9, y: 10 }}
-        // animate={{
-        //   opacity: 1,
-        //   scale: 1,
-        //   y: 0,
-        //   transition: {
-        //     type: "spring",
-        //     stiffness: 400,
-        //     damping: 28,
-        //   },
-        // }}
-        // exit={{
-        //   opacity: 0,
-        //   scale: 0.8,
-        //   transition: { duration: 0.15 },
-        // }}
-        className="flex flex-1 flex-col px-3 py-2"
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ opacity: 1, height: "auto" }}
+        exit={{ opacity: 0, height: 0 }}
+        transition={{ duration: 0.15 }}
       >
-        <div
-          ref={setNodeRef}
-          style={style}
-          className="flex items-center justify-between rounded bg-white p-3 shadow-sm hover:shadow dark:bg-gray-700"
-        >
+        <div className="px-2 py-1.5">
           <div
-            {...attributes}
-            {...listeners}
-            className="flex-1 cursor-grab active:cursor-grabbing"
+            ref={setNodeRef}
+            style={style}
+            className="flex items-center justify-between rounded bg-white p-3 shadow-sm hover:shadow dark:bg-gray-700"
           >
-            {isEditingTitle ? (
-              <input
-                ref={titleRef}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                onBlur={handleSubmit}
-                onKeyDown={(e) => {
-                  handleKeyDown(e, "title");
-                }}
-                className="w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-800"
-              />
-            ) : (
-              <h3
-                className="cursor-pointer font-semibold"
-                onClick={() => setIsEditingTitle(true)}
-              >
-                {card.title}
-              </h3>
-            )}
+            <div
+              {...attributes}
+              {...listeners}
+              className="flex-1 cursor-grab active:cursor-grabbing"
+            >
+              {isEditingTitle ? (
+                <input
+                  ref={titleRef}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  onBlur={handleSubmit}
+                  onKeyDown={(e) => {
+                    handleKeyDown(e, "title");
+                  }}
+                  className="w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-800"
+                />
+              ) : (
+                <h3
+                  className="cursor-pointer font-semibold"
+                  onClick={() => setIsEditingTitle(true)}
+                >
+                  {card.title}
+                </h3>
+              )}
 
-            {isEditingDescription ? (
-              <input
-                ref={descRef}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                onBlur={handleSubmit}
-                onKeyDown={(e) => {
-                  handleKeyDown(e, "description");
-                }}
-                className="w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-800"
-              />
-            ) : (
-              <p
-                className="mt-1 cursor-pointer text-sm text-gray-600 dark:text-gray-300"
-                onClick={() => setIsEditingDescription(true)}
-              >
-                {description || (
-                  <span className="text-gray-300">Add description…</span>
-                )}
-              </p>
-            )}
+              {isEditingDescription ? (
+                <input
+                  ref={descRef}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  onBlur={handleSubmit}
+                  onKeyDown={(e) => {
+                    handleKeyDown(e, "description");
+                  }}
+                  className="w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-800"
+                />
+              ) : (
+                <p
+                  className="mt-1 cursor-pointer text-sm text-gray-600 dark:text-gray-300"
+                  onClick={() => setIsEditingDescription(true)}
+                >
+                  {description || (
+                    <span className="text-gray-300">Add description…</span>
+                  )}
+                </p>
+              )}
+            </div>
+            <Button
+              variant="ghost"
+              onClick={handleDelete}
+              className="cursor-pointer rounded-lg p-1 text-red-500 transition duration-200 hover:bg-red-100 focus-visible:ring-red-400 dark:hover:bg-red-200"
+            >
+              <Trash />
+            </Button>
           </div>
-          <Button
-            variant="ghost"
-            onClick={() => deleteCard(card.id)}
-            className="cursor-pointer rounded-lg p-1 text-red-500 transition duration-200 hover:bg-red-100 focus-visible:ring-red-400 dark:hover:bg-red-200"
-          >
-            <Trash />
-          </Button>
         </div>
       </motion.div>
     </CardContextMenu>
