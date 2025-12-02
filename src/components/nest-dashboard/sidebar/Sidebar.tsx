@@ -9,13 +9,13 @@ import {
   useNestlings,
 } from "@/stores/useNestlingStore";
 import { SidebarContextMenu } from "../../context-menu/SidebarContextMenu";
-import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { clearLastNestling } from "@/lib/storage/session";
 import ToolBar from "./ToolBar";
 import PinnedNestlings from "./PinnedNestlings";
 import HomeItem from "./HomeItem";
+import { AnimatePresence } from "framer-motion";
 
 export default function Sidebar({
   nestId,
@@ -65,6 +65,7 @@ export default function Sidebar({
   return (
     <SidebarContextMenu nestId={nestId}>
       <aside
+        style={{ scrollbarGutter: "stable" }}
         className={cn(
           "flex h-full flex-col overflow-x-hidden overflow-y-auto rounded-tr-2xl rounded-br-2xl p-5",
           activeBackgroundId
@@ -80,31 +81,31 @@ export default function Sidebar({
           handleHomeClick={handleHomeClick}
         />
 
-        <PinnedNestlings
-          pinnedNestlings={pinnedNestlings}
-          setIsSidebarOpen={setIsSidebarOpen}
-        />
+        <AnimatePresence initial={false}>
+          <PinnedNestlings
+            pinnedNestlings={pinnedNestlings}
+            setIsSidebarOpen={setIsSidebarOpen}
+          />
+        </AnimatePresence>
 
-        <AnimatePresence mode="popLayout">
-          <DndContext
-            collisionDetection={rectIntersection}
-            onDragStart={handleDragStart}
-            onDragEnd={(e) => handleDragEnd(e, nestId)}
-          >
-            {folderGroups.map((folder) => (
-              <FolderTree
-                key={folder.id}
-                folder={folder}
-                setIsSidebarOpen={setIsSidebarOpen}
-              />
-            ))}
-
-            <LooseNestlings
-              looseNestlings={looseNestlings}
+        <DndContext
+          collisionDetection={rectIntersection}
+          onDragStart={handleDragStart}
+          onDragEnd={(e) => handleDragEnd(e, nestId)}
+        >
+          {folderGroups.map((folder) => (
+            <FolderTree
+              key={folder.id}
+              folder={folder}
               setIsSidebarOpen={setIsSidebarOpen}
             />
-          </DndContext>
-        </AnimatePresence>
+          ))}
+
+          <LooseNestlings
+            looseNestlings={looseNestlings}
+            setIsSidebarOpen={setIsSidebarOpen}
+          />
+        </DndContext>
       </aside>
     </SidebarContextMenu>
   );

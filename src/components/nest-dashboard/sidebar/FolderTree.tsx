@@ -10,7 +10,7 @@ import {
   useNestlingStore,
 } from "@/stores/useNestlingStore";
 import FolderItem from "./FolderItem";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function FolderTree({
   folder,
@@ -35,18 +35,7 @@ export default function FolderTree({
 
   return (
     <FolderContextMenu folderId={folder.id}>
-      <motion.div
-        key={folder.id}
-        layout="position"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 20, transition: { duration: 0.2 } }}
-        transition={{
-          type: "spring",
-          stiffness: 300,
-          damping: 30,
-        }}
-      >
+      <motion.div key={folder.id} layout="position">
         <div
           ref={setNodeRef}
           className={cn(
@@ -60,25 +49,36 @@ export default function FolderTree({
             toggleFolder={toggleFolder}
           />
 
-          {isFolderOpen && (
-            <div className="ml-6">
-              {childFolders.map((childFolder) => (
-                <FolderTree
-                  key={childFolder.id}
-                  folder={childFolder}
-                  setIsSidebarOpen={setIsSidebarOpen}
-                />
-              ))}
+          <AnimatePresence initial={false}>
+            {isFolderOpen && (
+              <motion.div
+                key={`folder-content-${folder.id}`}
+                layout
+                initial={{ height: 0 }}
+                animate={{ height: "auto" }}
+                exit={{ height: 0 }}
+                transition={{ duration: 0.2 }}
+                style={{ overflow: "hidden" }}
+                className="ml-6"
+              >
+                {childFolders.map((childFolder) => (
+                  <FolderTree
+                    key={childFolder.id}
+                    folder={childFolder}
+                    setIsSidebarOpen={setIsSidebarOpen}
+                  />
+                ))}
 
-              {childNestlings.map((nestling) => (
-                <NestlingItem
-                  key={nestling.id}
-                  nestling={nestling}
-                  setIsSidebarOpen={setIsSidebarOpen}
-                />
-              ))}
-            </div>
-          )}
+                {childNestlings.map((nestling) => (
+                  <NestlingItem
+                    key={nestling.id}
+                    nestling={nestling}
+                    setIsSidebarOpen={setIsSidebarOpen}
+                  />
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
     </FolderContextMenu>

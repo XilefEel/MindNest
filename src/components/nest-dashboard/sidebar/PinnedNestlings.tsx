@@ -1,7 +1,7 @@
 import { useState } from "react";
 import NestlingItem from "./NestlingItem";
 import { Pin } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 
@@ -17,17 +17,7 @@ export default function PinnedNestlings({
   const [isPinnedOpen, setIsPinnedOpen] = useState(true);
 
   return (
-    <motion.div
-      layout="position"
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20, transition: { duration: 0.2 } }}
-      transition={{
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-      }}
-    >
+    <motion.div layout="position">
       <div className="my-2 flex flex-col gap-1">
         <div
           onClick={() => setIsPinnedOpen((prev) => !prev)}
@@ -45,18 +35,28 @@ export default function PinnedNestlings({
           <span>Pinned</span>
         </div>
 
-        {isPinnedOpen && (
-          <div className="ml-6">
-            {pinnedNestlings.map((nestling) => (
-              <NestlingItem
-                key={`pinned-${nestling.id}`}
-                nestling={nestling}
-                setIsSidebarOpen={setIsSidebarOpen}
-                isPinnedShortcut={true}
-              />
-            ))}
-          </div>
-        )}
+        <AnimatePresence initial={false}>
+          {isPinnedOpen && (
+            <motion.div
+              layout
+              initial={{ height: 0 }}
+              animate={{ height: "auto" }}
+              exit={{ height: 0 }}
+              transition={{ duration: 0.2 }}
+              style={{ overflow: "hidden" }}
+              className="ml-6"
+            >
+              {pinnedNestlings.map((nestling) => (
+                <NestlingItem
+                  key={`pinned-${nestling.id}`}
+                  nestling={nestling}
+                  setIsSidebarOpen={setIsSidebarOpen}
+                  isPinnedShortcut={true}
+                />
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );

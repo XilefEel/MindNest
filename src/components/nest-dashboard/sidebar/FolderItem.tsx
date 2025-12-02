@@ -87,7 +87,11 @@ export default function FolderItem({
 
   return (
     <FolderContextMenu folderId={folder.id}>
-      <motion.div whileTap={{ scale: 0.98 }} onClick={handleClick}>
+      <motion.div
+        whileTap={{ scale: 0.98 }}
+        onClick={handleClick}
+        onDoubleClick={(e) => e.stopPropagation()}
+      >
         <div
           style={style}
           className={cn(

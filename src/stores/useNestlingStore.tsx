@@ -100,6 +100,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
     await Promise.all([
       nestlingApi.updateNestling({ ...updated, id }),
+      get().updateNestlingTimestamp(updated.id),
       storage.saveRecentNestling(updated.nestId, updated.id),
     ]);
 
