@@ -41,6 +41,7 @@ export default function AddNestModal({
     <BaseModal
       isOpen={isOpen}
       setIsOpen={setIsOpen}
+      onSubmit={handleCreateNest}
       title="Create a New Nest"
       description="Give your nest a title. You can always change it later."
       body={<TextField label="Title" text={title} setText={setTitle} />}

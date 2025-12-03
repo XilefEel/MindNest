@@ -40,7 +40,7 @@ export default function AddFolderModal({
     setOpen(false);
   };
 
-  const handleSave = async () => {
+  const handleSaveFolder = async () => {
     if (!title.trim()) return;
     setLoading(true);
     try {
@@ -74,6 +74,7 @@ export default function AddFolderModal({
     <BaseModal
       isOpen={isActuallyOpen}
       setIsOpen={setOpen}
+      onSubmit={handleSaveFolder}
       title={folderId ? "Rename Folder" : "Create a New Folder"}
       description={
         folderId
@@ -90,7 +91,7 @@ export default function AddFolderModal({
       }
       footer={
         <Button
-          onClick={handleSave}
+          onClick={handleSaveFolder}
           disabled={loading || !title.trim()}
           className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
         >

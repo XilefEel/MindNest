@@ -20,7 +20,7 @@ export default function EditNestModal({
 
   const { updateNest, deleteNest } = useNestActions();
 
-  const handleEdit = async () => {
+  const handleEditNest = async () => {
     if (!nest) return;
     try {
       await updateNest(nest.id, title);
@@ -31,16 +31,18 @@ export default function EditNestModal({
       console.error("Failed to update nest:", error);
     }
   };
-  const handleDelete = async () => {
+
+  const handleDeleteNest = async () => {
     if (!nest) return;
     try {
       await deleteNest(nest.id);
       await clearLastNestling(nest.id);
-      handleExit();
       toast.success("Nest deleted");
     } catch (error) {
       toast.error("Failed to delete nest");
       console.error("Failed to delete nest:", error);
+    } finally {
+      handleExit();
     }
   };
 
@@ -54,6 +56,7 @@ export default function EditNestModal({
       <BaseModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
+        onSubmit={handleEditNest}
         title="Edit Nest"
         description="Don't like the title? You can change it! or delete it."
         body={
@@ -67,7 +70,7 @@ export default function EditNestModal({
         footer={
           <>
             <Button
-              onClick={handleDelete}
+              onClick={handleDeleteNest}
               className="mr-auto cursor-pointer rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
             >
               <Trash size={14} />
@@ -75,7 +78,7 @@ export default function EditNestModal({
             </Button>
             <div className="flex gap-2">
               <Button
-                onClick={handleEdit}
+                onClick={handleEditNest}
                 disabled={!title}
                 className="cursor-pointer rounded-lg bg-teal-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-700 disabled:opacity-50"
               >

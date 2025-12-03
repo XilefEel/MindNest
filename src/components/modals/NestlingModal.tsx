@@ -48,30 +48,28 @@ export default function NestlingModal({
     setOpen(false);
   };
 
-  const handleCreateNestling = async () => {
+  const handleSaveNestling = async () => {
     setLoading(true);
     try {
-      const finalTitle =
-        title.trim() ||
-        `Untitled ${nestlingTypes.find((t) => t.value === nestlingType)?.label}`;
+      if (!title.trim()) return;
 
       if (nestlingId) {
         await updateNestling(nestlingId, {
-          title: finalTitle,
+          title: title,
           folderId: nestling?.folderId,
         });
-        toast.success(`Nestling Renamed to "${finalTitle}"!`);
+        toast.success(`Nestling Renamed to "${title}"!`);
       } else {
         await addNestling({
           nestId: nestId!,
           folderId: activeFolderId,
-          title: finalTitle,
+          title: title,
           content: "",
           icon: "",
           isPinned: false,
           nestlingType: nestlingType,
         });
-        toast.success(`Nestling "${finalTitle}" created successfully!`);
+        toast.success(`Nestling "${title}" created successfully!`);
       }
       handleExit();
     } catch (err) {
@@ -91,6 +89,7 @@ export default function NestlingModal({
     <BaseModal
       isOpen={isActuallyOpen}
       setIsOpen={setOpen}
+      onSubmit={handleSaveNestling}
       title={nestlingId ? "Rename Nestling" : "Create Nestling"}
       description={
         nestlingId
@@ -178,7 +177,7 @@ export default function NestlingModal({
       }
       footer={
         <Button
-          onClick={handleCreateNestling}
+          onClick={handleSaveNestling}
           disabled={loading || !title.trim()}
           className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
         >

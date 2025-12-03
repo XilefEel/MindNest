@@ -33,7 +33,7 @@ export default function AddJournalEntryModal({
     setIsOpen(false);
   };
 
-  const createNewEntry = async () => {
+  const handleCreateEntry = async () => {
     try {
       const newEntry = await addEntry({
         nestlingId: activeNestling.id,
@@ -53,6 +53,7 @@ export default function AddJournalEntryModal({
     <BaseModal
       isOpen={isOpen}
       setIsOpen={setIsOpen}
+      onSubmit={handleCreateEntry}
       title="Create a New Journal Entry"
       description="Start writing your journal entry."
       body={
@@ -65,7 +66,7 @@ export default function AddJournalEntryModal({
       }
       footer={
         <Button
-          onClick={createNewEntry}
+          onClick={handleCreateEntry}
           disabled={loading || !title.trim()}
           className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
         >

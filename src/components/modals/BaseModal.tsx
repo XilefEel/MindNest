@@ -11,6 +11,7 @@ import {
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 import { Button } from "../ui/button";
+import { useEffect } from "react";
 
 export default function BaseModal({
   children,
@@ -21,6 +22,7 @@ export default function BaseModal({
   isOpen,
   setIsOpen,
   showCancel = true,
+  onSubmit,
 }: {
   children: React.ReactNode;
   title?: string;
@@ -30,8 +32,20 @@ export default function BaseModal({
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   showCancel?: boolean;
+  onSubmit?: () => void;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter" && isOpen && onSubmit) {
+        e.preventDefault();
+        onSubmit();
+      }
+    };
+    if (isOpen && onSubmit) document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onSubmit]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

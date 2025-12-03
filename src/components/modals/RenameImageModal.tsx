@@ -43,6 +43,7 @@ export default function RenameImageModal({
     <BaseModal
       isOpen={isOpen}
       setIsOpen={setIsOpen}
+      onSubmit={handleEditImage}
       title="Edit Image"
       description="Update your image title and description."
       body={

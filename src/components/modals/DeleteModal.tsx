@@ -1,11 +1,12 @@
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useNestlingActions } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { useActiveNestId } from "@/stores/useNestStore";
 import { clearLastNestling, getLastNestling } from "@/lib/storage/session";
+
 export default function DeleteModal({
   type,
   nestlingId,
@@ -23,13 +24,19 @@ export default function DeleteModal({
   const { setActiveNestlingId, deleteNestling, deleteFolder } =
     useNestlingActions();
 
-  const handleExit = async () => {
+  const handleExit = () => {
     setIsOpen(false);
   };
 
   const handleDelete = async (type: "nestling" | "folder") => {
     if (!nestlingId && !folderId) return;
+
+    handleExit();
+    // lets the modal exit first then delete
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
     const lastNestlingId = await getLastNestling(activeNestId);
+
     try {
       if (type === "nestling") {
         await deleteNestling(nestlingId!);
@@ -42,12 +49,24 @@ export default function DeleteModal({
         await deleteFolder(folderId!);
         toast.success("Folder deleted");
       }
-
-      handleExit();
     } catch (error) {
       console.error("Failed to delete:", error);
+      toast.error("Failed to delete");
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter" && isOpen) {
+        e.preventDefault();
+        handleDelete(type);
+      }
+    };
+
+    if (isOpen) document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, type]);
+
   return (
     <BaseModal
       isOpen={isOpen}

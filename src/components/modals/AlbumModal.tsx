@@ -62,6 +62,7 @@ export default function AlbumModal({
     <BaseModal
       isOpen={isOpen}
       setIsOpen={setIsOpen}
+      onSubmit={handleSaveAlbum}
       title={album ? "Edit Album" : "Create a New Album"}
       description={
         album
