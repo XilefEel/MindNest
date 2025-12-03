@@ -22,7 +22,6 @@ export function TextField({
       </label>
       <Input
         value={text}
-        autoFocus
         onChange={(e) => setText(e.target.value)}
         placeholder={placeholder}
         className={cn(

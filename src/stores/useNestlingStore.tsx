@@ -96,7 +96,10 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     const current = get().nestlings.find((n) => n.id === id);
     if (!current) throw new Error("Nestling not found");
 
-    const updated = mergeWithCurrent(current, updates);
+    const updated = {
+      ...mergeWithCurrent(current, updates),
+      updatedAt: new Date().toISOString(),
+    };
 
     await Promise.all([
       nestlingApi.updateNestling({ ...updated, id }),

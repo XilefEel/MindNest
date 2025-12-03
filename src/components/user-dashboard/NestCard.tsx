@@ -3,6 +3,7 @@ import EditNestModal from "../modals/EditNestModal";
 import { Nest } from "@/lib/types/nest";
 import { useNestActions } from "@/stores/useNestStore";
 import { EllipsisVertical } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 export default function NestCard({ nest }: { nest: Nest }) {
   const { setActiveNestId } = useNestActions();
@@ -35,8 +36,11 @@ export default function NestCard({ nest }: { nest: Nest }) {
             </EditNestModal>
           </div>
 
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Updated on <span className="font-bold">{nest.updatedAt}</span>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Updated{" "}
+            {formatDistanceToNow(new Date(nest.updatedAt), {
+              addSuffix: true,
+            })}
           </p>
         </div>
       </div>

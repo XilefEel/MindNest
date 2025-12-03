@@ -29,6 +29,8 @@ export default function AlbumModal({
   };
 
   const handleSaveAlbum = async () => {
+    if (!name.trim()) return;
+
     try {
       if (album) {
         await updateAlbum(album.id, { name, description });

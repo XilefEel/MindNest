@@ -26,6 +26,7 @@ export default function RecentSection() {
   const { setActiveNestlingId } = useNestlingActions();
 
   const [recentNestlings, setRecentNestlings] = useState<Nestling[]>([]);
+  const [, forceUpdate] = useState(0);
 
   const handleClear = async () => {
     await clearRecentNestlings(activeNestId!);
@@ -50,6 +51,14 @@ export default function RecentSection() {
 
     if (activeNestId) fetchRecent();
   }, [activeNestId, nestlings]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      forceUpdate((prev) => prev + 1);
+    }, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="space-y-4">

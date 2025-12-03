@@ -15,22 +15,23 @@ import { useEffect } from "react";
 
 export default function BaseModal({
   children,
+  setIsOpen,
   title,
   description,
   body,
   footer,
   isOpen,
-  setIsOpen,
   showCancel = true,
   onSubmit,
 }: {
   children: React.ReactNode;
+  setIsOpen: (isOpen: boolean) => void;
   title?: string;
   description?: string;
   body?: React.ReactNode;
   footer?: React.ReactNode;
   isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+
   showCancel?: boolean;
   onSubmit?: () => void;
 }) {
