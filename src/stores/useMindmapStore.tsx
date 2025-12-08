@@ -7,8 +7,8 @@ import {
 } from "@/lib/types/mindmap";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
-import { useNestlingStore } from "./useNestlingStore";
 import { useShallow } from "zustand/react/shallow";
+import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 
 type MindmapStore = {
   nodes: MindmapNode[];
@@ -45,7 +45,7 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
     set((state) => ({
       nodes: [...state.nodes, newNode],
     }));
-    useNestlingStore.getState().updateNestlingTimestamp(newNode.nestlingId);
+    await updateNestlingTimestamp(newNode.nestlingId);
     return newNode;
   }),
 
@@ -76,7 +76,7 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
       updated.type,
     );
 
-    useNestlingStore.getState().updateNestlingTimestamp(updated.nestlingId);
+    await updateNestlingTimestamp(updated.nestlingId);
   }),
 
   deleteNode: withStoreErrorHandler(set, async (nodeId: number) => {
@@ -93,7 +93,7 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
     }));
 
     if (nestlingId) {
-      useNestlingStore.getState().updateNestlingTimestamp(nestlingId);
+      await updateNestlingTimestamp(nestlingId);
     }
   }),
 

@@ -6,8 +6,8 @@ import { Nestling, NewNestling } from "@/lib/types/nestling";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 import * as storage from "@/lib/storage/session";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
-import { getActiveNestId } from "@/lib/utils/nests";
 import { useShallow } from "zustand/react/shallow";
+import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 
 type NestlingState = {
   nestlings: Nestling[];
@@ -29,7 +29,7 @@ type NestlingState = {
   addNestling: (nestling: NewNestling) => Promise<void>;
   duplicateNestling: (nestlingId: number) => Promise<void>;
   updateNestling: (id: number, updates: Partial<Nestling>) => Promise<void>;
-  updateNestlingTimestamp: (nestlingId: number) => Promise<void>;
+  updateNestlingTimestamp: (nestlingId: number, timestamp: string) => void;
   deleteNestling: (nestlingId: number) => Promise<void>;
 
   addFolder: (folder: NewFolder) => Promise<void>;
@@ -103,8 +103,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
     await Promise.all([
       nestlingApi.updateNestling({ ...updated, id }),
-      get().updateNestlingTimestamp(updated.id),
-      storage.saveRecentNestling(updated.nestId, updated.id),
+      updateNestlingTimestamp(id),
     ]);
 
     set((state) => ({
@@ -116,22 +115,10 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
   updateNestlingTimestamp: withStoreErrorHandler(
     set,
-    async (nestlingId: number) => {
-      const nestId = getActiveNestId();
-
-      await Promise.all([
-        storage.saveRecentNestling(nestId, nestlingId),
-        nestlingApi.updateNestlingTimestamp(nestlingId),
-      ]);
-
+    async (nestlingId: number, timestamp: string) => {
       set((state) => ({
         nestlings: state.nestlings.map((n) =>
-          n.id === nestlingId
-            ? {
-                ...n,
-                updatedAt: new Date().toISOString().replace("Z", "+00:00"),
-              }
-            : n,
+          n.id === nestlingId ? { ...n, updatedAt: timestamp } : n,
         ),
       }));
     },

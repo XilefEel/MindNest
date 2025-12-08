@@ -5,8 +5,8 @@ import type {
 } from "@/lib/types/calendar";
 import * as calendarApi from "@/lib/api/calendar";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
-import { useNestlingStore } from "./useNestlingStore";
 import { useShallow } from "zustand/react/shallow";
+import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 
 type PlannerState = {
   events: PlannerEventType[];
@@ -62,7 +62,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
       set((state) => ({
         events: [...state.events, event],
       }));
-      useNestlingStore.getState().updateNestlingTimestamp(event.nestlingId);
+      await updateNestlingTimestamp(event.nestlingId);
     },
   ),
 
@@ -84,7 +84,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
       set({ loading: false });
     }
 
-    useNestlingStore.getState().updateNestlingTimestamp(updated.nestlingId);
+    await updateNestlingTimestamp(updated.nestlingId);
   },
 
   deleteEvent: withStoreErrorHandler(set, async (id) => {
@@ -98,7 +98,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
     }));
 
     if (nestlingId) {
-      useNestlingStore.getState().updateNestlingTimestamp(nestlingId);
+      await updateNestlingTimestamp(nestlingId);
     }
   }),
 }));

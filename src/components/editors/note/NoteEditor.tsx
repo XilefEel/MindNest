@@ -26,8 +26,10 @@ export default function NoteEditor() {
 
   const content = useNoteStore((s) => s.present);
   const { updateNote, undo, redo } = useNoteStore();
+  const activeBackgroundId = useActiveBackgroundId();
 
-  const nestlingData = useMemo(() => ({ title }), [title]);
+  const nestlingData = useMemo(() => ({ title, content }), [title, content]);
+
   const autoSaveStatus = useAutoSave(
     activeNestling.id!,
     nestlingData,
@@ -118,8 +120,6 @@ export default function NoteEditor() {
       );
     }, 0);
   };
-
-  const activeBackgroundId = useActiveBackgroundId();
 
   useEffect(() => {
     if (activeNestling) {

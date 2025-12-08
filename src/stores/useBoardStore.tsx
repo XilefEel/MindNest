@@ -11,8 +11,8 @@ import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { create } from "zustand";
 import { parseDragData, sortCards } from "@/lib/utils/boards";
 import { useShallow } from "zustand/react/shallow";
-import { updateNestlingTimestamp } from "@/lib/api/nestling";
 import { arrayMove } from "@dnd-kit/sortable";
+import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 
 type BoardState = {
   columns: BoardColumn[];
@@ -83,7 +83,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     set((state) => ({
       columns: [...state.columns, newColumn],
     }));
-    updateNestlingTimestamp(newColumn.nestlingId);
+    await updateNestlingTimestamp(newColumn.nestlingId);
   }),
 
   duplicateColumn: withStoreErrorHandler(set, async (column) => {
@@ -128,7 +128,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         .map((col) => boardApi.updateBoardColumn(col)),
     );
 
-    updateNestlingTimestamp(newColumn.nestlingId);
+    await updateNestlingTimestamp(newColumn.nestlingId);
   }),
 
   updateColumn: withStoreErrorHandler(
@@ -141,7 +141,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
           col.id === id ? { ...col, title, orderIndex, color } : col,
         ),
       }));
-      updateNestlingTimestamp(id);
+      await updateNestlingTimestamp(id);
     },
   ),
 
@@ -152,7 +152,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       columns: state.columns.filter((col) => col.id !== columnId),
     }));
 
-    updateNestlingTimestamp(
+    await updateNestlingTimestamp(
       get().columns.find((col) => col.id === columnId)!.nestlingId,
     );
   }),
@@ -163,7 +163,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     set((state) => ({
       cards: [...state.cards, newCard],
     }));
-    updateNestlingTimestamp(
+    await updateNestlingTimestamp(
       get().columns.find((col) => col.id === card.columnId)!.nestlingId,
     );
   }),
@@ -195,7 +195,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         .map((card) => boardApi.updateBoardCard(card)),
     );
 
-    updateNestlingTimestamp(
+    await updateNestlingTimestamp(
       get().columns.find((col) => col.id === card.columnId)!.nestlingId,
     );
   }),
@@ -217,7 +217,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
             : card,
         ),
       }));
-      updateNestlingTimestamp(
+      await updateNestlingTimestamp(
         get().columns.find((col) => col.id === columnId)!.nestlingId,
       );
     },
@@ -230,7 +230,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       cards: state.cards.filter((card) => card.id !== cardId),
     }));
     const currentCard = get().cards.find((card) => card.id === cardId)!;
-    updateNestlingTimestamp(
+    await updateNestlingTimestamp(
       get().columns.find((col) => col.id === currentCard.columnId)!.nestlingId,
     );
   }),
@@ -265,6 +265,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
       await Promise.all(
         colsWithNewIndexes.map((col) => boardApi.updateBoardColumn(col)),
+      );
+      await updateNestlingTimestamp(
+        get().columns.find((col) => col.id === activeData.id)!.nestlingId,
       );
       return;
     }
@@ -304,6 +307,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         cardsWithNewIndexes
           .filter((card) => affectedColumnIds.includes(card.columnId))
           .map((card) => boardApi.updateBoardCard(card)),
+      );
+
+      await updateNestlingTimestamp(
+        get().columns.find((col) => col.id === targetColumnId)!.nestlingId,
       );
     }
   },

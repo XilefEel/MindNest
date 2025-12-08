@@ -12,7 +12,7 @@ export default function useAutoSave(
 
   const [autoSaveStatus, setAutoSaveStatus] = useState<AutoSaveStatus>("idle");
   const timeoutRef = useRef<NodeJS.Timeout>();
-  const previousDataRef = useRef<string>();
+  const previousDataRef = useRef<string>(JSON.stringify(data));
 
   useEffect(() => {
     if (!id || id < 0) return;

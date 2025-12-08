@@ -7,8 +7,8 @@ import {
 } from "@/lib/types/journal";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
-import { useNestlingStore } from "./useNestlingStore";
 import { useShallow } from "zustand/react/shallow";
+import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 
 type JournalState = {
   activeEntry: JournalEntry | null;
@@ -51,7 +51,7 @@ export const useJournalStore = create<JournalState>((set, get) => ({
       entries: [...state.entries, newEntry],
       activeEntry: newEntry,
     }));
-    useNestlingStore.getState().updateNestlingTimestamp(newEntry.nestlingId);
+    await updateNestlingTimestamp(newEntry.nestlingId);
     return newEntry;
   }),
 
@@ -69,7 +69,7 @@ export const useJournalStore = create<JournalState>((set, get) => ({
     set((state) => ({
       entries: state.entries.map((e) => (e.id === id ? updated : e)),
     }));
-    useNestlingStore.getState().updateNestlingTimestamp(updated.nestlingId);
+    await updateNestlingTimestamp(updated.nestlingId);
   }),
 
   deleteEntry: withStoreErrorHandler(set, async (id: number) => {
@@ -82,7 +82,7 @@ export const useJournalStore = create<JournalState>((set, get) => ({
     }));
 
     if (nestlingId) {
-      useNestlingStore.getState().updateNestlingTimestamp(nestlingId);
+      await updateNestlingTimestamp(nestlingId);
     }
   }),
 
@@ -93,9 +93,7 @@ export const useJournalStore = create<JournalState>((set, get) => ({
       set((state) => ({
         templates: [...state.templates, newTemplate],
       }));
-      useNestlingStore
-        .getState()
-        .updateNestlingTimestamp(newTemplate.nestlingId);
+      await updateNestlingTimestamp(newTemplate.nestlingId);
       return newTemplate;
     },
   ),
@@ -113,7 +111,7 @@ export const useJournalStore = create<JournalState>((set, get) => ({
         entries: [...state.entries, newEntry],
         activeEntry: newEntry,
       }));
-      useNestlingStore.getState().updateNestlingTimestamp(newEntry.nestlingId);
+      await updateNestlingTimestamp(newEntry.nestlingId);
       return newEntry;
     },
   ),
@@ -133,7 +131,7 @@ export const useJournalStore = create<JournalState>((set, get) => ({
     set((state) => ({
       templates: state.templates.map((t) => (t.id === id ? updated : t)),
     }));
-    useNestlingStore.getState().updateNestlingTimestamp(updated.nestlingId);
+    await updateNestlingTimestamp(updated.nestlingId);
   }),
 
   deleteTemplate: withStoreErrorHandler(set, async (id: number) => {
@@ -145,7 +143,7 @@ export const useJournalStore = create<JournalState>((set, get) => ({
     }));
 
     if (nestlingId) {
-      useNestlingStore.getState().updateNestlingTimestamp(nestlingId);
+      await updateNestlingTimestamp(nestlingId);
     }
   }),
 }));
