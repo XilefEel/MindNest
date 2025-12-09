@@ -1,4 +1,4 @@
-use crate::models::nest_background::{BackgroundImage, NewBackgroundImage};
+use crate::models::background_image::{BackgroundImage, NewBackgroundImage};
 use crate::utils::db::AppDb;
 
 use chrono::{Utc, Local};
@@ -13,9 +13,7 @@ pub fn add_background_into_db(db: &AppDb, data: NewBackgroundImage) -> Result<Ba
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare("
-        INSERT INTO background_images (
-            nest_id, file_path, is_selected, width, height, created_at, updated_at
-        )
+        INSERT INTO background_images nest_id, file_path, is_selected, width, height, created_at, updated_at
         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
         RETURNING id, nest_id, file_path, is_selected, width, height, created_at, updated_at
     ").map_err(|e| e.to_string())?;

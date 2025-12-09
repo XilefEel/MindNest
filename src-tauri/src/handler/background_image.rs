@@ -1,7 +1,7 @@
-use crate::db::nest_background::{
+use crate::db::background_image::{
     add_background_into_db, delete_background_from_db, get_backgrounds_from_db, import_background_into_app
 };
-use crate::models::nest_background::{BackgroundImage, NewBackgroundImage};
+use crate::models::background_image::{BackgroundImage, NewBackgroundImage};
 use crate::utils::db::AppDb;
 
 #[tauri::command]

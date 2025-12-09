@@ -1,4 +1,3 @@
-
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL,
@@ -52,6 +51,23 @@ CREATE TABLE IF NOT EXISTS background_images (
     updated_at TEXT NOT NULL,
     FOREIGN KEY (nest_id) REFERENCES nests(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS background_music (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nest_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    duration INTEGER NOT NULL,
+    order_index INTEGER NOT NULL DEFAULT 0,
+    is_selected BOOLEAN NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY (nest_id) REFERENCES nests(id) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS unique_selected_track_per_nest
+ON background_music (nest_id)
+WHERE is_selected = 1;
 
 CREATE TABLE IF NOT EXISTS board_columns (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

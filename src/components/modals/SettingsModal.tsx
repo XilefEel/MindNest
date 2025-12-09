@@ -53,7 +53,7 @@ export default function SettingsModal({
             </div>
           )}
 
-          <div className={"pb-8"}>
+          <div className="pb-8">
             {activeTab === "general" ? (
               <GeneralSettings />
             ) : activeTab === "nest" ? (

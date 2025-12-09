@@ -6,6 +6,7 @@ pub mod nest;
 pub mod nestling;
 pub mod note;
 pub mod user;
-pub mod nest_background;
+pub mod background_image;
 pub mod folder;
 pub mod mindmap;
+pub mod background_music;

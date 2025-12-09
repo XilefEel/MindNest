@@ -14,8 +14,12 @@ use handler::folder::{
     create_folder, get_folders, update_folder, delete_folder
 };
 
-use handler::nest_background::{
+use handler::background_image::{
     add_background, import_background, get_backgrounds, delete_background,
+};
+
+use handler::background_music::{
+    add_music, import_music, get_music, update_music, update_music_selection, delete_music
 };
 
 use handler::user::{login_user, signup_user};
@@ -149,7 +153,15 @@ pub fn run() {
             delete_node,
             create_edge,
             get_edges,
-            delete_edge
+            delete_edge,
+
+            // Background Music
+            add_music,
+            import_music,
+            get_music,
+            update_music,
+            update_music_selection,
+            delete_music
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
