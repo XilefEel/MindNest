@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { Nest } from "../lib/types/nest";
 import * as nestApi from "../lib/api/nest";
-import * as backgroundApi from "@/lib/api/nest-background";
-import { BackgroundImage } from "@/lib/types/nest_backgrounds";
+import * as backgroundApi from "@/lib/api/background-image";
+import * as musicApi from "@/lib/api/background-music";
+import { BackgroundImage } from "@/lib/types/background-image";
 import { open } from "@tauri-apps/plugin-dialog";
 import {
   saveLastBackgroundImage,
@@ -10,12 +11,17 @@ import {
 } from "@/lib/storage/session";
 import { withStoreErrorHandler } from "@/lib/utils/general";
 import { useShallow } from "zustand/react/shallow";
+import { BackgroundMusic } from "@/lib/types/background-music";
 
 type NestState = {
   nests: Nest[];
   backgrounds: BackgroundImage[];
+  music: BackgroundMusic[];
+
   activeNestId: number | null;
   activeBackgroundId: number | null;
+  activeMusicId: number | null;
+
   loading: boolean;
   error: string | null;
 
@@ -23,12 +29,14 @@ type NestState = {
   setActiveBackgroundId: (backgroundId: number | null) => Promise<void>;
   clearActiveBackgroundId: () => void;
 
+  // Nest CRUD
   getNests: (userId: number) => Promise<void>;
   createNest: (userId: number, title: string) => Promise<void>;
   updateNest: (nestId: number, newTitle: string) => Promise<void>;
   deleteNest: (nestId: number) => Promise<void>;
   refreshNest: () => Promise<void>;
 
+  // Background Images
   selectBackground: (nestId: number) => Promise<boolean>;
   uploadBackground: (
     nestId: number,
@@ -36,13 +44,20 @@ type NestState = {
   ) => Promise<BackgroundImage>;
   fetchBackgrounds: (nestId: number) => Promise<void>;
   deleteBackground: (id: number) => Promise<void>;
+
+  // Background Music
+  // (to be implemented)
 };
 
 export const useNestStore = create<NestState>((set, get) => ({
   nests: [],
   backgrounds: [],
+  music: [],
+
   activeNestId: null,
   activeBackgroundId: null,
+  activeMusicId: null,
+
   error: null,
   loading: false,
 
