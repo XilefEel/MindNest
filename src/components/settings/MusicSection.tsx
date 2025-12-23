@@ -1,17 +1,13 @@
-import { cn } from "@/lib/utils/general";
 import {
-  useActiveBackgroundId,
   useActiveNestId,
   useMusic,
   useNestActions,
 } from "@/stores/useNestStore";
-import { convertFileSrc } from "@tauri-apps/api/core";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function MusicSection() {
   const activeNestId = useActiveNestId();
-  const activeBackgroundId = useActiveBackgroundId();
   const music = useMusic();
   const { selectMusic } = useNestActions();
 
