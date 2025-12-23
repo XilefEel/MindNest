@@ -1,9 +1,11 @@
 import BackgroundSection from "./BackgroundSection";
+import MusicSection from "./MusicSection";
 
 export default function NestSettings() {
   return (
     <div className="space-y-6">
       <BackgroundSection />
+      <MusicSection />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-sm font-medium text-gray-900 dark:text-gray-100">

@@ -27,7 +27,7 @@ export default function useRestore({
     setFolderOpen,
     fetchSidebar,
   } = useNestlingActions();
-  const { setActiveNestId, setActiveBackgroundId, fetchBackgrounds } =
+  const { setActiveNestId, setActiveBackgroundId, getBackgrounds, getMusic } =
     useNestActions();
 
   if (!id) return;
@@ -47,7 +47,8 @@ export default function useRestore({
           getLastNestling(lastNest.id),
           getLastBackgroundImage(lastNest.id),
           fetchSidebar(lastNest.id),
-          fetchBackgrounds(lastNest.id),
+          getBackgrounds(lastNest.id),
+          getMusic(lastNest.id),
         ]);
 
         // Find last nestling from zustand store

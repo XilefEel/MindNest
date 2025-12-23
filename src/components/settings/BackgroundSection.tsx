@@ -29,6 +29,7 @@ export default function BackgroundSection() {
         toast.error("No image selected");
       }
     } catch (error) {
+      console.error("Failed to upload image:", error);
       toast.error("Failed to upload image");
     }
   };

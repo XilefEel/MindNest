@@ -29,7 +29,7 @@ type NestState = {
   setActiveBackgroundId: (backgroundId: number | null) => Promise<void>;
   clearActiveBackgroundId: () => void;
 
-  // Nest CRUD
+  // Nest
   getNests: (userId: number) => Promise<void>;
   createNest: (userId: number, title: string) => Promise<void>;
   updateNest: (nestId: number, newTitle: string) => Promise<void>;
@@ -42,11 +42,14 @@ type NestState = {
     nestId: number,
     filePath: string,
   ) => Promise<BackgroundImage>;
-  fetchBackgrounds: (nestId: number) => Promise<void>;
+  getBackgrounds: (nestId: number) => Promise<void>;
   deleteBackground: (id: number) => Promise<void>;
 
   // Background Music
-  // (to be implemented)
+  selectMusic: (nestId: number) => Promise<boolean>;
+  uploadMusic: (nestId: number, filePath: string) => Promise<BackgroundMusic>;
+  getMusic: (nestId: number) => Promise<void>;
+  deleteMusic: (id: number) => Promise<void>;
 };
 
 export const useNestStore = create<NestState>((set, get) => ({
@@ -154,7 +157,7 @@ export const useNestStore = create<NestState>((set, get) => ({
     return true;
   }),
 
-  fetchBackgrounds: withStoreErrorHandler(set, async (nestId: number) => {
+  getBackgrounds: withStoreErrorHandler(set, async (nestId: number) => {
     const backgrounds = await backgroundApi.getBackgrounds(nestId);
     set({ backgrounds });
   }),
@@ -174,6 +177,49 @@ export const useNestStore = create<NestState>((set, get) => ({
       }),
     }));
   }),
+
+  selectMusic: withStoreErrorHandler(set, async (nestId: number) => {
+    const selected = await open({
+      multiple: true,
+      filters: [{ name: "Audio", extensions: ["mp3", "ogg", "wav", "m4a"] }],
+    });
+
+    if (!selected) return false;
+
+    const files = Array.isArray(selected) ? selected : [selected];
+
+    for (const filePath of files) {
+      const newMusic = await get().uploadMusic(nestId, filePath);
+      if (newMusic) {
+        set((state) => ({
+          music: [newMusic, ...state.music],
+        }));
+      }
+    }
+    return true;
+  }),
+
+  uploadMusic: withStoreErrorHandler(
+    set,
+    async (nestId: number, filePath: string) => {
+      const music = await musicApi.importMusic(nestId, filePath, "", 0, 0);
+      return music;
+    },
+  ),
+
+  getMusic: withStoreErrorHandler(set, async (nestId: number) => {
+    const music = await musicApi.getMusic(nestId);
+    set({ music });
+  }),
+
+  deleteMusic: withStoreErrorHandler(set, async (musicId: number) => {
+    await musicApi.deleteMusic(musicId);
+    set((state) => ({
+      music: state.music.filter((m) => m.id !== musicId),
+    }));
+
+    if (get().activeMusicId === musicId) set({ activeMusicId: null });
+  }),
 }));
 
 export const useNestActions = () =>
@@ -191,8 +237,13 @@ export const useNestActions = () =>
 
       selectBackground: state.selectBackground,
       uploadBackground: state.uploadBackground,
-      fetchBackgrounds: state.fetchBackgrounds,
+      getBackgrounds: state.getBackgrounds,
       deleteBackground: state.deleteBackground,
+
+      selectMusic: state.selectMusic,
+      uploadMusic: state.uploadMusic,
+      getMusic: state.getMusic,
+      deleteMusic: state.deleteMusic,
     })),
   );
 
@@ -211,3 +262,8 @@ export const useBackgrounds = () => useNestStore((state) => state.backgrounds);
 
 export const useActiveBackgroundId = () =>
   useNestStore((state) => state.activeBackgroundId);
+
+export const useMusic = () => useNestStore((state) => state.music);
+
+export const useActiveMusicId = () =>
+  useNestStore((state) => state.activeMusicId);
