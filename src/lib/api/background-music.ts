@@ -37,6 +37,10 @@ export async function updateMusicSelection(nestId: number, musicId: number) {
   await invoke<void>("update_music_selection", { nestId, musicId });
 }
 
+export async function clearMusicSelection(nestId: number) {
+  await invoke<void>("clear_music_selection", { nestId });
+}
+
 export async function deleteMusic(id: number) {
   await invoke<void>("delete_music", { id });
 }

@@ -3,13 +3,36 @@ import {
   useMusic,
   useNestActions,
 } from "@/stores/useNestStore";
-import { Trash2 } from "lucide-react";
+import { Music, Trash2 } from "lucide-react";
+import { convertFileSrc } from "@tauri-apps/api/core";
 import { toast } from "sonner";
+import { BackgroundMusic } from "@/lib/types/background-music";
 
 export default function MusicSection() {
   const activeNestId = useActiveNestId();
   const music = useMusic();
-  const { selectMusic } = useNestActions();
+  const { selectMusic, deleteMusic } = useNestActions();
+
+  const handlePlayMusic = async (music: BackgroundMusic) => {
+    try {
+      const audioUrl = convertFileSrc(music.filePath);
+
+      const audio = new Audio(audioUrl);
+      audio.play();
+    } catch (error) {
+      console.error("Failed to play music:", error);
+    }
+  };
+
+  const handleDeleteMusic = async (id: number) => {
+    try {
+      await deleteMusic(id);
+      toast.success("Music deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete music:", error);
+      toast.error("Failed to delete music");
+    }
+  };
 
   const handleUploadMusic = async () => {
     try {
@@ -47,7 +70,13 @@ export default function MusicSection() {
         <div className="grid max-h-46 grid-cols-2 gap-3 overflow-y-auto p-1.5 md:grid-cols-3">
           {music.map((music, index) => (
             <div key={index}>
-              <div>{music.orderIndex}</div>
+              <div
+                onClick={() => handlePlayMusic(music)}
+                className="flex size-20 items-center justify-center rounded-xl bg-purple-500 text-white"
+              >
+                <Music size={40} />
+                {music.id}
+              </div>
               <button
                 className="absolute top-1.5 right-1.5 cursor-pointer rounded-full bg-red-500/90 p-1.5 text-white opacity-0 shadow-lg backdrop-blur-sm transition-all group-hover:opacity-100 hover:bg-red-600"
                 onClick={(e) => {

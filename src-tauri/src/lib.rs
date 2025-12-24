@@ -19,7 +19,7 @@ use handler::background_image::{
 };
 
 use handler::background_music::{
-    add_music, import_music, get_music, update_music, update_music_selection, delete_music
+    add_music, import_music, get_music, update_music, delete_music
 };
 
 use handler::user::{login_user, signup_user};
@@ -160,7 +160,6 @@ pub fn run() {
             import_music,
             get_music,
             update_music,
-            update_music_selection,
             delete_music
         ])
         .run(tauri::generate_context!())

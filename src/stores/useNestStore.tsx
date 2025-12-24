@@ -1,17 +1,19 @@
 import { create } from "zustand";
-import { Nest } from "../lib/types/nest";
+import { open } from "@tauri-apps/plugin-dialog";
+import { withStoreErrorHandler } from "@/lib/utils/general";
+import { useShallow } from "zustand/react/shallow";
 import * as nestApi from "../lib/api/nest";
 import * as backgroundApi from "@/lib/api/background-image";
 import * as musicApi from "@/lib/api/background-music";
+import { Nest } from "../lib/types/nest";
 import { BackgroundImage } from "@/lib/types/background-image";
-import { open } from "@tauri-apps/plugin-dialog";
+import { BackgroundMusic } from "@/lib/types/background-music";
 import {
   saveLastBackgroundImage,
   clearLastBackgroundImage,
+  saveLastBackgroundMusic,
+  clearLastBackgroundMusic,
 } from "@/lib/storage/session";
-import { withStoreErrorHandler } from "@/lib/utils/general";
-import { useShallow } from "zustand/react/shallow";
-import { BackgroundMusic } from "@/lib/types/background-music";
 
 type NestState = {
   nests: Nest[];
@@ -25,11 +27,8 @@ type NestState = {
   loading: boolean;
   error: string | null;
 
-  setActiveNestId: (nest: number | null) => void;
-  setActiveBackgroundId: (backgroundId: number | null) => Promise<void>;
-  clearActiveBackgroundId: () => void;
-
   // Nest
+  setActiveNestId: (nest: number | null) => void;
   getNests: (userId: number) => Promise<void>;
   createNest: (userId: number, title: string) => Promise<void>;
   updateNest: (nestId: number, newTitle: string) => Promise<void>;
@@ -37,17 +36,16 @@ type NestState = {
   refreshNest: () => Promise<void>;
 
   // Background Images
+  setActiveBackgroundId: (backgroundId: number | null) => Promise<void>;
+  clearActiveBackgroundId: () => void;
   selectBackground: (nestId: number) => Promise<boolean>;
-  uploadBackground: (
-    nestId: number,
-    filePath: string,
-  ) => Promise<BackgroundImage>;
   getBackgrounds: (nestId: number) => Promise<void>;
   deleteBackground: (id: number) => Promise<void>;
 
   // Background Music
+  setActiveMusicId: (musicId: number | null) => Promise<void>;
+  clearActiveMusicId: () => void;
   selectMusic: (nestId: number) => Promise<boolean>;
-  uploadMusic: (nestId: number, filePath: string) => Promise<BackgroundMusic>;
   getMusic: (nestId: number) => Promise<void>;
   deleteMusic: (id: number) => Promise<void>;
 };
@@ -66,20 +64,6 @@ export const useNestStore = create<NestState>((set, get) => ({
 
   setActiveNestId: (nestId) => {
     set({ activeNestId: nestId });
-  },
-
-  setActiveBackgroundId: async (backgroundId) => {
-    if (backgroundId) {
-      await saveLastBackgroundImage(get().activeNestId!, backgroundId);
-      set({ activeBackgroundId: backgroundId });
-    } else {
-      set({ activeBackgroundId: null });
-    }
-  },
-
-  clearActiveBackgroundId: async () => {
-    await clearLastBackgroundImage(get().activeNestId!);
-    set({ activeBackgroundId: null });
   },
 
   getNests: withStoreErrorHandler(set, async (userId) => {
@@ -122,14 +106,19 @@ export const useNestStore = create<NestState>((set, get) => ({
     }));
   }),
 
-  uploadBackground: withStoreErrorHandler(
-    set,
-    async (nestId: number, filePath: string) => {
-      const background = await backgroundApi.importBackground(nestId, filePath);
-      get().setActiveBackgroundId(background.id);
-      return background;
-    },
-  ),
+  setActiveBackgroundId: async (backgroundId) => {
+    if (backgroundId) {
+      await saveLastBackgroundImage(get().activeNestId!, backgroundId);
+      set({ activeBackgroundId: backgroundId });
+    } else {
+      set({ activeBackgroundId: null });
+    }
+  },
+
+  clearActiveBackgroundId: async () => {
+    await clearLastBackgroundImage(get().activeNestId!);
+    set({ activeBackgroundId: null });
+  },
 
   selectBackground: withStoreErrorHandler(set, async (nestId: number) => {
     const selected = await open({
@@ -147,7 +136,11 @@ export const useNestStore = create<NestState>((set, get) => ({
     const files = Array.isArray(selected) ? selected : [selected];
 
     for (const filePath of files) {
-      const newBackground = await get().uploadBackground(nestId, filePath);
+      const newBackground = await backgroundApi.importBackground(
+        nestId,
+        filePath,
+      );
+      get().setActiveBackgroundId(newBackground.id);
       if (newBackground) {
         set((state) => ({
           backgrounds: [newBackground, ...state.backgrounds],
@@ -178,6 +171,21 @@ export const useNestStore = create<NestState>((set, get) => ({
     }));
   }),
 
+  setActiveMusicId: async (musicId) => {
+    if (musicId) {
+      await saveLastBackgroundMusic(get().activeNestId!, musicId);
+      set({ activeMusicId: musicId });
+    } else {
+      await clearLastBackgroundMusic(get().activeNestId!);
+      set({ activeMusicId: null });
+    }
+  },
+
+  clearActiveMusicId: async () => {
+    await clearLastBackgroundMusic(get().activeNestId!);
+    set({ activeMusicId: null });
+  },
+
   selectMusic: withStoreErrorHandler(set, async (nestId: number) => {
     const selected = await open({
       multiple: true,
@@ -189,7 +197,7 @@ export const useNestStore = create<NestState>((set, get) => ({
     const files = Array.isArray(selected) ? selected : [selected];
 
     for (const filePath of files) {
-      const newMusic = await get().uploadMusic(nestId, filePath);
+      const newMusic = await musicApi.importMusic(nestId, filePath, "", 0, 0);
       if (newMusic) {
         set((state) => ({
           music: [newMusic, ...state.music],
@@ -198,14 +206,6 @@ export const useNestStore = create<NestState>((set, get) => ({
     }
     return true;
   }),
-
-  uploadMusic: withStoreErrorHandler(
-    set,
-    async (nestId: number, filePath: string) => {
-      const music = await musicApi.importMusic(nestId, filePath, "", 0, 0);
-      return music;
-    },
-  ),
 
   getMusic: withStoreErrorHandler(set, async (nestId: number) => {
     const music = await musicApi.getMusic(nestId);
@@ -236,12 +236,10 @@ export const useNestActions = () =>
       refreshNest: state.refreshNest,
 
       selectBackground: state.selectBackground,
-      uploadBackground: state.uploadBackground,
       getBackgrounds: state.getBackgrounds,
       deleteBackground: state.deleteBackground,
 
       selectMusic: state.selectMusic,
-      uploadMusic: state.uploadMusic,
       getMusic: state.getMusic,
       deleteMusic: state.deleteMusic,
     })),

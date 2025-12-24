@@ -6,7 +6,6 @@ export type NewBackgroundMusic = {
   filePath: string;
   durationSeconds: number;
   orderIndex: number;
-  isSelected: boolean;
 };
 
 export type BackgroundMusic = WithBase<NewBackgroundMusic>;

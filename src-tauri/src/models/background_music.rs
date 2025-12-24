@@ -8,7 +8,6 @@ pub struct NewBackgroundMusic {
     pub file_path: String,
     pub duration_seconds: i64,
     pub order_index: i64,
-    pub is_selected: bool,
 }
 
 #[derive(Debug, Serialize)]
@@ -20,7 +19,6 @@ pub struct BackgroundMusic {
     pub file_path: String,
     pub duration_seconds: i64,
     pub order_index: i64,
-    pub is_selected: bool,
     pub created_at: String,
     pub updated_at: String,
 }

@@ -5,6 +5,7 @@ let storePromise: Promise<Store> | null = null;
 
 type LastNestlings = Record<string, number>;
 type LastBackgroundImages = Record<string, number>;
+type LastBackgroundMusics = Record<string, number>;
 type RecentNestlings = Record<string, number[]>;
 
 function getStore() {
@@ -99,6 +100,29 @@ export async function clearLastBackgroundImage(nestId: number) {
     (await getItem<LastBackgroundImages>("lastBackgroundImage")) || {};
   delete current[nestId.toString()];
   await setItem<LastBackgroundImages>("lastBackgroundImage", current);
+}
+
+export async function saveLastBackgroundMusic(nestId: number, musicId: number) {
+  const current =
+    (await getItem<LastBackgroundMusics>("lastBackgroundMusic")) || {};
+  current[nestId.toString()] = musicId;
+  await setItem<LastBackgroundMusics>("lastBackgroundMusic", current);
+}
+
+export async function getLastBackgroundMusic(
+  nestId: number | null,
+): Promise<number | null> {
+  if (nestId == null) return null;
+  const current =
+    (await getItem<LastBackgroundMusics>("lastBackgroundMusic")) || {};
+  return current[nestId.toString()] ?? null;
+}
+
+export async function clearLastBackgroundMusic(nestId: number) {
+  const current =
+    (await getItem<LastBackgroundMusics>("lastBackgroundMusic")) || {};
+  delete current[nestId.toString()];
+  await setItem<LastBackgroundMusics>("lastBackgroundMusic", current);
 }
 
 export async function saveRecentNestling(

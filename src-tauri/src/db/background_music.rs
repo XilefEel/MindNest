@@ -12,9 +12,9 @@ pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> Result<Backgro
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare("
-        INSERT INTO background_music (nest_id, title, file_path, duration_seconds, order_index, is_selected, created_at, updated_at)
-        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
-        RETURNING id, nest_id, title, file_path, duration_seconds, order_index, is_selected, created_at, updated_at
+        INSERT INTO background_music (nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at)
+        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+        RETURNING id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at
     ").map_err(|e| e.to_string())?;
 
     let music = statement.query_row(
@@ -24,7 +24,6 @@ pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> Result<Backgro
             data.file_path,
             data.duration_seconds,
             data.order_index,
-            data.is_selected,
             created_at,
             created_at
         ],
@@ -36,9 +35,8 @@ pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> Result<Backgro
                 file_path: row.get(3)?,
                 duration_seconds: row.get(4)?,
                 order_index: row.get(5)?,
-                is_selected: row.get(6)?,
-                created_at: row.get(7)?,
-                updated_at: row.get(8)?,
+                created_at: row.get(6)?,
+                updated_at: row.get(7)?,
             })
         },
     ).map_err(|e| e.to_string())?;
@@ -96,7 +94,6 @@ pub fn import_music_into_app(
         file_path: new_path,
         duration_seconds,
         order_index,
-        is_selected: false,
     };
 
     let saved_music = add_music_into_db(&db, new_music)?;
@@ -108,7 +105,7 @@ pub fn get_music_from_db(db: &AppDb, nest_id: i64) -> Result<Vec<BackgroundMusic
 
     let mut statement = connection
         .prepare("
-        SELECT id, nest_id, title, file_path, duration_seconds, order_index, is_selected, created_at, updated_at
+        SELECT id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at
         FROM background_music 
         WHERE nest_id = ?1 
         ORDER BY order_index ASC",
@@ -124,9 +121,8 @@ pub fn get_music_from_db(db: &AppDb, nest_id: i64) -> Result<Vec<BackgroundMusic
                 file_path: row.get(3)?,
                 duration_seconds: row.get(4)?,
                 order_index: row.get(5)?,
-                is_selected: row.get(6)?,
-                created_at: row.get(7)?,
-                updated_at: row.get(8)?,
+                created_at: row.get(6)?,
+                updated_at: row.get(7)?,
             })
         })
         .map_err(|e| e.to_string())?;
@@ -142,7 +138,7 @@ fn get_music_by_id(db: &AppDb, id: i64) -> Result<BackgroundMusic, String> {
 
     let mut statement = connection
         .prepare("
-        SELECT id, nest_id, title, file_path, duration_seconds, order_index, is_selected, created_at, updated_at
+        SELECT id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at
         FROM background_music 
         WHERE id = ?1",
         )
@@ -157,9 +153,8 @@ fn get_music_by_id(db: &AppDb, id: i64) -> Result<BackgroundMusic, String> {
                 file_path: row.get(3)?,
                 duration_seconds: row.get(4)?,
                 order_index: row.get(5)?,
-                is_selected: row.get(6)?,
-                created_at: row.get(7)?,
-                updated_at: row.get(8)?,
+                created_at: row.get(6)?,
+                updated_at: row.get(7)?,
             })
         })
         .map_err(|e| e.to_string())?;
@@ -184,27 +179,6 @@ pub fn update_music_in_db(db: &AppDb, id: i64, title: String, order_index: i64) 
             ],
         )
         .map_err(|e| e.to_string())?;
-    Ok(())
-}
-
-pub fn update_music_selection_in_db(db: &AppDb, nest_id: i64, id: i64) -> Result<(), String> {
-    let connection = db.connection.lock().unwrap();
-    let updated_at = Utc::now().to_rfc3339();
-    
-    connection
-        .execute(
-            "UPDATE background_music SET is_selected = 0 WHERE nest_id = ?1",
-            params![nest_id]
-        )
-        .map_err(|e| e.to_string())?;
-    
-    connection
-        .execute(
-            "UPDATE background_music SET is_selected = 1, updated_at = ?1 WHERE id = ?2",
-            params![updated_at, id]
-        )
-        .map_err(|e| e.to_string())?;
-    
     Ok(())
 }
 
