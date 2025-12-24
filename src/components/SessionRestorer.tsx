@@ -1,12 +1,13 @@
 import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { getLastNestId, getLastNestling } from "@/lib/storage/session";
 import {
   useNestlingActions,
   useNestlingStore,
 } from "@/stores/useNestlingStore";
 import { useNestActions } from "@/stores/useNestStore";
+import { getLastNestId } from "@/lib/storage/nest";
+import { getLastNestling } from "@/lib/storage/nestling";
 
 export default function SessionRestorer() {
   const { user, loading } = useAuth();

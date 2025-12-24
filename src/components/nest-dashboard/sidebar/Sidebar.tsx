@@ -11,11 +11,11 @@ import {
 import { SidebarContextMenu } from "../../context-menu/SidebarContextMenu";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
-import { clearLastNestling } from "@/lib/storage/session";
 import ToolBar from "./ToolBar";
 import PinnedNestlings from "./PinnedNestlings";
 import HomeItem from "./HomeItem";
 import { AnimatePresence } from "framer-motion";
+import { clearLastNestling } from "@/lib/storage/nestling";
 
 export default function Sidebar({
   nestId,

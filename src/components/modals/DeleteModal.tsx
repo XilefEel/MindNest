@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useNestlingActions } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { useActiveNestId } from "@/stores/useNestStore";
-import { clearLastNestling, getLastNestling } from "@/lib/storage/session";
+import { clearLastNestling, getLastNestling } from "@/lib/storage/nestling";
 
 export default function DeleteModal({
   type,

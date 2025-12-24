@@ -4,10 +4,10 @@ import * as folderApi from "@/lib/api/folder";
 import { Folder, NewFolder } from "@/lib/types/folder";
 import { Nestling, NewNestling } from "@/lib/types/nestling";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
-import * as storage from "@/lib/storage/session";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { useShallow } from "zustand/react/shallow";
 import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
+import { saveRecentNestling, saveLastNestling } from "@/lib/storage/nestling";
 
 type NestlingState = {
   nestlings: Nestling[];
@@ -72,7 +72,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
   addNestling: withStoreErrorHandler(set, async (nestling: NewNestling) => {
     const newNestling = await nestlingApi.createNestling(nestling);
-    await storage.saveRecentNestling(newNestling.nestId, newNestling.id);
+    await saveRecentNestling(newNestling.nestId, newNestling.id);
 
     set((state) => ({
       nestlings: [...state.nestlings, newNestling].sort((a, b) =>
@@ -219,7 +219,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
         await Promise.all([
           get().updateNestling(nestlingId, { folderId: newFolderId }),
-          storage.saveLastNestling(nestId, nestlingId),
+          saveLastNestling(nestId, nestlingId),
         ]);
       } else if (activeType === "folder") {
         const folderId = Number(activeIdStr);

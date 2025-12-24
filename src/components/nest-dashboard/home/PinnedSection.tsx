@@ -1,5 +1,5 @@
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
-import { saveLastNestling } from "@/lib/storage/session";
+import { saveLastNestling } from "@/lib/storage/nestling";
 import { findFolderPath } from "@/lib/utils/folders";
 import { cn } from "@/lib/utils/general";
 import { getNestlingIcon } from "@/lib/utils/nestlings";

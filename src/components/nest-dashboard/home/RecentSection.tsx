@@ -1,8 +1,3 @@
-import {
-  clearRecentNestlings,
-  getRecentNestlings,
-  saveLastNestling,
-} from "@/lib/storage/session";
 import { Nestling } from "@/lib/types/nestling";
 import { findFolderPath } from "@/lib/utils/folders";
 import { cn } from "@/lib/utils/general";
@@ -17,6 +12,11 @@ import { ArrowRight, Clock, Folder } from "lucide-react";
 import { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
+import {
+  clearRecentNestlings,
+  saveLastNestling,
+  getRecentNestlings,
+} from "@/lib/storage/nestling";
 
 export default function RecentSection() {
   const activeNestId = useActiveNestId();

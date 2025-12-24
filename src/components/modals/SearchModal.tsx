@@ -12,7 +12,7 @@ import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
-import { saveLastNestling } from "@/lib/storage/session";
+import { saveLastNestling } from "@/lib/storage/nestling";
 
 export default function SearchModal({
   isOpen,

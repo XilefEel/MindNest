@@ -3,7 +3,7 @@ import {
   getUserSession,
   clearUserSession,
   saveUserSession,
-} from "../lib/storage/session";
+} from "../lib/storage/user";
 import { User } from "@/lib/types/user";
 import LoadingScreen from "@/components/LoadingScreen";
 

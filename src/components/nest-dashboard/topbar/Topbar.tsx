@@ -3,12 +3,12 @@ import { Button } from "../../ui/button";
 import { Settings, Link, ArrowLeft, CircleUserRound, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SettingsModal from "../../modals/SettingsModal";
-import { clearLastNestId } from "@/lib/storage/session";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId, useNestActions } from "@/stores/useNestStore";
 import { useNestlingActions } from "@/stores/useNestlingStore";
 import TopbarButton from "./TopbarButton";
 import { useEffect, useRef, useState } from "react";
+import { clearLastNestId } from "@/lib/storage/nest";
 
 export default function Topbar({
   nest,

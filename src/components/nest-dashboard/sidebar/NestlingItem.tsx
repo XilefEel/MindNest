@@ -2,7 +2,6 @@ import {
   useActiveNestling,
   useNestlingActions,
 } from "@/stores/useNestlingStore";
-import { saveLastNestling } from "@/lib/storage/session";
 import { Nestling } from "@/lib/types/nestling";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
@@ -14,6 +13,7 @@ import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import { saveLastNestling } from "@/lib/storage/nestling";
 
 export default function NestlingItem({
   nestling,

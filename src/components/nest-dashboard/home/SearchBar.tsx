@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { saveLastNestling } from "@/lib/storage/session";
+import { saveLastNestling } from "@/lib/storage/nestling";
 import { cn } from "@/lib/utils/general";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
 import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";

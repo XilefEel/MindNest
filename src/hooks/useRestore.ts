@@ -1,9 +1,7 @@
 import { getNestFromId } from "@/lib/api/nest";
-import {
-  saveLastNestId,
-  getLastNestling,
-  getLastBackgroundImage,
-} from "@/lib/storage/session";
+import { getLastBackgroundImage } from "@/lib/storage/background-image";
+import { saveLastNestId } from "@/lib/storage/nest";
+import { getLastNestling } from "@/lib/storage/nestling";
 import { Nest } from "@/lib/types/nest";
 import {
   useNestlingActions,

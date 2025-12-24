@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useNestActions } from "@/stores/useNestStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
-import { clearLastNestling } from "@/lib/storage/session";
+import { clearLastNestling } from "@/lib/storage/nestling";
 
 export default function EditNestModal({
   nest,

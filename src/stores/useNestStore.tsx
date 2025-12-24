@@ -11,9 +11,11 @@ import { BackgroundMusic } from "@/lib/types/background-music";
 import {
   saveLastBackgroundImage,
   clearLastBackgroundImage,
+} from "@/lib/storage/background-image";
+import {
   saveLastBackgroundMusic,
   clearLastBackgroundMusic,
-} from "@/lib/storage/session";
+} from "@/lib/storage/background-music";
 
 type NestState = {
   nests: Nest[];
