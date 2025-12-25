@@ -1,36 +1,28 @@
 import {
+  useActiveMusicId,
   useActiveNestId,
   useMusic,
   useNestActions,
 } from "@/stores/useNestStore";
 import { Music, Trash2 } from "lucide-react";
-import { convertFileSrc } from "@tauri-apps/api/core";
 import { toast } from "sonner";
 import { BackgroundMusic } from "@/lib/types/background-music";
 
 export default function MusicSection() {
   const activeNestId = useActiveNestId();
+  const activeMusicId = useActiveMusicId();
   const music = useMusic();
-  const { selectMusic, deleteMusic } = useNestActions();
+  const { selectMusic, setActiveMusicId } = useNestActions();
 
   const handlePlayMusic = async (music: BackgroundMusic) => {
     try {
-      const audioUrl = convertFileSrc(music.filePath);
-
-      const audio = new Audio(audioUrl);
-      audio.play();
+      if (activeMusicId === music.id) {
+        setActiveMusicId(null);
+      } else {
+        setActiveMusicId(music.id);
+      }
     } catch (error) {
       console.error("Failed to play music:", error);
-    }
-  };
-
-  const handleDeleteMusic = async (id: number) => {
-    try {
-      await deleteMusic(id);
-      toast.success("Music deleted successfully!");
-    } catch (error) {
-      console.error("Failed to delete music:", error);
-      toast.error("Failed to delete music");
     }
   };
 

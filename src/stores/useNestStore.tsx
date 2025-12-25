@@ -228,19 +228,20 @@ export const useNestActions = () =>
   useNestStore(
     useShallow((state) => ({
       setActiveNestId: state.setActiveNestId,
-      setActiveBackgroundId: state.setActiveBackgroundId,
-      clearActiveBackgroundId: state.clearActiveBackgroundId,
-
       getNests: state.getNests,
       createNest: state.createNest,
       updateNest: state.updateNest,
       deleteNest: state.deleteNest,
       refreshNest: state.refreshNest,
 
+      setActiveBackgroundId: state.setActiveBackgroundId,
+      clearActiveBackgroundId: state.clearActiveBackgroundId,
       selectBackground: state.selectBackground,
       getBackgrounds: state.getBackgrounds,
       deleteBackground: state.deleteBackground,
 
+      setActiveMusicId: state.setActiveMusicId,
+      clearActiveMusicId: state.clearActiveMusicId,
       selectMusic: state.selectMusic,
       getMusic: state.getMusic,
       deleteMusic: state.deleteMusic,

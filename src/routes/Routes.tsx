@@ -6,6 +6,7 @@ import SignupPage from "../pages/Signup";
 import DashboardPage from "../pages/UserDashboard";
 import ProtectedRoute from "./ProtectedRoutes";
 import NestDashboard from "@/pages/NestDashboard";
+import BackgroundMusicPlayer from "@/components/BackgroundMusicPlayer";
 
 export default function AppRoutes() {
   const { user, loading } = useAuth();
@@ -37,6 +38,7 @@ export default function AppRoutes() {
         path="/nest/:id"
         element={
           <ProtectedRoute>
+            <BackgroundMusicPlayer />
             <NestDashboard />
           </ProtectedRoute>
         }
