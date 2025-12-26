@@ -59,7 +59,7 @@ export default function BaseModal({
           "flex flex-col items-stretch justify-start",
           "rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
           "bg-white dark:bg-gray-800",
-          isLarge && "min-h-9/12 min-w-3xl",
+          isLarge && "min-w-3xl",
           activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/30",
         )}
       >

@@ -34,9 +34,9 @@ export default function SettingsModal({
       showCancel={false}
       isLarge
       body={
-        <>
+        <div className="flex h-[500px] flex-col">
           {activeNestId && (
-            <div className="flex border-b border-gray-200 dark:border-gray-700">
+            <div className="flex shrink-0 border-b border-gray-200 dark:border-gray-700">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -54,14 +54,14 @@ export default function SettingsModal({
             </div>
           )}
 
-          <div className="flex-1">
+          <div className="flex-1 overflow-y-auto p-2 pt-4">
             {activeTab === "general" ? (
               <GeneralSettings />
             ) : activeTab === "nest" ? (
               <NestSettings />
             ) : null}
           </div>
-        </>
+        </div>
       }
     >
       {children}

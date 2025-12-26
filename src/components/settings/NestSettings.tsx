@@ -18,7 +18,7 @@ export default function NestSettings() {
   ];
 
   return (
-    <div className="flex flex-row gap-5">
+    <div className="flex h-full flex-row gap-5">
       <div className="flex w-50 flex-col gap-1 border-r border-gray-200 pr-5 dark:border-gray-700">
         {tabs.map((tab) => (
           <button
