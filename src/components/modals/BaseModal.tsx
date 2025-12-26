@@ -22,6 +22,7 @@ export default function BaseModal({
   footer,
   isOpen,
   showCancel = true,
+  isLarge = false,
   onSubmit,
 }: {
   children: React.ReactNode;
@@ -31,8 +32,8 @@ export default function BaseModal({
   body?: React.ReactNode;
   footer?: React.ReactNode;
   isOpen: boolean;
-
   showCancel?: boolean;
+  isLarge?: boolean;
   onSubmit?: () => void;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
@@ -55,8 +56,10 @@ export default function BaseModal({
         onClick={(e) => e.stopPropagation()}
         onDoubleClick={(e) => e.stopPropagation()}
         className={cn(
-          "w-full rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
+          "flex flex-col items-stretch justify-start",
+          "rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
           "bg-white dark:bg-gray-800",
+          isLarge && "min-h-9/12 min-w-3xl",
           activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/30",
         )}
       >
@@ -67,7 +70,9 @@ export default function BaseModal({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">{body}</div>
+        <div className="flex flex-1 flex-col gap-4 overflow-hidden p-1">
+          {body}
+        </div>
 
         {(footer || showCancel !== false) && (
           <DialogFooter className="flex justify-between gap-2">

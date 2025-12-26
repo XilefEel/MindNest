@@ -89,7 +89,7 @@ export default function MusicSection() {
         <div className="flex gap-2">
           <button
             onClick={handleUploadMusic}
-            className="rounded-lg bg-purple-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-purple-600"
+            className="rounded-lg bg-purple-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-purple-600"
           >
             Browse
           </button>

@@ -67,7 +67,7 @@ export default function BackgroundSection() {
           RECENT IMAGES
         </h3>
 
-        <div className="grid max-h-46 grid-cols-2 gap-3 overflow-y-auto p-1.5 md:grid-cols-3">
+        <div className="grid max-h-64 grid-cols-2 gap-3 overflow-y-auto p-1.5 md:grid-cols-3">
           {backgrounds.length === 0 && (
             <p className="text-xs text-gray-500 dark:text-gray-400">
               No recent images
@@ -105,7 +105,7 @@ export default function BackgroundSection() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between pt-2">
+      <div className="flex items-center justify-between">
         <p className="text-sm text-gray-700 dark:text-gray-300">
           Choose a Photo
         </p>
@@ -113,14 +113,14 @@ export default function BackgroundSection() {
           {activeBackgroundId && (
             <button
               onClick={() => clearActiveBackgroundId()}
-              className="rounded-lg bg-blue-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-600"
+              className="cursor-pointer rounded-lg bg-blue-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-blue-600"
             >
               Clear
             </button>
           )}
           <button
             onClick={handleUploadBackground}
-            className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-teal-600"
+            className="cursor-pointer rounded-lg bg-teal-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-teal-600"
           >
             Browse
           </button>
