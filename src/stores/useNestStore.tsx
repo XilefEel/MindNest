@@ -26,6 +26,10 @@ type NestState = {
   activeBackgroundId: number | null;
   activeMusicId: number | null;
 
+  audioCurrentTime: number;
+  audioIsPlaying: boolean;
+  audioIsPaused: boolean;
+
   loading: boolean;
   error: string | null;
 
@@ -45,6 +49,10 @@ type NestState = {
   deleteBackground: (id: number) => Promise<void>;
 
   // Background Music
+  setAudioCurrentTime: (time: number) => void;
+  setAudioIsPlaying: (playing: boolean) => void;
+  setAudioIsPaused: (paused: boolean) => void;
+
   setActiveMusicId: (musicId: number | null) => Promise<void>;
   clearActiveMusicId: () => void;
   selectMusic: (nestId: number) => Promise<boolean>;
@@ -60,6 +68,10 @@ export const useNestStore = create<NestState>((set, get) => ({
   activeNestId: null,
   activeBackgroundId: null,
   activeMusicId: null,
+
+  audioCurrentTime: 0,
+  audioIsPlaying: false,
+  audioIsPaused: false,
 
   error: null,
   loading: false,
@@ -173,6 +185,12 @@ export const useNestStore = create<NestState>((set, get) => ({
     }));
   }),
 
+  setAudioCurrentTime: (time: number) => set({ audioCurrentTime: time }),
+
+  setAudioIsPlaying: (playing: boolean) => set({ audioIsPlaying: playing }),
+
+  setAudioIsPaused: (paused: boolean) => set({ audioIsPaused: paused }),
+
   setActiveMusicId: async (musicId) => {
     if (musicId) {
       await saveLastBackgroundMusic(get().activeNestId!, musicId);
@@ -240,6 +258,10 @@ export const useNestActions = () =>
       getBackgrounds: state.getBackgrounds,
       deleteBackground: state.deleteBackground,
 
+      setAudioCurrentTime: state.setAudioCurrentTime,
+      setAudioIsPlaying: state.setAudioIsPlaying,
+      setAudioIsPaused: state.setAudioIsPaused,
+
       setActiveMusicId: state.setActiveMusicId,
       clearActiveMusicId: state.clearActiveMusicId,
       selectMusic: state.selectMusic,
@@ -268,3 +290,9 @@ export const useMusic = () => useNestStore((state) => state.music);
 
 export const useActiveMusicId = () =>
   useNestStore((state) => state.activeMusicId);
+
+export const useAudioIsPaused = () =>
+  useNestStore((state) => state.audioIsPaused);
+
+export const useAudioCurrentTime = () =>
+  useNestStore((state) => state.audioCurrentTime);
