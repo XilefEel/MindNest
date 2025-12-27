@@ -3,7 +3,7 @@ import GeneralSettings from "../settings/GeneralSettings";
 import NestSettings from "../settings/NestSettings";
 import { cn } from "@/lib/utils/general";
 import BaseModal from "./BaseModal";
-import { useActiveNestId } from "@/stores/useNestStore";
+import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 
 export default function SettingsModal({
   children,
@@ -20,6 +20,7 @@ export default function SettingsModal({
 
   const [activeTab, setActiveTab] = useState("general");
   const activeNestId = useActiveNestId();
+  const activeBackgroundId = useActiveBackgroundId();
 
   const tabs = [
     { id: "general", label: "General Settings" },
@@ -42,10 +43,14 @@ export default function SettingsModal({
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "flex-1 rounded-t-lg px-4 py-2 text-sm font-medium transition duration-200 ease-in-out",
+                    "flex-1 rounded-t-lg px-4 py-2 text-sm",
                     activeTab === tab.id
-                      ? "border-b-2 border-teal-600 bg-teal-200/50 text-teal-700 backdrop-blur-sm dark:border-teal-400 dark:bg-teal-900/40 dark:text-teal-300"
-                      : "text-gray-700 hover:bg-white/50 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-black/30 dark:hover:text-white",
+                      ? activeBackgroundId
+                        ? "border-b-2 border-teal-600 bg-teal-500/20 font-medium text-teal-900 backdrop-blur-md dark:border-teal-400 dark:bg-teal-400/20 dark:text-teal-100"
+                        : "border-b-2 border-teal-600 bg-teal-100 font-medium text-teal-800 dark:border-teal-400 dark:bg-teal-900/50 dark:text-teal-300"
+                      : activeBackgroundId
+                        ? "text-gray-900 hover:bg-white/40 dark:text-gray-100 dark:hover:bg-white/10"
+                        : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800",
                   )}
                 >
                   {tab.label}

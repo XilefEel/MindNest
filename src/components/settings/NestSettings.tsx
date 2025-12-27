@@ -3,9 +3,11 @@ import BackgroundSection from "./BackgroundSection";
 import MusicSection from "./MusicSection";
 import { cn } from "@/lib/utils/general";
 import { ImageIcon, Music, RotateCcw } from "lucide-react";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export default function NestSettings() {
   const [activeTab, setActiveTab] = useState("background");
+  const activeBackgroundId = useActiveBackgroundId();
 
   const tabs = [
     {
@@ -25,10 +27,14 @@ export default function NestSettings() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              "w-full cursor-pointer rounded-lg px-4 py-2 text-sm transition duration-200",
+              "w-full cursor-pointer rounded-lg px-4 py-2 text-sm",
               activeTab === tab.id
-                ? "bg-teal-100 font-medium text-teal-800 dark:bg-teal-500 dark:text-white"
-                : "text-gray-800 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-gray-700",
+                ? activeBackgroundId
+                  ? "bg-teal-500/20 font-medium text-teal-900 backdrop-blur-sm dark:bg-teal-400/20 dark:text-teal-100"
+                  : "bg-teal-100 font-medium text-teal-800 dark:bg-teal-900/50 dark:text-teal-300"
+                : activeBackgroundId
+                  ? "text-gray-900 hover:bg-white/40 dark:text-gray-100 dark:hover:bg-white/10"
+                  : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800",
             )}
           >
             <div className="flex flex-row items-center justify-start gap-3">

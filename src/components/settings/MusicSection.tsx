@@ -1,31 +1,19 @@
 import {
-  useActiveMusicId,
+  useActiveBackgroundId,
   useActiveNestId,
   useMusic,
   useNestActions,
 } from "@/stores/useNestStore";
-import { Music, Pause, Play, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { BackgroundMusic } from "@/lib/types/background-music";
 import { cn } from "@/lib/utils/general";
+import MusicItem from "./MusicItem";
 
 export default function MusicSection() {
   const activeNestId = useActiveNestId();
-  const activeMusicId = useActiveMusicId();
+  const activeBackgroundId = useActiveBackgroundId();
   const music = useMusic();
-  const { selectMusic, deleteMusic, setActiveMusicId } = useNestActions();
 
-  const handlePlayMusic = async (music: BackgroundMusic) => {
-    try {
-      if (activeMusicId === music.id) {
-        setActiveMusicId(null);
-      } else {
-        setActiveMusicId(music.id);
-      }
-    } catch (error) {
-      console.error("Failed to play music:", error);
-    }
-  };
+  const { selectMusic } = useNestActions();
 
   const handleUploadMusic = async () => {
     try {
@@ -41,15 +29,6 @@ export default function MusicSection() {
     }
   };
 
-  const handleDeleteMusic = async (musicId: number) => {
-    try {
-      await deleteMusic(musicId);
-      toast.success("Music deleted successfully!");
-    } catch (error) {
-      console.error("Failed to delet music:", error);
-      toast.error("Failed to delet music");
-    }
-  };
   return (
     <div className="space-y-4">
       <div className="space-y-1">
@@ -61,54 +40,18 @@ export default function MusicSection() {
         </p>
       </div>
 
-      <div className="max-h-72 space-y-1 overflow-y-auto rounded-lg bg-gray-50 p-2 dark:bg-gray-700/30">
+      <div
+        className={cn(
+          "max-h-72 space-y-1 overflow-y-auto rounded-lg bg-gray-50 p-2 dark:bg-gray-700/30",
+          activeBackgroundId && "bg-white/30 dark:bg-black/30",
+        )}
+      >
         {music.length === 0 ? (
           <p className="p-4 text-center text-sm text-gray-500 dark:text-gray-400">
             No music yet
           </p>
         ) : (
-          music.map((track) => (
-            <div
-              key={track.id}
-              className={cn(
-                "group flex items-center gap-3 rounded-md p-2 transition-colors duration-150",
-                activeMusicId === track.id
-                  ? "bg-purple-100 dark:bg-purple-900/40"
-                  : "hover:bg-gray-100 dark:hover:bg-gray-700",
-              )}
-            >
-              <button
-                onClick={() => handlePlayMusic(track)}
-                className="flex size-10 items-center justify-center rounded-md bg-purple-500 text-white transition hover:bg-purple-600"
-              >
-                {activeMusicId === track.id ? (
-                  <Pause size={18} />
-                ) : (
-                  <Play size={18} />
-                )}
-              </button>
-
-              <div className="flex flex-1 items-center gap-2">
-                <Music size={16} className="text-gray-400" />
-                <span
-                  className={cn(
-                    "text-sm font-medium",
-                    activeMusicId === track.id &&
-                      "text-purple-700 dark:text-purple-400",
-                  )}
-                >
-                  Track {track.id}
-                </span>
-              </div>
-
-              <button
-                onClick={() => handleDeleteMusic(track.id)}
-                className="rounded-md p-1.5 text-gray-400 opacity-0 transition group-hover:opacity-100 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
-          ))
+          music.map((track) => <MusicItem key={track.id} track={track} />)
         )}
       </div>
 
