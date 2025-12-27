@@ -16,11 +16,9 @@ pub fn import_music(
     app_handle: tauri::AppHandle,
     nest_id: i64,
     file_path: String,
-    title: String,
-    duration_seconds: i64,
     order_index: i64,
 ) -> Result<BackgroundMusic, String> {
-    import_music_into_app(app_handle, &db, nest_id, file_path, title, duration_seconds, order_index)
+    import_music_into_app(app_handle, &db, nest_id, file_path, order_index)
 }
 
 #[tauri::command]

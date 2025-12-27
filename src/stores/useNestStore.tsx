@@ -199,7 +199,7 @@ export const useNestStore = create<NestState>((set, get) => ({
     const files = Array.isArray(selected) ? selected : [selected];
 
     for (const filePath of files) {
-      const newMusic = await musicApi.importMusic(nestId, filePath, "", 0, 0);
+      const newMusic = await musicApi.importMusic(nestId, filePath, 0);
       if (newMusic) {
         set((state) => ({
           music: [newMusic, ...state.music],

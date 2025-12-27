@@ -64,7 +64,7 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
               "text-purple-700 dark:text-purple-400",
           )}
         >
-          Track {track.id}
+          {track.title || "Untitled"}
         </span>
       </div>
 

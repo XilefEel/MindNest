@@ -8,15 +8,11 @@ export async function addMusic(data: NewBackgroundMusic) {
 export async function importMusic(
   nestId: number,
   filePath: string,
-  title: string,
-  durationSeconds: number,
   orderIndex: number,
 ) {
   return await invoke<BackgroundMusic>("import_music", {
     nestId,
     filePath,
-    title,
-    durationSeconds,
     orderIndex,
   });
 }

@@ -2,10 +2,13 @@ use crate::models::background_music::{BackgroundMusic, NewBackgroundMusic};
 use crate::utils::db::AppDb;
 
 use chrono::{Utc, Local};
+use lofty::file::{AudioFile, TaggedFileExt};
+use lofty::tag::Accessor;
 use rusqlite::params;
 use std::fs;
 use std::path::Path;
 use tauri::Manager;
+use lofty::probe::Probe;
 
 pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> Result<BackgroundMusic, String> {
     let connection = db.connection.lock().unwrap();
@@ -42,6 +45,23 @@ pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> Result<Backgro
     ).map_err(|e| e.to_string())?;
 
     Ok(music)
+}
+
+fn extract_music_metadata(file_path: &str) -> Result<(String, i64), String> {
+    let tagged_file = Probe::open(file_path)
+		.expect("Bad path provided")
+		.read()
+		.expect("Failed to read file");
+
+    let tag = match tagged_file.primary_tag() {
+		Some(primary_tag) => primary_tag,
+		None => tagged_file.first_tag().expect("No tags found"),
+	};
+
+    let title = tag.title().as_deref().unwrap_or("Unknown").to_string();
+    let duration = tagged_file.properties().duration().as_secs() as i64;
+
+    Ok((title, duration))
 }
 
 fn copy_music_to_app_dir(
@@ -82,10 +102,9 @@ pub fn import_music_into_app(
     db: &AppDb, 
     nest_id: i64,
     file_path: String,
-    title: String,
-    duration_seconds: i64,
     order_index: i64,
 ) -> Result<BackgroundMusic, String> {
+    let (title, duration_seconds) = extract_music_metadata(&file_path)?;
     let new_path = copy_music_to_app_dir(&app_handle, file_path)?;
 
     let new_music = NewBackgroundMusic {
