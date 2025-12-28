@@ -65,26 +65,21 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
 
         <div className="flex flex-1 items-center gap-2">
           <Music size={16} className="text-gray-400" />
-          <span
-            className={cn(
-              "text-sm font-medium",
-              activeMusicId === track.id &&
-                "text-purple-700 dark:text-purple-400",
-            )}
-          >
-            <div className="flex flex-col">
-              <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
-                {track.title}
-              </p>
-              <span className="text-xs text-gray-500 tabular-nums dark:text-gray-400">
-                {Math.floor(track.durationSeconds / 60)}:
-                {String(Math.floor(track.durationSeconds % 60)).padStart(
-                  2,
-                  "0",
-                )}
-              </span>
-            </div>
-          </span>
+
+          <div className="flex flex-col">
+            <p
+              className={cn(
+                "truncate text-sm font-medium text-gray-900 dark:text-gray-100",
+                isActive && "text-purple-600 dark:text-purple-400",
+              )}
+            >
+              {track.title}
+            </p>
+            <span className="text-xs text-gray-500 tabular-nums dark:text-gray-400">
+              {Math.floor(track.durationSeconds / 60)}:
+              {String(Math.floor(track.durationSeconds % 60)).padStart(2, "0")}
+            </span>
+          </div>
         </div>
 
         <button
@@ -103,7 +98,7 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
           </span>
           <div className="h-1 flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
             <div
-              className="h-full bg-purple-500 transition-all duration-100 dark:bg-purple-400"
+              className="h-full rounded-full bg-purple-500 transition-all duration-100 dark:bg-purple-400"
               style={{ width: `${progress}%` }}
             />
           </div>

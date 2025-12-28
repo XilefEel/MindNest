@@ -20,6 +20,7 @@ import MindmapEditor from "@/components/editors/mindmap/MindmapEditor";
 import SearchModal from "@/components/modals/SearchModal";
 import SettingsModal from "@/components/modals/SettingsModal";
 import { useActiveNestling } from "@/stores/useNestlingStore";
+import FloatingMusicPlayer from "@/components/FloatingMusicPlayer";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -208,6 +209,9 @@ export default function NestDashboardPage() {
           </main>
         </div>
       </div>
+
+      <FloatingMusicPlayer />
+
       <NestlingModal
         nestId={nest.id}
         isOpen={isNestlingModalOpen}
