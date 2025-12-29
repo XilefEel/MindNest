@@ -8,14 +8,22 @@ import {
   useNestActions,
 } from "@/stores/useNestStore";
 import { Music, Pause, Play, Trash2 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 
 export default function MusicItem({ track }: { track: BackgroundMusic }) {
-  const { deleteMusic, setActiveMusicId, setAudioIsPaused } = useNestActions();
+  const { deleteMusic, setActiveMusicId, setAudioIsPaused, updateMusic } =
+    useNestActions();
   const activeMusicId = useActiveMusicId();
   const activeBackgroundId = useActiveBackgroundId();
   const audioIsPaused = useAudioIsPaused();
   const audioCurrentTime = useAudioCurrentTime();
+
+  const [title, setTitle] = useState(track.title);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const shouldSaveRef = useRef(true);
 
   const isActive = activeMusicId === track.id;
   const isPlaying = isActive && !audioIsPaused;
@@ -32,6 +40,44 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
     }
   };
 
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsEditing(true);
+  };
+
+  const handleBlur = async () => {
+    setIsEditing(false);
+    if (!shouldSaveRef.current) {
+      shouldSaveRef.current = true;
+      return;
+    }
+    if (title.trim() === "") {
+      setTitle(track.title);
+      return;
+    }
+    if (title !== track.title) {
+      try {
+        await updateMusic(track.id, title, track.orderIndex);
+        toast.success("Music title updated successfully!");
+      } catch (error) {
+        console.error("Failed to update music title:", error);
+        toast.error("Failed to update music title");
+      }
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      shouldSaveRef.current = true;
+      e.currentTarget.blur();
+    }
+    if (e.key === "Escape") {
+      shouldSaveRef.current = false;
+      setTitle(track.title);
+      e.currentTarget.blur();
+    }
+  };
+
   const handleDeleteMusic = async (musicId: number) => {
     try {
       await deleteMusic(musicId);
@@ -41,6 +87,12 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
       toast.error("Failed to delet music");
     }
   };
+
+  useEffect(() => setTitle(track.title), [track.title]);
+  useEffect(() => {
+    if (isEditing) inputRef.current?.focus();
+  }, [isEditing]);
+
   return (
     <div
       key={track.id}
@@ -66,15 +118,32 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
         <div className="flex flex-1 items-center gap-2">
           <Music size={16} className="text-gray-400" />
 
-          <div className="flex flex-col">
-            <p
+          <div className="flex flex-col" onDoubleClick={handleDoubleClick}>
+            <div
               className={cn(
-                "truncate text-sm font-medium text-gray-900 dark:text-gray-100",
+                "truncate rounded text-sm font-medium text-gray-900 transition-all duration-200 dark:text-gray-100",
                 isActive && "text-purple-600 dark:text-purple-400",
+                isEditing
+                  ? activeBackgroundId
+                    ? "bg-white/10 px-2 py-0.5 shadow-md ring-2 ring-purple-500 backdrop-blur-sm dark:bg-black/10"
+                    : "bg-white px-2 py-0.5 shadow-md ring-2 ring-purple-500 dark:bg-gray-800"
+                  : "",
               )}
             >
-              {track.title}
-            </p>
+              <input
+                ref={inputRef}
+                id="text"
+                className={cn(
+                  "w-full truncate bg-transparent focus:outline-none",
+                  !isEditing && "pointer-events-none",
+                )}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                readOnly={!isEditing}
+              />
+            </div>
             <span className="text-xs text-gray-500 tabular-nums dark:text-gray-400">
               {Math.floor(track.durationSeconds / 60)}:
               {String(Math.floor(track.durationSeconds % 60)).padStart(2, "0")}

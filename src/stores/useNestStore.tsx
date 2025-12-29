@@ -57,6 +57,7 @@ type NestState = {
   clearActiveMusicId: () => void;
   selectMusic: (nestId: number) => Promise<boolean>;
   getMusic: (nestId: number) => Promise<void>;
+  updateMusic: (id: number, title: string, orderIndex: number) => Promise<void>;
   deleteMusic: (id: number) => Promise<void>;
 };
 
@@ -232,6 +233,19 @@ export const useNestStore = create<NestState>((set, get) => ({
     set({ music });
   }),
 
+  updateMusic: withStoreErrorHandler(
+    set,
+    async (id: number, title: string, orderIndex: number) => {
+      set((state) => ({
+        music: state.music.map((m) =>
+          m.id === id ? { ...m, title, orderIndex } : m,
+        ),
+      }));
+
+      await musicApi.updateMusic(id, title, orderIndex);
+    },
+  ),
+
   deleteMusic: withStoreErrorHandler(set, async (musicId: number) => {
     await musicApi.deleteMusic(musicId);
     set((state) => ({
@@ -266,6 +280,7 @@ export const useNestActions = () =>
       clearActiveMusicId: state.clearActiveMusicId,
       selectMusic: state.selectMusic,
       getMusic: state.getMusic,
+      updateMusic: state.updateMusic,
       deleteMusic: state.deleteMusic,
     })),
   );
