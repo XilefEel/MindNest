@@ -7,12 +7,21 @@ use crate::models::board::{BoardCard, BoardColumn, BoardData, NewBoardCard, NewB
 use crate::utils::db::AppDb;
 
 #[tauri::command]
-pub fn create_board_column(db: tauri::State<AppDb>, data: NewBoardColumn) -> Result<BoardColumn, String> {
+pub fn create_board_column(
+    db: tauri::State<AppDb>,
+    data: NewBoardColumn,
+) -> Result<BoardColumn, String> {
     insert_board_column_into_db(&db, data)
 }
 
 #[tauri::command]
-pub fn update_board_column(db: tauri::State<AppDb>, id: i64, title: String, order_index: i64, color: String) -> Result<(), String> {
+pub fn update_board_column(
+    db: tauri::State<AppDb>,
+    id: i64,
+    title: String,
+    order_index: i64,
+    color: String,
+) -> Result<(), String> {
     update_board_column_in_db(&db, id, title, order_index, color)
 }
 
@@ -28,7 +37,7 @@ pub fn create_board_card(db: tauri::State<AppDb>, data: NewBoardCard) -> Result<
 
 #[tauri::command]
 pub fn update_board_card(
-    db: tauri::State<AppDb>, 
+    db: tauri::State<AppDb>,
     id: i64,
     title: String,
     description: Option<String>,

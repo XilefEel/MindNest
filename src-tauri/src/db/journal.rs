@@ -4,15 +4,19 @@ use rusqlite::params;
 
 use chrono::Utc;
 
-pub fn insert_journal_entry_into_db(db: &AppDb, data: NewJournalEntry) -> Result<JournalEntry, String> {
+pub fn insert_journal_entry_into_db(
+    db: &AppDb,
+    data: NewJournalEntry,
+) -> Result<JournalEntry, String> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
-    let mut statement = connection.prepare("
-        INSERT INTO journal_entries (nestling_id, title, content, entry_date, created_at, updated_at)
-        VALUES (?1, ?2, ?3, ?4, ?5, ?6)
-        RETURNING id, nestling_id, title, content, entry_date, created_at, updated_at
-    ").map_err(|e| e.to_string())?;
+    let mut statement = connection
+        .prepare("
+            INSERT INTO journal_entries (nestling_id, title, content, entry_date, created_at, updated_at)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+            RETURNING id, nestling_id, title, content, entry_date, created_at, updated_at")
+        .map_err(|e| e.to_string())?;
 
     let journal_entry = statement
         .query_row(
@@ -40,18 +44,22 @@ pub fn insert_journal_entry_into_db(db: &AppDb, data: NewJournalEntry) -> Result
     Ok(journal_entry)
 }
 
-pub fn get_journal_entries_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<JournalEntry>, String> {
+pub fn get_journal_entries_by_nestling(
+    db: &AppDb,
+    nestling_id: i64,
+) -> Result<Vec<JournalEntry>, String> {
     let connection = db.connection.lock().unwrap();
+
     let mut statement = connection
         .prepare(
             "
-        SELECT id, nestling_id, title, content, entry_date, created_at, updated_at
-        FROM journal_entries
-        WHERE nestling_id = ?1
-        ORDER BY entry_date DESC
-    ",
+            SELECT id, nestling_id, title, content, entry_date, created_at, updated_at
+            FROM journal_entries
+            WHERE nestling_id = ?1
+            ORDER BY entry_date DESC",
         )
         .map_err(|e| e.to_string())?;
+
     let journal_entries = statement
         .query_map(params![nestling_id], |row| {
             Ok(JournalEntry {
@@ -67,11 +75,12 @@ pub fn get_journal_entries_by_nestling(db: &AppDb, nestling_id: i64) -> Result<V
         .map_err(|e| e.to_string())?
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| e.to_string())?;
+
     Ok(journal_entries)
 }
 
 pub fn update_journal_entry_in_db(
-    db: &AppDb, 
+    db: &AppDb,
     id: i64,
     title: String,
     content: String,
@@ -79,33 +88,31 @@ pub fn update_journal_entry_in_db(
 ) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
-    
+
     connection
         .execute(
             "
-        UPDATE journal_entries
-        SET title = ?1, content = ?2, updated_at = ?3, entry_date = ?4
-        WHERE id = ?5",
+            UPDATE journal_entries
+            SET title = ?1, content = ?2, updated_at = ?3, entry_date = ?4
+            WHERE id = ?5",
             params![title, content, updated_at, entry_date, id],
         )
         .map_err(|e| e.to_string())?;
+
     Ok(())
 }
 
 pub fn delete_journal_entry_from_db(db: &AppDb, id: i64) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
     connection
-        .execute(
-            "
-        DELETE FROM journal_entries WHERE id = ?1",
-            params![id],
-        )
+        .execute("DELETE FROM journal_entries WHERE id = ?1", params![id])
         .map_err(|e| e.to_string())?;
+
     Ok(())
 }
 
 pub fn insert_journal_template_into_db(
-    db: &AppDb, 
+    db: &AppDb,
     data: NewJournalTemplate,
 ) -> Result<JournalTemplate, String> {
     let connection = db.connection.lock().unwrap();
@@ -114,10 +121,9 @@ pub fn insert_journal_template_into_db(
     let mut statement = connection
         .prepare(
             "
-        INSERT INTO journal_templates (nestling_id, name, content, created_at, updated_at)
-        VALUES (?1, ?2, ?3, ?4, ?5)
-        RETURNING id, nestling_id, name, content, created_at, updated_at
-    ",
+            INSERT INTO journal_templates (nestling_id, name, content, created_at, updated_at)
+            VALUES (?1, ?2, ?3, ?4, ?5)
+            RETURNING id, nestling_id, name, content, created_at, updated_at",
         )
         .map_err(|e| e.to_string())?;
 
@@ -146,15 +152,18 @@ pub fn insert_journal_template_into_db(
     Ok(journal_template)
 }
 
-pub fn get_journal_templates_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<JournalTemplate>, String> {
+pub fn get_journal_templates_by_nestling(
+    db: &AppDb,
+    nestling_id: i64,
+) -> Result<Vec<JournalTemplate>, String> {
     let connection = db.connection.lock().unwrap();
+
     let mut statement = connection
         .prepare(
             "
-        SELECT id, nestling_id, name, content, created_at, updated_at
-        FROM journal_templates
-        WHERE nestling_id = ?1
-    ",
+            SELECT id, nestling_id, name, content, created_at, updated_at
+            FROM journal_templates
+            WHERE nestling_id = ?1",
         )
         .map_err(|e| e.to_string())?;
 
@@ -176,17 +185,21 @@ pub fn get_journal_templates_by_nestling(db: &AppDb, nestling_id: i64) -> Result
     Ok(journal_templates)
 }
 
-pub fn update_journal_template_in_db(db: &AppDb, id: i64, name: String, content: String) -> Result<(), String> {
+pub fn update_journal_template_in_db(
+    db: &AppDb,
+    id: i64,
+    name: String,
+    content: String,
+) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
     connection
         .execute(
             "
-        UPDATE journal_templates
-        SET name = ?1, content = ?2, updated_at = ?3
-        WHERE id = ?4
-    ",
+            UPDATE journal_templates
+            SET name = ?1, content = ?2, updated_at = ?3
+            WHERE id = ?4",
             params![name, content, updated_at, id],
         )
         .map_err(|e| e.to_string())?;
@@ -197,12 +210,7 @@ pub fn update_journal_template_in_db(db: &AppDb, id: i64, name: String, content:
 pub fn delete_journal_template_from_db(db: &AppDb, id: i64) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
     connection
-        .execute(
-            "
-        DELETE FROM journal_templates WHERE id = ?1
-    ",
-            params![id],
-        )
+        .execute("DELETE FROM journal_templates WHERE id = ?1", params![id])
         .map_err(|e| e.to_string())?;
 
     Ok(())

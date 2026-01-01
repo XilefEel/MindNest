@@ -6,13 +6,16 @@ use crate::models::calendar::{NewPlannerEvent, PlannerEvent};
 use crate::utils::db::AppDb;
 
 #[tauri::command]
-pub fn create_event(db: tauri::State<AppDb>, data: NewPlannerEvent) -> Result<PlannerEvent, String> {
+pub fn create_event(
+    db: tauri::State<AppDb>,
+    data: NewPlannerEvent,
+) -> Result<PlannerEvent, String> {
     insert_planner_event_into_db(&db, data)
 }
 
 #[tauri::command]
 pub fn update_event(
-    db: tauri::State<AppDb>, 
+    db: tauri::State<AppDb>,
     id: i64,
     date: String,
     title: String,
@@ -21,7 +24,16 @@ pub fn update_event(
     duration: i64,
     color: Option<String>,
 ) -> Result<(), String> {
-    update_planner_event_in_db(&db, id, date, title, description, start_time, duration, color)
+    update_planner_event_in_db(
+        &db,
+        id,
+        date,
+        title,
+        description,
+        start_time,
+        duration,
+        color,
+    )
 }
 
 #[tauri::command]
@@ -31,7 +43,7 @@ pub fn delete_event(db: tauri::State<AppDb>, id: i64) -> Result<(), String> {
 
 #[tauri::command]
 pub fn get_events(
-    db: tauri::State<AppDb>, 
+    db: tauri::State<AppDb>,
     nestling_id: i64,
     start: String,
     end: String,

@@ -7,18 +7,24 @@ use crate::models::journal::{JournalEntry, JournalTemplate, NewJournalEntry, New
 use crate::utils::db::AppDb;
 
 #[tauri::command]
-pub fn insert_journal_entry(db: tauri::State<AppDb>, data: NewJournalEntry) -> Result<JournalEntry, String> {
+pub fn insert_journal_entry(
+    db: tauri::State<AppDb>,
+    data: NewJournalEntry,
+) -> Result<JournalEntry, String> {
     insert_journal_entry_into_db(&db, data)
 }
 
 #[tauri::command]
-pub fn get_journal_entries(db: tauri::State<AppDb>, nestling_id: i64) -> Result<Vec<JournalEntry>, String> {
+pub fn get_journal_entries(
+    db: tauri::State<AppDb>,
+    nestling_id: i64,
+) -> Result<Vec<JournalEntry>, String> {
     get_journal_entries_by_nestling(&db, nestling_id)
 }
 
 #[tauri::command]
 pub fn update_journal_entry(
-    db: tauri::State<AppDb>, 
+    db: tauri::State<AppDb>,
     id: i64,
     title: String,
     content: String,
@@ -33,17 +39,28 @@ pub fn delete_journal_entry(db: tauri::State<AppDb>, id: i64) -> Result<(), Stri
 }
 
 #[tauri::command]
-pub fn insert_journal_template(db: tauri::State<AppDb>, data: NewJournalTemplate) -> Result<JournalTemplate, String> {
+pub fn insert_journal_template(
+    db: tauri::State<AppDb>,
+    data: NewJournalTemplate,
+) -> Result<JournalTemplate, String> {
     insert_journal_template_into_db(&db, data)
 }
 
 #[tauri::command]
-pub fn get_journal_templates(db: tauri::State<AppDb>, nestling_id: i64) -> Result<Vec<JournalTemplate>, String> {
+pub fn get_journal_templates(
+    db: tauri::State<AppDb>,
+    nestling_id: i64,
+) -> Result<Vec<JournalTemplate>, String> {
     get_journal_templates_by_nestling(&db, nestling_id)
 }
 
 #[tauri::command]
-pub fn update_journal_template(db: tauri::State<AppDb>, id: i64, name: String, content: String) -> Result<(), String> {
+pub fn update_journal_template(
+    db: tauri::State<AppDb>,
+    id: i64,
+    name: String,
+    content: String,
+) -> Result<(), String> {
     update_journal_template_in_db(&db, id, name, content)
 }
 

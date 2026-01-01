@@ -1,10 +1,10 @@
-use tauri::State;
-use crate::utils::db::AppDb;
-use crate::models::mindmap::{MindmapEdge, MindmapNode, NewMindmapEdge, NewMindmapNode};
 use crate::db::mindmap::{
-    insert_node_into_db, get_nodes_by_nestling, update_node_in_db, delete_node_from_db,
-    insert_edge_into_db, get_edges_by_nestling, delete_edge_from_db,
+    delete_edge_from_db, delete_node_from_db, get_edges_by_nestling, get_nodes_by_nestling,
+    insert_edge_into_db, insert_node_into_db, update_node_in_db,
 };
+use crate::models::mindmap::{MindmapEdge, MindmapNode, NewMindmapEdge, NewMindmapNode};
+use crate::utils::db::AppDb;
+use tauri::State;
 
 // Node handlers
 #[tauri::command]
@@ -31,16 +31,7 @@ pub fn update_node(
     node_type: String,
 ) -> Result<(), String> {
     update_node_in_db(
-        &db,
-        id,
-        position_x,
-        position_y,
-        height,
-        width,
-        label,
-        color,
-        text_color,
-        node_type,
+        &db, id, position_x, position_y, height, width, label, color, text_color, node_type,
     )
 }
 

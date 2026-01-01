@@ -1,7 +1,6 @@
 use crate::models::mindmap::{
-    MindmapNodeData, MindmapNode, MindmapNodeDB, NewMindmapNode, NewMindmapNodeDB,
-    MindmapEdge, MindmapEdgeDB, NewMindmapEdge, NewMindmapEdgeDB,
-    Position,
+    MindmapEdge, MindmapEdgeDB, MindmapNode, MindmapNodeDB, MindmapNodeData, NewMindmapEdge,
+    NewMindmapEdgeDB, NewMindmapNode, NewMindmapNodeDB, Position,
 };
 
 impl From<MindmapNodeDB> for MindmapNode {

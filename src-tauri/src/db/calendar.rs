@@ -1,19 +1,26 @@
-use crate::{models::calendar::{NewPlannerEvent, PlannerEvent}, utils::db::AppDb};
+use crate::{
+    models::calendar::{NewPlannerEvent, PlannerEvent},
+    utils::db::AppDb,
+};
 use rusqlite::params;
 
 use chrono::Utc;
 
-pub fn insert_planner_event_into_db(db: &AppDb, data: NewPlannerEvent) -> Result<PlannerEvent, String> {
+pub fn insert_planner_event_into_db(
+    db: &AppDb,
+    data: NewPlannerEvent,
+) -> Result<PlannerEvent, String> {
     let connection = db.connection.lock().unwrap();
 
     let created_at = Utc::now().to_rfc3339();
 
-    let mut statement = connection.prepare(
-        "INSERT INTO planner_events 
-         (nestling_id, date, title, description, start_time, duration, color, created_at, updated_at)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
-         RETURNING id, nestling_id, date, title, description, start_time, duration, color, created_at, updated_at"
-    ).map_err(|e| e.to_string())?;
+    let mut statement = connection
+        .prepare("
+            INSERT INTO planner_events (nestling_id, date, title, description, start_time, duration, color, created_at, updated_at)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
+            RETURNING id, nestling_id, date, title, description, start_time, duration, color, created_at, updated_at"
+        )
+        .map_err(|e| e.to_string())?;
 
     let event = statement
         .query_row(
@@ -50,7 +57,7 @@ pub fn insert_planner_event_into_db(db: &AppDb, data: NewPlannerEvent) -> Result
 }
 
 pub fn update_planner_event_in_db(
-    db: &AppDb, 
+    db: &AppDb,
     id: i64,
     date: String,
     title: String,
@@ -62,12 +69,14 @@ pub fn update_planner_event_in_db(
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
-    connection.execute(
-        "UPDATE planner_events
-         SET date = ?1, title = ?2, description = ?3, start_time = ?4, duration = ?5, color = ?6, updated_at = ?7
-         WHERE id = ?8",
-        params![date, title, description, start_time, duration, color, updated_at, id]
-    ).map_err(|e| e.to_string())?;
+    connection
+        .execute("
+            UPDATE planner_events
+            SET date = ?1, title = ?2, description = ?3, start_time = ?4, duration = ?5, color = ?6, updated_at = ?7
+            WHERE id = ?8",
+            params![date, title, description, start_time, duration, color, updated_at, id]
+        )
+        .map_err(|e| e.to_string())?;
 
     Ok(())
 }
@@ -83,19 +92,21 @@ pub fn delete_planner_event_from_db(db: &AppDb, id: i64) -> Result<(), String> {
 }
 
 pub fn get_planner_events_from_range(
-    db: &AppDb, 
+    db: &AppDb,
     nestling_id: i64,
     start: String,
     end: String,
 ) -> Result<Vec<PlannerEvent>, String> {
     let connection = db.connection.lock().unwrap();
 
-    let mut statement = connection.prepare(
-        "SELECT id, nestling_id, date, title, description, start_time, duration, color, created_at, updated_at
-         FROM planner_events
-         WHERE nestling_id = ?1 AND date BETWEEN ?2 AND ?3
-         ORDER BY date, start_time"
-    ).map_err(|e| e.to_string())?;
+    let mut statement = connection
+        .prepare("
+            SELECT id, nestling_id, date, title, description, start_time, duration, color, created_at, updated_at
+            FROM planner_events
+            WHERE nestling_id = ?1 AND date BETWEEN ?2 AND ?3
+            ORDER BY date, start_time"
+        )
+        .map_err(|e| e.to_string())?;
 
     let events = statement
         .query_map(params![nestling_id, start, end], |row| {

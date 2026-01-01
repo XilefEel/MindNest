@@ -3,24 +3,20 @@ mod handler;
 mod models;
 mod utils;
 
-use tauri::Manager;
 use handler::nest::{create_nest, delete_nest, get_nest_by_id, get_user_nests, update_nest};
+use tauri::Manager;
 
 use handler::nestling::{
-    create_nestling, get_nestlings, update_nestling, update_nestling_timestamp, delete_nestling,
+    create_nestling, delete_nestling, get_nestlings, update_nestling, update_nestling_timestamp,
 };
 
-use handler::folder::{
-    create_folder, get_folders, update_folder, delete_folder
-};
+use handler::folder::{create_folder, delete_folder, get_folders, update_folder};
 
 use handler::background_image::{
-    add_background, import_background, get_backgrounds, delete_background,
+    add_background, delete_background, get_backgrounds, import_background,
 };
 
-use handler::background_music::{
-    add_music, import_music, get_music, update_music, delete_music
-};
+use handler::background_music::{add_music, delete_music, get_music, import_music, update_music};
 
 use handler::user::{login_user, signup_user};
 
@@ -37,37 +33,34 @@ use handler::journal::{
 };
 
 use handler::gallery::{
-    create_album, delete_album, delete_image, get_albums,
-    get_images, add_image, import_image, import_image_data, update_album, update_image,
-    download_image, download_album, duplicate_image
+    add_image, create_album, delete_album, delete_image, download_album, download_image,
+    duplicate_image, get_albums, get_images, import_image, import_image_data, update_album,
+    update_image,
 };
 
 use handler::mindmap::{
-    create_node, get_nodes, update_node, delete_node,
-    get_edges, create_edge, delete_edge, 
+    create_edge, create_node, delete_edge, delete_node, get_edges, get_nodes, update_node,
 };
 
-use crate::utils::db::{AppDb, init_db};
+use crate::utils::db::{init_db, AppDb};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
-            let db = AppDb::new("test.db")
-                .map_err(|e| {
-                    println!("Failed to create DB: {}", e);
-                    format!("Failed to open database: {}", e)
-                })?;
-            init_db(&db)
-                .map_err(|e| {
-                    println!("Failed to init DB: {}", e);
-                    format!("Failed to initialize database: {}", e)
-                })?;
-            
+            let db = AppDb::new("test.db").map_err(|e| {
+                println!("Failed to create DB: {}", e);
+                format!("Failed to open database: {}", e)
+            })?;
+            init_db(&db).map_err(|e| {
+                println!("Failed to init DB: {}", e);
+                format!("Failed to initialize database: {}", e)
+            })?;
+
             app.manage(db);
-            
+
             println!("Database initialized!");
-            
+
             Ok(())
         })
         .plugin(tauri_plugin_fs::init())
@@ -78,14 +71,12 @@ pub fn run() {
             // Auth
             signup_user,
             login_user,
-            
             // Nests
             create_nest,
             get_user_nests,
             update_nest,
             delete_nest,
             get_nest_by_id,
-            
             // Nestlings & Folders
             create_nestling,
             get_nestlings,
@@ -96,10 +87,8 @@ pub fn run() {
             get_folders,
             update_folder,
             delete_folder,
-
             // Notes
             edit_note,
-            
             // Board
             create_board_column,
             update_board_column,
@@ -108,13 +97,11 @@ pub fn run() {
             update_board_card,
             delete_board_card,
             get_board_data,
-            
             // Calendar
             create_event,
             update_event,
             delete_event,
             get_events,
-            
             // Journal
             insert_journal_entry,
             get_journal_entries,
@@ -124,7 +111,6 @@ pub fn run() {
             get_journal_templates,
             update_journal_template,
             delete_journal_template,
-            
             // Gallery
             add_image,
             import_image,
@@ -139,13 +125,11 @@ pub fn run() {
             get_albums,
             update_album,
             delete_album,
-            
             // Background Images
             import_background,
             add_background,
             get_backgrounds,
             delete_background,
-
             // Mindmap
             create_node,
             get_nodes,
@@ -154,7 +138,6 @@ pub fn run() {
             create_edge,
             get_edges,
             delete_edge,
-
             // Background Music
             add_music,
             import_music,

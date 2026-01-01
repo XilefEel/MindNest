@@ -1,12 +1,12 @@
+pub mod background_image;
+pub mod background_music;
 pub mod board;
 pub mod calendar;
+pub mod folder;
 pub mod gallery;
 pub mod journal;
+pub mod mindmap;
 pub mod nest;
 pub mod nestling;
 pub mod note;
 pub mod user;
-pub mod background_image;
-pub mod folder;
-pub mod mindmap;
-pub mod background_music;

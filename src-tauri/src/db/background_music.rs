@@ -1,62 +1,66 @@
 use crate::models::background_music::{BackgroundMusic, NewBackgroundMusic};
 use crate::utils::db::AppDb;
 
-use chrono::{Utc, Local};
+use chrono::{Local, Utc};
 use lofty::file::{AudioFile, TaggedFileExt};
+use lofty::probe::Probe;
 use lofty::tag::Accessor;
 use rusqlite::params;
 use std::fs;
 use std::path::Path;
 use tauri::Manager;
-use lofty::probe::Probe;
 
 pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> Result<BackgroundMusic, String> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
-    let mut statement = connection.prepare("
-        INSERT INTO background_music (nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at)
-        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
-        RETURNING id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at
-    ").map_err(|e| e.to_string())?;
+    let mut statement = connection
+        .prepare("
+            INSERT INTO background_music (nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+            RETURNING id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at"
+        )
+        .map_err(|e| e.to_string())?;
 
-    let music = statement.query_row(
-        params![
-            data.nest_id,
-            data.title,
-            data.file_path,
-            data.duration_seconds,
-            data.order_index,
-            created_at,
-            created_at
-        ],
-        |row| {
-            Ok(BackgroundMusic {
-                id: row.get(0)?,
-                nest_id: row.get(1)?,
-                title: row.get(2)?,
-                file_path: row.get(3)?,
-                duration_seconds: row.get(4)?,
-                order_index: row.get(5)?,
-                created_at: row.get(6)?,
-                updated_at: row.get(7)?,
-            })
-        },
-    ).map_err(|e| e.to_string())?;
+    let music = statement
+        .query_row(
+            params![
+                data.nest_id,
+                data.title,
+                data.file_path,
+                data.duration_seconds,
+                data.order_index,
+                created_at,
+                created_at
+            ],
+            |row| {
+                Ok(BackgroundMusic {
+                    id: row.get(0)?,
+                    nest_id: row.get(1)?,
+                    title: row.get(2)?,
+                    file_path: row.get(3)?,
+                    duration_seconds: row.get(4)?,
+                    order_index: row.get(5)?,
+                    created_at: row.get(6)?,
+                    updated_at: row.get(7)?,
+                })
+            },
+        )
+        .map_err(|e| e.to_string())?;
 
     Ok(music)
 }
 
 fn extract_music_metadata(file_path: &str) -> Result<(String, i64), String> {
     let tagged_file = Probe::open(file_path)
-		.expect("Bad path provided")
-		.read()
-		.expect("Failed to read file");
+        .expect("Bad path provided")
+        .read()
+        .expect("Failed to read file");
 
     let tag = match tagged_file.primary_tag() {
-		Some(primary_tag) => primary_tag,
-		None => tagged_file.first_tag().expect("No tags found"),
-	};
+        Some(primary_tag) => primary_tag,
+        None => tagged_file.first_tag().expect("No tags found"),
+    };
 
     let title = tag.title().as_deref().unwrap_or("Unknown").to_string();
     let duration = tagged_file.properties().duration().as_secs() as i64;
@@ -99,7 +103,7 @@ fn copy_music_to_app_dir(
 
 pub fn import_music_into_app(
     app_handle: tauri::AppHandle,
-    db: &AppDb, 
+    db: &AppDb,
     nest_id: i64,
     file_path: String,
     order_index: i64,
@@ -124,10 +128,10 @@ pub fn get_music_from_db(db: &AppDb, nest_id: i64) -> Result<Vec<BackgroundMusic
 
     let mut statement = connection
         .prepare("
-        SELECT id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at
-        FROM background_music 
-        WHERE nest_id = ?1 
-        ORDER BY order_index ASC",
+            SELECT id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at
+            FROM background_music 
+            WHERE nest_id = ?1 
+            ORDER BY order_index ASC"
         )
         .map_err(|e| e.to_string())?;
 
@@ -149,6 +153,7 @@ pub fn get_music_from_db(db: &AppDb, nest_id: i64) -> Result<Vec<BackgroundMusic
     let result = rows
         .collect::<Result<Vec<BackgroundMusic>, _>>()
         .map_err(|e| e.to_string())?;
+
     Ok(result)
 }
 
@@ -157,9 +162,9 @@ fn get_music_by_id(db: &AppDb, id: i64) -> Result<BackgroundMusic, String> {
 
     let mut statement = connection
         .prepare("
-        SELECT id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at
-        FROM background_music 
-        WHERE id = ?1",
+            SELECT id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at
+            FROM background_music 
+            WHERE id = ?1"
         )
         .map_err(|e| e.to_string())?;
 
@@ -181,23 +186,25 @@ fn get_music_by_id(db: &AppDb, id: i64) -> Result<BackgroundMusic, String> {
     Ok(music)
 }
 
-pub fn update_music_in_db(db: &AppDb, id: i64, title: String, order_index: i64) -> Result<(), String> {
+pub fn update_music_in_db(
+    db: &AppDb,
+    id: i64,
+    title: String,
+    order_index: i64,
+) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
     connection
         .execute(
-            "UPDATE background_music 
+            "
+            UPDATE background_music 
             SET title = ?1, order_index = ?2, updated_at = ?3
             WHERE id = ?4",
-            params![
-                title,
-                order_index,
-                updated_at,
-                id
-            ],
+            params![title, order_index, updated_at, id],
         )
         .map_err(|e| e.to_string())?;
+
     Ok(())
 }
 
@@ -214,5 +221,6 @@ pub fn delete_music_from_db(db: &AppDb, id: i64) -> Result<(), String> {
     connection
         .execute("DELETE FROM background_music WHERE id = ?1", params![id])
         .map_err(|e| e.to_string())?;
+
     Ok(())
 }

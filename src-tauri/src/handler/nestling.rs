@@ -1,5 +1,6 @@
 use crate::db::nestling::{
-    insert_nestling_into_db, get_nestlings_by_nest, update_nestling_in_db, update_nestling_timestamp_in_db, delete_nestling_from_db,
+    delete_nestling_from_db, get_nestlings_by_nest, insert_nestling_into_db, update_nestling_in_db,
+    update_nestling_timestamp_in_db,
 };
 use crate::models::nestling::{Nestling, NewNestling};
 use crate::utils::db::AppDb;
@@ -15,7 +16,15 @@ pub fn get_nestlings(db: tauri::State<AppDb>, nest_id: i64) -> Result<Vec<Nestli
 }
 
 #[tauri::command]
-pub fn update_nestling(db: tauri::State<AppDb>, id: i64, folder_id: Option<i64>, icon: Option<String>, is_pinned: Option<bool>, title: Option<String>, content: Option<String>) -> Result<(), String> {
+pub fn update_nestling(
+    db: tauri::State<AppDb>,
+    id: i64,
+    folder_id: Option<i64>,
+    icon: Option<String>,
+    is_pinned: Option<bool>,
+    title: Option<String>,
+    content: Option<String>,
+) -> Result<(), String> {
     update_nestling_in_db(&db, id, folder_id, icon, is_pinned, title, content)
 }
 

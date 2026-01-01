@@ -7,15 +7,18 @@ use chrono::Utc;
 use rusqlite::params;
 use std::collections::HashMap;
 
-pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> Result<BoardColumn, String> {
+pub fn insert_board_column_into_db(
+    db: &AppDb,
+    data: NewBoardColumn,
+) -> Result<BoardColumn, String> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
-        .prepare(
-            "INSERT INTO board_columns (nestling_id, title, order_index, color, created_at, updated_at)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6)
-         RETURNING id, nestling_id, title, order_index, color, created_at, updated_at",
+        .prepare("
+            INSERT INTO board_columns (nestling_id, title, order_index, color, created_at, updated_at)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+            RETURNING id, nestling_id, title, order_index, color, created_at, updated_at",
         )
         .map_err(|e| e.to_string())?;
 
@@ -45,14 +48,25 @@ pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> Result<B
     Ok(column)
 }
 
-pub fn update_board_column_in_db(db: &AppDb, id: i64, title: String, order_index: i64, color: String) -> Result<(), String> {
+pub fn update_board_column_in_db(
+    db: &AppDb,
+    id: i64,
+    title: String,
+    order_index: i64,
+    color: String,
+) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
-    connection.execute(
-        "UPDATE board_columns SET title = ?1, order_index = ?2, color = ?3, updated_at = ?4 WHERE id = ?5",
-        params![title, order_index, color, updated_at, id],
-    ).map_err(|e| e.to_string())?;
+    connection
+        .execute(
+            "
+            UPDATE board_columns
+            SET title = ?1, order_index = ?2, color = ?3, updated_at = ?4
+            WHERE id = ?5",
+            params![title, order_index, color, updated_at, id],
+        )
+        .map_err(|e| e.to_string())?;
     Ok(())
 }
 
@@ -70,11 +84,12 @@ pub fn insert_board_card_into_db(db: &AppDb, data: NewBoardCard) -> Result<Board
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
-    let mut statement = connection.prepare(
-        "INSERT INTO board_cards (column_id, title, description, order_index, created_at, updated_at)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6)
-         RETURNING id, column_id, title, description, order_index, created_at, updated_at"
-    ).map_err(|e| e.to_string())?;
+    let mut statement = connection
+        .prepare("
+            INSERT INTO board_cards (column_id, title, description, order_index, created_at, updated_at)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+            RETURNING id, column_id, title, description, order_index, created_at, updated_at"
+        ).map_err(|e| e.to_string())?;
 
     let card = statement
         .query_row(
@@ -103,7 +118,7 @@ pub fn insert_board_card_into_db(db: &AppDb, data: NewBoardCard) -> Result<Board
 }
 
 pub fn update_board_card_in_db(
-    db: &AppDb, 
+    db: &AppDb,
     id: i64,
     title: String,
     description: Option<String>,
@@ -113,12 +128,15 @@ pub fn update_board_card_in_db(
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
-    connection.execute(
-        "UPDATE board_cards 
-         SET title = ?1, description = ?2, order_index = ?3, column_id = ?4, updated_at = ?5 
-         WHERE id = ?6",
-        params![title, description, order_index, column_id, updated_at, id],
-    ).map_err(|e| e.to_string())?;
+    connection
+        .execute(
+            "
+            UPDATE board_cards 
+            SET title = ?1, description = ?2, order_index = ?3, column_id = ?4, updated_at = ?5 
+            WHERE id = ?6",
+            params![title, description, order_index, column_id, updated_at, id],
+        )
+        .map_err(|e| e.to_string())?;
 
     Ok(())
 }
@@ -137,10 +155,11 @@ fn get_board_columns_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<Boa
 
     let mut statement = connection
         .prepare(
-            "SELECT id, nestling_id, title, order_index, color, created_at, updated_at
-             FROM board_columns
-             WHERE nestling_id = ?1
-             ORDER BY order_index ASC",
+            "
+            SELECT id, nestling_id, title, order_index, color, created_at, updated_at
+            FROM board_columns
+            WHERE nestling_id = ?1
+            ORDER BY order_index ASC",
         )
         .map_err(|e| e.to_string())?;
 

@@ -1,17 +1,19 @@
-use crate::{models::nestling::{Nestling, NewNestling}, utils::db::AppDb};
-use rusqlite::params;
-
+use crate::{
+    models::nestling::{Nestling, NewNestling},
+    utils::db::AppDb,
+};
 use chrono::Utc;
+use rusqlite::params;
 
 pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> Result<Nestling, String> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
-        .prepare(
-            "INSERT INTO nestlings (nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
-             RETURNING id, nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at;",
+        .prepare("
+            INSERT INTO nestlings (nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
+            RETURNING id, nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at"
         )
         .map_err(|e| e.to_string())?;
 
@@ -53,10 +55,10 @@ pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> Result<Vec<Nestling>, 
 
     let mut statement = connection
         .prepare("
-        SELECT id, nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at 
-        FROM nestlings 
-        WHERE nest_id = ?1 
-        ORDER BY updated_at DESC",
+            SELECT id, nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at 
+            FROM nestlings 
+            WHERE nest_id = ?1 
+            ORDER BY updated_at DESC"
         )
         .map_err(|e| e.to_string())?;
 
@@ -80,6 +82,7 @@ pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> Result<Vec<Nestling>, 
     let result = rows
         .collect::<Result<Vec<Nestling>, _>>()
         .map_err(|e| e.to_string())?;
+
     Ok(result)
 }
 
@@ -90,7 +93,7 @@ pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> Result<Nestling, Stri
         .prepare("
             SELECT id, nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at
             FROM nestlings
-            WHERE id = ?1",
+            WHERE id = ?1"
         )
         .map_err(|e| e.to_string())?;
 
@@ -115,26 +118,22 @@ pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> Result<Nestling, Stri
 }
 
 pub fn update_nestling_in_db(
-    db: &AppDb, 
-    id: i64, 
-    folder_id: Option<i64>, 
-    icon: Option<String>, 
-    is_pinned: Option<bool>, 
-    title: Option<String>, 
-    content: Option<String>
+    db: &AppDb,
+    id: i64,
+    folder_id: Option<i64>,
+    icon: Option<String>,
+    is_pinned: Option<bool>,
+    title: Option<String>,
+    content: Option<String>,
 ) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
     connection
-        .execute("
+        .execute(
+            "
             UPDATE nestlings
-            SET folder_id = ?1,
-                icon = ?2,
-                is_pinned = ?3, 
-                title = ?4, 
-                content = ?5, 
-                updated_at = ?6
+            SET folder_id = ?1, icon = ?2, is_pinned = ?3, title = ?4, content = ?5, updated_at = ?6
             WHERE id = ?7",
             params![folder_id, icon, is_pinned, title, content, updated_at, id],
         )
@@ -147,10 +146,13 @@ pub fn update_nestling_timestamp_in_db(db: &AppDb, id: i64) -> Result<(), String
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
-    connection.execute(
-        "UPDATE nestlings SET updated_at = ?1 WHERE id = ?2",
-        params![updated_at, id],
-    ).map_err(|e| e.to_string())?;
+    connection
+        .execute(
+            "
+            UPDATE nestlings SET updated_at = ?1 WHERE id = ?2",
+            params![updated_at, id],
+        )
+        .map_err(|e| e.to_string())?;
 
     Ok(())
 }
@@ -158,7 +160,8 @@ pub fn update_nestling_timestamp_in_db(db: &AppDb, id: i64) -> Result<(), String
 pub fn delete_nestling_from_db(db: &AppDb, id: i64) -> Result<(), String> {
     let connection = db.connection.lock().unwrap();
 
-    connection.execute("DELETE FROM nestlings WHERE id = ?1", params![id])
+    connection
+        .execute("DELETE FROM nestlings WHERE id = ?1", params![id])
         .map_err(|e| e.to_string())?;
 
     Ok(())

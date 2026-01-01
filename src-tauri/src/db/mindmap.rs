@@ -1,22 +1,23 @@
-use crate::utils::db::AppDb;
-use rusqlite::params;
-use chrono::Utc;
 use crate::models::mindmap::{
-    MindmapNode, MindmapNodeDB, NewMindmapNodeDB,
-    MindmapEdge, MindmapEdgeDB, NewMindmapEdgeDB,
+    MindmapEdge, MindmapEdgeDB, MindmapNode, MindmapNodeDB, NewMindmapEdgeDB, NewMindmapNodeDB,
 };
+use crate::utils::db::AppDb;
+use chrono::Utc;
+use rusqlite::params;
 
 pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> Result<MindmapNode, String> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
-    let mut statement = connection.prepare("
-        INSERT INTO mindmap_nodes (
-            nestling_id, position_x, position_y, height, width, label,
-            color, text_color, node_type, created_at, updated_at
-        ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
-        RETURNING id, nestling_id, position_x, position_y, height, width, label, color, text_color, node_type, created_at, updated_at
-    ").map_err(|e| e.to_string())?;
+    let mut statement = connection
+        .prepare("
+            INSERT INTO mindmap_nodes (
+                nestling_id, position_x, position_y, height, width, label,
+                color, text_color, node_type, created_at, updated_at
+            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
+            RETURNING id, nestling_id, position_x, position_y, height, width, label, color, text_color, node_type, created_at, updated_at"
+        )
+        .map_err(|e| e.to_string())?;
 
     let node = statement
         .query_row(
@@ -58,11 +59,13 @@ pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> Result<Mindmap
 pub fn get_nodes_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<MindmapNode>, String> {
     let connection = db.connection.lock().unwrap();
 
-    let mut statement = connection.prepare("
-        SELECT id, nestling_id, position_x, position_y, height, width, label, color, text_color, node_type, created_at, updated_at
-        FROM mindmap_nodes
-        WHERE nestling_id = ?1
-    ").map_err(|e| e.to_string())?;
+    let mut statement = connection
+        .prepare("
+            SELECT id, nestling_id, position_x, position_y, height, width, label, color, text_color, node_type, created_at, updated_at
+            FROM mindmap_nodes
+            WHERE nestling_id = ?1"
+        )
+        .map_err(|e| e.to_string())?;
 
     let rows = statement
         .query_map([nestling_id], |row| {
@@ -138,26 +141,22 @@ pub fn delete_node_from_db(db: &AppDb, id: i64) -> Result<(), String> {
     Ok(())
 }
 
-
 pub fn insert_edge_into_db(db: &AppDb, data: NewMindmapEdgeDB) -> Result<MindmapEdge, String> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
-    let mut statement = connection.prepare("
-        INSERT INTO mindmap_edges (
-            source_id, target_id, created_at, updated_at
-        ) VALUES (?1, ?2, ?3, ?4)
-        RETURNING id, source_id, target_id, created_at, updated_at
-    ").map_err(|e| e.to_string())?;
+    let mut statement = connection
+        .prepare(
+            "
+            INSERT INTO mindmap_edges (source_id, target_id, created_at, updated_at)
+            VALUES (?1, ?2, ?3, ?4)
+            RETURNING id, source_id, target_id, created_at, updated_at",
+        )
+        .map_err(|e| e.to_string())?;
 
     let edge = statement
         .query_row(
-            params![
-                data.source_id,
-                data.target_id,
-                created_at,
-                created_at
-            ],
+            params![data.source_id, data.target_id, created_at, created_at],
             |row| {
                 Ok(MindmapEdgeDB {
                     id: row.get(0)?,
@@ -176,13 +175,16 @@ pub fn insert_edge_into_db(db: &AppDb, data: NewMindmapEdgeDB) -> Result<Mindmap
 pub fn get_edges_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<MindmapEdge>, String> {
     let connection = db.connection.lock().unwrap();
 
-    let mut statement = connection.prepare("
-        SELECT id, source_id, target_id, created_at, updated_at
-        FROM mindmap_edges
-        WHERE source_id IN (
-            SELECT id FROM mindmap_nodes WHERE nestling_id = ?1
+    let mut statement = connection
+        .prepare(
+            "
+            SELECT id, source_id, target_id, created_at, updated_at
+            FROM mindmap_edges
+            WHERE source_id IN (
+                SELECT id FROM mindmap_nodes WHERE nestling_id = ?1
+            )",
         )
-    ").map_err(|e| e.to_string())?;
+        .map_err(|e| e.to_string())?;
 
     let rows = statement
         .query_map([nestling_id], |row| {
@@ -212,5 +214,3 @@ pub fn delete_edge_from_db(db: &AppDb, id: i64) -> Result<(), String> {
 
     Ok(())
 }
-
-
