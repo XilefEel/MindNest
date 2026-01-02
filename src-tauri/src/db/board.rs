@@ -217,7 +217,7 @@ fn get_all_cards_by_nestling(db: &AppDb, nestling_id: i64) -> Result<Vec<BoardCa
 }
 
 pub fn get_board_data_from_db(db: &AppDb, nestling_id: i64) -> Result<BoardData, String> {
-    let nestling = get_nestling_by_id(&db, nestling_id)?;
+    let nestling = get_nestling_by_id(&db, nestling_id).map_err(|e| e.to_string());
     let columns = get_board_columns_by_nestling(&db, nestling_id)?;
     let all_cards = get_all_cards_by_nestling(&db, nestling_id)?;
 
@@ -237,7 +237,7 @@ pub fn get_board_data_from_db(db: &AppDb, nestling_id: i64) -> Result<BoardData,
     }
 
     Ok(BoardData {
-        nestling,
+        nestling: nestling.unwrap(),
         columns: column_data_list,
     })
 }

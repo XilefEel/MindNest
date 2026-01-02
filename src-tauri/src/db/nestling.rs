@@ -2,10 +2,11 @@ use crate::{
     models::nestling::{Nestling, NewNestling},
     utils::db::AppDb,
 };
+use crate::utils::errors::{DbError, DbResult};
 use chrono::Utc;
 use rusqlite::params;
 
-pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> Result<Nestling, String> {
+pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> DbResult<Nestling> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
@@ -14,8 +15,7 @@ pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> Result<Nestling
             INSERT INTO nestlings (nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at)
             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
             RETURNING id, nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at"
-        )
-        .map_err(|e| e.to_string())?;
+        )?;
 
     let nestling = statement
         .query_row(
@@ -44,13 +44,12 @@ pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> Result<Nestling
                     updated_at: row.get(9)?,
                 })
             },
-        )
-        .map_err(|e| e.to_string())?;
+        )?;
 
     Ok(nestling)
 }
 
-pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> Result<Vec<Nestling>, String> {
+pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> DbResult<Vec<Nestling>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
@@ -59,8 +58,7 @@ pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> Result<Vec<Nestling>, 
             FROM nestlings 
             WHERE nest_id = ?1 
             ORDER BY updated_at DESC"
-        )
-        .map_err(|e| e.to_string())?;
+        )?;
 
     let rows = statement
         .query_map([nest_id], |row| {
@@ -76,17 +74,15 @@ pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> Result<Vec<Nestling>, 
                 created_at: row.get(8)?,
                 updated_at: row.get(9)?,
             })
-        })
-        .map_err(|e| e.to_string())?;
+        })?;
 
     let result = rows
-        .collect::<Result<Vec<Nestling>, _>>()
-        .map_err(|e| e.to_string())?;
+        .collect::<Result<Vec<Nestling>, _>>()?;
 
     Ok(result)
 }
 
-pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> Result<Nestling, String> {
+pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> DbResult<Nestling> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
@@ -94,8 +90,7 @@ pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> Result<Nestling, Stri
             SELECT id, nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at
             FROM nestlings
             WHERE id = ?1"
-        )
-        .map_err(|e| e.to_string())?;
+        )?;
 
     let result = statement
         .query_row([nestling_id], |row| {
@@ -111,8 +106,7 @@ pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> Result<Nestling, Stri
                 created_at: row.get(8)?,
                 updated_at: row.get(9)?,
             })
-        })
-        .map_err(|e| e.to_string())?;
+        })?;
 
     Ok(result)
 }
@@ -125,7 +119,7 @@ pub fn update_nestling_in_db(
     is_pinned: Option<bool>,
     title: Option<String>,
     content: Option<String>,
-) -> Result<(), String> {
+) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -136,13 +130,12 @@ pub fn update_nestling_in_db(
             SET folder_id = ?1, icon = ?2, is_pinned = ?3, title = ?4, content = ?5, updated_at = ?6
             WHERE id = ?7",
             params![folder_id, icon, is_pinned, title, content, updated_at, id],
-        )
-        .map_err(|e| e.to_string())?;
+        )?;
 
     Ok(())
 }
 
-pub fn update_nestling_timestamp_in_db(db: &AppDb, id: i64) -> Result<(), String> {
+pub fn update_nestling_timestamp_in_db(db: &AppDb, id: i64) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -151,18 +144,20 @@ pub fn update_nestling_timestamp_in_db(db: &AppDb, id: i64) -> Result<(), String
             "
             UPDATE nestlings SET updated_at = ?1 WHERE id = ?2",
             params![updated_at, id],
-        )
-        .map_err(|e| e.to_string())?;
+        )?;
 
     Ok(())
 }
 
-pub fn delete_nestling_from_db(db: &AppDb, id: i64) -> Result<(), String> {
+pub fn delete_nestling_from_db(db: &AppDb, id: i64) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
 
-    connection
-        .execute("DELETE FROM nestlings WHERE id = ?1", params![id])
-        .map_err(|e| e.to_string())?;
+    let rows_affected = connection
+        .execute("DELETE FROM nestlings WHERE id = ?1", params![id])?;
+
+    if rows_affected == 0 {
+        return Err(DbError::NotFound);
+    }
 
     Ok(())
 }
