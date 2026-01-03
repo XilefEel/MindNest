@@ -1,4 +1,4 @@
-use crate::utils::db::AppDb;
+use crate::utils::{db::AppDb, errors::DbResult};
 use chrono::Utc;
 use rusqlite::params;
 
@@ -7,7 +7,7 @@ pub fn update_note(
     id: i64,
     title: Option<String>,
     content: Option<String>,
-) -> Result<(), String> {
+) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -27,6 +27,6 @@ pub fn update_note(
         (None, None) => return Ok(()),
     };
 
-    result.map_err(|e| e.to_string())?;
+    result?;
     Ok(())
 }

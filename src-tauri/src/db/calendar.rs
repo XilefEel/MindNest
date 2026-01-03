@@ -1,15 +1,12 @@
 use crate::{
     models::calendar::{NewPlannerEvent, PlannerEvent},
-    utils::db::AppDb,
+    utils::{db::AppDb, errors::DbResult},
 };
 use rusqlite::params;
 
 use chrono::Utc;
 
-pub fn insert_planner_event_into_db(
-    db: &AppDb,
-    data: NewPlannerEvent,
-) -> Result<PlannerEvent, String> {
+pub fn insert_planner_event_into_db(db: &AppDb, data: NewPlannerEvent) -> DbResult<PlannerEvent> {
     let connection = db.connection.lock().unwrap();
 
     let created_at = Utc::now().to_rfc3339();
@@ -20,39 +17,36 @@ pub fn insert_planner_event_into_db(
             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
             RETURNING id, nestling_id, date, title, description, start_time, duration, color, created_at, updated_at"
         )
-        .map_err(|e| e.to_string())?;
+        ?;
 
-    let event = statement
-        .query_row(
-            params![
-                data.nestling_id,
-                data.date,
-                data.title,
-                data.description,
-                data.start_time,
-                data.duration,
-                data.color,
-                created_at,
-                created_at
-            ],
-            |row| {
-                Ok(PlannerEvent {
-                    id: row.get(0)?,
-                    nestling_id: row.get(1)?,
-                    date: row.get(2)?,
-                    title: row.get(3)?,
-                    description: row.get(4)?,
-                    start_time: row.get(5)?,
-                    duration: row.get(6)?,
-                    color: row.get(7)?,
-                    created_at: row.get(8)?,
-                    updated_at: row.get(9)?,
-                })
-            },
-        )
-        .map_err(|e| e.to_string())?;
+    let event = statement.query_row(
+        params![
+            data.nestling_id,
+            data.date,
+            data.title,
+            data.description,
+            data.start_time,
+            data.duration,
+            data.color,
+            created_at,
+            created_at
+        ],
+        |row| {
+            Ok(PlannerEvent {
+                id: row.get(0)?,
+                nestling_id: row.get(1)?,
+                date: row.get(2)?,
+                title: row.get(3)?,
+                description: row.get(4)?,
+                start_time: row.get(5)?,
+                duration: row.get(6)?,
+                color: row.get(7)?,
+                created_at: row.get(8)?,
+                updated_at: row.get(9)?,
+            })
+        },
+    )?;
 
-    println!("{:?}", event);
     Ok(event)
 }
 
@@ -65,7 +59,7 @@ pub fn update_planner_event_in_db(
     start_time: i64,
     duration: i64,
     color: Option<String>,
-) -> Result<(), String> {
+) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -75,18 +69,15 @@ pub fn update_planner_event_in_db(
             SET date = ?1, title = ?2, description = ?3, start_time = ?4, duration = ?5, color = ?6, updated_at = ?7
             WHERE id = ?8",
             params![date, title, description, start_time, duration, color, updated_at, id]
-        )
-        .map_err(|e| e.to_string())?;
+        )?;
 
     Ok(())
 }
 
-pub fn delete_planner_event_from_db(db: &AppDb, id: i64) -> Result<(), String> {
+pub fn delete_planner_event_from_db(db: &AppDb, id: i64) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
 
-    connection
-        .execute("DELETE FROM planner_events WHERE id = ?1", params![id])
-        .map_err(|e| e.to_string())?;
+    connection.execute("DELETE FROM planner_events WHERE id = ?1", params![id])?;
 
     Ok(())
 }
@@ -96,7 +87,7 @@ pub fn get_planner_events_from_range(
     nestling_id: i64,
     start: String,
     end: String,
-) -> Result<Vec<PlannerEvent>, String> {
+) -> DbResult<Vec<PlannerEvent>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
@@ -106,7 +97,7 @@ pub fn get_planner_events_from_range(
             WHERE nestling_id = ?1 AND date BETWEEN ?2 AND ?3
             ORDER BY date, start_time"
         )
-        .map_err(|e| e.to_string())?;
+        ?;
 
     let events = statement
         .query_map(params![nestling_id, start, end], |row| {
@@ -122,10 +113,8 @@ pub fn get_planner_events_from_range(
                 created_at: row.get(8)?,
                 updated_at: row.get(9)?,
             })
-        })
-        .map_err(|e| e.to_string())?
-        .collect::<Result<Vec<_>, _>>()
-        .map_err(|e| e.to_string())?;
-    println!("{:?}", events);
+        })?
+        .collect::<Result<Vec<_>, _>>()?;
+
     Ok(events)
 }

@@ -4,12 +4,10 @@ use crate::db::calendar::{
 };
 use crate::models::calendar::{NewPlannerEvent, PlannerEvent};
 use crate::utils::db::AppDb;
+use crate::utils::errors::DbResult;
 
 #[tauri::command]
-pub fn create_event(
-    db: tauri::State<AppDb>,
-    data: NewPlannerEvent,
-) -> Result<PlannerEvent, String> {
+pub fn create_event(db: tauri::State<AppDb>, data: NewPlannerEvent) -> DbResult<PlannerEvent> {
     insert_planner_event_into_db(&db, data)
 }
 
@@ -23,7 +21,7 @@ pub fn update_event(
     start_time: i64,
     duration: i64,
     color: Option<String>,
-) -> Result<(), String> {
+) -> DbResult<()> {
     update_planner_event_in_db(
         &db,
         id,
@@ -37,7 +35,7 @@ pub fn update_event(
 }
 
 #[tauri::command]
-pub fn delete_event(db: tauri::State<AppDb>, id: i64) -> Result<(), String> {
+pub fn delete_event(db: tauri::State<AppDb>, id: i64) -> DbResult<()> {
     delete_planner_event_from_db(&db, id)
 }
 
@@ -47,6 +45,6 @@ pub fn get_events(
     nestling_id: i64,
     start: String,
     end: String,
-) -> Result<Vec<PlannerEvent>, String> {
+) -> DbResult<Vec<PlannerEvent>> {
     get_planner_events_from_range(&db, nestling_id, start, end)
 }

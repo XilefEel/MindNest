@@ -1,4 +1,7 @@
-use crate::{db::note::update_note, utils::db::AppDb};
+use crate::{
+    db::note::update_note,
+    utils::{db::AppDb, errors::DbResult},
+};
 
 #[tauri::command]
 pub fn edit_note(
@@ -6,6 +9,6 @@ pub fn edit_note(
     id: i64,
     title: Option<String>,
     content: Option<String>,
-) -> Result<(), String> {
+) -> DbResult<()> {
     update_note(&db, id, title, content)
 }
