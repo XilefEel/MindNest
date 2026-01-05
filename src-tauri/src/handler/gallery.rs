@@ -6,9 +6,10 @@ use crate::db::gallery::{
 };
 use crate::models::gallery::{GalleryAlbum, GalleryImage, NewGalleryAlbum, NewGalleryImage};
 use crate::utils::db::AppDb;
+use crate::utils::errors::DbResult;
 
 #[tauri::command]
-pub fn add_image(db: tauri::State<AppDb>, data: NewGalleryImage) -> Result<GalleryImage, String> {
+pub fn add_image(db: tauri::State<AppDb>, data: NewGalleryImage) -> DbResult<GalleryImage> {
     add_image_into_db(&db, data)
 }
 
@@ -19,7 +20,7 @@ pub fn import_image(
     nestling_id: i64,
     album_id: Option<i64>,
     file_path: String,
-) -> Result<GalleryImage, String> {
+) -> DbResult<GalleryImage> {
     import_image_into_app(app_handle, &db, nestling_id, album_id, file_path)
 }
 
@@ -34,7 +35,7 @@ pub fn import_image_data(
     title: Option<String>,
     description: Option<String>,
     is_favorite: Option<bool>,
-) -> Result<GalleryImage, String> {
+) -> DbResult<GalleryImage> {
     import_image_data_into_app(
         app_handle,
         &db,
@@ -53,12 +54,12 @@ pub fn duplicate_image(
     app_handle: tauri::AppHandle,
     db: tauri::State<AppDb>,
     original_image_id: i64,
-) -> Result<GalleryImage, String> {
+) -> DbResult<GalleryImage> {
     duplicate_image_from_image(&db, app_handle, original_image_id)
 }
 
 #[tauri::command]
-pub fn get_images(db: tauri::State<AppDb>, nestling_id: i64) -> Result<Vec<GalleryImage>, String> {
+pub fn get_images(db: tauri::State<AppDb>, nestling_id: i64) -> DbResult<Vec<GalleryImage>> {
     get_images_from_db(&db, nestling_id)
 }
 
@@ -70,35 +71,32 @@ pub fn update_image(
     title: Option<String>,
     description: Option<String>,
     is_favorite: bool,
-) -> Result<(), String> {
+) -> DbResult<()> {
     update_image_in_db(&db, id, album_id, title, description, is_favorite)
 }
 
 #[tauri::command]
-pub fn download_image(db: tauri::State<AppDb>, id: i64, save_path: String) -> Result<(), String> {
+pub fn download_image(db: tauri::State<AppDb>, id: i64, save_path: String) -> DbResult<()> {
     download_image_into_user(&db, id, save_path)
 }
 
 #[tauri::command]
-pub fn download_album(db: tauri::State<AppDb>, id: i64, save_path: String) -> Result<(), String> {
+pub fn download_album(db: tauri::State<AppDb>, id: i64, save_path: String) -> DbResult<()> {
     download_album_into_user(&db, id, save_path)
 }
 
 #[tauri::command]
-pub fn delete_image(db: tauri::State<AppDb>, id: i64) -> Result<(), String> {
+pub fn delete_image(db: tauri::State<AppDb>, id: i64) -> DbResult<()> {
     delete_image_from_app(&db, id)
 }
 
 #[tauri::command]
-pub fn create_album(
-    db: tauri::State<AppDb>,
-    data: NewGalleryAlbum,
-) -> Result<GalleryAlbum, String> {
+pub fn create_album(db: tauri::State<AppDb>, data: NewGalleryAlbum) -> DbResult<GalleryAlbum> {
     add_album_to_db(&db, data)
 }
 
 #[tauri::command]
-pub fn get_albums(db: tauri::State<AppDb>, nestling_id: i64) -> Result<Vec<GalleryAlbum>, String> {
+pub fn get_albums(db: tauri::State<AppDb>, nestling_id: i64) -> DbResult<Vec<GalleryAlbum>> {
     get_albums_from_db(&db, nestling_id)
 }
 
@@ -108,11 +106,11 @@ pub fn update_album(
     id: i64,
     name: Option<String>,
     description: Option<String>,
-) -> Result<(), String> {
+) -> DbResult<()> {
     update_album_in_db(&db, id, name, description)
 }
 
 #[tauri::command]
-pub fn delete_album(db: tauri::State<AppDb>, id: i64) -> Result<(), String> {
+pub fn delete_album(db: tauri::State<AppDb>, id: i64) -> DbResult<()> {
     delete_album_from_db(&db, id)
 }

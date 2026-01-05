@@ -8,9 +8,6 @@ pub enum DbError {
     #[error("Authentication failed: {0}")]
     AuthError(String),
 
-    #[error("Database query failed: {0}")]
-    Query(String),
-
     #[error("Resource not found")]
     NotFound,
 
@@ -20,14 +17,14 @@ pub enum DbError {
     #[error(transparent)]
     FileError(#[from] std::io::Error),
 
+    #[error("Zip operation failed: {0}")]
+    ZipError(#[from] zip::result::ZipError),
+
     #[error(transparent)]
     ImageError(#[from] imagesize::ImageError),
 
-    #[error("Failed to read audio file: {0}")]
-    AudioError(String),
-
-    #[error("Unexpected error: {0}")]
-    Other(String),
+    #[error(transparent)]
+    AudioError(#[from] lofty::error::LoftyError),
 }
 
 impl serde::Serialize for DbError {

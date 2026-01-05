@@ -7,21 +7,17 @@ use rusqlite::params;
 
 pub fn create_user(db: &AppDb, data: SignupData) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
-
     let mut statement = connection.prepare("SELECT COUNT(*) FROM users WHERE email = ?1")?;
 
     let count: i64 = statement.query_row(params![data.email], |row| row.get(0))?;
-
     if count > 0 {
         return Err(DbError::ValidationError("Email already exists".to_string()));
     }
 
-    let hashed = hash_password(&data.password).map_err(|e| DbError::AuthError(e))?;
+    let hashed = hash_password(&data.password).map_err(|e| DbError::AuthError(e.to_string()))?;
 
     connection.execute(
-        "
-            INSERT INTO users (username, email, password)
-            VALUES (?1, ?2, ?3)",
+        "INSERT INTO users (username, email, password) VALUES (?1, ?2, ?3)",
         params![data.username, data.email, hashed],
     )?;
 
@@ -43,13 +39,16 @@ pub fn authenticate_user(db: &AppDb, data: LoginData) -> DbResult<User> {
             Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?))
         })?;
 
-    match verify_password(&hashed_password, &data.password) {
-        Ok(true) => Ok(User {
+    let is_valid = verify_password(&hashed_password, &data.password)
+        .map_err(|e| DbError::AuthError(e.to_string()))?;
+
+    if is_valid {
+        Ok(User {
             id,
             username,
             email,
-        }),
-        Ok(false) => Err(DbError::AuthError("Invalid password.".to_string())),
-        Err(e) => Err(DbError::AuthError(e)),
+        })
+    } else {
+        Err(DbError::AuthError("Invalid email or password".to_string()))
     }
 }
