@@ -271,7 +271,7 @@ export const useNestStore = create<NestState>((set, get) => ({
       );
       if (newMusic) {
         set((state) => ({
-          music: [newMusic, ...state.music],
+          music: [...state.music, newMusic],
         }));
       }
     }

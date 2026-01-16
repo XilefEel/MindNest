@@ -11,8 +11,12 @@ export default function BackgroundMusicPlayer() {
   const activeMusicId = useActiveMusicId();
   const music = useMusic();
   const audioIsPaused = useAudioIsPaused();
-  const { setAudioCurrentTime, setAudioIsPlaying, setAudioIsPaused } =
-    useNestActions();
+  const {
+    setAudioCurrentTime,
+    setAudioIsPlaying,
+    setAudioIsPaused,
+    setActiveMusicId,
+  } = useNestActions();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const activeMusic = music.find((m) => m.id === activeMusicId);
@@ -41,6 +45,20 @@ export default function BackgroundMusicPlayer() {
     const handleEnded = () => {
       setAudioCurrentTime(0);
       setAudioIsPlaying(false);
+
+      if (activeMusic && music.length > 0) {
+        const sortedMusic = [...music].sort(
+          (a, b) => a.orderIndex - b.orderIndex,
+        );
+        const currentIndex = sortedMusic.findIndex(
+          (m) => m.id === activeMusic.id,
+        );
+        const nextIndex = (currentIndex + 1) % sortedMusic.length;
+        const nextMusic = sortedMusic[nextIndex];
+
+        setActiveMusicId(nextMusic.id);
+      }
+
       setAudioIsPaused(false);
     };
 
@@ -79,6 +97,7 @@ export default function BackgroundMusicPlayer() {
       audio.removeEventListener("ended", handleEnded);
     };
   }, [
+    music,
     activeMusic,
     audioIsPaused,
     setAudioCurrentTime,

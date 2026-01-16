@@ -8,7 +8,6 @@ import {
   useNestActions,
 } from "@/stores/useNestStore";
 import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { motion } from "framer-motion";
 import { Music, Pause, Play, Trash2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
@@ -46,7 +45,7 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
   });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: transform ? `translateY(${transform.y}px)` : undefined,
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
