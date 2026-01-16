@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 
 import { twMerge } from "tailwind-merge";
+import { BackgroundMusic } from "../types/background-music";
+import { BoardColumn, BoardCard } from "../types/board";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -61,3 +63,27 @@ export const mergeWithCurrent = <T extends Record<string, any>>(
   }
   return result;
 };
+
+export function parseDragData(item: { id: string | number; data: any }) {
+  if (item.data.current.type === "column") {
+    return {
+      type: "column",
+      id: item.id,
+      column: item.data.current.column as BoardColumn,
+    };
+  } else if (item.data.current.type === "card") {
+    return {
+      type: "card",
+      id: item.id,
+      card: item.data.current.card as BoardCard,
+    };
+  } else if (item.data.current.type === "music") {
+    return {
+      type: "music",
+      id: item.id,
+      music: item.data.current.card as BackgroundMusic,
+    };
+  }
+
+  return null;
+}

@@ -1,21 +1,4 @@
-import { BoardColumn, BoardCard } from "../types/board";
-
-export function parseDragData(item: { id: string | number; data: any }) {
-  if (item.data.current.type === "column") {
-    return {
-      type: "column",
-      id: item.id,
-      column: item.data.current.column as BoardColumn,
-    };
-  } else if (item.data.current.type === "card") {
-    return {
-      type: "card",
-      id: item.id,
-      card: item.data.current.card as BoardCard,
-    };
-  }
-  return null;
-}
+import { BoardCard } from "../types/board";
 
 export const sortCards = (cards: BoardCard[]) =>
   cards.sort((a, b) => {

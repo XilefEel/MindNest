@@ -6,10 +6,10 @@ import {
   NewBoardCard,
   NewBoardColumn,
 } from "@/lib/types/board";
-import { withStoreErrorHandler } from "@/lib/utils/general";
+import { parseDragData, withStoreErrorHandler } from "@/lib/utils/general";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { create } from "zustand";
-import { parseDragData, sortCards } from "@/lib/utils/boards";
+import { sortCards } from "@/lib/utils/boards";
 import { useShallow } from "zustand/react/shallow";
 import { arrayMove } from "@dnd-kit/sortable";
 import { updateNestlingTimestamp } from "@/lib/utils/nestlings";

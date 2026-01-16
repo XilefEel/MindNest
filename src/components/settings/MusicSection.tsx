@@ -7,13 +7,32 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils/general";
 import MusicItem from "./MusicItem";
+import {
+  DndContext,
+  PointerSensor,
+  rectIntersection,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { AnimatePresence } from "framer-motion";
 
 export default function MusicSection() {
   const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
   const music = useMusic();
+  const { selectMusic, handleDragStart, handleDragEnd } = useNestActions();
 
-  const { selectMusic } = useNestActions();
+  const musicIds = music.map((m) => m.id);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+  );
 
   const handleUploadMusic = async () => {
     try {
@@ -40,20 +59,34 @@ export default function MusicSection() {
         </p>
       </div>
 
-      <div
-        className={cn(
-          "max-h-72 space-y-1 overflow-y-auto rounded-lg bg-gray-50 p-2 dark:bg-gray-700/30",
-          activeBackgroundId && "bg-white/30 dark:bg-black/30",
-        )}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={rectIntersection}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
       >
-        {music.length === 0 ? (
-          <p className="p-4 text-center text-sm text-gray-500 dark:text-gray-400">
-            No music yet
-          </p>
-        ) : (
-          music.map((track) => <MusicItem key={track.id} track={track} />)
-        )}
-      </div>
+        <div
+          className={cn(
+            "max-h-72 overflow-y-auto rounded-lg bg-gray-50 p-2 dark:bg-gray-700/30",
+            activeBackgroundId && "bg-white/30 dark:bg-black/30",
+          )}
+        >
+          <SortableContext
+            items={musicIds}
+            strategy={verticalListSortingStrategy}
+          >
+            <AnimatePresence mode="popLayout">
+              {music.length === 0 ? (
+                <p className="p-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                  No music yet
+                </p>
+              ) : (
+                music.map((track) => <MusicItem key={track.id} track={track} />)
+              )}
+            </AnimatePresence>
+          </SortableContext>
+        </div>
+      </DndContext>
 
       <div className="flex items-center justify-between pt-2">
         <div className="flex flex-col">
