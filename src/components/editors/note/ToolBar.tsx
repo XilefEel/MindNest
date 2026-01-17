@@ -9,7 +9,7 @@ import {
   Heading2,
   Heading3,
   Highlighter,
-  Image,
+  ImagePlus,
   Italic,
   Link,
   List,
@@ -75,7 +75,7 @@ export default function ToolBar() {
         onFormat={() => editor.chain().focus().redo().run()}
       />
 
-      <div className="w-0.5 rounded-full bg-gray-200 dark:bg-gray-700" />
+      <div className="w-px rounded-full bg-gray-200 dark:bg-gray-700" />
 
       <ToolBarItem
         Icon={Heading1}
@@ -120,7 +120,7 @@ export default function ToolBar() {
         isActive={isOrderedList}
       />
 
-      <div className="w-0.5 rounded-full bg-gray-200 dark:bg-gray-700" />
+      <div className="w-px rounded-full bg-gray-200 dark:bg-gray-700" />
 
       <ToolBarItem
         Icon={Bold}
@@ -158,7 +158,7 @@ export default function ToolBar() {
         isActive={isCode}
       />
 
-      <div className="w-0.5 rounded-full bg-gray-200 dark:bg-gray-700" />
+      <div className="w-px rounded-full bg-gray-200 dark:bg-gray-700" />
 
       <ToolBarItem
         Icon={AlignLeft}
@@ -185,9 +185,9 @@ export default function ToolBar() {
         isActive={isAlignJustify}
       />
 
-      <div className="w-0.5 rounded-full bg-gray-200 dark:bg-gray-700" />
+      <div className="w-px rounded-full bg-gray-200 dark:bg-gray-700" />
 
-      <ToolBarItem Icon={Image} label="Image" onFormat={() => {}} />
+      <ToolBarItem Icon={ImagePlus} label="Image" onFormat={() => {}} />
     </div>
   );
 }
