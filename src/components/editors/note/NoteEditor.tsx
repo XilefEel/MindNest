@@ -1,23 +1,68 @@
 import { useEditor, EditorContent, EditorContext } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import ToolBar from "./ToolBar";
 import CustomBubbleMenu from "./CustomBubbleMenu";
+import Highlight from "@tiptap/extension-highlight";
+import TextAlign from "@tiptap/extension-text-align";
+import Link from "@tiptap/extension-link";
+import Image from "@tiptap/extension-image";
+import useAutoSave from "@/hooks/useAutoSave";
+import {
+  useActiveNestling,
+  useNestlingActions,
+} from "@/stores/useNestlingStore";
+import NestlingTitle from "../NestlingTitle";
 
 export default function NoteEditor() {
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Highlight,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+      Link,
+      Image,
+    ],
     content: "<p>Hello World!</p>",
+    editorProps: {
+      attributes: {
+        class: "h-full prose min-h-full outline-none focus:outline-none",
+      },
+    },
   });
 
   const providerValue = useMemo(() => ({ editor }), [editor]);
 
+  const activeNestling = useActiveNestling();
+  if (!activeNestling) return;
+  const { updateNestling } = useNestlingActions();
+
+  const [title, setTitle] = useState(activeNestling.title);
+
+  const nestlingData = useMemo(() => ({ title }), [title]);
+
+  const autoSaveStatus = useAutoSave(
+    activeNestling.id!,
+    nestlingData,
+    updateNestling,
+  );
+
   return (
-    <EditorContext.Provider value={providerValue}>
-      <ToolBar />
-      <EditorContent editor={editor} />
-      <CustomBubbleMenu />
-    </EditorContext.Provider>
+    <div className="flex h-full w-full flex-col gap-5 overflow-hidden">
+      <NestlingTitle
+        title={title}
+        setTitle={setTitle}
+        nestling={activeNestling}
+      />
+
+      <EditorContext.Provider value={providerValue}>
+        <ToolBar />
+        <EditorContent editor={editor} className="flex-1 overflow-auto" />
+        <CustomBubbleMenu />
+      </EditorContext.Provider>
+    </div>
   );
 }
 
