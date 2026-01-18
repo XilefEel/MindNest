@@ -12,6 +12,7 @@ import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
+import Youtube from "@tiptap/extension-youtube";
 import { CharacterCount } from "@tiptap/extensions";
 import useAutoSave from "@/hooks/useAutoSave";
 import {
@@ -42,12 +43,16 @@ export default function NoteEditor() {
       Link,
       Image,
       CharacterCount,
+      Youtube.configure({
+        controls: true,
+        nocookie: true,
+      }),
     ],
     content: "<p>Start writing here...</p>",
     editorProps: {
       attributes: {
         class:
-          "h-full prose dark:prose-invert min-h-full outline-none focus:outline-none text-gray-900 dark:text-gray-100",
+          "h-full max-w-none prose dark:prose-invert min-h-full outline-none focus:outline-none text-gray-900 dark:text-gray-100",
       },
     },
   });
@@ -103,7 +108,10 @@ export default function NoteEditor() {
 
       <EditorContext.Provider value={providerValue}>
         <ToolBar title={activeNestling.title} />
-        <EditorContent editor={editor} className="flex-1 overflow-auto" />
+        <EditorContent
+          editor={editor}
+          className="w-full flex-1 overflow-auto"
+        />
         <CustomBubbleMenu />
       </EditorContext.Provider>
 

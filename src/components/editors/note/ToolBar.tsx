@@ -20,12 +20,18 @@ import {
   TextQuote,
   Underline,
   Undo2,
+  Youtube,
 } from "lucide-react";
 import ToolBarItem from "./ToolBarItem";
 import { useCurrentEditor, useEditorState } from "@tiptap/react";
 import { exportNoteToHTML } from "@/lib/utils/note";
+import { useState } from "react";
+import YouTubeLinkDialog from "./YoutubeDialog";
+import BaseToolTip from "@/components/BaseToolTip";
 
 export default function ToolBar({ title }: { title: string }) {
+  const [showURLDialog, setShowURLDialog] = useState(false);
+
   const { editor } = useCurrentEditor();
   if (!editor) return null;
 
@@ -190,6 +196,18 @@ export default function ToolBar({ title }: { title: string }) {
       <div className="w-px rounded-full bg-gray-200 dark:bg-gray-700" />
 
       <ToolBarItem Icon={ImagePlus} label="Image" onFormat={() => {}} />
+
+      <YouTubeLinkDialog
+        editor={editor}
+        isOpen={showURLDialog}
+        setIsOpen={setShowURLDialog}
+      >
+        <button aria-label="Insert YouTube Link">
+          <BaseToolTip label="Insert YouTube Link">
+            <Youtube className="cursor-pointer rounded p-1 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300" />
+          </BaseToolTip>
+        </button>
+      </YouTubeLinkDialog>
 
       <ToolBarItem
         Icon={Download}
