@@ -102,7 +102,7 @@ export default function NoteEditor() {
       />
 
       <EditorContext.Provider value={providerValue}>
-        <ToolBar />
+        <ToolBar title={activeNestling.title} />
         <EditorContent editor={editor} className="flex-1 overflow-auto" />
         <CustomBubbleMenu />
       </EditorContext.Provider>

@@ -5,6 +5,7 @@ import {
   AlignRight,
   Bold,
   Code2,
+  Download,
   Heading1,
   Heading2,
   Heading3,
@@ -22,8 +23,9 @@ import {
 } from "lucide-react";
 import ToolBarItem from "./ToolBarItem";
 import { useCurrentEditor, useEditorState } from "@tiptap/react";
+import { exportNoteToHTML } from "@/lib/utils/note";
 
-export default function ToolBar() {
+export default function ToolBar({ title }: { title: string }) {
   const { editor } = useCurrentEditor();
   if (!editor) return null;
 
@@ -188,6 +190,12 @@ export default function ToolBar() {
       <div className="w-px rounded-full bg-gray-200 dark:bg-gray-700" />
 
       <ToolBarItem Icon={ImagePlus} label="Image" onFormat={() => {}} />
+
+      <ToolBarItem
+        Icon={Download}
+        label="Export as HTML"
+        onFormat={() => exportNoteToHTML(editor, title)}
+      />
     </div>
   );
 }
