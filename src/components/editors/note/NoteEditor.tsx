@@ -12,6 +12,7 @@ import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
+import { Dropcursor } from "@tiptap/extensions";
 import Youtube from "@tiptap/extension-youtube";
 import { CharacterCount } from "@tiptap/extensions";
 import useAutoSave from "@/hooks/useAutoSave";
@@ -40,13 +41,22 @@ export default function NoteEditor() {
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
-      Link,
-      Image,
+      Link.configure({
+        openOnClick: false,
+        enableClickSelection: true,
+      }),
+      Image.configure({
+        resize: {
+          enabled: true,
+          alwaysPreserveAspectRatio: true,
+        },
+      }),
       CharacterCount,
       Youtube.configure({
         controls: true,
         nocookie: true,
       }),
+      Dropcursor,
     ],
     content: "<p>Start writing here...</p>",
     editorProps: {

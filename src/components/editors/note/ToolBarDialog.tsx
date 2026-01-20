@@ -10,11 +10,13 @@ import {
 
 export default function YouTubeLinkDialog({
   editor,
+  type = "image",
   isOpen,
   setIsOpen,
   children,
 }: {
   editor: Editor;
+  type?: "image" | "youtube";
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   children: React.ReactNode;
@@ -23,7 +25,11 @@ export default function YouTubeLinkDialog({
 
   const handleInsert = () => {
     if (linkUrl.trim()) {
-      editor.chain().focus().setYoutubeVideo({ src: linkUrl }).run();
+      if (type === "image")
+        editor.chain().focus().setImage({ src: linkUrl }).run();
+      if (type === "youtube")
+        editor.chain().focus().setYoutubeVideo({ src: linkUrl }).run();
+
       setIsOpen(false);
     }
   };
@@ -44,7 +50,7 @@ export default function YouTubeLinkDialog({
             if (e.key === "Enter") handleInsert();
             else if (e.key === "Escape") handleClose();
           }}
-          placeholder="Paste YouTube URL..."
+          placeholder={`Enter ${type === "image" ? "Image" : "YouTube"} Url...`}
           className="flex-1 bg-transparent outline-none focus:outline-none dark:text-white dark:placeholder-gray-400"
           autoFocus
         />

@@ -26,11 +26,12 @@ import ToolBarItem from "./ToolBarItem";
 import { useCurrentEditor, useEditorState } from "@tiptap/react";
 import { exportNoteToHTML } from "@/lib/utils/note";
 import { useState } from "react";
-import YouTubeLinkDialog from "./YoutubeDialog";
+import ToolBarDialog from "./ToolBarDialog";
 import BaseToolTip from "@/components/BaseToolTip";
 
 export default function ToolBar({ title }: { title: string }) {
-  const [showURLDialog, setShowURLDialog] = useState(false);
+  const [showYoutubeDialog, setShowYoutubeDialog] = useState(false);
+  const [showImageDialog, setShowImageDialog] = useState(false);
 
   const { editor } = useCurrentEditor();
   if (!editor) return null;
@@ -195,19 +196,31 @@ export default function ToolBar({ title }: { title: string }) {
 
       <div className="w-px rounded-full bg-gray-200 dark:bg-gray-700" />
 
-      <ToolBarItem Icon={ImagePlus} label="Image" onFormat={() => {}} />
-
-      <YouTubeLinkDialog
+      <ToolBarDialog
         editor={editor}
-        isOpen={showURLDialog}
-        setIsOpen={setShowURLDialog}
+        type="image"
+        isOpen={showImageDialog}
+        setIsOpen={setShowImageDialog}
+      >
+        <button aria-label="Add Image">
+          <BaseToolTip label="Add Image">
+            <ImagePlus className="cursor-pointer rounded p-1 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300" />
+          </BaseToolTip>
+        </button>
+      </ToolBarDialog>
+
+      <ToolBarDialog
+        editor={editor}
+        type="youtube"
+        isOpen={showYoutubeDialog}
+        setIsOpen={setShowYoutubeDialog}
       >
         <button aria-label="Insert YouTube Link">
           <BaseToolTip label="Insert YouTube Link">
             <Youtube className="cursor-pointer rounded p-1 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300" />
           </BaseToolTip>
         </button>
-      </YouTubeLinkDialog>
+      </ToolBarDialog>
 
       <ToolBarItem
         Icon={Download}

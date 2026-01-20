@@ -21,7 +21,7 @@ export default function CustomBubbleMenu() {
   return (
     <BubbleMenu
       editor={editor}
-      className="flex gap-1 rounded-lg border border-gray-200 bg-white p-1 shadow-lg dark:border-gray-700 dark:bg-gray-800"
+      className="z-50 flex gap-1 rounded-lg border border-gray-200 bg-white p-1 shadow-lg dark:border-gray-700 dark:bg-gray-800"
     >
       <ToolBarItem
         Icon={Bold}
