@@ -28,8 +28,12 @@ import { exportNoteToHTML } from "@/lib/utils/note";
 import { useState } from "react";
 import ToolBarDialog from "./ToolBarDialog";
 import BaseToolTip from "@/components/BaseToolTip";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { cn } from "@/lib/utils/general";
 
 export default function ToolBar({ title }: { title: string }) {
+  const activeBackgroundId = useActiveBackgroundId();
+
   const [showYoutubeDialog, setShowYoutubeDialog] = useState(false);
   const [showImageDialog, setShowImageDialog] = useState(false);
 
@@ -84,7 +88,12 @@ export default function ToolBar({ title }: { title: string }) {
         onFormat={() => editor.chain().focus().redo().run()}
       />
 
-      <div className="w-px rounded-full bg-gray-200 dark:bg-gray-700" />
+      <div
+        className={cn(
+          "w-px rounded-full bg-gray-200 dark:bg-gray-700",
+          activeBackgroundId && "bg-gray-900 dark:bg-gray-100",
+        )}
+      />
 
       <ToolBarItem
         Icon={Heading1}
@@ -129,7 +138,12 @@ export default function ToolBar({ title }: { title: string }) {
         isActive={isOrderedList}
       />
 
-      <div className="w-px rounded-full bg-gray-200 dark:bg-gray-700" />
+      <div
+        className={cn(
+          "w-px rounded-full bg-gray-200 dark:bg-gray-700",
+          activeBackgroundId && "bg-gray-900 dark:bg-gray-100",
+        )}
+      />
 
       <ToolBarItem
         Icon={Bold}
@@ -167,7 +181,12 @@ export default function ToolBar({ title }: { title: string }) {
         isActive={isCode}
       />
 
-      <div className="w-px rounded-full bg-gray-200 dark:bg-gray-700" />
+      <div
+        className={cn(
+          "w-px rounded-full bg-gray-200 dark:bg-gray-700",
+          activeBackgroundId && "bg-gray-900 dark:bg-gray-100",
+        )}
+      />
 
       <ToolBarItem
         Icon={AlignLeft}
@@ -194,7 +213,12 @@ export default function ToolBar({ title }: { title: string }) {
         isActive={isAlignJustify}
       />
 
-      <div className="w-px rounded-full bg-gray-200 dark:bg-gray-700" />
+      <div
+        className={cn(
+          "w-px rounded-full bg-gray-200 dark:bg-gray-700",
+          activeBackgroundId && "bg-gray-900 dark:bg-gray-100",
+        )}
+      />
 
       <ToolBarDialog
         editor={editor}
@@ -204,7 +228,13 @@ export default function ToolBar({ title }: { title: string }) {
       >
         <button aria-label="Add Image">
           <BaseToolTip label="Add Image">
-            <ImagePlus className="cursor-pointer rounded p-1 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300" />
+            <ImagePlus
+              className={cn(
+                "cursor-pointer rounded p-1 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
+                activeBackgroundId &&
+                  "hover:bg-white/ hover:text-black dark:hover:bg-black/30",
+              )}
+            />
           </BaseToolTip>
         </button>
       </ToolBarDialog>
@@ -217,7 +247,13 @@ export default function ToolBar({ title }: { title: string }) {
       >
         <button aria-label="Insert YouTube Link">
           <BaseToolTip label="Insert YouTube Link">
-            <Youtube className="cursor-pointer rounded p-1 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300" />
+            <Youtube
+              className={cn(
+                "cursor-pointer rounded p-1 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
+                activeBackgroundId &&
+                  "hover:bg-white/30 hover:text-black dark:hover:bg-black/30",
+              )}
+            />
           </BaseToolTip>
         </button>
       </ToolBarDialog>
