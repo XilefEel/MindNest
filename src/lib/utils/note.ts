@@ -1,6 +1,7 @@
 import { save } from "@tauri-apps/plugin-dialog";
 import { Editor } from "@tiptap/react";
 import { writeFile } from "@tauri-apps/plugin-fs";
+import { toast } from "sonner";
 
 export const exportNoteToHTML = async (editor: Editor, title: string) => {
   const htmlContent = editor.getHTML();
@@ -58,6 +59,7 @@ export const exportNoteToHTML = async (editor: Editor, title: string) => {
 
     if (filePath) {
       await writeFile(filePath, new TextEncoder().encode(fullHTML));
+      toast.success("Note exported successfully!");
       return;
     }
   } catch (error) {

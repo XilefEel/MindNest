@@ -1,5 +1,5 @@
 import "./App.css";
-import { ThemeProvider } from "@/components/settings/theme-provider";
+import { ThemeProvider } from "@/components/nest-dashboard/settings/theme-provider";
 import AppRoutes from "./routes/Routes";
 import { Toaster } from "sonner";
 

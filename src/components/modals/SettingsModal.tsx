@@ -1,6 +1,6 @@
 import { useState } from "react";
-import GeneralSettings from "../settings/GeneralSettings";
-import NestSettings from "../settings/NestSettings";
+import GeneralSettings from "../nest-dashboard/settings/GeneralSettings";
+import NestSettings from "../nest-dashboard/settings/NestSettings";
 import { cn } from "@/lib/utils/general";
 import BaseModal from "./BaseModal";
 import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";

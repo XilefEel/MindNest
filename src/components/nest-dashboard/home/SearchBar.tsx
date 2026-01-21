@@ -1,16 +1,22 @@
 import { Input } from "@/components/ui/input";
 import { saveLastNestling } from "@/lib/storage/nestling";
+import { findFolderPath } from "@/lib/utils/folders";
 import { cn } from "@/lib/utils/general";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
-import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
+import {
+  useFolders,
+  useNestlingActions,
+  useNestlings,
+} from "@/stores/useNestlingStore";
 import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
-import { Search } from "lucide-react";
+import { Folder, Search } from "lucide-react";
 import { useState } from "react";
 
 export default function SearchBar() {
   const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
   const nestlings = useNestlings();
+  const folders = useFolders();
   const { setActiveNestlingId } = useNestlingActions();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -63,7 +69,7 @@ export default function SearchBar() {
                       key={nestling.id}
                       onClick={() => handleClick(nestling.id)}
                       className={cn(
-                        "flex cursor-pointer flex-row items-center p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
+                        "flex cursor-pointer flex-row items-center justify-between p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
                         activeBackgroundId &&
                           "hover:bg-white/30 hover:dark:bg-black/30",
                       )}
@@ -78,6 +84,13 @@ export default function SearchBar() {
                         </div>
 
                         <span>{nestling.title}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                        <Folder className="h-4 w-6" />
+                        <span>
+                          {findFolderPath(nestling.folderId, folders) ||
+                            "No Folder"}
+                        </span>
                       </div>
                     </div>
                   );

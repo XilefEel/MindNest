@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils/general";
 import {
   useNestActions,
   useActiveMusicId,
@@ -6,6 +7,7 @@ import {
   useMusic,
 } from "@/stores/useNestStore";
 import { Music, Pause, Play, X } from "lucide-react";
+import { useState } from "react";
 
 export default function FloatingMusicPlayer() {
   const { setActiveMusicId, setAudioIsPaused } = useNestActions();
@@ -13,6 +15,10 @@ export default function FloatingMusicPlayer() {
   const activeMusicId = useActiveMusicId();
   const audioIsPaused = useAudioIsPaused();
   const audioCurrentTime = useAudioCurrentTime();
+
+  const [isLowered, setIsLowered] = useState(false);
+
+  const handleLower = () => setIsLowered(!isLowered);
 
   const activeMusic = music.find((m) => m.id === activeMusicId);
   if (!activeMusic) return null;
@@ -28,7 +34,13 @@ export default function FloatingMusicPlayer() {
   };
 
   return (
-    <div className="fixed right-5 bottom-5 z-50 w-96 rounded-xl bg-white/30 p-4 shadow-lg backdrop-blur-md dark:bg-black/30">
+    <div
+      onDoubleClick={handleLower}
+      className={cn(
+        "fixed right-5 bottom-5 z-50 w-96 rounded-xl bg-white/30 p-4 shadow-lg backdrop-blur-md transition-all duration-200 dark:bg-black/30",
+        isLowered && "translate-y-18",
+      )}
+    >
       <div className="flex items-center gap-3">
         <div className="flex size-12 items-center justify-center rounded-lg bg-purple-500 text-white">
           <Music size={20} />
@@ -48,6 +60,9 @@ export default function FloatingMusicPlayer() {
 
         <button
           onClick={handlePlayPause}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+          }}
           className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-purple-500 text-white transition hover:bg-purple-600"
         >
           {audioIsPaused ? <Play size={16} /> : <Pause size={16} />}

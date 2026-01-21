@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import { ThemeProvider } from "@/components/settings/theme-provider";
+import { ThemeProvider } from "@/components/nest-dashboard/settings/theme-provider";
 import Titlebar from "./components/TitleBar";
 import { AuthProvider } from "./context/AuthContext";
 import SessionRestorer from "./components/SessionRestorer";

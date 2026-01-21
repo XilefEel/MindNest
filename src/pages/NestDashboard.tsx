@@ -20,7 +20,7 @@ import MindmapEditor from "@/components/editors/mindmap/MindmapEditor";
 import SearchModal from "@/components/modals/SearchModal";
 import SettingsModal from "@/components/modals/SettingsModal";
 import { useActiveNestling } from "@/stores/useNestlingStore";
-import FloatingMusicPlayer from "@/components/FloatingMusicPlayer";
+import FloatingMusicPlayer from "@/components/nest-dashboard/music/FloatingMusicPlayer";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
