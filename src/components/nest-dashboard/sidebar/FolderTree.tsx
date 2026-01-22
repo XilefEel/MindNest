@@ -39,7 +39,7 @@ export default function FolderTree({
         <div
           ref={setNodeRef}
           className={cn(
-            "flex flex-col gap-1 rounded py-1 font-medium",
+            "flex flex-col rounded py-1 font-medium",
             isOver && "bg-teal-100 dark:bg-teal-400",
           )}
         >
@@ -54,11 +54,10 @@ export default function FolderTree({
               <motion.div
                 key={`folder-content-${folder.id}`}
                 layout
-                initial={{ height: 0 }}
-                animate={{ height: "auto" }}
-                exit={{ height: 0 }}
-                transition={{ duration: 0.2 }}
-                style={{ overflow: "hidden" }}
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0 }}
                 className="ml-6"
               >
                 {childFolders.map((childFolder) => (
@@ -68,14 +67,15 @@ export default function FolderTree({
                     setIsSidebarOpen={setIsSidebarOpen}
                   />
                 ))}
-
-                {childNestlings.map((nestling) => (
-                  <NestlingItem
-                    key={nestling.id}
-                    nestling={nestling}
-                    setIsSidebarOpen={setIsSidebarOpen}
-                  />
-                ))}
+                <div className="mt-1">
+                  {childNestlings.map((nestling) => (
+                    <NestlingItem
+                      key={nestling.id}
+                      nestling={nestling}
+                      setIsSidebarOpen={setIsSidebarOpen}
+                    />
+                  ))}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>

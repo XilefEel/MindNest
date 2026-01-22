@@ -1,86 +1,70 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
-  useFolders,
   useNestlingActions,
   useNestlingStore,
 } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 
-export default function AddFolderModal({
+export default function FolderModal({
   children,
   nestId,
-  folderId,
+  parentId,
   isOpen,
   setIsOpen,
 }: {
   children: React.ReactNode;
   nestId: number;
-  folderId?: number;
+  parentId?: number;
   isOpen?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
 }) {
-  const folders = useFolders();
   const activeFolderId = useNestlingStore((state) => state.activeFolderId);
-  const { addFolder, updateFolder } = useNestlingActions();
+  const { addFolder } = useNestlingActions();
 
   const [title, setTitle] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const [internalOpen, setInternalOpen] = useState(false);
-  const isActuallyOpen = isOpen ?? internalOpen;
-  const setOpen = setIsOpen ?? setInternalOpen;
+  const [isInternalModalOpen, setIsInternalModalOpen] = useState(false);
+  const isModalOpen = isOpen ?? isInternalModalOpen;
+  const setModalOpen = setIsOpen ?? setIsInternalModalOpen;
 
-  const folder = folderId ? folders.find((f) => f.id === folderId) : undefined;
+  const effectiveParentId = parentId ?? activeFolderId;
 
-  const handleExit = async () => {
+  const handleCloseModal = async () => {
     setTitle("");
-    setOpen(false);
+    setModalOpen(false);
   };
 
   const handleSaveFolder = async () => {
     if (!title.trim()) return;
-    setLoading(true);
+    setIsSaving(true);
     try {
-      if (folderId && folder) {
-        await updateFolder(folderId, folder.parentId, title);
-        toast.success(`Folder Renamed to "${title}"`);
-      } else {
-        await addFolder({
-          nestId,
-          parentId: activeFolderId,
-          name: title,
-        });
-        toast.success(`Folder "${title}" created successfully!`);
-      }
-      handleExit();
-    } catch (err) {
+      await addFolder({
+        nestId,
+        parentId: effectiveParentId!,
+        name: title,
+      });
+      toast.success(`Folder "${title}" created successfully!`);
+
+      handleCloseModal();
+    } catch (error) {
       toast.error("Failed to create folder");
-      console.error("Failed to create Folder:", err);
+      console.error("Failed to create Folder:", error);
     } finally {
-      setLoading(false);
+      setIsSaving(false);
     }
   };
 
-  useEffect(() => {
-    if (folderId && folder) {
-      setTitle(folder.name || "");
-    }
-  }, [folderId, folder]);
-
   return (
     <BaseModal
-      isOpen={isActuallyOpen}
-      setIsOpen={setOpen}
+      isOpen={isModalOpen}
+      setIsOpen={setModalOpen}
       onSubmit={handleSaveFolder}
-      title={folderId ? "Rename Folder" : "Create a New Folder"}
-      description={
-        folderId
-          ? "Change the title of this folder."
-          : "Create a new folder to organize your notes."
-      }
+      title="Create a New Folder"
+      description="Create a new folder to organize your notes."
       body={
         <TextField
           label="Folder Title"
@@ -92,16 +76,10 @@ export default function AddFolderModal({
       footer={
         <Button
           onClick={handleSaveFolder}
-          disabled={loading || !title.trim()}
+          disabled={isSaving || !title.trim()}
           className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
         >
-          {folderId
-            ? loading
-              ? "Saving..."
-              : "Save"
-            : loading
-              ? "Creating..."
-              : "Create"}
+          {isSaving ? "Creating..." : "Create"}
         </Button>
       }
     >

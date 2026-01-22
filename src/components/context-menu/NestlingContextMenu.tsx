@@ -4,20 +4,18 @@ import DeleteModal from "../modals/DeleteModal";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
-import NestlingModal from "../modals/NestlingModal";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils/general";
-import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export default function NestlingContextMenu({
   nestlingId,
+  handleRename,
   children,
 }: {
   nestlingId: number;
+  handleRename?: () => void;
   children: React.ReactNode;
 }) {
   const nestlings = useNestlings();
-  const activeBackgroundId = useActiveBackgroundId();
   const { duplicateNestling, updateNestling } = useNestlingActions();
 
   const nestling = nestlings.find((n) => n.id === nestlingId);
@@ -40,21 +38,7 @@ export default function NestlingContextMenu({
     <BaseContextMenu
       content={
         <>
-          <NestlingModal nestlingId={nestlingId}>
-            <ContextMenu.Item
-              className={cn(
-                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
-                activeBackgroundId &&
-                  "hover:bg-white/30 dark:hover:bg-black/30",
-              )}
-              onSelect={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <Edit3 className="size-4" />
-              Rename
-            </ContextMenu.Item>
-          </NestlingModal>
+          <ContextMenuItem Icon={Edit3} text="Rename" action={handleRename} />
 
           <ContextMenuItem
             Icon={Copy}

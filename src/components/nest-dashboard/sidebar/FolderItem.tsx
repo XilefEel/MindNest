@@ -22,17 +22,13 @@ export default function FolderItem({
 
   const [name, setName] = useState(folder.name);
   const [isEditing, setIsEditing] = useState(false);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const shouldSaveRef = useRef(true);
 
   const handleClick = () => {
     if (isEditing) return;
     toggleFolder(folder.id);
-  };
-
-  const handleDoubleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsEditing(true);
   };
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
@@ -86,7 +82,10 @@ export default function FolderItem({
   }, [isEditing]);
 
   return (
-    <FolderContextMenu folderId={folder.id}>
+    <FolderContextMenu
+      folderId={folder.id}
+      handleRename={() => setIsEditing(true)}
+    >
       <motion.div
         whileTap={{ scale: 0.98 }}
         onClick={handleClick}
@@ -101,10 +100,7 @@ export default function FolderItem({
               : "hover:bg-teal-50 dark:hover:bg-gray-700",
           )}
         >
-          <div
-            className="flex min-w-0 flex-1 items-center gap-1.5"
-            onDoubleClick={handleDoubleClick}
-          >
+          <div className="flex min-w-0 flex-1 items-center gap-1.5">
             <ChevronDown
               className={cn(
                 "size-4 flex-shrink-0 transition-transform duration-200",

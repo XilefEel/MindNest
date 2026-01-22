@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-
 import {
   useNestlingActions,
-  useNestlings,
   useNestlingStore,
 } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
@@ -17,177 +15,151 @@ import { NestlingType } from "@/lib/types/nestling";
 export default function NestlingModal({
   children,
   nestId,
-  nestlingId,
   isOpen,
+  folderId,
   setIsOpen,
 }: {
   children: React.ReactNode;
   nestId?: number;
-  nestlingId?: number;
+  folderId?: number;
   isOpen?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
 }) {
-  const nestlings = useNestlings();
   const activeFolderId = useNestlingStore((state) => state.activeFolderId);
-  const { addNestling, updateNestling } = useNestlingActions();
+  const { addNestling } = useNestlingActions();
   const activeBackgroundId = useActiveBackgroundId();
 
   const [title, setTitle] = useState("");
   const [nestlingType, setNestlingType] = useState<NestlingType>("note");
-  const [loading, setLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const [internalOpen, setInternalOpen] = useState(false);
-  const isActuallyOpen = isOpen ?? internalOpen;
-  const setOpen = setIsOpen ?? setInternalOpen;
+  const [isInternalModalOpen, setIsInternalModalOpen] = useState(false);
+  const isModalOpen = isOpen ?? isInternalModalOpen;
+  const setModalOpen = setIsOpen ?? setIsInternalModalOpen;
 
-  const nestling = nestlings.find((n) => n.id === nestlingId);
+  const effectiveFolderId = folderId ?? activeFolderId;
 
-  const handleExit = async () => {
+  const handleClose = async () => {
     setTitle("");
     setNestlingType("note");
-    setOpen(false);
+    setModalOpen(false);
   };
 
   const handleSaveNestling = async () => {
-    setLoading(true);
+    setIsSaving(true);
     try {
       if (!title.trim()) return;
 
-      if (nestlingId) {
-        await updateNestling(nestlingId, {
-          title: title,
-          folderId: nestling?.folderId,
-        });
-        toast.success(`Nestling Renamed to "${title}"!`);
-      } else {
-        await addNestling({
-          nestId: nestId!,
-          folderId: activeFolderId,
-          title: title,
-          content: "",
-          icon: "",
-          isPinned: false,
-          nestlingType: nestlingType,
-        });
-        toast.success(`Nestling "${title}" created successfully!`);
-      }
-      handleExit();
-    } catch (err) {
-      console.error("Failed to create nestling:", err);
+      await addNestling({
+        nestId: nestId!,
+        folderId: effectiveFolderId,
+        title: title,
+        content: "",
+        icon: "",
+        isPinned: false,
+        nestlingType: nestlingType,
+      });
+      toast.success(`Nestling "${title}" created successfully!`);
+
+      handleClose();
+    } catch (error) {
+      console.error("Failed to create nestling:", error);
     } finally {
-      setLoading(false);
+      setIsSaving(false);
     }
   };
 
-  useEffect(() => {
-    if (nestlingId) {
-      setTitle(nestling?.title || "");
-    }
-  }, [nestlingId, nestling]);
-
   return (
     <BaseModal
-      isOpen={isActuallyOpen}
-      setIsOpen={setOpen}
+      isOpen={isModalOpen}
+      setIsOpen={setModalOpen}
       onSubmit={handleSaveNestling}
-      title={nestlingId ? "Rename Nestling" : "Create Nestling"}
-      description={
-        nestlingId
-          ? "Don't like the title? You can change it here."
-          : "Give your nestling a title. You can always change it later."
-      }
+      title="Create Nestling"
+      description="Give your nestling a title. You can always change it later."
       body={
         <div className="space-y-6">
           <TextField
-            label={nestlingId ? "New Title" : "Nestling Title"}
+            label="Nestling Title"
             text={title}
             setText={setTitle}
-            placeholder={`e.g. My ${nestlingTypes.find((t) => t.value === nestlingType)?.label || "Note"}`}
+            placeholder={`e.g. My ${nestlingTypes.find((type) => type.value === nestlingType)?.label || "Note"}`}
           />
 
-          {!nestlingId && (
-            <div className="space-y-3">
-              <p className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-                Choose Nestling Type
-              </p>
-              <div className="grid grid-cols-2 gap-3">
-                {nestlingTypes.map((type) => {
-                  const Icon = type.icon;
-                  const isSelected = nestlingType === type.value;
+          <div className="space-y-3">
+            <p className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Choose Nestling Type
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              {nestlingTypes.map((typeOption) => {
+                const TypeIcon = typeOption.icon;
+                const isSelected = nestlingType === typeOption.value;
 
-                  return (
-                    <button
-                      key={type.value}
-                      onClick={() => setNestlingType(type.value)}
+                return (
+                  <button
+                    key={typeOption.value}
+                    onClick={() => setNestlingType(typeOption.value)}
+                    className={cn(
+                      "relative flex items-center gap-3 rounded-lg p-4 transition-all duration-200",
+                      isSelected
+                        ? activeBackgroundId
+                          ? "bg-teal-300/20 shadow-md backdrop-blur-sm dark:bg-teal-400/20"
+                          : "border-2 border-teal-500 bg-teal-50 shadow-md dark:bg-teal-950/30"
+                        : activeBackgroundId
+                          ? "bg-white/10 backdrop-blur-sm hover:bg-white/40 hover:shadow-sm dark:hover:bg-white/20"
+                          : "border-2 border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:hover:border-gray-600",
+                    )}
+                  >
+                    <div
                       className={cn(
-                        "relative flex items-center gap-3 rounded-lg p-4 transition-all duration-200",
+                        "flex size-10 items-center justify-center rounded-lg transition-colors duration-100",
                         isSelected
-                          ? activeBackgroundId
-                            ? "bg-teal-300/20 shadow-md backdrop-blur-sm dark:bg-teal-400/20"
-                            : "border-2 border-teal-500 bg-teal-50 shadow-md dark:bg-teal-950/30"
-                          : activeBackgroundId
-                            ? "bg-white/10 backdrop-blur-sm hover:bg-white/40 hover:shadow-sm dark:hover:bg-white/20"
-                            : "border-2 border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:hover:border-gray-600",
+                          ? typeOption.color
+                          : "bg-gray-100 dark:bg-gray-700",
+                        "text-white",
                       )}
                     >
-                      <div
+                      <TypeIcon
                         className={cn(
-                          "flex size-10 items-center justify-center rounded-lg transition-colors duration-100",
                           isSelected
-                            ? type.color
-                            : "bg-gray-100 dark:bg-gray-700",
-                          "text-white",
+                            ? "text-white"
+                            : "text-gray-800 dark:text-gray-300",
+                        )}
+                      />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <p
+                        className={cn(
+                          "text-sm font-medium transition-colors",
+                          isSelected
+                            ? "text-teal-700 dark:text-teal-300"
+                            : "text-gray-800 dark:text-gray-300",
                         )}
                       >
-                        <Icon
-                          className={cn(
-                            isSelected
-                              ? "text-white"
-                              : "text-gray-800 dark:text-gray-300",
-                          )}
-                        />
-                      </div>
-                      <div className="flex-1 text-left">
-                        <p
-                          className={cn(
-                            "text-sm font-medium transition-colors",
-                            isSelected
-                              ? "text-teal-700 dark:text-teal-300"
-                              : "text-gray-800 dark:text-gray-300",
-                          )}
-                        >
-                          {type.label}
-                        </p>
-                      </div>
-                      {isSelected && (
-                        <div
-                          className={cn(
-                            "absolute top-2 right-2 size-2 rounded-full",
-                            type.color,
-                          )}
-                        />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+                        {typeOption.label}
+                      </p>
+                    </div>
+                    {isSelected && (
+                      <div
+                        className={cn(
+                          "absolute top-2 right-2 size-2 rounded-full",
+                          typeOption.color,
+                        )}
+                      />
+                    )}
+                  </button>
+                );
+              })}
             </div>
-          )}
+          </div>
         </div>
       }
       footer={
         <Button
           onClick={handleSaveNestling}
-          disabled={loading || !title.trim()}
+          disabled={isSaving || !title.trim()}
           className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
         >
-          {nestlingId
-            ? loading
-              ? "Saving..."
-              : "Save"
-            : loading
-              ? "Creating..."
-              : "Create"}
+          {isSaving ? "Creating..." : "Create"}
         </Button>
       }
     >

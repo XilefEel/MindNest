@@ -35,6 +35,7 @@ export default function NestlingItem({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const shouldSaveRef = useRef(true);
+
   const [showPicker, setShowPicker] = useState(false);
   const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -62,11 +63,6 @@ export default function NestlingItem({
       ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
       : undefined,
     opacity: isDragging ? 0.5 : 1,
-  };
-
-  const handleDoubleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsEditing(true);
   };
 
   const handleBlur = async () => {
@@ -154,18 +150,20 @@ export default function NestlingItem({
   }, [showPicker]);
 
   return (
-    <NestlingContextMenu nestlingId={nestling.id}>
+    <NestlingContextMenu
+      nestlingId={nestling.id}
+      handleRename={() => setIsEditing(true)}
+    >
       <motion.div
         key={nestling.id}
         layout="position"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
         whileTap={{ scale: 0.98 }}
         transition={{
           type: "spring",
           stiffness: 300,
           damping: 30,
         }}
+        onDoubleClick={(e) => e.stopPropagation()}
       >
         <div
           className={cn(
@@ -181,10 +179,7 @@ export default function NestlingItem({
           onClick={() => handleSelect()}
           style={style}
         >
-          <div
-            className="flex min-w-0 flex-1 items-center gap-1.5"
-            onDoubleClick={handleDoubleClick}
-          >
+          <div className="flex min-w-0 flex-1 items-center gap-1.5">
             <button
               ref={emojiButtonRef}
               onClick={toggleEmojiPicker}

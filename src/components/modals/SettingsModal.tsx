@@ -14,9 +14,9 @@ export default function SettingsModal({
   isOpen?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
 }) {
-  const [internalOpen, setInternalOpen] = useState(false);
-  const isActuallyOpen = isOpen ?? internalOpen;
-  const setOpen = setIsOpen ?? setInternalOpen;
+  const [isInternalModalOpen, setIsInternalModalOpen] = useState(false);
+  const isModalOpen = isOpen ?? isInternalModalOpen;
+  const setModalOpen = setIsOpen ?? setIsInternalModalOpen;
 
   const [activeTab, setActiveTab] = useState("general");
   const activeNestId = useActiveNestId();
@@ -29,8 +29,8 @@ export default function SettingsModal({
 
   return (
     <BaseModal
-      isOpen={isActuallyOpen}
-      setIsOpen={setOpen}
+      isOpen={isModalOpen}
+      setIsOpen={setModalOpen}
       title="Settings"
       showCancel={false}
       isLarge

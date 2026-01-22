@@ -1,21 +1,27 @@
 import { cn } from "@/lib/utils/general";
 import { useFolders, useNestlings } from "@/stores/useNestlingStore";
-import { useActiveBackgroundId, useBackgrounds } from "@/stores/useNestStore";
+import {
+  useActiveBackgroundId,
+  useBackgrounds,
+  useMusic,
+} from "@/stores/useNestStore";
 
 export default function StatsSection() {
   const nestlings = useNestlings();
   const folders = useFolders();
   const backgrounds = useBackgrounds();
   const activeBackgroundId = useActiveBackgroundId();
+  const music = useMusic();
 
   const stats = [
     { label: "Nestlings", value: nestlings.length, icon: "🪺" },
     { label: "Folders", value: folders.length, icon: "📁" },
     { label: "Backgrounds", value: backgrounds.length, icon: "🖼️" },
+    { label: "Music", value: music.length, icon: "🎵" },
   ];
 
   return (
-    <section className="grid grid-cols-2 gap-5 md:grid-cols-3">
+    <section className="grid grid-cols-2 gap-5 md:grid-cols-4">
       {stats.map((stat, i) => (
         <div
           key={i}

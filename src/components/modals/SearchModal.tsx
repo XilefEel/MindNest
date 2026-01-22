@@ -33,6 +33,10 @@ export default function SearchModal({
   const folders = useFolders();
   const { setActiveNestlingId } = useNestlingActions();
 
+  const [isInternalModalOpen, setIsInternalModalOpen] = useState(false);
+  const isModalOpen = isOpen ?? isInternalModalOpen;
+  const setModalOpen = setIsOpen ?? setIsInternalModalOpen;
+
   const [searchQuery, setSearchQuery] = useState("");
   const filteredNestlings = nestlings.filter((nestling) =>
     nestling.title.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -45,14 +49,10 @@ export default function SearchModal({
     setIsOpen?.(false);
   };
 
-  const [internalOpen, setInternalOpen] = useState(false);
-  const isActuallyOpen = isOpen ?? internalOpen;
-  const setOpen = setIsOpen ?? setInternalOpen;
-
   return (
     <CommandDialog
-      open={isActuallyOpen}
-      onOpenChange={setOpen}
+      open={isModalOpen}
+      onOpenChange={setModalOpen}
       className={cn(
         "rounded-lg border-0 bg-white p-0 shadow-md md:min-w-[600px] dark:bg-gray-800",
         activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/30",
@@ -65,11 +65,13 @@ export default function SearchModal({
       />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="📌 Pinned Nestlings">
+        <CommandGroup
+          heading={<span className="text-base">📌 Pinned Nestlings</span>}
+        >
           {filteredNestlings
             .filter((nestling) => nestling.isPinned)
             .map((nestling) => {
-              const Icon = getNestlingIcon(nestling.nestlingType);
+              const NestlingIcon = getNestlingIcon(nestling.nestlingType);
               return (
                 <CommandItem
                   key={nestling.id}
@@ -85,7 +87,7 @@ export default function SearchModal({
                       {nestling.icon ? (
                         <p>{nestling.icon}</p>
                       ) : (
-                        <Icon className="flex-shrink-0" />
+                        <NestlingIcon className="flex-shrink-0" />
                       )}
                     </div>
 
@@ -102,11 +104,11 @@ export default function SearchModal({
               );
             })}
         </CommandGroup>
-        <CommandSeparator />
-        <CommandGroup heading="🪺 Nestlings">
+        <CommandSeparator className="my-1" />
+        <CommandGroup heading={<span className="text-base">🪺 Nestlings</span>}>
           {filteredNestlings.length > 0 &&
             filteredNestlings.map((nestling) => {
-              const Icon = getNestlingIcon(nestling.nestlingType);
+              const NestlingIcon = getNestlingIcon(nestling.nestlingType);
               return (
                 <CommandItem
                   key={nestling.id}
@@ -122,7 +124,7 @@ export default function SearchModal({
                       {nestling.icon ? (
                         <p>{nestling.icon}</p>
                       ) : (
-                        <Icon className="flex-shrink-0" />
+                        <NestlingIcon className="flex-shrink-0" />
                       )}
                     </div>
 

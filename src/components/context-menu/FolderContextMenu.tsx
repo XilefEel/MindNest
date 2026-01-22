@@ -11,9 +11,11 @@ import { cn } from "@/lib/utils/general";
 
 export default function FolderContextMenu({
   folderId,
+  handleRename,
   children,
 }: {
   folderId: number;
+  handleRename?: () => void;
   children: React.ReactNode;
 }) {
   const activeNestId = useActiveNestId();
@@ -24,21 +26,11 @@ export default function FolderContextMenu({
     <BaseContextMenu
       content={
         <>
-          <FolderModal folderId={folderId} nestId={activeNestId!}>
-            <ContextMenu.Item
-              className={cn(
-                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
-                activeBackgroundId &&
-                  "hover:bg-white/30 dark:hover:bg-black/30",
-              )}
-              onSelect={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <Edit3 className="size-4" />
-              Rename Folder
-            </ContextMenu.Item>
-          </FolderModal>
+          <ContextMenuItem
+            action={handleRename}
+            Icon={Edit3}
+            text="Rename Folder"
+          />
 
           <ContextMenuItem
             action={() => duplicateFolder(folderId)}
@@ -48,7 +40,7 @@ export default function FolderContextMenu({
 
           <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
 
-          <NestlingModal nestId={activeNestId!}>
+          <NestlingModal nestId={activeNestId!} folderId={folderId}>
             <ContextMenu.Item
               className={cn(
                 "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
@@ -64,11 +56,21 @@ export default function FolderContextMenu({
             </ContextMenu.Item>
           </NestlingModal>
 
-          <ContextMenuItem
-            action={() => console.log("New subfolder", folderId)}
-            Icon={FolderPlus}
-            text="New Subfolder"
-          />
+          <FolderModal parentId={folderId} nestId={activeNestId!}>
+            <ContextMenu.Item
+              className={cn(
+                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
+                activeBackgroundId &&
+                  "hover:bg-white/30 dark:hover:bg-black/30",
+              )}
+              onSelect={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <FolderPlus className="size-4" />
+              New Subfolder
+            </ContextMenu.Item>
+          </FolderModal>
 
           <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
 
