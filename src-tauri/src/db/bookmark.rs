@@ -139,7 +139,8 @@ pub fn get_bookmarks_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<B
         .prepare("
             SELECT id, nestling_id, url, title, description, image_url, favicon_url, created_at, updated_at
             FROM bookmarks
-            WHERE nestling_id = ?1"
+            WHERE nestling_id = ?1
+            ORDER BY created_at DESC"
         )?;
 
     let rows = statement.query_map([nestling_id], |row| {
