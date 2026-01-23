@@ -25,6 +25,12 @@ pub enum DbError {
 
     #[error(transparent)]
     AudioError(#[from] lofty::error::LoftyError),
+
+    #[error(transparent)]
+    HttpError(#[from] reqwest::Error),
+
+    #[error("Invalid URL: {0}")]
+    InvalidUrl(#[from] url::ParseError),
 }
 
 impl serde::Serialize for DbError {

@@ -172,3 +172,16 @@ CREATE TABLE IF NOT EXISTS mindmap_edges (
     FOREIGN KEY (source_id) REFERENCES mindmap_nodes(id) ON DELETE CASCADE,
     FOREIGN KEY (target_id) REFERENCES mindmap_nodes(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS bookmarks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nestling_id INTEGER NOT NULL,
+    url TEXT NOT NULL,
+    title TEXT,
+    description TEXT,
+    image_url TEXT,
+    favicon_url TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
+);

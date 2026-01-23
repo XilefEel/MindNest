@@ -36,3 +36,6 @@ tauri-plugin-fs = "2"
 zip = "5.1.1"
 lofty = "0.22.4"
 thiserror = "2.0.17"
+reqwest = {version = "0.13.1", features = ["json"] }
+url = "2.5.8"
+scraper = "0.25.0"

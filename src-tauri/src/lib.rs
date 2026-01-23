@@ -42,6 +42,8 @@ use handler::mindmap::{
     create_edge, create_node, delete_edge, delete_node, get_edges, get_nodes, update_node,
 };
 
+use handler::bookmark::{create_bookmark, delete_bookmark, get_bookmarks};
+
 use crate::utils::db::{init_db, AppDb};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -143,7 +145,11 @@ pub fn run() {
             import_music,
             get_music,
             update_music,
-            delete_music
+            delete_music,
+            //Bookmark
+            create_bookmark,
+            get_bookmarks,
+            delete_bookmark
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
