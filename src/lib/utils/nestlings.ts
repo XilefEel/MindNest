@@ -7,6 +7,7 @@ import {
   Table2,
   Network,
   LucideIcon,
+  BookmarkCheck,
 } from "lucide-react";
 import { NestlingType } from "../types/nestling";
 import * as nestlingApi from "@/lib/api/nestling";
@@ -33,6 +34,12 @@ export const nestlingTypes: NestlingTypeOption[] = [
   { value: "journal", label: "Journal", icon: Notebook, color: "bg-amber-500" },
   { value: "gallery", label: "Gallery", icon: Images, color: "bg-pink-500" },
   { value: "mindmap", label: "Mindmap", icon: Network, color: "bg-green-500" },
+  {
+    value: "bookmark",
+    label: "Bookmark",
+    icon: BookmarkCheck,
+    color: "bg-yellow-500",
+  },
   {
     value: "database",
     label: "Database",

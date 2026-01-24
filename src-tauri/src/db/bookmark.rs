@@ -13,7 +13,7 @@ use scraper::{Html, Selector};
 use url::Url;
 
 async fn fetch_metadata(url: &str) -> DbResult<BookmarkMetadata> {
-    let parsed_url = Url::parse(url)?;
+    // let parsed_url = Url::parse(url)?;
 
     let client = Client::builder()
         .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")

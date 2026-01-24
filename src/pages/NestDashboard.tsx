@@ -21,6 +21,7 @@ import SearchModal from "@/components/modals/SearchModal";
 import SettingsModal from "@/components/modals/SettingsModal";
 import { useActiveNestling } from "@/stores/useNestlingStore";
 import FloatingMusicPlayer from "@/components/nest-dashboard/music/FloatingMusicPlayer";
+import BookmarkEditor from "@/components/editors/bookmark/BookmarkEditor";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -203,6 +204,8 @@ export default function NestDashboardPage() {
               <GalleryEditor key={activeNestling.id} />
             ) : activeNestling?.nestlingType === "mindmap" ? (
               <MindmapEditor key={activeNestling.id} />
+            ) : activeNestling?.nestlingType === "bookmark" ? (
+              <BookmarkEditor key={activeNestling.id} />
             ) : (
               <Home nestId={nest.id} />
             )}

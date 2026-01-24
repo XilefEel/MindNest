@@ -7,6 +7,7 @@ export type NestlingType =
   | "journal"
   | "gallery"
   | "mindmap"
+  | "bookmark"
   | "database";
 
 export type NewNestling = {
