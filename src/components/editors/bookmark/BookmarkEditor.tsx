@@ -27,6 +27,7 @@ export default function BookmarkEditor() {
 
   const [isAdding, setIsAdding] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
+  const [isDragging, setIsDragging] = useState(false);
 
   const nestlingData = useMemo(() => ({ title }), [title]);
   useAutoSave(activeNestling.id!, nestlingData, updateNestling);
@@ -35,7 +36,7 @@ export default function BookmarkEditor() {
     getBookmarks(activeNestling.id!);
   }, [getBookmarks, activeNestling]);
 
-  const handleAddBookmark = async () => {
+  const handleAddBookmark = async (url: string) => {
     if (!url.trim()) return;
 
     setIsAdding(true);
@@ -59,8 +60,35 @@ export default function BookmarkEditor() {
     }
   };
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const droppedUrl =
+      e.dataTransfer.getData("text/uri-list") ||
+      e.dataTransfer.getData("text/plain");
+
+    if (droppedUrl && droppedUrl.startsWith("http")) {
+      handleAddBookmark(droppedUrl);
+    }
+  };
+
   return (
-    <div className="space-y-4">
+    <div
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className={cn("space-y-4")}
+    >
       <NestlingTitle
         title={title}
         setTitle={setTitle}
@@ -83,7 +111,7 @@ export default function BookmarkEditor() {
           />
 
           <button
-            onClick={handleAddBookmark}
+            onClick={() => handleAddBookmark(url)}
             disabled={isAdding || !url.trim()}
             className="flex cursor-pointer items-center justify-center gap-1 rounded-lg bg-teal-400 px-3 text-white shadow-sm transition hover:bg-teal-500 disabled:cursor-default disabled:opacity-50 disabled:hover:bg-teal-400 dark:bg-teal-500 dark:hover:bg-teal-600 disabled:dark:bg-teal-500"
           >
@@ -123,28 +151,34 @@ export default function BookmarkEditor() {
         </div>
       </div>
 
-      {bookmarks.length === 0 && (
-        <div className="py-12 text-center text-gray-400">
-          No bookmarks yet. Add one above!
-        </div>
-      )}
-
       <div
         className={cn(
-          "gap-4",
-          viewMode === "grid"
-            ? "grid grid-cols-2 md:grid-cols-3"
-            : "flex flex-col",
+          isDragging && "h-full rounded-lg outline-teal-500 outline-dashed",
         )}
       >
-        {bookmarks.map((bookmark) => (
-          <BookmarkCard
-            key={bookmark.id}
-            bookmark={bookmark}
-            viewMode={viewMode}
-            handleDelete={handleDelete}
-          />
-        ))}
+        {bookmarks.length === 0 && (
+          <div className="py-12 text-center text-gray-400">
+            No bookmarks yet. Add one above!
+          </div>
+        )}
+
+        <div
+          className={cn(
+            "gap-4",
+            viewMode === "grid"
+              ? "grid grid-cols-2 md:grid-cols-3"
+              : "flex flex-col",
+          )}
+        >
+          {bookmarks.map((bookmark) => (
+            <BookmarkCard
+              key={bookmark.id}
+              bookmark={bookmark}
+              viewMode={viewMode}
+              handleDelete={handleDelete}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
