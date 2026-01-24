@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Bookmark {
     pub id: i64,
     pub nestling_id: i64,
@@ -14,6 +15,7 @@ pub struct Bookmark {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NewBookmark {
     pub nestling_id: i64,
     pub url: String,

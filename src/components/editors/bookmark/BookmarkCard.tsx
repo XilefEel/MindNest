@@ -23,10 +23,10 @@ export default function BookmarkCard({
             "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
-        {bookmark.image_url ? (
+        {bookmark.imageUrl ? (
           <div className="aspect-video w-full overflow-hidden bg-gray-100 dark:bg-gray-700">
             <img
-              src={bookmark.image_url}
+              src={bookmark.imageUrl}
               alt={bookmark.title || "Bookmark"}
               loading="lazy"
               className="h-full w-full object-cover transition-transform group-hover:scale-105"
@@ -76,10 +76,10 @@ export default function BookmarkCard({
           "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
       )}
     >
-      {bookmark.image_url && (
+      {bookmark.imageUrl && (
         <div className="h-32 w-32 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
           <img
-            src={bookmark.image_url}
+            src={bookmark.imageUrl}
             alt={bookmark.title || "Bookmark"}
             loading="lazy"
             className="h-full w-full object-cover"

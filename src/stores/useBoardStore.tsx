@@ -148,13 +148,13 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   removeColumn: withStoreErrorHandler(set, async (columnId) => {
     await boardApi.deleteBoardColumn(columnId);
 
-    set((state) => ({
-      columns: state.columns.filter((col) => col.id !== columnId),
-    }));
-
     await updateNestlingTimestamp(
       get().columns.find((col) => col.id === columnId)!.nestlingId,
     );
+
+    set((state) => ({
+      columns: state.columns.filter((col) => col.id !== columnId),
+    }));
   }),
 
   createCard: withStoreErrorHandler(set, async (card) => {
