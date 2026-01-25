@@ -10,7 +10,6 @@ use rusqlite::params;
 
 use reqwest::Client;
 use scraper::{Html, Selector};
-use url::Url;
 
 async fn fetch_metadata(url: &str) -> DbResult<BookmarkMetadata> {
     let client = Client::builder()

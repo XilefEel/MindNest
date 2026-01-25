@@ -1,6 +1,6 @@
 import { save } from "@tauri-apps/plugin-dialog";
 import { Editor } from "@tiptap/react";
-import { writeFile } from "@tauri-apps/plugin-fs";
+import { writeTextFile } from "@tauri-apps/plugin-fs";
 import { toast } from "sonner";
 
 export const exportNoteToHTML = async (editor: Editor, title: string) => {
@@ -58,12 +58,11 @@ export const exportNoteToHTML = async (editor: Editor, title: string) => {
     });
 
     if (filePath) {
-      await writeFile(filePath, new TextEncoder().encode(fullHTML));
+      await writeTextFile(filePath, fullHTML);
       toast.success("Note exported successfully!");
-      return;
     }
   } catch (error) {
-    console.error("Error saving file:", error);
-    throw error;
+    console.error("Error exporting note: ", error);
+    toast.error("Error exporting note");
   }
 };
