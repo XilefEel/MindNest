@@ -13,8 +13,6 @@ use scraper::{Html, Selector};
 use url::Url;
 
 async fn fetch_metadata(url: &str) -> DbResult<BookmarkMetadata> {
-    // let parsed_url = Url::parse(url)?;
-
     let client = Client::builder()
         .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
         .timeout(std::time::Duration::from_secs(10))
@@ -41,7 +39,6 @@ async fn fetch_metadata(url: &str) -> DbResult<BookmarkMetadata> {
         title,
         description,
         image_url,
-        favicon_url: None
     })
 }
 
@@ -77,9 +74,9 @@ fn insert_bookmark_into_db(db: &AppDb, data: NewBookmark) -> DbResult<Bookmark> 
 
     let mut statement = connection
         .prepare("
-            INSERT INTO bookmarks (nestling_id, url, title, description, image_url, favicon_url, created_at, updated_at)
+            INSERT INTO bookmarks (nestling_id, url, title, description, image_url, is_favorite, created_at, updated_at)
             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
-            RETURNING id, nestling_id, url, title, description, image_url, favicon_url, created_at, updated_at"
+            RETURNING id, nestling_id, url, title, description, image_url, is_favorite, created_at, updated_at"
         )?;
 
     let bookmark = statement.query_row(
@@ -89,7 +86,7 @@ fn insert_bookmark_into_db(db: &AppDb, data: NewBookmark) -> DbResult<Bookmark> 
             data.title,
             data.description,
             data.image_url,
-            data.favicon_url,
+            data.is_favorite,
             created_at,
             created_at
         ],
@@ -101,7 +98,7 @@ fn insert_bookmark_into_db(db: &AppDb, data: NewBookmark) -> DbResult<Bookmark> 
                 title: row.get(3)?,
                 description: row.get(4)?,
                 image_url: row.get(5)?,
-                favicon_url: row.get(6)?,
+                is_favorite: row.get(6)?,
                 created_at: row.get(7)?,
                 updated_at: row.get(8)?,
             })
@@ -124,7 +121,7 @@ pub async fn create_new_bookmark_in_db(
         title: metadata.title,
         description: metadata.description,
         image_url: metadata.image_url,
-        favicon_url: metadata.favicon_url,
+        is_favorite: false,
     };
 
     let bookmark = insert_bookmark_into_db(db, new_bookmark)?;
@@ -132,15 +129,27 @@ pub async fn create_new_bookmark_in_db(
     Ok(bookmark)
 }
 
+pub fn toggle_bookmark_favorite_in_db(db: &AppDb, id: i64) -> DbResult<()> {
+    let connection = db.connection.lock().unwrap();
+    let updated_at = Utc::now().to_rfc3339();
+
+    connection.execute(
+        "UPDATE bookmarks SET is_favorite = NOT is_favorite, updated_at = ?1 WHERE id = ?2",
+        params![updated_at, id],
+    )?;
+
+    Ok(())
+}
+
 pub fn get_bookmarks_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Bookmark>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
         .prepare("
-            SELECT id, nestling_id, url, title, description, image_url, favicon_url, created_at, updated_at
+            SELECT id, nestling_id, url, title, description, image_url, is_favorite, created_at, updated_at
             FROM bookmarks
             WHERE nestling_id = ?1
-            ORDER BY created_at DESC"
+            ORDER BY is_favorite DESC, created_at DESC"
         )?;
 
     let rows = statement.query_map([nestling_id], |row| {
@@ -151,7 +160,7 @@ pub fn get_bookmarks_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<B
             title: row.get(3)?,
             description: row.get(4)?,
             image_url: row.get(5)?,
-            favicon_url: row.get(6)?,
+            is_favorite: row.get(6)?,
             created_at: row.get(7)?,
             updated_at: row.get(8)?,
         })

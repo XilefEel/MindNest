@@ -2,6 +2,7 @@ import { Star, Trash2 } from "lucide-react";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import ImageContextMenu from "@/components/context-menu/ImageContextMenu";
+import { cn } from "@/lib/utils/general";
 
 export default function ImageCard({
   imageProps,
@@ -52,11 +53,12 @@ export default function ImageCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent opacity-0 transition-all duration-200 group-hover:opacity-100">
           <div className="absolute top-2 left-2">
             <button
-              className={`rounded-full p-1.5 shadow transition ${
+              className={cn(
+                "rounded-full p-1.5 shadow transition",
                 photo.isFavorite
                   ? "bg-yellow-400 text-white hover:bg-yellow-500"
-                  : "bg-gray-200 text-gray-600 hover:bg-gray-300"
-              }`}
+                  : "bg-gray-200 text-gray-600 hover:bg-gray-300",
+              )}
               onClick={(e) => {
                 e.stopPropagation();
                 handleAddToFavorites(photo);

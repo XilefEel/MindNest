@@ -1,5 +1,4 @@
 import { clsx, type ClassValue } from "clsx";
-
 import { twMerge } from "tailwind-merge";
 import { BackgroundMusic } from "../types/background-music";
 import { BoardColumn, BoardCard } from "../types/board";

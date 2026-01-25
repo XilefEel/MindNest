@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS bookmarks (
     title TEXT,
     description TEXT,
     image_url TEXT,
-    favicon_url TEXT,
+    is_favorite BOOLEAN NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
     FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE

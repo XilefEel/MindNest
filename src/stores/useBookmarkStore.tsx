@@ -12,6 +12,7 @@ type BookmarkState = {
 
   getBookmarks: (nestlingId: number) => Promise<void>;
   createBookmark: (nestlingId: number, url: string) => Promise<void>;
+  toggleBookmarkFavorite: (id: number) => Promise<void>;
   deleteBookmark: (id: number) => Promise<void>;
 };
 
@@ -36,6 +37,20 @@ export const useBookmarkStore = create<BookmarkState>()((set, get) => ({
     },
   ),
 
+  toggleBookmarkFavorite: withStoreErrorHandler(set, async (id: number) => {
+    await bookmarkApi.toggleBookmarkFavorite(id);
+
+    set((state) => ({
+      bookmarks: state.bookmarks.map((b) =>
+        b.id === id ? { ...b, isFavorite: !b.isFavorite } : b,
+      ),
+    }));
+
+    await updateNestlingTimestamp(
+      get().bookmarks.find((bookmark) => bookmark.id === id)!.nestlingId,
+    );
+  }),
+
   deleteBookmark: withStoreErrorHandler(set, async (id: number) => {
     await bookmarkApi.deleteBookmark(id);
 
@@ -56,6 +71,7 @@ export const useBookmarkActions = () =>
     useShallow((state) => ({
       getBookmarks: state.getBookmarks,
       createBookmark: state.createBookmark,
+      toggleBookmarkFavorite: state.toggleBookmarkFavorite,
       deleteBookmark: state.deleteBookmark,
     })),
   );

@@ -18,7 +18,12 @@ export default function BookmarkEditor() {
   if (!activeNestling) return null;
 
   const bookmarks = useBookmarks();
-  const { getBookmarks, createBookmark, deleteBookmark } = useBookmarkActions();
+  const {
+    getBookmarks,
+    createBookmark,
+    deleteBookmark,
+    toggleBookmarkFavorite,
+  } = useBookmarkActions();
   const { updateNestling } = useNestlingActions();
   const activeBackgroundId = useActiveBackgroundId();
 
@@ -31,10 +36,6 @@ export default function BookmarkEditor() {
 
   const nestlingData = useMemo(() => ({ title }), [title]);
   useAutoSave(activeNestling.id!, nestlingData, updateNestling);
-
-  useEffect(() => {
-    getBookmarks(activeNestling.id!);
-  }, [getBookmarks, activeNestling]);
 
   const handleAddBookmark = async (url: string) => {
     if (!url.trim()) return;
@@ -60,6 +61,14 @@ export default function BookmarkEditor() {
     }
   };
 
+  const handleToggleFavorite = async (id: number) => {
+    try {
+      await toggleBookmarkFavorite(id);
+    } catch (error) {
+      console.error("Failed to toggle bookmark favorite:", error);
+    }
+  };
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -81,6 +90,10 @@ export default function BookmarkEditor() {
       handleAddBookmark(droppedUrl);
     }
   };
+
+  useEffect(() => {
+    getBookmarks(activeNestling.id!);
+  }, [getBookmarks, activeNestling]);
 
   return (
     <div
@@ -176,6 +189,7 @@ export default function BookmarkEditor() {
               bookmark={bookmark}
               viewMode={viewMode}
               handleDelete={handleDelete}
+              handleToggleFavorite={handleToggleFavorite}
             />
           ))}
         </div>

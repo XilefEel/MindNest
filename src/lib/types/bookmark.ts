@@ -6,7 +6,7 @@ export type NewBookmark = {
   title: string | null;
   description: string | null;
   imageUrl: string | null;
-  faviconUrl: string | null;
+  isFavorite: boolean;
 };
 
 export type Bookmark = WithBase<NewBookmark>;

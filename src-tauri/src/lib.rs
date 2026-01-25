@@ -42,7 +42,7 @@ use handler::mindmap::{
     create_edge, create_node, delete_edge, delete_node, get_edges, get_nodes, update_node,
 };
 
-use handler::bookmark::{create_bookmark, delete_bookmark, get_bookmarks};
+use handler::bookmark::{create_bookmark, toggle_bookmark_favorite, delete_bookmark, get_bookmarks};
 
 use crate::utils::db::{init_db, AppDb};
 
@@ -149,6 +149,7 @@ pub fn run() {
             //Bookmark
             create_bookmark,
             get_bookmarks,
+            toggle_bookmark_favorite,
             delete_bookmark
         ])
         .run(tauri::generate_context!())

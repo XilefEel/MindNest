@@ -1,16 +1,18 @@
 import { Bookmark } from "@/lib/types/bookmark";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
-import { Trash2 } from "lucide-react";
+import { Star, Trash2 } from "lucide-react";
 
 export default function BookmarkCard({
   bookmark,
   viewMode,
   handleDelete,
+  handleToggleFavorite,
 }: {
   bookmark: Bookmark;
   viewMode: "list" | "grid";
   handleDelete: (id: number) => void;
+  handleToggleFavorite: (id: number) => void;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
 
@@ -59,6 +61,25 @@ export default function BookmarkCard({
         </div>
 
         <button
+          onClick={() => handleToggleFavorite(bookmark.id)}
+          className={cn(
+            "absolute top-2 left-2 cursor-pointer rounded-full p-2 shadow-md transition-colors",
+            bookmark.isFavorite
+              ? "bg-yellow-400 opacity-100"
+              : "bg-white/80 opacity-0 group-hover:opacity-100 hover:bg-white/90 dark:bg-gray-900/80 dark:hover:bg-gray-900/90",
+          )}
+        >
+          <Star
+            className={cn(
+              "h-4 w-4 transition-all",
+              bookmark.isFavorite
+                ? "fill-white text-white"
+                : "text-gray-400 hover:text-yellow-400 dark:text-gray-300",
+            )}
+          />
+        </button>
+
+        <button
           onClick={() => handleDelete(bookmark.id)}
           className="absolute top-2 right-2 cursor-pointer rounded-full bg-white/80 p-2 opacity-0 shadow-md transition-all group-hover:opacity-100 hover:bg-white/90 dark:bg-gray-900/80 dark:hover:bg-gray-900/90"
         >
@@ -105,6 +126,30 @@ export default function BookmarkCard({
           </p>
         )}
       </div>
+
+      <button
+        onClick={() => handleToggleFavorite(bookmark.id)}
+        className={cn(
+          "absolute top-3 left-3 cursor-pointer rounded-full p-2 transition-colors",
+          bookmark.isFavorite
+            ? "bg-yellow-400 opacity-100"
+            : cn(
+                "opacity-0 group-hover:opacity-100",
+                activeBackgroundId
+                  ? "border-0 hover:bg-white/30 hover:dark:bg-black/30"
+                  : "hover:bg-gray-100 dark:hover:bg-gray-700",
+              ),
+        )}
+      >
+        <Star
+          className={cn(
+            "h-4 w-4 transition-all",
+            bookmark.isFavorite
+              ? "fill-white text-white"
+              : "text-gray-400 hover:text-yellow-400 dark:text-gray-300",
+          )}
+        />
+      </button>
 
       <button
         onClick={() => handleDelete(bookmark.id)}

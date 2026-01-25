@@ -9,7 +9,7 @@ pub struct Bookmark {
     pub title: Option<String>,
     pub description: Option<String>,
     pub image_url: Option<String>,
-    pub favicon_url: Option<String>,
+    pub is_favorite: bool,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -22,7 +22,7 @@ pub struct NewBookmark {
     pub title: Option<String>,
     pub description: Option<String>,
     pub image_url: Option<String>,
-    pub favicon_url: Option<String>,
+    pub is_favorite: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -30,5 +30,4 @@ pub struct BookmarkMetadata {
     pub title: Option<String>,
     pub description: Option<String>,
     pub image_url: Option<String>,
-    pub favicon_url: Option<String>,
 }

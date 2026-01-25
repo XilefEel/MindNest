@@ -12,6 +12,10 @@ export async function getBookmarks(nestlingId: number) {
   return await invoke<Bookmark[]>("get_bookmarks", { nestlingId });
 }
 
+export async function toggleBookmarkFavorite(id: number) {
+  return await invoke<void>("toggle_bookmark_favorite", { id });
+}
+
 export async function deleteBookmark(id: number) {
   return await invoke<void>("delete_bookmark", { id });
 }
