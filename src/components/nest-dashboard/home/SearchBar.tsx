@@ -35,7 +35,7 @@ export default function SearchBar() {
       <div className="relative">
         <section className="relative">
           <div className="relative">
-            <Search className="absolute top-2.5 left-4 h-5 w-5 text-slate-400" />
+            <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
             <Input
               placeholder="Search your nestlings..."
               value={searchQuery}

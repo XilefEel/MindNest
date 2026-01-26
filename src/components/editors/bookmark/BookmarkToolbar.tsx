@@ -4,7 +4,15 @@ import { exportBookmarksToJson } from "@/lib/utils/bookmark";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import { Plus, ExternalLink, Download, Grid, List } from "lucide-react";
+import {
+  Plus,
+  ExternalLink,
+  Download,
+  Grid,
+  List,
+  Search,
+  Link,
+} from "lucide-react";
 
 export default function BookmarkToolbar({
   title,
@@ -12,18 +20,22 @@ export default function BookmarkToolbar({
   url,
   isAdding,
   viewMode,
+  searchQuery,
   setUrl,
   setViewMode,
   handleAddBookmark,
+  setSearchQuery,
 }: {
   title: string;
   bookmarks: Bookmark[];
   url: string;
   isAdding: boolean;
   viewMode: "grid" | "list";
+  searchQuery: string;
   setUrl: (url: string) => void;
   setViewMode: (viewMode: "grid" | "list") => void;
   handleAddBookmark: (url: string) => void;
+  setSearchQuery: (query: string) => void;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
 
@@ -33,28 +45,48 @@ export default function BookmarkToolbar({
 
   return (
     <div className="flex flex-row items-center justify-between gap-2">
-      <div className="flex flex-1 gap-2 text-sm">
-        <input
-          type="url"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="Paste a URL..."
-          className={cn(
-            "w-1/2 rounded-lg border border-gray-300 bg-white px-4 py-1.5 shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-teal-400",
-            activeBackgroundId &&
-              "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
-          )}
-          disabled={isAdding}
-        />
+      <div className="flex flex-1 justify-between text-sm">
+        <div className="flex gap-2">
+          <div className="relative w-[300px]">
+            <Link className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <input
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="Paste a URL..."
+              className={cn(
+                "w-full rounded-lg border border-gray-300 bg-white py-1.5 pr-4 pl-9 shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-teal-400",
+                activeBackgroundId &&
+                  "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+              )}
+              disabled={isAdding}
+            />
+          </div>
 
-        <button
-          onClick={() => handleAddBookmark(url)}
-          disabled={isAdding || !url.trim()}
-          className="flex cursor-pointer items-center justify-center gap-1 rounded-lg bg-teal-400 px-3 text-white shadow-sm transition hover:bg-teal-500 disabled:cursor-default disabled:opacity-50 disabled:hover:bg-teal-400 dark:bg-teal-500 dark:hover:bg-teal-600 disabled:dark:bg-teal-500"
-        >
-          <Plus className="size-4" />
-          {isAdding ? "Adding..." : "Add"}
-        </button>
+          <button
+            onClick={() => handleAddBookmark(url)}
+            disabled={isAdding || !url.trim()}
+            className="flex cursor-pointer items-center justify-center gap-1 rounded-lg bg-teal-400 px-3 text-white shadow-sm transition hover:bg-teal-500 disabled:cursor-default disabled:opacity-50 disabled:hover:bg-teal-400 dark:bg-teal-500 dark:hover:bg-teal-600 disabled:dark:bg-teal-500"
+          >
+            <Plus className="size-4" />
+            {isAdding ? "Adding..." : "Add"}
+          </button>
+        </div>
+
+        <div className="relative w-[200px]">
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search..."
+            className={cn(
+              "w-full rounded-lg border border-gray-300 bg-white py-1.5 pr-4 pl-9 shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-teal-400",
+              activeBackgroundId &&
+                "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+            )}
+          />
+        </div>
       </div>
 
       <BaseToolTip label="Open All">

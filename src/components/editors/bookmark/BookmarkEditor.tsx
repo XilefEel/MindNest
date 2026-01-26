@@ -30,6 +30,19 @@ export default function BookmarkEditor() {
   const [isAdding, setIsAdding] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const [isDragging, setIsDragging] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredBookmarks = useMemo(() => {
+    if (!searchQuery) return bookmarks;
+
+    const query = searchQuery.toLowerCase();
+    return bookmarks.filter(
+      (b) =>
+        b.title?.toLowerCase().includes(query) ||
+        b.description?.toLowerCase().includes(query) ||
+        b.url?.toLowerCase().includes(query),
+    );
+  }, [bookmarks, searchQuery]);
 
   const nestlingData = useMemo(() => ({ title }), [title]);
   useAutoSave(activeNestling.id!, nestlingData, updateNestling);
@@ -111,9 +124,11 @@ export default function BookmarkEditor() {
         url={url}
         isAdding={isAdding}
         viewMode={viewMode}
+        searchQuery={searchQuery}
         setUrl={setUrl}
         setViewMode={setViewMode}
         handleAddBookmark={handleAddBookmark}
+        setSearchQuery={setSearchQuery}
       />
 
       <div
@@ -127,6 +142,12 @@ export default function BookmarkEditor() {
           </div>
         )}
 
+        {filteredBookmarks.length === 0 && searchQuery && (
+          <div className="py-12 text-center text-gray-400">
+            No bookmarks found for "{searchQuery}"
+          </div>
+        )}
+
         <div
           className={cn(
             "gap-4",
@@ -135,7 +156,7 @@ export default function BookmarkEditor() {
               : "flex flex-col",
           )}
         >
-          {bookmarks.map((bookmark) => (
+          {filteredBookmarks.map((bookmark) => (
             <BookmarkCard
               key={bookmark.id}
               bookmark={bookmark}
