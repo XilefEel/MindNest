@@ -4,19 +4,10 @@ import NestSettings from "../nest-dashboard/settings/NestSettings";
 import { cn } from "@/lib/utils/general";
 import BaseModal from "./BaseModal";
 import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
+import { useSettingsModal } from "@/stores/useModalStore";
 
-export default function SettingsModal({
-  children,
-  isOpen,
-  setIsOpen,
-}: {
-  children: React.ReactNode;
-  isOpen?: boolean;
-  setIsOpen?: (isOpen: boolean) => void;
-}) {
-  const [isInternalModalOpen, setIsInternalModalOpen] = useState(false);
-  const isModalOpen = isOpen ?? isInternalModalOpen;
-  const setModalOpen = setIsOpen ?? setIsInternalModalOpen;
+export default function SettingsModal() {
+  const { isSettingsOpen, setIsSettingsOpen } = useSettingsModal();
 
   const [activeTab, setActiveTab] = useState("general");
   const activeNestId = useActiveNestId();
@@ -29,8 +20,8 @@ export default function SettingsModal({
 
   return (
     <BaseModal
-      isOpen={isModalOpen}
-      setIsOpen={setModalOpen}
+      isOpen={isSettingsOpen}
+      setIsOpen={setIsSettingsOpen}
       title="Settings"
       showCancel={false}
       isLarge
@@ -69,7 +60,7 @@ export default function SettingsModal({
         </div>
       }
     >
-      {children}
+      <div />
     </BaseModal>
   );
 }

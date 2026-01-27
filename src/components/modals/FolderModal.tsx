@@ -7,35 +7,23 @@ import {
 } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
+import { useFolderModal } from "@/stores/useModalStore";
 
-export default function FolderModal({
-  children,
-  nestId,
-  parentId,
-  isOpen,
-  setIsOpen,
-}: {
-  children: React.ReactNode;
-  nestId: number;
-  parentId?: number;
-  isOpen?: boolean;
-  setIsOpen?: (isOpen: boolean) => void;
-}) {
+export default function FolderModal() {
   const activeFolderId = useNestlingStore((state) => state.activeFolderId);
   const { addFolder } = useNestlingActions();
 
   const [title, setTitle] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
-  const [isInternalModalOpen, setIsInternalModalOpen] = useState(false);
-  const isModalOpen = isOpen ?? isInternalModalOpen;
-  const setModalOpen = setIsOpen ?? setIsInternalModalOpen;
+  const { isFolderOpen, folderNestId, folderParentId, closeFolderModal } =
+    useFolderModal();
 
-  const effectiveParentId = parentId ?? activeFolderId;
+  const effectiveParentId = folderParentId ?? activeFolderId;
 
   const handleCloseModal = async () => {
     setTitle("");
-    setModalOpen(false);
+    closeFolderModal();
   };
 
   const handleSaveFolder = async () => {
@@ -43,7 +31,7 @@ export default function FolderModal({
     setIsSaving(true);
     try {
       await addFolder({
-        nestId,
+        nestId: folderNestId!,
         parentId: effectiveParentId!,
         name: title,
       });
@@ -60,8 +48,8 @@ export default function FolderModal({
 
   return (
     <BaseModal
-      isOpen={isModalOpen}
-      setIsOpen={setModalOpen}
+      isOpen={isFolderOpen}
+      setIsOpen={handleCloseModal}
       onSubmit={handleSaveFolder}
       title="Create a New Folder"
       description="Create a new folder to organize your notes."
@@ -83,7 +71,7 @@ export default function FolderModal({
         </Button>
       }
     >
-      {children}
+      <div />
     </BaseModal>
   );
 }

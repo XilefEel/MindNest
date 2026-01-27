@@ -2,13 +2,13 @@ import { Nest } from "@/lib/types/nest";
 import { Button } from "../../ui/button";
 import { Settings, Link, ArrowLeft, CircleUserRound, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import SettingsModal from "../../modals/SettingsModal";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId, useNestActions } from "@/stores/useNestStore";
 import { useNestlingActions } from "@/stores/useNestlingStore";
 import TopbarButton from "./TopbarButton";
 import { useEffect, useRef, useState } from "react";
 import { clearLastNestId } from "@/lib/storage/nest";
+import { useSettingsModal } from "@/stores/useModalStore";
 
 export default function Topbar({
   nest,
@@ -24,6 +24,7 @@ export default function Topbar({
   const { setActiveNestlingId } = useNestlingActions();
   const { setActiveBackgroundId, setActiveNestId, updateNest } =
     useNestActions();
+  const { setIsSettingsOpen } = useSettingsModal();
 
   const handleExit = () => {
     navigate("/dashboard");
@@ -128,20 +129,19 @@ export default function Topbar({
       >
         <TopbarButton action={() => console.log("share nest")} Icon={Link} />
 
-        <SettingsModal>
-          <Button
-            variant="ghost"
-            className={cn(
-              "cursor-pointer rounded-lg hover:bg-teal-100 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
-              activeBackgroundId && "hover:bg-white/20 dark:hover:bg-black/20",
-            )}
-            onDoubleClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <Settings className="size-4 sm:size-5" />
-          </Button>
-        </SettingsModal>
+        <Button
+          variant="ghost"
+          className={cn(
+            "cursor-pointer rounded-lg hover:bg-teal-100 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
+            activeBackgroundId && "hover:bg-white/20 dark:hover:bg-black/20",
+          )}
+          onClick={() => setIsSettingsOpen(true)}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Settings className="size-4 sm:size-5" />
+        </Button>
 
         <TopbarButton
           action={() => console.log("profile")}

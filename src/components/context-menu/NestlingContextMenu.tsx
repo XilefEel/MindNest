@@ -1,10 +1,10 @@
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, Trash2, Copy, Archive, Pin, PinOff } from "lucide-react";
-import DeleteModal from "../modals/DeleteModal";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
 import { toast } from "sonner";
+import { useDeleteModal } from "@/stores/useModalStore";
 
 export default function NestlingContextMenu({
   nestlingId,
@@ -17,6 +17,7 @@ export default function NestlingContextMenu({
 }) {
   const nestlings = useNestlings();
   const { duplicateNestling, updateNestling } = useNestlingActions();
+  const { setDeleteTarget } = useDeleteModal();
 
   const nestling = nestlings.find((n) => n.id === nestlingId);
   if (!nestling) return null;
@@ -60,20 +61,16 @@ export default function NestlingContextMenu({
             action={() => console.log("Archive", nestlingId)}
           />
 
-          <DeleteModal type="nestling" nestlingId={nestlingId}>
-            {/* Using ContextMenu.Item instead of ContextMenuItem
-              because modal triggers don't work with custom ContextMenuItem component*/}
-            <ContextMenu.Item
-              className="mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm text-red-600 transition-colors duration-200 outline-none hover:bg-red-100/40 dark:text-red-400 dark:hover:bg-red-800/40"
-              onSelect={(e) => {
-                e.preventDefault();
-                console.log("Delete", nestlingId);
-              }}
-            >
-              <Trash2 className="h-4 w-4" />
-              <span>Delete</span>
-            </ContextMenu.Item>
-          </DeleteModal>
+          <ContextMenuItem
+            Icon={Trash2}
+            text="Delete"
+            isDelete
+            action={() => {
+              // setTimeout is REQUIRED for the modal to close properly
+              // when called in context menu item
+              setTimeout(() => setDeleteTarget("nestling", nestlingId), 0);
+            }}
+          />
         </>
       }
     >

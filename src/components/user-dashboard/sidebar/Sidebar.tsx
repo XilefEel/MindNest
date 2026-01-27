@@ -10,7 +10,6 @@ import {
 import SidebarItem from "./SidebarItem";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import SettingsModal from "../../modals/SettingsModal";
 import { cn } from "@/lib/utils/general";
 
 export default function Sidebar({
@@ -81,13 +80,13 @@ export default function Sidebar({
           onClick={() => {}}
           isCollapsed={isCollapsed}
         />
-        <SettingsModal>
-          <SidebarItem
-            icon={<Settings />}
-            label="Settings"
-            isCollapsed={isCollapsed}
-          />
-        </SettingsModal>
+
+        <SidebarItem
+          icon={<Settings />}
+          label="Settings"
+          isCollapsed={isCollapsed}
+          onClick={() => {}}
+        />
 
         <SidebarItem
           icon={<LogOut />}

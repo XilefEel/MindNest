@@ -1,10 +1,8 @@
-import * as ContextMenu from "@radix-ui/react-context-menu";
 import { FilePlus, FolderPlus } from "lucide-react";
-import FolderModal from "../modals/FolderModal";
-import NestlingModal from "../modals/NestlingModal";
+
 import BaseContextMenu from "./BaseContextMenu";
-import { cn } from "@/lib/utils/general";
-import { useActiveBackgroundId } from "@/stores/useNestStore";
+import ContextMenuItem from "./ContextMenuItem";
+import { useFolderModal, useNestlingModal } from "@/stores/useModalStore";
 
 export function SidebarContextMenu({
   nestId,
@@ -13,46 +11,31 @@ export function SidebarContextMenu({
   nestId: number;
   children: React.ReactNode;
 }) {
-  const activeBackgroundId = useActiveBackgroundId();
+  const { openNestlingModal } = useNestlingModal();
+  const { openFolderModal } = useFolderModal();
   return (
     <BaseContextMenu
       content={
         <>
-          <NestlingModal nestId={nestId}>
-            {/* Using ContextMenu.Item instead of ContextMenuItem
-              because modal triggers don't work with custom ContextMenuItem component*/}
-            <ContextMenu.Item
-              onSelect={(e) => {
-                e.preventDefault();
-              }}
-              className={cn(
-                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
-                activeBackgroundId &&
-                  "hover:bg-white/30 dark:hover:bg-black/30",
-              )}
-            >
-              <FilePlus className="h-4 w-4" />
-              <span>New Nestling</span>
-            </ContextMenu.Item>
-          </NestlingModal>
+          <ContextMenuItem
+            action={() => {
+              // setTimeout is REQUIRED for the modal to close properly
+              // when called in context menu item
+              setTimeout(() => openNestlingModal(nestId), 0);
+            }}
+            Icon={FilePlus}
+            text="New Nestling"
+          />
 
-          <FolderModal nestId={nestId}>
-            {/* Using ContextMenu.Item instead of ContextMenuItem
-              because modal triggers don't work with custom ContextMenuItem component*/}
-            <ContextMenu.Item
-              onSelect={(e) => {
-                e.preventDefault();
-              }}
-              className={cn(
-                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
-                activeBackgroundId &&
-                  "hover:bg-white/30 dark:hover:bg-black/30",
-              )}
-            >
-              <FolderPlus className="h-4 w-4" />
-              <span>New Folder</span>
-            </ContextMenu.Item>
-          </FolderModal>
+          <ContextMenuItem
+            action={() => {
+              // setTimeout is REQUIRED for the modal to close properly
+              // when called in context menu item
+              setTimeout(() => openFolderModal(nestId!), 0);
+            }}
+            Icon={FolderPlus}
+            text="New Folder"
+          />
         </>
       }
     >

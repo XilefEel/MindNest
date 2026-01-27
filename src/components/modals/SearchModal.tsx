@@ -19,23 +19,16 @@ import { getNestlingIcon } from "@/lib/utils/nestlings";
 import { saveLastNestling } from "@/lib/storage/nestling";
 import { findFolderPath } from "@/lib/utils/folders";
 import { Folder } from "lucide-react";
+import { useSearchModal } from "@/stores/useModalStore";
 
-export default function SearchModal({
-  isOpen,
-  setIsOpen,
-}: {
-  isOpen?: boolean;
-  setIsOpen?: (isOpen: boolean) => void;
-}) {
+export default function SearchModal() {
   const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
   const nestlings = useNestlings();
   const folders = useFolders();
   const { setActiveNestlingId } = useNestlingActions();
 
-  const [isInternalModalOpen, setIsInternalModalOpen] = useState(false);
-  const isModalOpen = isOpen ?? isInternalModalOpen;
-  const setModalOpen = setIsOpen ?? setIsInternalModalOpen;
+  const { isSearchOpen, setIsSearchOpen } = useSearchModal();
 
   const [searchQuery, setSearchQuery] = useState("");
   const filteredNestlings = nestlings.filter((nestling) =>
@@ -46,13 +39,13 @@ export default function SearchModal({
     setActiveNestlingId(nestlingId);
     saveLastNestling(activeNestId!, nestlingId);
     setSearchQuery("");
-    setIsOpen?.(false);
+    setIsSearchOpen?.(false);
   };
 
   return (
     <CommandDialog
-      open={isModalOpen}
-      onOpenChange={setModalOpen}
+      open={isSearchOpen}
+      onOpenChange={setIsSearchOpen}
       className={cn(
         "rounded-lg border-0 bg-white p-0 shadow-md md:min-w-[600px] dark:bg-gray-800",
         activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/30",

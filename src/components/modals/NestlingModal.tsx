@@ -11,20 +11,16 @@ import { cn } from "@/lib/utils/general";
 import { nestlingTypes } from "@/lib/utils/nestlings";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { NestlingType } from "@/lib/types/nestling";
+import { useNestlingModal } from "@/stores/useModalStore";
 
-export default function NestlingModal({
-  children,
-  nestId,
-  isOpen,
-  folderId,
-  setIsOpen,
-}: {
-  children: React.ReactNode;
-  nestId?: number;
-  folderId?: number;
-  isOpen?: boolean;
-  setIsOpen?: (isOpen: boolean) => void;
-}) {
+export default function NestlingModal() {
+  const {
+    isNestlingOpen,
+    nestlingNestId,
+    nestlingFolderId,
+    closeNestlingModal,
+  } = useNestlingModal();
+
   const activeFolderId = useNestlingStore((state) => state.activeFolderId);
   const { addNestling } = useNestlingActions();
   const activeBackgroundId = useActiveBackgroundId();
@@ -33,25 +29,23 @@ export default function NestlingModal({
   const [nestlingType, setNestlingType] = useState<NestlingType>("note");
   const [isSaving, setIsSaving] = useState(false);
 
-  const [isInternalModalOpen, setIsInternalModalOpen] = useState(false);
-  const isModalOpen = isOpen ?? isInternalModalOpen;
-  const setModalOpen = setIsOpen ?? setIsInternalModalOpen;
-
-  const effectiveFolderId = folderId ?? activeFolderId;
+  const effectiveFolderId = nestlingFolderId ?? activeFolderId;
 
   const handleClose = async () => {
     setTitle("");
     setNestlingType("note");
-    setModalOpen(false);
+    closeNestlingModal();
   };
 
   const handleSaveNestling = async () => {
+    if (!nestlingNestId) return;
+
     setIsSaving(true);
     try {
       if (!title.trim()) return;
 
       await addNestling({
-        nestId: nestId!,
+        nestId: nestlingNestId,
         folderId: effectiveFolderId,
         title: title,
         content: "",
@@ -71,8 +65,8 @@ export default function NestlingModal({
 
   return (
     <BaseModal
-      isOpen={isModalOpen}
-      setIsOpen={setModalOpen}
+      isOpen={isNestlingOpen}
+      setIsOpen={(open) => !open && closeNestlingModal()}
       onSubmit={handleSaveNestling}
       title="Create Nestling"
       description="Give your nestling a title. You can always change it later."
@@ -163,7 +157,7 @@ export default function NestlingModal({
         </Button>
       }
     >
-      {children}
+      <div />
     </BaseModal>
   );
 }

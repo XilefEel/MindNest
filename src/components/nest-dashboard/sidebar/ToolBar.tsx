@@ -1,7 +1,6 @@
 import BaseToolTip from "@/components/BaseToolTip";
-import FolderModal from "@/components/modals/FolderModal";
-import NestlingModal from "@/components/modals/NestlingModal";
 import { cn } from "@/lib/utils/general";
+import { useNestlingModal, useFolderModal } from "@/stores/useModalStore";
 import { useNestlingActions } from "@/stores/useNestlingStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { FilePlus, FolderPlus, Minimize2, Maximize2 } from "lucide-react";
@@ -9,41 +8,36 @@ import { FilePlus, FolderPlus, Minimize2, Maximize2 } from "lucide-react";
 export default function ToolBar({ nestId }: { nestId: number }) {
   const { toggleAllFolders } = useNestlingActions();
   const activeBackgroundId = useActiveBackgroundId();
+  const { openNestlingModal } = useNestlingModal();
+  const { openFolderModal } = useFolderModal();
+
   return (
     <div className="mb-2.5 flex items-center border-b dark:border-white">
-      <NestlingModal nestId={nestId}>
-        <div>
-          <BaseToolTip label="New Note">
-            <button
-              onDoubleClick={(e) => e.stopPropagation()}
-              className={cn(
-                "cursor-pointer rounded-lg p-2 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
-                activeBackgroundId &&
-                  "hover:bg-white/30 dark:hover:bg-black/30",
-              )}
-            >
-              <FilePlus className="size-4" />
-            </button>
-          </BaseToolTip>
-        </div>
-      </NestlingModal>
+      <BaseToolTip label="New Note">
+        <button
+          onClick={() => openNestlingModal(nestId)}
+          onDoubleClick={(e) => e.stopPropagation()}
+          className={cn(
+            "cursor-pointer rounded-lg p-2 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
+            activeBackgroundId && "hover:bg-white/30 dark:hover:bg-black/30",
+          )}
+        >
+          <FilePlus className="size-4" />
+        </button>
+      </BaseToolTip>
 
-      <FolderModal nestId={nestId}>
-        <div>
-          <BaseToolTip label="New Folder">
-            <button
-              onDoubleClick={(e) => e.stopPropagation()}
-              className={cn(
-                "cursor-pointer rounded-lg p-2 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
-                activeBackgroundId &&
-                  "hover:bg-white/30 dark:hover:bg-black/30",
-              )}
-            >
-              <FolderPlus className="size-4" />
-            </button>
-          </BaseToolTip>
-        </div>
-      </FolderModal>
+      <BaseToolTip label="New Folder">
+        <button
+          onClick={() => openFolderModal(nestId)}
+          onDoubleClick={(e) => e.stopPropagation()}
+          className={cn(
+            "cursor-pointer rounded-lg p-2 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
+            activeBackgroundId && "hover:bg-white/30 dark:hover:bg-black/30",
+          )}
+        >
+          <FolderPlus className="size-4" />
+        </button>
+      </BaseToolTip>
 
       <BaseToolTip label="Collapse All">
         <button

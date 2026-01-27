@@ -4,6 +4,7 @@ import { Nest } from "@/lib/types/nest";
 import { useActiveBackgroundId, useBackgrounds } from "@/stores/useNestStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { cn } from "@/lib/utils/general";
+import { useActiveNestling } from "@/stores/useNestlingStore";
 import Topbar from "@/components/nest-dashboard/topbar/Topbar";
 import Sidebar from "@/components/nest-dashboard/sidebar/Sidebar";
 import Home from "@/components/nest-dashboard/home/Home";
@@ -19,9 +20,15 @@ import FolderModal from "@/components/modals/FolderModal";
 import MindmapEditor from "@/components/editors/mindmap/MindmapEditor";
 import SearchModal from "@/components/modals/SearchModal";
 import SettingsModal from "@/components/modals/SettingsModal";
-import { useActiveNestling } from "@/stores/useNestlingStore";
 import FloatingMusicPlayer from "@/components/nest-dashboard/music/FloatingMusicPlayer";
 import BookmarkEditor from "@/components/editors/bookmark/BookmarkEditor";
+import DeleteModal from "@/components/modals/DeleteModal";
+import {
+  useFolderModal,
+  useNestlingModal,
+  useSearchModal,
+  useSettingsModal,
+} from "@/stores/useModalStore";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -33,14 +40,15 @@ export default function NestDashboardPage() {
   const [isTopbarCollapsed, setIsTopbarCollapsed] = useState(false);
   const [isCardHidden, setIsCardHidden] = useState(false);
 
-  const [isNestlingModalOpen, setIsNestlingModalOpen] = useState(false);
-  const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-
   const activeNestling = useActiveNestling();
   const backgrounds = useBackgrounds();
   const activeBackgroundId = useActiveBackgroundId();
+
+  const { isNestlingOpen, openNestlingModal, closeNestlingModal } =
+    useNestlingModal();
+  const { isFolderOpen, openFolderModal, closeFolderModal } = useFolderModal();
+  const { isSettingsOpen, setIsSettingsOpen } = useSettingsModal();
+  const { isSearchOpen, setIsSearchOpen } = useSearchModal();
 
   const activeBackgroundImage = backgrounds.find(
     (background) => background.id === activeBackgroundId,
@@ -78,22 +86,22 @@ export default function NestDashboardPage() {
 
           case "n":
             e.preventDefault();
-            setIsNestlingModalOpen(!isNestlingModalOpen);
+            isNestlingOpen ? closeNestlingModal() : openNestlingModal(nest!.id);
             break;
 
           case "f":
             e.preventDefault();
-            setIsFolderModalOpen(!isFolderModalOpen);
+            isFolderOpen ? closeFolderModal() : openFolderModal(nest!.id);
             break;
 
           case "k":
             e.preventDefault();
-            setIsSearchModalOpen(!isSearchModalOpen);
+            setIsSearchOpen(!isSearchOpen);
             break;
 
           case "i":
             e.preventDefault();
-            setIsSettingsModalOpen(!isSettingsModalOpen);
+            setIsSettingsOpen(!isSettingsOpen);
             break;
         }
       }
@@ -215,33 +223,15 @@ export default function NestDashboardPage() {
 
       <FloatingMusicPlayer />
 
-      <NestlingModal
-        nestId={nest.id}
-        isOpen={isNestlingModalOpen}
-        setIsOpen={setIsNestlingModalOpen}
-      >
-        <div />
-      </NestlingModal>
+      <NestlingModal />
 
-      <FolderModal
-        nestId={nest.id}
-        isOpen={isFolderModalOpen}
-        setIsOpen={setIsFolderModalOpen}
-      >
-        <div />
-      </FolderModal>
+      <FolderModal />
 
-      <SearchModal
-        isOpen={isSearchModalOpen}
-        setIsOpen={setIsSearchModalOpen}
-      />
+      <SearchModal />
 
-      <SettingsModal
-        isOpen={isSettingsModalOpen}
-        setIsOpen={setIsSettingsModalOpen}
-      >
-        <div />
-      </SettingsModal>
+      <SettingsModal />
+
+      <DeleteModal />
     </div>
   );
 }
