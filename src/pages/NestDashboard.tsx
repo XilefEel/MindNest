@@ -222,6 +222,7 @@ export default function NestDashboardPage() {
       >
         <div />
       </NestlingModal>
+
       <FolderModal
         nestId={nest.id}
         isOpen={isFolderModalOpen}
@@ -229,10 +230,12 @@ export default function NestDashboardPage() {
       >
         <div />
       </FolderModal>
+
       <SearchModal
         isOpen={isSearchModalOpen}
         setIsOpen={setIsSearchModalOpen}
       />
+
       <SettingsModal
         isOpen={isSettingsModalOpen}
         setIsOpen={setIsSettingsModalOpen}

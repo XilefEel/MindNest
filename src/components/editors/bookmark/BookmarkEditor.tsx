@@ -16,12 +16,7 @@ export default function BookmarkEditor() {
   if (!activeNestling) return null;
 
   const bookmarks = useBookmarks();
-  const {
-    getBookmarks,
-    createBookmark,
-    deleteBookmark,
-    toggleBookmarkFavorite,
-  } = useBookmarkActions();
+  const { getBookmarks, createBookmark } = useBookmarkActions();
   const { updateNestling } = useNestlingActions();
 
   const [title, setTitle] = useState(activeNestling.title);
@@ -60,22 +55,6 @@ export default function BookmarkEditor() {
       console.error("Failed to add bookmark:", error);
     } finally {
       setIsAdding(false);
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteBookmark(id);
-    } catch (error) {
-      console.error("Failed to delete bookmark:", error);
-    }
-  };
-
-  const handleToggleFavorite = async (id: number) => {
-    try {
-      await toggleBookmarkFavorite(id);
-    } catch (error) {
-      console.error("Failed to toggle bookmark favorite:", error);
     }
   };
 
@@ -161,8 +140,6 @@ export default function BookmarkEditor() {
               key={bookmark.id}
               bookmark={bookmark}
               viewMode={viewMode}
-              handleDelete={handleDelete}
-              handleToggleFavorite={handleToggleFavorite}
             />
           ))}
         </div>

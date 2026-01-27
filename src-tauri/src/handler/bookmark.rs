@@ -1,5 +1,6 @@
 use crate::db::bookmark::{
-    create_new_bookmark_in_db, delete_bookmark_from_db, toggle_bookmark_favorite_in_db, get_bookmarks_by_nestling,
+    create_new_bookmark_in_db, delete_bookmark_from_db, get_bookmarks_by_nestling,
+    toggle_bookmark_favorite_in_db,
 };
 use crate::models::bookmark::Bookmark;
 use crate::utils::db::AppDb;

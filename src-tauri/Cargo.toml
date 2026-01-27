@@ -39,3 +39,4 @@ thiserror = "2.0.17"
 reqwest = {version = "0.13.1", features = ["json"] }
 url = "2.5.8"
 scraper = "0.25.0"
+tauri-plugin-clipboard-manager = "2"

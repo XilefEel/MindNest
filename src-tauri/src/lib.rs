@@ -42,13 +42,16 @@ use handler::mindmap::{
     create_edge, create_node, delete_edge, delete_node, get_edges, get_nodes, update_node,
 };
 
-use handler::bookmark::{create_bookmark, toggle_bookmark_favorite, delete_bookmark, get_bookmarks};
+use handler::bookmark::{
+    create_bookmark, delete_bookmark, get_bookmarks, toggle_bookmark_favorite,
+};
 
 use crate::utils::db::{init_db, AppDb};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_clipboard_manager::init())
         .setup(|app| {
             let db = AppDb::new("test.db").map_err(|e| {
                 println!("Failed to create DB: {}", e);

@@ -30,6 +30,7 @@ export default function ContextMenuItem({
         e.stopPropagation();
         action?.();
       }}
+      onDoubleClick={(e) => e.stopPropagation()}
     >
       <Icon className="h-4 w-4" />
       {text ? <span>{text}</span> : children}

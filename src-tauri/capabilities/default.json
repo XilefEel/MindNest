@@ -27,6 +27,8 @@
     "fs:allow-create",
     "fs:allow-read-file",
     "fs:allow-read-dir",
-    "dialog:allow-open"
+    "dialog:allow-open",
+    "clipboard-manager:default",
+    "clipboard-manager:allow-write-text"
   ]
 }
