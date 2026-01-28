@@ -2,42 +2,36 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useGalleryActions, useGalleryStore } from "@/stores/useGalleryStore";
-import { GalleryAlbum } from "@/lib/types/gallery";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
+import { useAlbumModal } from "@/stores/useModalStore";
 
-export default function AlbumModal({
-  nestlingId,
-  children,
-  album,
-}: {
-  nestlingId: number;
-  children: React.ReactNode;
-  album?: GalleryAlbum | null;
-}) {
+export default function AlbumModal() {
   const loading = useGalleryStore((state) => state.loading);
   const { addAlbum, updateAlbum } = useGalleryActions();
 
-  const [isOpen, setIsOpen] = useState(false);
+  const { isAlbumOpen, albumNestlingId, albumToEdit, closeAlbumModal } =
+    useAlbumModal();
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
   const handleExit = async () => {
     setName("");
     setDescription("");
-    setIsOpen(false);
+    closeAlbumModal();
   };
 
   const handleSaveAlbum = async () => {
-    if (!name.trim()) return;
+    if (!name.trim() || !albumNestlingId) return;
 
     try {
-      if (album) {
-        await updateAlbum(album.id, { name, description });
+      if (albumToEdit) {
+        await updateAlbum(albumToEdit.id, { name, description });
         toast.success(`Album "${name}" updated successfully!`);
       } else {
         await addAlbum({
-          nestlingId,
+          nestlingId: albumNestlingId,
           name,
           description,
         });
@@ -45,29 +39,29 @@ export default function AlbumModal({
       }
       handleExit();
     } catch (error) {
-      toast.error("Failed to add album");
-      console.error("Failed to add album:", error);
+      toast.error("Failed to save album");
+      console.error("Failed to save album:", error);
     }
   };
 
   useEffect(() => {
-    if (isOpen && album) {
-      setName(album.name || "");
-      setDescription(album.description || "");
-    } else if (isOpen && !album) {
+    if (isAlbumOpen && albumToEdit) {
+      setName(albumToEdit.name || "");
+      setDescription(albumToEdit.description || "");
+    } else if (isAlbumOpen && !albumToEdit) {
       setName("");
       setDescription("");
     }
-  }, [album, isOpen]);
+  }, [albumToEdit, isAlbumOpen]);
 
   return (
     <BaseModal
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
+      isOpen={isAlbumOpen}
+      setIsOpen={closeAlbumModal}
       onSubmit={handleSaveAlbum}
-      title={album ? "Edit Album" : "Create a New Album"}
+      title={albumToEdit ? "Edit Album" : "Create a New Album"}
       description={
-        album
+        albumToEdit
           ? "Update the details of your album"
           : "Create a new album to organize your pictures"
       }
@@ -94,11 +88,15 @@ export default function AlbumModal({
           disabled={loading || !name.trim()}
           className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
         >
-          {loading ? "Saving..." : album ? "Update Album" : "Create Album"}
+          {loading
+            ? "Saving..."
+            : albumToEdit
+              ? "Update Album"
+              : "Create Album"}
         </Button>
       }
     >
-      {children}
+      <div />
     </BaseModal>
   );
 }

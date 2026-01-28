@@ -39,7 +39,7 @@ export default function NestlingContextMenu({
     <BaseContextMenu
       content={
         <>
-          <ContextMenuItem Icon={Edit3} text="Rename" action={handleRename} />
+          <ContextMenuItem Icon={Edit3} text="Rename" action={handleRename!} />
 
           <ContextMenuItem
             Icon={Copy}

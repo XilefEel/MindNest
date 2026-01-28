@@ -5,15 +5,14 @@ import { useNestlingActions } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { useActiveNestId } from "@/stores/useNestStore";
 import { clearLastNestling, getLastNestling } from "@/lib/storage/nestling";
-import { useModalStore } from "@/stores/useModalStore";
+import { useDeleteModal } from "@/stores/useModalStore";
 
 export default function DeleteModal() {
-  const { isDeleteOpen, deleteType, deleteId, clearDeleteTarget } =
-    useModalStore();
-
   const activeNestId = useActiveNestId();
   const { setActiveNestlingId, deleteNestling, deleteFolder } =
     useNestlingActions();
+  const { isDeleteOpen, deleteType, deleteId, clearDeleteTarget } =
+    useDeleteModal();
 
   const handleDelete = async () => {
     if (!deleteId || !deleteType) return;

@@ -4,29 +4,27 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
+import { useImageModal } from "@/stores/useModalStore";
 
-export default function RenameImageModal({
-  children,
-  imageId,
-}: {
-  children: React.ReactNode;
-  imageId: number;
-}) {
+export default function RenameImageModal() {
   const images = useImages();
   const { updateImage } = useGalleryActions();
 
-  const currentImage = images.find((img) => img.id === imageId);
+  const { isImageOpen, imageId, closeImageModal } = useImageModal();
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [title, setTitle] = useState(currentImage?.title || "");
-  const [description, setDescription] = useState(
-    currentImage?.description || "",
-  );
+  const currentImage = imageId
+    ? images.find((img) => img.id === imageId)
+    : null;
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleEditImage = () => {
+    if (!imageId) return;
+
     try {
       updateImage(imageId, { title, description });
-      setIsOpen(false);
+      closeImageModal();
       toast.success("Image updated successfully!");
     } catch (error) {
       toast.error("Failed to edit image");
@@ -35,14 +33,16 @@ export default function RenameImageModal({
   };
 
   useEffect(() => {
-    setTitle(currentImage?.title || "");
-    setDescription(currentImage?.description || "");
-  }, [currentImage]);
+    if (isImageOpen && currentImage) {
+      setTitle(currentImage.title || "");
+      setDescription(currentImage.description || "");
+    }
+  }, [currentImage, isImageOpen]);
 
   return (
     <BaseModal
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
+      isOpen={isImageOpen}
+      setIsOpen={closeImageModal}
       onSubmit={handleEditImage}
       title="Edit Image"
       description="Update your image title and description."
@@ -72,7 +72,7 @@ export default function RenameImageModal({
         </Button>
       }
     >
-      <div onClick={(e) => e.stopPropagation()}>{children}</div>
+      <div />
     </BaseModal>
   );
 }

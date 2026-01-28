@@ -75,7 +75,6 @@ export default function ImageCard({
               className="rounded-full bg-red-500 p-1.5 text-white shadow transition hover:bg-red-600"
               onClick={(e) => {
                 e.stopPropagation();
-                console.log("Removing image:", photo.id);
                 handleImageDelete(photo.id);
               }}
             >

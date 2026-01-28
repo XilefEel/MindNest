@@ -2,13 +2,11 @@ import { GalleryAlbum } from "@/lib/types/gallery";
 import { useGalleryActions } from "@/stores/useGalleryStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, PlusSquare, Download, Trash2 } from "lucide-react";
-import AlbumModal from "../modals/AlbumModal";
 import { toast } from "sonner";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
-import { cn } from "@/lib/utils/general";
-import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useActiveNestlingId } from "@/stores/useNestlingStore";
+import { useAlbumModal } from "@/stores/useModalStore";
 
 export default function AlbumContextMenu({
   album,
@@ -17,11 +15,11 @@ export default function AlbumContextMenu({
   album: GalleryAlbum;
   children: React.ReactNode;
 }) {
-  const activeBackgroundId = useActiveBackgroundId();
   const activeNestlingId = useActiveNestlingId();
   if (!activeNestlingId) return;
 
   const { downloadAlbum, selectImages, deleteAlbum } = useGalleryActions();
+  const { openAlbumModal } = useAlbumModal();
 
   const handleSelectImage = async (albumId: number) => {
     try {
@@ -58,24 +56,15 @@ export default function AlbumContextMenu({
     <BaseContextMenu
       content={
         <>
-          {/* Using ContextMenu.Item instead of ContextMenuItem
-              because modal triggers don't work with custom ContextMenuItem component*/}
-          <AlbumModal nestlingId={activeNestlingId} album={album}>
-            <ContextMenu.Item
-              className={cn(
-                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
-                activeBackgroundId &&
-                  "hover:bg-white/30 dark:hover:bg-black/30",
-              )}
-              onSelect={(e) => {
-                e.preventDefault();
-                console.log("Rename album");
-              }}
-            >
-              <Edit3 className="size-4" />
-              Edit
-            </ContextMenu.Item>
-          </AlbumModal>
+          <ContextMenuItem
+            Icon={Edit3}
+            text="Edit"
+            action={() => {
+              // setTimeout is REQUIRED for the modal to close properly
+              // when called in context menu item
+              setTimeout(() => openAlbumModal(activeNestlingId, album), 0);
+            }}
+          />
 
           <ContextMenuItem
             Icon={PlusSquare}

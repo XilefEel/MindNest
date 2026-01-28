@@ -15,20 +15,16 @@ import CalendarEditor from "@/components/editors/calendar/CalendarEditor";
 import JournalEditor from "@/components/editors/journal/JournalEditor";
 import GalleryEditor from "@/components/editors/gallery/GalleryEditor";
 import useRestore from "@/hooks/useRestore";
-import NestlingModal from "@/components/modals/NestlingModal";
-import FolderModal from "@/components/modals/FolderModal";
 import MindmapEditor from "@/components/editors/mindmap/MindmapEditor";
-import SearchModal from "@/components/modals/SearchModal";
-import SettingsModal from "@/components/modals/SettingsModal";
 import FloatingMusicPlayer from "@/components/nest-dashboard/music/FloatingMusicPlayer";
 import BookmarkEditor from "@/components/editors/bookmark/BookmarkEditor";
-import DeleteModal from "@/components/modals/DeleteModal";
 import {
   useFolderModal,
   useNestlingModal,
   useSearchModal,
   useSettingsModal,
 } from "@/stores/useModalStore";
+import GlobalModals from "@/components/modals/GlobalModals";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -223,15 +219,7 @@ export default function NestDashboardPage() {
 
       <FloatingMusicPlayer />
 
-      <NestlingModal />
-
-      <FolderModal />
-
-      <SearchModal />
-
-      <SettingsModal />
-
-      <DeleteModal />
+      <GlobalModals />
     </div>
   );
 }

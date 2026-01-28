@@ -1,3 +1,4 @@
+import { GalleryAlbum } from "@/lib/types/gallery";
 import { create } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
@@ -25,6 +26,17 @@ type ModalStore = {
 
   isSettingsOpen: boolean;
   setIsSettingsOpen: (isOpen: boolean) => void;
+
+  isAlbumOpen: boolean;
+  albumNestlingId: number | null;
+  albumToEdit: GalleryAlbum | null;
+  openAlbumModal: (nestlingId: number, album?: GalleryAlbum) => void;
+  closeAlbumModal: () => void;
+
+  isImageOpen: boolean;
+  imageId: number | null;
+  openImageModal: (imageId: number) => void;
+  closeImageModal: () => void;
 };
 
 export const useModalStore = create<ModalStore>((set) => ({
@@ -75,6 +87,39 @@ export const useModalStore = create<ModalStore>((set) => ({
 
   isSettingsOpen: false,
   setIsSettingsOpen: (isOpen) => set({ isSettingsOpen: isOpen }),
+
+  isAlbumOpen: false,
+  albumNestlingId: null,
+  albumToEdit: null,
+
+  openAlbumModal: (nestlingId, album) =>
+    set({
+      isAlbumOpen: true,
+      albumNestlingId: nestlingId,
+      albumToEdit: album ?? null,
+    }),
+
+  closeAlbumModal: () =>
+    set({
+      isAlbumOpen: false,
+      albumNestlingId: null,
+      albumToEdit: null,
+    }),
+
+  isImageOpen: false,
+  imageId: null,
+
+  openImageModal: (imageId) =>
+    set({
+      isImageOpen: true,
+      imageId: imageId,
+    }),
+
+  closeImageModal: () =>
+    set({
+      isImageOpen: false,
+      imageId: null,
+    }),
 }));
 
 export const useNestlingModal = () =>
@@ -123,5 +168,26 @@ export const useSettingsModal = () =>
     useShallow((state) => ({
       isSettingsOpen: state.isSettingsOpen,
       setIsSettingsOpen: state.setIsSettingsOpen,
+    })),
+  );
+
+export const useAlbumModal = () =>
+  useModalStore(
+    useShallow((state) => ({
+      isAlbumOpen: state.isAlbumOpen,
+      albumNestlingId: state.albumNestlingId,
+      albumToEdit: state.albumToEdit,
+      openAlbumModal: state.openAlbumModal,
+      closeAlbumModal: state.closeAlbumModal,
+    })),
+  );
+
+export const useImageModal = () =>
+  useModalStore(
+    useShallow((state) => ({
+      isImageOpen: state.isImageOpen,
+      imageId: state.imageId,
+      openImageModal: state.openImageModal,
+      closeImageModal: state.closeImageModal,
     })),
   );

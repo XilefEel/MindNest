@@ -7,11 +7,11 @@ import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, Copy, Star, Folder, Download, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import ContextMenuItem from "./ContextMenuItem";
-import RenameImageModal from "../modals/RenameImageModal";
 import { GalleryImage } from "@/lib/types/gallery";
 import BaseContextMenu from "./BaseContextMenu";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { useImageModal } from "@/stores/useModalStore";
 export default function ImageContextMenu({
   imageId,
   children,
@@ -25,6 +25,7 @@ export default function ImageContextMenu({
   const images = useImages();
   const { duplicateImage, updateImage, removeImage, downloadImage } =
     useGalleryActions();
+  const { openImageModal } = useImageModal();
 
   const currentImage = images.find((i) => i.id === imageId);
 
@@ -41,9 +42,12 @@ export default function ImageContextMenu({
     try {
       const newFavoriteState = !image.isFavorite;
       await updateImage(imageId, { isFavorite: newFavoriteState });
-      newFavoriteState
-        ? toast.success("Image added to favorites!")
-        : toast.success("Image removed from favorites!");
+
+      if (newFavoriteState) {
+        toast.success("Image added to favorites!");
+      } else {
+        toast.success("Image removed from favorites!");
+      }
     } catch (error) {
       toast.error("Failed to add image to favorites");
       console.error("Failed to add image to favorites:", error);
@@ -81,33 +85,28 @@ export default function ImageContextMenu({
     <BaseContextMenu
       content={
         <>
-          <RenameImageModal imageId={imageId}>
-            <ContextMenu.Item
-              className={cn(
-                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
-                activeBackgroundId &&
-                  "hover:bg-white/30 dark:hover:bg-black/30",
-              )}
-              onSelect={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-            >
-              <Edit3 className="size-4" />
-              Rename
-            </ContextMenu.Item>
-          </RenameImageModal>
+          <ContextMenuItem
+            action={() => {
+              // setTimeout is REQUIRED for the modal to close properly
+              // when called in context menu item
+              setTimeout(() => openImageModal(imageId), 0);
+            }}
+            Icon={Edit3}
+            text="Rename"
+          />
 
           <ContextMenuItem
             action={() => handleDuplicateImage(imageId)}
             Icon={Copy}
             text="Duplicate"
           />
+
           <ContextMenuItem
             action={() => handleAddToFavorites(currentImage!)}
             Icon={Star}
             text="Add to Favorites"
           />
+
           <ContextMenu.Sub>
             <ContextMenu.SubTrigger
               onClick={(e) => {
@@ -157,6 +156,7 @@ export default function ImageContextMenu({
             Icon={Download}
             text="Download"
           />
+
           <ContextMenu.Separator
             className={cn(
               "mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700",

@@ -10,7 +10,7 @@ export default function ContextMenuItem({
   isDelete,
   children,
 }: {
-  action?: () => void;
+  action: () => void;
   Icon: ElementType;
   text?: string;
   isDelete?: boolean;
@@ -25,7 +25,7 @@ export default function ContextMenuItem({
         isDelete &&
           "text-red-600 hover:bg-red-100/40 dark:text-red-400 dark:hover:bg-red-800/40",
       )}
-      onSelect={() => action?.()}
+      onSelect={() => action()}
       onDoubleClick={(e) => e.stopPropagation()}
     >
       <Icon className="h-4 w-4" />

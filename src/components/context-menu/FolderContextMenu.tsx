@@ -30,10 +30,11 @@ export default function FolderContextMenu({
       content={
         <>
           <ContextMenuItem
-            action={handleRename}
+            action={handleRename!}
             Icon={Edit3}
             text="Rename Folder"
           />
+
           <ContextMenuItem
             action={() => duplicateFolder(folderId)}
             Icon={Copy}
@@ -69,6 +70,7 @@ export default function FolderContextMenu({
             isDelete
             action={() => {
               // setTimeout is REQUIRED for the modal to close properly
+              // when called in context menu item
               setTimeout(() => setDeleteTarget("folder", folderId), 0);
             }}
           />

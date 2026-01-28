@@ -9,12 +9,12 @@ import "yet-another-react-lightbox/styles.css";
 import MainView from "./MainView";
 import AlbumView from "./AlbumView";
 import { cn } from "@/lib/utils/general";
-import AlbumModal from "@/components/modals/AlbumModal";
 import { toast } from "sonner";
 import {
   useActiveNestling,
   useNestlingActions,
 } from "@/stores/useNestlingStore";
+import { useAlbumModal } from "@/stores/useModalStore";
 
 export default function GalleryEditor() {
   const activeNestling = useActiveNestling();
@@ -57,6 +57,8 @@ export default function GalleryEditor() {
   };
 
   const { updateNestling } = useNestlingActions();
+  const { openAlbumModal } = useAlbumModal();
+
   const nestlingData = useMemo(() => ({ title }), [title]);
   useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
@@ -108,17 +110,19 @@ export default function GalleryEditor() {
               {isUploading ? "Uploading..." : "Add Images"}
             </span>
           </button>
-          <AlbumModal nestlingId={activeNestling.id}>
-            <button
-              className={cn(
-                "flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-white transition-colors hover:bg-teal-600",
-                albumId !== null ? "hidden" : "",
-              )}
-            >
-              <Plus className="size-4" />
-              <span className="hidden md:block">Add Album</span>
-            </button>
-          </AlbumModal>
+
+          <button
+            onClick={() => {
+              openAlbumModal(activeNestling.id);
+            }}
+            className={cn(
+              "flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-white transition-colors hover:bg-teal-600",
+              albumId !== null ? "hidden" : "",
+            )}
+          >
+            <Plus className="size-4" />
+            <span className="hidden md:block">Add Album</span>
+          </button>
         </div>
       </div>
 
