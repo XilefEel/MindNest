@@ -86,3 +86,15 @@ export const parseDragData = (item: { id: string | number; data: any }) => {
 
   return null;
 };
+
+export const sortByFavorite = <
+  T extends { isFavorite: boolean; createdAt: string | Date },
+>(
+  items: T[],
+) =>
+  items.sort((a, b) => {
+    if (a.isFavorite && !b.isFavorite) return -1;
+    if (!a.isFavorite && b.isFavorite) return 1;
+
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });

@@ -1,5 +1,5 @@
 import { Bookmark } from "@/lib/types/bookmark";
-import { withStoreErrorHandler } from "@/lib/utils/general";
+import { sortByFavorite, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
 import * as bookmarkApi from "@/lib/api/bookmark";
 import { useShallow } from "zustand/react/shallow";
@@ -31,7 +31,7 @@ export const useBookmarkStore = create<BookmarkState>()((set, get) => ({
     async (nestlingId: number, url: string) => {
       const bookmark = await bookmarkApi.createBookmark(nestlingId, url);
       set((state) => ({
-        bookmarks: [bookmark, ...state.bookmarks],
+        bookmarks: sortByFavorite([bookmark, ...state.bookmarks]),
       }));
       await updateNestlingTimestamp(nestlingId);
     },
@@ -41,8 +41,10 @@ export const useBookmarkStore = create<BookmarkState>()((set, get) => ({
     await bookmarkApi.toggleBookmarkFavorite(id);
 
     set((state) => ({
-      bookmarks: state.bookmarks.map((b) =>
-        b.id === id ? { ...b, isFavorite: !b.isFavorite } : b,
+      bookmarks: sortByFavorite(
+        state.bookmarks.map((b) =>
+          b.id === id ? { ...b, isFavorite: !b.isFavorite } : b,
+        ),
       ),
     }));
 

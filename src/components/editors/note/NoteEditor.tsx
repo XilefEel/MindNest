@@ -82,7 +82,7 @@ export default function NoteEditor() {
   );
 
   const autoSaveStatus = useAutoSave(
-    activeNestling.id!,
+    activeNestling.id,
     nestlingData,
     updateNestling,
   );

@@ -270,7 +270,6 @@ function MindmapEditorContent() {
   };
 
   useEffect(() => {
-    if (!activeNestling.id) return;
     getNodes(activeNestling.id);
     getEdges(activeNestling.id);
   }, [activeNestling.id, getNodes, getEdges]);

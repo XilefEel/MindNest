@@ -7,7 +7,11 @@ import {
 import * as galleryApi from "@/lib/api/gallery";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
+import {
+  mergeWithCurrent,
+  sortByFavorite,
+  withStoreErrorHandler,
+} from "@/lib/utils/general";
 import { useShallow } from "zustand/react/shallow";
 import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 
@@ -128,7 +132,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
           );
 
       set((state) => ({
-        images: [newImage, ...state.images],
+        images: sortByFavorite([newImage, ...state.images]),
       }));
 
       await updateNestlingTimestamp(newImage.nestlingId);
@@ -138,7 +142,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   duplicateImage: withStoreErrorHandler(set, async (id: number) => {
     const image = await galleryApi.duplicateImage(id);
     set((state) => ({
-      images: [image, ...state.images],
+      images: sortByFavorite([image, ...state.images]),
     }));
     await updateNestlingTimestamp(image.nestlingId);
     return image;
@@ -151,7 +155,9 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     const updated = mergeWithCurrent(currentImage, updates);
 
     set((state) => ({
-      images: state.images.map((img) => (img.id === id ? updated : img)),
+      images: sortByFavorite(
+        state.images.map((img) => (img.id === id ? updated : img)),
+      ),
     }));
 
     await galleryApi.updateImage({ ...updated, id });
