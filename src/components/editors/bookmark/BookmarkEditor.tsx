@@ -81,8 +81,8 @@ export default function BookmarkEditor() {
   };
 
   useEffect(() => {
-    getBookmarks(activeNestling.id!);
-  }, [getBookmarks, activeNestling]);
+    getBookmarks(activeNestling.id);
+  }, [getBookmarks, activeNestling.id]);
 
   return (
     <div

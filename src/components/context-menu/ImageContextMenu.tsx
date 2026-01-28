@@ -1,13 +1,8 @@
-import {
-  useAlbums,
-  useGalleryActions,
-  useImages,
-} from "@/stores/useGalleryStore";
+import { useAlbums, useGalleryActions } from "@/stores/useGalleryStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, Copy, Star, Folder, Download, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import ContextMenuItem from "./ContextMenuItem";
-import { GalleryImage } from "@/lib/types/gallery";
 import BaseContextMenu from "./BaseContextMenu";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
@@ -15,19 +10,19 @@ import { useImageModal } from "@/stores/useModalStore";
 export default function ImageContextMenu({
   imageId,
   children,
+  handleDeleteImage,
+  handleAddToFavorites,
 }: {
   imageId: number;
   children: React.ReactNode;
+  handleDeleteImage: (id: number) => Promise<void>;
+  handleAddToFavorites: (id: number) => Promise<void>;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
 
   const albums = useAlbums();
-  const images = useImages();
-  const { duplicateImage, updateImage, removeImage, downloadImage } =
-    useGalleryActions();
+  const { duplicateImage, updateImage, downloadImage } = useGalleryActions();
   const { openImageModal } = useImageModal();
-
-  const currentImage = images.find((i) => i.id === imageId);
 
   const handleDownloadImage = async (id: number) => {
     try {
@@ -35,22 +30,6 @@ export default function ImageContextMenu({
       toast.success("Album downloaded successfully!");
     } catch (error) {
       toast.error("Failed to download image");
-    }
-  };
-
-  const handleAddToFavorites = async (image: GalleryImage) => {
-    try {
-      const newFavoriteState = !image.isFavorite;
-      await updateImage(imageId, { isFavorite: newFavoriteState });
-
-      if (newFavoriteState) {
-        toast.success("Image added to favorites!");
-      } else {
-        toast.success("Image removed from favorites!");
-      }
-    } catch (error) {
-      toast.error("Failed to add image to favorites");
-      console.error("Failed to add image to favorites:", error);
     }
   };
 
@@ -69,16 +48,6 @@ export default function ImageContextMenu({
     toast.success(
       `Image moved to album "${albums.find((a) => a.id === id)?.name}"!`,
     );
-  };
-
-  const handleDeleteImage = async (id: number) => {
-    try {
-      await removeImage(id);
-      toast.success("Image deleted successfully!");
-    } catch (error) {
-      toast.error("Failed to delete image");
-      console.error("Failed to delete image:", error);
-    }
   };
 
   return (
@@ -102,7 +71,7 @@ export default function ImageContextMenu({
           />
 
           <ContextMenuItem
-            action={() => handleAddToFavorites(currentImage!)}
+            action={() => handleAddToFavorites(imageId)}
             Icon={Star}
             text="Add to Favorites"
           />

@@ -3,24 +3,18 @@ import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import ImageContextMenu from "@/components/context-menu/ImageContextMenu";
 import { cn } from "@/lib/utils/general";
+import { Photo } from "@/lib/types/gallery";
 
 export default function ImageCard({
   imageProps,
   photo,
-  handleImageDelete,
+  handleDeleteImage,
   handleAddToFavorites,
 }: {
   imageProps: React.ImgHTMLAttributes<HTMLImageElement>;
-  photo: {
-    id: number;
-    title: string;
-    src: string;
-    width: number;
-    height: number;
-    isFavorite: boolean;
-  };
-  handleImageDelete: (id: number) => Promise<void>;
-  handleAddToFavorites: (photo: any) => Promise<void>;
+  photo: Photo;
+  handleDeleteImage: (id: number) => Promise<void>;
+  handleAddToFavorites: (id: number) => Promise<void>;
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
@@ -37,7 +31,11 @@ export default function ImageCard({
   };
 
   return (
-    <ImageContextMenu imageId={photo.id}>
+    <ImageContextMenu
+      imageId={photo.id}
+      handleDeleteImage={handleDeleteImage}
+      handleAddToFavorites={handleAddToFavorites}
+    >
       <div
         ref={setNodeRef}
         {...listeners}
@@ -61,7 +59,7 @@ export default function ImageCard({
               )}
               onClick={(e) => {
                 e.stopPropagation();
-                handleAddToFavorites(photo);
+                handleAddToFavorites(photo.id);
               }}
             >
               <Star
@@ -75,7 +73,7 @@ export default function ImageCard({
               className="rounded-full bg-red-500 p-1.5 text-white shadow transition hover:bg-red-600"
               onClick={(e) => {
                 e.stopPropagation();
-                handleImageDelete(photo.id);
+                handleDeleteImage(photo.id);
               }}
             >
               <Trash2 size={16} />

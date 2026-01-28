@@ -117,6 +117,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       albumId?: number | null;
     }) => {
       let newImage: GalleryImage;
+
       newImage = file.path
         ? await galleryApi.importImage(nestlingId, file.path, albumId)
         : await galleryApi.importImageData(
@@ -127,7 +128,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
           );
 
       set((state) => ({
-        images: [...state.images, newImage],
+        images: [newImage, ...state.images],
       }));
 
       await updateNestlingTimestamp(newImage.nestlingId);
@@ -137,7 +138,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   duplicateImage: withStoreErrorHandler(set, async (id: number) => {
     const image = await galleryApi.duplicateImage(id);
     set((state) => ({
-      images: [...state.images, image],
+      images: [image, ...state.images],
     }));
     await updateNestlingTimestamp(image.nestlingId);
     return image;
@@ -154,6 +155,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     }));
 
     await galleryApi.updateImage({ ...updated, id });
+
     await updateNestlingTimestamp(updated.nestlingId);
   }),
 
@@ -195,7 +197,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   addAlbum: withStoreErrorHandler(set, async (data: NewGalleryAlbum) => {
     const newAlbum = await galleryApi.createAlbum(data);
     set((state) => ({
-      albums: [...state.albums, newAlbum],
+      albums: [newAlbum, ...state.albums],
     }));
     await updateNestlingTimestamp(newAlbum.nestlingId);
   }),

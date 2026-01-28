@@ -63,7 +63,7 @@ export const mergeWithCurrent = <T extends Record<string, any>>(
   return result;
 };
 
-export function parseDragData(item: { id: string | number; data: any }) {
+export const parseDragData = (item: { id: string | number; data: any }) => {
   if (item.data.current.type === "column") {
     return {
       type: "column",
@@ -85,4 +85,4 @@ export function parseDragData(item: { id: string | number; data: any }) {
   }
 
   return null;
-}
+};

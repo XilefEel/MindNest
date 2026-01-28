@@ -67,9 +67,9 @@ export default function GalleryEditor() {
   }, [activeNestling.title]);
 
   useEffect(() => {
-    getAlbums(activeNestling.id);
     getImages(activeNestling.id);
-  }, [getImages, activeNestling.id]);
+    getAlbums(activeNestling.id);
+  }, [getImages, getAlbums, activeNestling.id]);
 
   return (
     <div className="relative space-y-4">
@@ -95,9 +95,7 @@ export default function GalleryEditor() {
 
         <div className="flex gap-3 text-sm">
           <button
-            onClick={() => {
-              handleSelectImage();
-            }}
+            onClick={handleSelectImage}
             disabled={isUploading}
             className="flex items-center gap-2 rounded-lg bg-blue-500 px-3 py-1.5 text-white transition-colors hover:bg-blue-600"
           >
@@ -112,9 +110,7 @@ export default function GalleryEditor() {
           </button>
 
           <button
-            onClick={() => {
-              openAlbumModal(activeNestling.id);
-            }}
+            onClick={() => openAlbumModal(activeNestling.id)}
             className={cn(
               "flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-white transition-colors hover:bg-teal-600",
               albumId !== null ? "hidden" : "",

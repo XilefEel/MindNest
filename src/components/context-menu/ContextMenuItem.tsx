@@ -26,6 +26,7 @@ export default function ContextMenuItem({
           "text-red-600 hover:bg-red-100/40 dark:text-red-400 dark:hover:bg-red-800/40",
       )}
       onSelect={() => action()}
+      onClick={(e) => e.stopPropagation()}
       onDoubleClick={(e) => e.stopPropagation()}
     >
       <Icon className="h-4 w-4" />

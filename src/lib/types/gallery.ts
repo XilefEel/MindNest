@@ -1,4 +1,5 @@
 import { WithBase } from "./base";
+import { Photo as ReactPhotoAlbumPhoto } from "react-photo-album";
 
 export type NewGalleryAlbum = {
   nestlingId: number;
@@ -20,3 +21,13 @@ export type NewGalleryImage = {
 };
 
 export type GalleryImage = WithBase<NewGalleryImage>;
+
+export type Photo = ReactPhotoAlbumPhoto & {
+  id: number;
+  albumId: number | null;
+  title: string;
+  description: string;
+  isFavorite: boolean;
+  createdAt: string;
+  updatedAt: string;
+};

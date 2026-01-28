@@ -3,7 +3,6 @@ import {
   Calendar,
   Images,
   KanbanSquare,
-  Notebook,
   Table2,
   Network,
   LucideIcon,
@@ -31,15 +30,16 @@ export const nestlingTypes: NestlingTypeOption[] = [
     color: "bg-purple-500",
   },
   { value: "calendar", label: "Calendar", icon: Calendar, color: "bg-red-500" },
-  { value: "journal", label: "Journal", icon: Notebook, color: "bg-amber-500" },
-  { value: "gallery", label: "Gallery", icon: Images, color: "bg-pink-500" },
-  { value: "mindmap", label: "Mindmap", icon: Network, color: "bg-green-500" },
+  // { value: "journal", label: "Journal", icon: Notebook, color: "bg-amber-500" },
   {
     value: "bookmark",
     label: "Bookmark",
     icon: BookmarkCheck,
-    color: "bg-yellow-500",
+    color: "bg-amber-500",
   },
+  { value: "gallery", label: "Gallery", icon: Images, color: "bg-pink-500" },
+  { value: "mindmap", label: "Mindmap", icon: Network, color: "bg-green-500" },
+
   {
     value: "database",
     label: "Database",

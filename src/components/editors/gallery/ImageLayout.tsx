@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { RowsPhotoAlbum, ColumnsPhotoAlbum } from "react-photo-album";
+
 import { Lightbox } from "yet-another-react-lightbox";
 import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
 import { Upload } from "lucide-react";
@@ -10,7 +11,7 @@ import "react-photo-album/rows.css";
 import "react-photo-album/columns.css";
 import "yet-another-react-lightbox/styles.css";
 import ImageCard from "./ImageCard";
-import { GalleryAlbum } from "@/lib/types/gallery";
+import { GalleryAlbum, Photo } from "@/lib/types/gallery";
 import { toast } from "sonner";
 import { useActiveNestling } from "@/stores/useNestlingStore";
 
@@ -35,12 +36,12 @@ export default function ImageLayout({
 
   const PhotoLayout = layoutMode === "row" ? RowsPhotoAlbum : ColumnsPhotoAlbum;
 
-  const photos = useMemo(() => {
+  const photos: Photo[] = useMemo(() => {
     const filtered = album
       ? images.filter((img) => img.albumId == album.id)
       : images;
 
-    const mapped = filtered.map((img) => ({
+    return filtered.map((img) => ({
       id: img.id,
       albumId: img.albumId,
       src: convertFileSrc(img.filePath),
@@ -50,36 +51,31 @@ export default function ImageLayout({
       width: img.width,
       height: img.height,
       createdAt: img.createdAt,
+      updatedAt: img.updatedAt,
     }));
-
-    mapped.sort((a, b) => {
-      if (a.isFavorite === b.isFavorite) {
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-      } else return b.isFavorite ? 1 : -1;
-    });
-
-    return mapped;
   }, [images, album]);
 
-  const handleImageDelete = async (id: number) => {
+  const handleDeleteImage = async (id: number) => {
     try {
       await removeImage(id);
       toast.success("Image deleted successfully!");
     } catch (error) {
       toast.error("Failed to delete image");
+      console.error("Failed to delete image:", error);
     }
   };
 
-  const handleAddToFavorites = async (photo: any) => {
+  const handleAddToFavorites = async (id: number) => {
     try {
-      const newFavoriteState = !photo.isFavorite;
-      console.log(photo);
-      await updateImage(photo.id, { isFavorite: newFavoriteState });
-      newFavoriteState
-        ? toast.success("Image added to favorites!")
-        : toast.success("Image removed from favorites!");
+      const image = images.find((img) => img.id === id)!;
+      const newFavoriteState = !image.isFavorite;
+      await updateImage(image.id, { isFavorite: newFavoriteState });
+
+      if (newFavoriteState) {
+        toast.success("Image added to favorites!");
+      } else {
+        toast.success("Image removed from favorites!");
+      }
     } catch (error) {
       toast.error("Failed to add image to favorites");
     }
@@ -161,7 +157,7 @@ export default function ImageLayout({
                 key={photo.id}
                 imageProps={imageProps}
                 photo={photo}
-                handleImageDelete={handleImageDelete}
+                handleDeleteImage={handleDeleteImage}
                 handleAddToFavorites={handleAddToFavorites}
               />
             ),

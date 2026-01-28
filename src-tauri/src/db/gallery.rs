@@ -200,7 +200,7 @@ pub fn get_images_from_db(db: &AppDb, nestling_id: i64) -> DbResult<Vec<GalleryI
             SELECT id, album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
             FROM gallery_images
             WHERE nestling_id = ?1
-            ORDER BY created_at DESC
+            ORDER BY is_favorite DESC, created_at DESC
         ")?;
 
     let images = statement
@@ -260,7 +260,8 @@ fn get_images_by_album_id(db: &AppDb, album_id: i64) -> DbResult<Vec<GalleryImag
             SELECT id, album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
             FROM gallery_images
             WHERE album_id = ?1
-            ORDER BY created_at DESC")?;
+            ORDER BY is_favorite DESC, created_at DESC"
+        )?;
 
     let images = statement
         .query_map(params![album_id], |row| {

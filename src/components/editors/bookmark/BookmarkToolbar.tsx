@@ -45,7 +45,7 @@ export default function BookmarkToolbar({
 
   return (
     <div className="flex flex-col flex-wrap gap-2 md:flex-row md:items-center md:justify-between">
-      <div className="flex flex-col flex-wrap gap-2 md:flex-1 md:flex-row md:justify-between">
+      <div className="flex flex-col flex-wrap gap-2 text-sm md:flex-1 md:flex-row md:justify-between">
         <div className="flex gap-2">
           <div className="relative w-full md:w-[300px]">
             <Link className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
