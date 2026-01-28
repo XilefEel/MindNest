@@ -2,7 +2,7 @@ import { GalleryAlbum } from "@/lib/types/gallery";
 import { useGalleryActions } from "@/stores/useGalleryStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, PlusSquare, Download, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { useActiveNestlingId } from "@/stores/useNestlingStore";

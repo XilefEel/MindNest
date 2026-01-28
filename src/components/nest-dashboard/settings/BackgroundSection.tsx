@@ -7,7 +7,7 @@ import {
 } from "@/stores/useNestStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 
 export default function BackgroundSection() {
   const activeNestId = useActiveNestId();

@@ -8,7 +8,7 @@ import NestlingTitle from "../NestlingTitle";
 import useAutoSave from "@/hooks/useAutoSave";
 import BookmarkCard from "./BookmarkCard";
 import { cn } from "@/lib/utils/general";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import BookmarkToolbar from "./BookmarkToolbar";
 
 export default function BookmarkEditor() {

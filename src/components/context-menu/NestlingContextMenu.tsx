@@ -3,7 +3,7 @@ import { Edit3, Trash2, Copy, Archive, Pin, PinOff } from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import { useDeleteModal } from "@/stores/useModalStore";
 
 export default function NestlingContextMenu({

@@ -2,7 +2,7 @@ import { Nest } from "@/lib/types/nest";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import { useNestActions } from "@/stores/useNestStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";

@@ -27,7 +27,7 @@ import {
   useActiveNestling,
   useNestlingActions,
 } from "@/stores/useNestlingStore";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import Toolbar from "./Toolbar";
 import { getRandomElement } from "@/lib/utils/general";
 import { COLORS } from "@/lib/utils/constants";

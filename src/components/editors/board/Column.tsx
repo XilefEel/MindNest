@@ -14,7 +14,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import { BoardColumn } from "@/lib/types/board";
 import ColumnContextMenu from "@/components/context-menu/ColumnContextMenu";
 

@@ -1,6 +1,6 @@
 import { save } from "@tauri-apps/plugin-dialog";
 import { writeTextFile } from "@tauri-apps/plugin-fs";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import { Bookmark } from "../types/bookmark";
 
 export const exportBookmarksToJson = async (

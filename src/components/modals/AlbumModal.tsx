@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import { useGalleryActions, useGalleryStore } from "@/stores/useGalleryStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";

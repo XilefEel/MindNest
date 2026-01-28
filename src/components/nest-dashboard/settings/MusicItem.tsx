@@ -11,7 +11,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { motion } from "framer-motion";
 import { Music, Pause, Play, Trash2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 
 export default function MusicItem({ track }: { track: BackgroundMusic }) {
   const { deleteMusic, setActiveMusicId, setAudioIsPaused, updateMusic } =

@@ -5,7 +5,7 @@ import { useJournalActions, useJournalStore } from "@/stores/useJournalStore";
 import { JournalEntry } from "@/lib/types/journal";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import { useActiveNestId } from "@/stores/useNestStore";
 import { useActiveNestling } from "@/stores/useNestlingStore";
 

@@ -9,7 +9,7 @@ import "yet-another-react-lightbox/styles.css";
 import MainView from "./MainView";
 import AlbumView from "./AlbumView";
 import { cn } from "@/lib/utils/general";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import {
   useActiveNestling,
   useNestlingActions,

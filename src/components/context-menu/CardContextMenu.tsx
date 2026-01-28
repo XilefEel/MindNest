@@ -4,7 +4,7 @@ import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { BoardCard } from "@/lib/types/board";
 import { useBoardActions } from "@/stores/useBoardStore";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 
 export default function CardContextMenu({
   card,

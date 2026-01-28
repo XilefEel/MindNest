@@ -12,7 +12,7 @@ import "react-photo-album/columns.css";
 import "yet-another-react-lightbox/styles.css";
 import ImageCard from "./ImageCard";
 import { GalleryAlbum, Photo } from "@/lib/types/gallery";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import { useActiveNestling } from "@/stores/useNestlingStore";
 
 export default function ImageLayout({

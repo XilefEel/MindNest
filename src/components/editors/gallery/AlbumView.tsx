@@ -5,7 +5,7 @@ import useAutoSave from "@/hooks/useAutoSave";
 import "react-photo-album/rows.css";
 import "yet-another-react-lightbox/styles.css";
 import { GalleryAlbum } from "@/lib/types/gallery";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import { Button } from "@/components/ui/button";
 import ImageLayout from "./ImageLayout";
 import { cn } from "@/lib/utils/general";

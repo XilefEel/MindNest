@@ -1,6 +1,7 @@
 import BookmarkContextMenu from "@/components/context-menu/BookmarkContextMenu";
 import { Bookmark } from "@/lib/types/bookmark";
 import { cn } from "@/lib/utils/general";
+import { toast } from "@/lib/utils/toast";
 import { useBookmarkActions } from "@/stores/useBookmarkStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { Star, Trash2 } from "lucide-react";
@@ -18,8 +19,11 @@ export default function BookmarkCard({
 
   const handleDelete = async (id: number) => {
     try {
+      toast.success("Bookmark deleted!");
+      toast.error("Bookmark deleted!");
       await deleteBookmark(id);
     } catch (error) {
+      toast.error("Failed to delete bookmark");
       console.error("Failed to delete bookmark:", error);
     }
   };
@@ -28,6 +32,7 @@ export default function BookmarkCard({
     try {
       await toggleBookmarkFavorite(id);
     } catch (error) {
+      toast.error("Failed to toggle bookmark favorite");
       console.error("Failed to toggle bookmark favorite:", error);
     }
   };

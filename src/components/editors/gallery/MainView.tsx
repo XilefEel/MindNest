@@ -24,7 +24,7 @@ import {
   DragEndEvent,
 } from "@dnd-kit/core";
 import ImageLayout from "./ImageLayout";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import {
   useActiveNestling,
   useNestlingActions,

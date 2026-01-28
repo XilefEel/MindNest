@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import { useNestlingActions } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { useActiveNestId } from "@/stores/useNestStore";

@@ -1,7 +1,7 @@
 import { save } from "@tauri-apps/plugin-dialog";
 import { Editor } from "@tiptap/react";
 import { writeTextFile } from "@tauri-apps/plugin-fs";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 
 export const exportNoteToHTML = async (editor: Editor, title: string) => {
   const htmlContent = editor.getHTML();

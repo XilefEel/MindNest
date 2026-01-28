@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/utils/toast";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 import { useImageModal } from "@/stores/useModalStore";
