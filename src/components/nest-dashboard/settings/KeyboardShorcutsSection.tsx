@@ -11,17 +11,10 @@ import {
   Settings,
 } from "lucide-react";
 
-type ShortcutItem = {
-  keys: string[];
-  description: string;
-  category: string;
-  Icon?: React.ReactNode;
-};
-
 export default function KeyboardShortcutsSection() {
   const activeBackgroundId = useActiveBackgroundId();
 
-  const shortcuts: ShortcutItem[] = [
+  const shortcuts = [
     {
       keys: ["Ctrl", "T"],
       description: "Toggle topbar",
@@ -99,8 +92,12 @@ export default function KeyboardShortcutsSection() {
                   className={cn(
                     "flex items-center justify-between rounded-lg px-3 py-2",
                     activeBackgroundId
-                      ? "bg-white/10 backdrop-blur-sm"
-                      : "bg-gray-50 dark:bg-gray-700/30",
+                      ? index % 2 === 0
+                        ? "bg-black/5 backdrop-blur-sm dark:bg-white/10"
+                        : "bg-white/10 backdrop-blur-sm dark:bg-white/15"
+                      : index % 2 === 0
+                        ? "bg-gray-100 dark:bg-gray-700/30"
+                        : "bg-gray-50 dark:bg-gray-700/80",
                   )}
                 >
                   <div className="flex items-center gap-3">

@@ -4,10 +4,9 @@ export type NestlingType =
   | "note"
   | "board"
   | "calendar"
-  | "journal"
+  | "bookmark"
   | "gallery"
   | "mindmap"
-  | "bookmark"
   | "database";
 
 export type NewNestling = {

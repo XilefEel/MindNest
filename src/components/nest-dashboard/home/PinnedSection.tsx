@@ -78,7 +78,12 @@ export default function PinnedSection() {
                       </span>
                     </div>
                   </div>
-                  <ArrowRight className="h-5 w-5 text-gray-300 transition" />
+                  <ArrowRight
+                    className={cn(
+                      "h-5 w-5 text-gray-300 transition",
+                      activeBackgroundId && "text-gray-400",
+                    )}
+                  />
                 </div>
               </div>
             </NestlingContextMenu>
