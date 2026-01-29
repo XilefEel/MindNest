@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BackgroundSection from "./BackgroundSection";
 import MusicSection from "./MusicSection";
 import { cn } from "@/lib/utils/general";
 import { ImageIcon, Music, RotateCcw, Keyboard } from "lucide-react";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import KeyboardShortcutsSection from "./KeyboardShorcutsSection";
+import { useSettingsModal } from "@/stores/useModalStore";
 
 export default function NestSettings() {
   const [activeTab, setActiveTab] = useState("background");
   const activeBackgroundId = useActiveBackgroundId();
+  const { settingsSubTab } = useSettingsModal();
 
   const tabs = [
     {
@@ -24,6 +26,12 @@ export default function NestSettings() {
     },
     { id: "reset", label: "Reset", icon: <RotateCcw className="size-5" /> },
   ];
+
+  useEffect(() => {
+    if (settingsSubTab) {
+      setActiveTab(settingsSubTab);
+    }
+  }, [settingsSubTab]);
 
   return (
     <div className="flex h-full flex-row gap-5">

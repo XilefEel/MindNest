@@ -42,14 +42,14 @@ export default function StatsSection() {
       value: backgrounds.length,
       icon: "🖼️",
       type: "settings",
-      onClick: () => setIsSettingsOpen(true),
+      onClick: () => setIsSettingsOpen(true, "nest", "background"),
     },
     {
       label: "Music",
       value: music.length,
       icon: "🎵",
       type: "settings",
-      onClick: () => setIsSettingsOpen(true),
+      onClick: () => setIsSettingsOpen(true, "nest", "music"),
     },
   ];
 
@@ -146,7 +146,6 @@ export default function StatsSection() {
       );
     }
 
-    // For settings type, just render clickable card
     return (
       <div key={i} onClick={stat.onClick}>
         {statCard}

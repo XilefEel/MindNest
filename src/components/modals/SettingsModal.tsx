@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GeneralSettings from "../nest-dashboard/settings/GeneralSettings";
 import NestSettings from "../nest-dashboard/settings/NestSettings";
 import { cn } from "@/lib/utils/general";
@@ -7,7 +7,7 @@ import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 import { useSettingsModal } from "@/stores/useModalStore";
 
 export default function SettingsModal() {
-  const { isSettingsOpen, setIsSettingsOpen } = useSettingsModal();
+  const { isSettingsOpen, settingsTab, setIsSettingsOpen } = useSettingsModal();
 
   const [activeTab, setActiveTab] = useState("general");
   const activeNestId = useActiveNestId();
@@ -17,6 +17,12 @@ export default function SettingsModal() {
     { id: "general", label: "General Settings" },
     { id: "nest", label: "Nest Settings" },
   ];
+
+  useEffect(() => {
+    if (isSettingsOpen && settingsTab) {
+      setActiveTab(settingsTab);
+    }
+  }, [isSettingsOpen, settingsTab]);
 
   return (
     <BaseModal

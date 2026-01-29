@@ -25,7 +25,13 @@ type ModalStore = {
   setIsSearchOpen: (isOpen: boolean) => void;
 
   isSettingsOpen: boolean;
-  setIsSettingsOpen: (isOpen: boolean) => void;
+  settingsTab: "general" | "nest" | null;
+  settingsSubTab: string | null;
+  setIsSettingsOpen: (
+    isOpen: boolean,
+    tab?: "general" | "nest",
+    subTab?: string,
+  ) => void;
 
   isAlbumOpen: boolean;
   albumNestlingId: number | null;
@@ -86,7 +92,10 @@ export const useModalStore = create<ModalStore>((set) => ({
   setIsSearchOpen: (isOpen) => set({ isSearchOpen: isOpen }),
 
   isSettingsOpen: false,
-  setIsSettingsOpen: (isOpen) => set({ isSettingsOpen: isOpen }),
+  settingsTab: null,
+  settingsSubTab: null,
+  setIsSettingsOpen: (isOpen, tab, subTab) =>
+    set({ isSettingsOpen: isOpen, settingsTab: tab, settingsSubTab: subTab }),
 
   isAlbumOpen: false,
   albumNestlingId: null,
@@ -167,6 +176,8 @@ export const useSettingsModal = () =>
   useModalStore(
     useShallow((state) => ({
       isSettingsOpen: state.isSettingsOpen,
+      settingsTab: state.settingsTab,
+      settingsSubTab: state.settingsSubTab,
       setIsSettingsOpen: state.setIsSettingsOpen,
     })),
   );
