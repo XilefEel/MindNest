@@ -17,7 +17,7 @@ export const toast = {
         <div className="flex-shrink-0 rounded-full bg-green-500/10 p-2">
           <CheckCircle2 className="size-5 text-green-600 dark:text-green-400" />
         </div>
-        <p className="flex-1 text-sm font-medium text-gray-900 dark:text-gray-100">
+        <p className="flex-1 text-sm font-medium text-gray-900 select-none dark:text-gray-100">
           {message}
         </p>
         <button
@@ -48,7 +48,7 @@ export const toast = {
         <div className="flex-shrink-0 rounded-full bg-red-500/10 p-2">
           <XCircle className="size-5 text-red-600 dark:text-red-400" />
         </div>
-        <p className="flex-1 text-sm font-medium text-gray-900 dark:text-gray-100">
+        <p className="flex-1 text-sm font-medium text-gray-900 select-none dark:text-gray-100">
           {message}
         </p>
         <button

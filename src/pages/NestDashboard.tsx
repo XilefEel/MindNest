@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Nest } from "@/lib/types/nest";
 import { useActiveBackgroundId, useBackgrounds } from "@/stores/useNestStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
@@ -18,17 +18,12 @@ import useRestore from "@/hooks/useRestore";
 import MindmapEditor from "@/components/editors/mindmap/MindmapEditor";
 import FloatingMusicPlayer from "@/components/nest-dashboard/music/FloatingMusicPlayer";
 import BookmarkEditor from "@/components/editors/bookmark/BookmarkEditor";
-import {
-  useFolderModal,
-  useNestlingModal,
-  useSearchModal,
-  useSettingsModal,
-} from "@/stores/useModalStore";
 import GlobalModals from "@/components/modals/GlobalModals";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
-  const [nest, setNest] = useState<Nest | null>(null);
+  const [nest, setNest] = useState<Nest>();
   const [loading, setLoading] = useState(true);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -40,12 +35,6 @@ export default function NestDashboardPage() {
   const backgrounds = useBackgrounds();
   const activeBackgroundId = useActiveBackgroundId();
 
-  const { isNestlingOpen, openNestlingModal, closeNestlingModal } =
-    useNestlingModal();
-  const { isFolderOpen, openFolderModal, closeFolderModal } = useFolderModal();
-  const { isSettingsOpen, setIsSettingsOpen } = useSettingsModal();
-  const { isSearchOpen, setIsSearchOpen } = useSearchModal();
-
   const activeBackgroundImage = backgrounds.find(
     (background) => background.id === activeBackgroundId,
   );
@@ -56,55 +45,16 @@ export default function NestDashboardPage() {
 
   useRestore({ id, setNest, setLoading });
 
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.ctrlKey || e.metaKey) {
-        switch (e.key) {
-          case "t":
-            e.preventDefault();
-            setIsTopbarCollapsed(!isTopbarCollapsed);
-            break;
-
-          case "s":
-            e.preventDefault();
-            const isMobile = window.innerWidth < 768;
-            if (isMobile) {
-              setIsSidebarOpen(!isSidebarOpen);
-            } else {
-              setIsSidebarCollapsed(!isSidebarCollapsed);
-            }
-            break;
-
-          case "h":
-            e.preventDefault();
-            setIsCardHidden(!isCardHidden);
-            break;
-
-          case "n":
-            e.preventDefault();
-            isNestlingOpen ? closeNestlingModal() : openNestlingModal(nest!.id);
-            break;
-
-          case "f":
-            e.preventDefault();
-            isFolderOpen ? closeFolderModal() : openFolderModal(nest!.id);
-            break;
-
-          case "k":
-            e.preventDefault();
-            setIsSearchOpen(!isSearchOpen);
-            break;
-
-          case "i":
-            e.preventDefault();
-            setIsSettingsOpen(!isSettingsOpen);
-            break;
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
+  useKeyboardShortcuts({
+    nestId: nest?.id || 0,
+    isTopbarCollapsed,
+    setIsTopbarCollapsed,
+    isSidebarCollapsed,
+    setIsSidebarCollapsed,
+    isSidebarOpen,
+    setIsSidebarOpen,
+    isCardHidden,
+    setIsCardHidden,
   });
 
   if (loading) return <LoadingScreen />;

@@ -2,8 +2,9 @@ import { useState } from "react";
 import BackgroundSection from "./BackgroundSection";
 import MusicSection from "./MusicSection";
 import { cn } from "@/lib/utils/general";
-import { ImageIcon, Music, RotateCcw } from "lucide-react";
+import { ImageIcon, Music, RotateCcw, Keyboard } from "lucide-react";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
+import KeyboardShortcutsSection from "./KeyboardShorcutsSection";
 
 export default function NestSettings() {
   const [activeTab, setActiveTab] = useState("background");
@@ -16,6 +17,11 @@ export default function NestSettings() {
       icon: <ImageIcon className="size-5" />,
     },
     { id: "music", label: "Music", icon: <Music className="size-5" /> },
+    {
+      id: "shortcuts",
+      label: "Shortcuts",
+      icon: <Keyboard className="size-5" />,
+    },
     { id: "reset", label: "Reset", icon: <RotateCcw className="size-5" /> },
   ];
 
@@ -47,6 +53,7 @@ export default function NestSettings() {
       <div className="flex-1 overflow-y-auto">
         {activeTab === "background" && <BackgroundSection />}
         {activeTab === "music" && <MusicSection />}
+        {activeTab === "shortcuts" && <KeyboardShortcutsSection />}
         {activeTab === "reset" && (
           <div className="flex items-center justify-between">
             <div>

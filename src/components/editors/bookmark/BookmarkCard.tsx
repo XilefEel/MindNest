@@ -20,7 +20,6 @@ export default function BookmarkCard({
   const handleDelete = async (id: number) => {
     try {
       toast.success("Bookmark deleted!");
-      toast.error("Bookmark deleted!");
       await deleteBookmark(id);
     } catch (error) {
       toast.error("Failed to delete bookmark");

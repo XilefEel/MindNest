@@ -2,7 +2,7 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Laptop } from "lucide-react";
 
-export function ThemeToggle() {
+export function useThemeToggle() {
   const { setTheme, theme } = useTheme();
 
   const cycleTheme = () => {
@@ -16,6 +16,13 @@ export function ThemeToggle() {
       setTheme("light");
     }
   };
+
+  return cycleTheme;
+}
+
+export function ThemeToggle() {
+  const { theme } = useTheme();
+  const cycleTheme = useThemeToggle();
 
   const currentTheme = theme || "system";
   const icon =
