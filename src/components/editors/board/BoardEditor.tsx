@@ -15,6 +15,7 @@ import {
   useSensor,
   useSensors,
   DragOverlay,
+  closestCorners,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -37,14 +38,19 @@ export default function BoardEditor() {
   const columns = useBoardColumns();
   const cards = useBoardCards();
   const activeDraggingId = useActiveDraggingId();
-  const { getBoard, createColumn, handleDragStart, handleDragEnd } =
-    useBoardActions();
+  const {
+    getBoard,
+    createColumn,
+    handleDragStart,
+    handleDragOver,
+    handleDragEnd,
+  } = useBoardActions();
 
   const { updateNestling } = useNestlingActions();
 
   const [title, setTitle] = useState(activeNestling.title);
 
-  const columnIds = columns.map((col) => col.id);
+  const columnIds = useMemo(() => columns.map((col) => col.id), [columns]);
   const activeCard = cards.find((card) => card.id === Number(activeDraggingId));
 
   const sensors = useSensors(
@@ -90,8 +96,8 @@ export default function BoardEditor() {
       <div className="flex-1 overflow-x-auto overflow-y-visible">
         <DndContext
           sensors={sensors}
-          collisionDetection={rectIntersection}
           onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
           <SortableContext
@@ -99,11 +105,11 @@ export default function BoardEditor() {
             strategy={horizontalListSortingStrategy}
           >
             <div className="flex flex-row items-start gap-4 p-2">
-              <AnimatePresence mode="sync">
-                {columns.map((col) => (
-                  <Column key={col.id} column={col} />
-                ))}
-              </AnimatePresence>
+              {/* <AnimatePresence mode="sync"> */}
+              {columns.map((col) => (
+                <Column key={col.id} column={col} />
+              ))}
+              {/* </AnimatePresence> */}
 
               <button
                 onClick={handleAddColumn}

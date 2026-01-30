@@ -7,7 +7,7 @@ import {
   useBoardCards,
 } from "@/stores/useBoardStore";
 import ColumnCard from "./ColumnCard";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSortable } from "@dnd-kit/sortable";
 import {
@@ -49,7 +49,10 @@ export default function Column({ column }: { column: BoardColumn }) {
   };
 
   const cards = useBoardCards();
-  const filteredCards = cards.filter((card) => card.columnId === column.id);
+  const filteredCards = useMemo(
+    () => cards.filter((card) => card.columnId === column.id),
+    [cards, column.id],
+  );
 
   const cardIds = filteredCards.map((card) => card.id);
 
@@ -110,12 +113,12 @@ export default function Column({ column }: { column: BoardColumn }) {
     <ColumnContextMenu column={column}>
       <motion.div
         key={column.id}
-        layout={!activeDraggingId}
-        exit={{ opacity: 0 }}
-        transition={{
-          layout: { duration: 0.25, ease: "easeInOut" },
-          duration: 0.15,
-        }}
+        // layout={!activeDraggingId}
+        // exit={{ opacity: 0 }}
+        // transition={{
+        //   layout: { duration: 0.25, ease: "easeInOut" },
+        //   duration: 0.15,
+        // }}
       >
         <div
           ref={setNodeRef}

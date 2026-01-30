@@ -35,9 +35,9 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
   });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0 : 1,
+    // transform: CSS.Transform.toString(transform),
+    // transition,
+    opacity: isDragging ? 0.5 : 1,
   };
 
   const handleKeyDown = (
@@ -108,10 +108,10 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
   return (
     <CardContextMenu card={card}>
       <motion.div
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ opacity: 1, height: "auto" }}
-        exit={{ opacity: 0, height: 0 }}
-        transition={{ duration: 0.15 }}
+      // initial={{ opacity: 0, height: 0 }}
+      // animate={{ opacity: 1, height: "auto" }}
+      // exit={{ opacity: 0, height: 0 }}
+      // transition={{ duration: 0.15 }}
       >
         <div className="px-2 py-1.5">
           <div

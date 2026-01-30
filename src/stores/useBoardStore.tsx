@@ -7,7 +7,7 @@ import {
   NewBoardColumn,
 } from "@/lib/types/board";
 import { parseDragData, withStoreErrorHandler } from "@/lib/utils/general";
-import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core";
 import { create } from "zustand";
 import { sortCards } from "@/lib/utils/boards";
 import { useShallow } from "zustand/react/shallow";
@@ -20,6 +20,8 @@ type BoardState = {
 
   boardData: BoardData | null;
   activeDraggingId: string | null;
+  activeColumn: BoardColumn | null;
+  activeCard: BoardCard | null;
   loading: boolean;
   error: string | null;
 
@@ -58,6 +60,7 @@ type BoardState = {
   deleteCard: (cardId: number) => Promise<void>;
 
   handleDragStart: (event: DragStartEvent) => void;
+  handleDragOver: (event: DragOverEvent) => void;
   handleDragEnd: (event: DragEndEvent) => Promise<void>;
 };
 
@@ -67,7 +70,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   boardData: null,
   loading: false,
   error: null,
+
   activeDraggingId: null,
+  activeColumn: null,
+  activeCard: null,
 
   getBoard: withStoreErrorHandler(set, async (nestlingId) => {
     const data = await boardApi.getBoard(nestlingId);
@@ -226,91 +232,116 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   deleteCard: withStoreErrorHandler(set, async (cardId) => {
     await boardApi.deleteBoardCard(cardId);
 
+    const currentCard = get().cards.find((card) => card.id === cardId)!;
+
     set((state) => ({
       cards: state.cards.filter((card) => card.id !== cardId),
     }));
-    const currentCard = get().cards.find((card) => card.id === cardId)!;
+
     await updateNestlingTimestamp(
       get().columns.find((col) => col.id === currentCard.columnId)!.nestlingId,
     );
   }),
 
   handleDragStart: (event) => {
+    const activeData = parseDragData(event.active);
+
+    if (!activeData) {
+      set({ activeDraggingId: null, activeColumn: null, activeCard: null });
+      return;
+    }
+
     set({ activeDraggingId: event.active.id as string });
+
+    if (activeData.type === "column") {
+      set({ activeColumn: activeData.column, activeCard: null });
+      return;
+    }
+
+    if (activeData.type === "card") {
+      set({ activeCard: activeData.card, activeColumn: null });
+      return;
+    }
   },
 
-  handleDragEnd: async (event) => {
+  handleDragOver: (event) => {
     const { active, over } = event;
-    set({ activeDraggingId: null });
 
     if (!over || active.id === over.id) return;
 
     const activeData = parseDragData(active);
-    const targetData = parseDragData(over);
-    if (!activeData || !targetData) return;
+    const overData = parseDragData(over);
 
-    // column to column
+    if (!activeData || !overData || activeData.type !== "card") return;
+
+    set((state) => {
+      const activeIndex = state.cards.findIndex((c) => c.id === active.id);
+      const overIndex = state.cards.findIndex((c) => c.id === over.id);
+
+      if (overData.type === "card") {
+        state.cards[activeIndex].columnId = state.cards[overIndex].columnId;
+
+        return { cards: arrayMove(state.cards, activeIndex, overIndex) };
+      }
+
+      if (overData.type === "column") {
+        state.cards[activeIndex].columnId = Number(over.id);
+
+        return { cards: arrayMove(state.cards, activeIndex, activeIndex) };
+      }
+
+      return state;
+    });
+  },
+
+  handleDragEnd: async (event) => {
+    const { active, over } = event;
+    set({ activeDraggingId: null, activeColumn: null, activeCard: null });
+
+    const activeData = parseDragData(active);
+    if (!activeData) return;
+
     if (activeData.type === "column") {
-      const { columns } = get();
-      const activeIdx = columns.findIndex((c) => c.id === activeData.id);
-      const targetIdx = columns.findIndex((c) => c.id === targetData.id);
+      if (!over || active.id === over.id) return;
 
-      const reorderedCols = arrayMove(columns, activeIdx, targetIdx);
-      const colsWithNewIndexes = reorderedCols.map((col, i) => ({
-        ...col,
-        orderIndex: i,
-      }));
+      set((state) => {
+        const activeIndex = state.columns.findIndex((c) => c.id === active.id);
+        const overIndex = state.columns.findIndex((c) => c.id === over.id);
 
-      set({ columns: colsWithNewIndexes });
-
-      await Promise.all(
-        colsWithNewIndexes.map((col) => boardApi.updateBoardColumn(col)),
-      );
-      await updateNestlingTimestamp(
-        get().columns.find((col) => col.id === activeData.id)!.nestlingId,
-      );
-      return;
-    }
-    // card to col/card
-    if (activeData.type === "card") {
-      const { cards } = get();
-      const activeIdx = cards.findIndex((c) => c.id === activeData.id);
-
-      const targetColumnId =
-        targetData.type === "card" ? targetData.card!.columnId : targetData.id;
-
-      const updated = [...cards];
-      updated[activeIdx].columnId = Number(targetColumnId);
-
-      const targetIdx =
-        targetData.type === "card"
-          ? cards.findIndex((c) => c.id === targetData.id)
-          : updated.filter((c) => c.columnId === targetColumnId).length;
-
-      const reordered = arrayMove(updated, activeIdx, targetIdx);
-
-      const affectedColumnIds = [cards[activeIdx].columnId, targetColumnId];
-
-      const cardsWithNewIndexes = reordered.map((card) => {
-        if (!affectedColumnIds.includes(card.columnId)) {
-          return card;
-        }
-        const idx = reordered
-          .filter((c) => c.columnId === card.columnId)
-          .findIndex((c) => c.id === card.id);
-        return { ...card, orderIndex: idx };
+        return { columns: arrayMove(state.columns, activeIndex, overIndex) };
       });
 
-      set({ cards: sortCards(cardsWithNewIndexes) });
+      const { columns } = get();
 
-      await Promise.all(
-        cardsWithNewIndexes
-          .filter((card) => affectedColumnIds.includes(card.columnId))
-          .map((card) => boardApi.updateBoardCard(card)),
-      );
+      const indexed = columns.map((col, i) => ({ ...col, orderIndex: i }));
+
+      set({ columns: indexed });
+
+      await Promise.all(indexed.map((col) => boardApi.updateBoardColumn(col)));
+      await updateNestlingTimestamp(indexed[0].nestlingId);
+
+      return;
+    }
+
+    if (activeData.type === "card") {
+      const { cards } = get();
+
+      const indexed = cards.map((card) => {
+        const cardsInColumn = cards.filter((c) => c.columnId === card.columnId);
+        return {
+          ...card,
+          orderIndex: cardsInColumn.findIndex((c) => c.id === card.id),
+        };
+      });
+
+      set({ cards: indexed });
+
+      await Promise.all(indexed.map((card) => boardApi.updateBoardCard(card)));
+
+      const movedCard = indexed.find((c) => c.id === active.id)!;
 
       await updateNestlingTimestamp(
-        get().columns.find((col) => col.id === targetColumnId)!.nestlingId,
+        get().columns.find((col) => col.id === movedCard.columnId)!.nestlingId,
       );
     }
   },
@@ -326,6 +357,11 @@ export const setActiveDraggingId = (id: string | null) => {
 
 export const useActiveDraggingId = () =>
   useBoardStore((state) => state.activeDraggingId);
+
+export const useActiveColumn = () =>
+  useBoardStore((state) => state.activeColumn);
+
+export const useActiveCard = () => useBoardStore((state) => state.activeCard);
 
 export const useBoardActions = () =>
   useBoardStore(
@@ -343,6 +379,7 @@ export const useBoardActions = () =>
       deleteCard: state.deleteCard,
 
       handleDragStart: state.handleDragStart,
+      handleDragOver: state.handleDragOver,
       handleDragEnd: state.handleDragEnd,
     })),
   );
