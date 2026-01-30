@@ -3,7 +3,7 @@ import { Loader2 } from "lucide-react";
 export default function LoadingScreen() {
   return (
     <div className="bg-background flex h-screen w-screen items-center justify-center">
-      <Loader2 className="size-16 animate-spin" />
+      <Loader2 className="size-16 animate-spin text-teal-500" />
     </div>
   );
 }

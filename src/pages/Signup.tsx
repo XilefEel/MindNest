@@ -2,38 +2,33 @@ import AuthForm from "@/components/AuthForm";
 import { Link, useNavigate } from "react-router-dom";
 import { signupUser } from "@/lib/api/user";
 import { SignupData, LoginData } from "../lib/types/user";
-import { ArrowLeft } from "lucide-react";
 
 export default function SignupPage() {
   const navigate = useNavigate();
+
   const handleSignup = async (data: SignupData | LoginData): Promise<void> => {
-    try {
-      if ("username" in data) {
-        await signupUser(data.username, data.email, data.password);
-      }
-    } catch (err: any) {
-      throw new Error(err.message || "Signup failed");
+    if ("username" in data) {
+      await signupUser(data.username, data.email, data.password);
+      navigate("/login");
     }
   };
 
   return (
-    <div className="bg-background flex min-h-screen items-center justify-center px-6 py-12">
-      <ArrowLeft
-        className="text-muted-foreground absolute top-6 left-6 cursor-pointer transition-colors hover:text-teal-600"
-        onClick={() => navigate("/")}
-      />
-
-      <div className="border-muted bg-card w-full max-w-md rounded-2xl border p-10 shadow-xl">
-        <div className="mb-6 space-y-2 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-teal-600 md:text-4xl">
-            Create your MindNest account
+    <div className="flex min-h-screen items-center justify-center bg-teal-100 px-6 py-12 dark:bg-gray-900">
+      <div className="border-muted w-full max-w-md rounded-2xl border bg-white p-10 shadow-xl dark:border-gray-600 dark:bg-gray-800">
+        <div className="flex flex-col items-center justify-center gap-2 text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-teal-500 dark:text-teal-300">
+            Sign Up
           </h1>
           <p className="text-muted-foreground text-sm">
-            Start building your intelligent nest.
+            Create an account to start creating Nests!
           </p>
-          <hr className="border-muted my-4" />
         </div>
+
+        <hr className="border-muted my-6 dark:border-gray-500" />
+
         <AuthForm type="signup" onSubmit={handleSignup} />
+
         <p className="text-muted-foreground mt-6 text-center text-sm">
           Already have an account?{" "}
           <Link

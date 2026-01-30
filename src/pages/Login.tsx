@@ -2,42 +2,32 @@ import AuthForm from "@/components/AuthForm";
 import { Link } from "react-router-dom";
 import { loginUser } from "@/lib/api/user";
 import { SignupData, LoginData } from "../lib/types/user";
-
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { ArrowLeft } from "lucide-react";
 
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (data: SignupData | LoginData) => {
-    try {
-      const user = await loginUser(data.email, data.password);
-      login(user);
-      navigate("/dashboard");
-    } catch (err: any) {
-      throw new Error(err.message || "Login failed");
-    }
+    const user = await loginUser(data.email, data.password);
+    login(user);
+    navigate("/dashboard");
   };
 
   return (
-    <div className="bg-background flex min-h-screen flex-col items-center justify-center px-6">
-      <ArrowLeft
-        className="text-muted-foreground absolute top-6 left-6 cursor-pointer transition-colors hover:text-teal-600"
-        onClick={() => navigate("/")}
-      />
-
-      <div className="border-muted bg-card w-full max-w-md rounded-2xl border p-10 shadow-xl">
-        <div className="mb-6 space-y-2 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-teal-600 md:text-4xl">
-            Welcome back to MindNest
+    <div className="flex min-h-screen items-center justify-center bg-teal-100 px-6 py-12 dark:bg-gray-900">
+      <div className="border-muted w-full max-w-md rounded-2xl border bg-white p-10 shadow-xl dark:border-gray-600 dark:bg-gray-800">
+        <div className="flex flex-col items-center justify-center gap-2 text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-teal-500 dark:text-teal-300">
+            Welcome Back to MindNest
           </h1>
           <p className="text-muted-foreground text-sm">
-            Log in to access your Nest.
+            Log in to access your Nests!
           </p>
-          <hr className="border-muted my-4" />
         </div>
+
+        <hr className="border-muted my-6 dark:border-gray-500" />
 
         <AuthForm type="login" onSubmit={handleLogin} />
 

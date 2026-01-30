@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SignupData, LoginData } from "@/lib/types/user";
+import { toast } from "@/lib/utils/toast";
+import { KeyRound, Mail, User } from "lucide-react";
+import { cn } from "@/lib/utils/general";
 
 export default function AuthForm({
   type,
@@ -15,33 +18,34 @@ export default function AuthForm({
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
 
     if (!email.includes("@")) {
-      setError("Please enter a valid email.");
+      toast.error("Invalid email!");
       return;
     }
+
     if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+      toast.error("Password must be at least 6 characters long!");
       return;
     }
-    if (type === "signup" && username.trim() === "") {
-      setError("Username is required.");
+
+    if (type === "signup" && !username.trim()) {
+      toast.error("Username is required!");
       return;
     }
 
     setLoading(true);
     try {
-      await onSubmit(
-        type === "signup" ? { username, email, password } : { email, password },
-      );
-    } catch (err: any) {
-      const message = err.message || "Something went wrong. Please try again.";
-      setError(message);
+      const data: SignupData | LoginData =
+        type === "signup" ? { username, email, password } : { email, password };
+
+      await onSubmit(data);
+    } catch (error) {
+      toast.error(`Failed to ${type}! Please try again.`);
+      console.error(`Failed to ${type}!`, error);
     } finally {
       setLoading(false);
     }
@@ -51,7 +55,10 @@ export default function AuthForm({
     <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-6">
       {type === "signup" && (
         <div className="space-y-2">
-          <Label htmlFor="username">Username</Label>
+          <Label htmlFor="username">
+            <User size={16} />
+            Username
+          </Label>
           <Input
             id="username"
             type="text"
@@ -59,14 +66,16 @@ export default function AuthForm({
             onChange={(e) => setUsername(e.target.value)}
             autoComplete="off"
             required
-            placeholder="Your username"
+            placeholder="Ex: JohnDoe"
             className="focus:border-teal-500 focus:ring-teal-500"
           />
         </div>
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">
+          <Mail size={16} /> Email
+        </Label>
         <Input
           id="email"
           type="email"
@@ -74,13 +83,15 @@ export default function AuthForm({
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="off"
           required
-          placeholder="Your email address"
+          placeholder="Ex: johndoe@example.com"
           className="focus:border-teal-500 focus:ring-teal-500"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">
+          <KeyRound size={16} /> Password
+        </Label>
         <Input
           id="password"
           type="password"
@@ -93,12 +104,16 @@ export default function AuthForm({
         />
       </div>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
-
       <Button
         type="submit"
-        className="mt-2 w-full bg-teal-500 text-white transition-transform hover:scale-105 dark:bg-white dark:text-black"
-        disabled={loading}
+        className={cn(
+          "w-full cursor-pointer transition disabled:cursor-not-allowed disabled:opacity-50",
+          "bg-teal-500 text-white hover:bg-teal-600 active:bg-teal-700",
+          "dark:bg-teal-400 dark:text-black dark:hover:bg-teal-300 dark:active:bg-teal-200",
+        )}
+        disabled={
+          loading || !email || !password || (type === "signup" && !username)
+        }
       >
         {loading
           ? type === "signup"
