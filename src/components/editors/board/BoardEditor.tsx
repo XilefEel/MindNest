@@ -10,12 +10,10 @@ import Column from "@/components/editors/board/Column";
 import useAutoSave from "@/hooks/useAutoSave";
 import {
   DndContext,
-  rectIntersection,
   PointerSensor,
   useSensor,
   useSensors,
   DragOverlay,
-  closestCorners,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -29,7 +27,6 @@ import { COLORS } from "@/lib/utils/constants";
 import { getRandomElement } from "@/lib/utils/general";
 import ColumnCard from "./ColumnCard";
 import { createPortal } from "react-dom";
-import { AnimatePresence } from "framer-motion";
 
 export default function BoardEditor() {
   const activeNestling = useActiveNestling();
@@ -105,15 +102,13 @@ export default function BoardEditor() {
             strategy={horizontalListSortingStrategy}
           >
             <div className="flex flex-row items-start gap-4 p-2">
-              <AnimatePresence mode="sync">
-                {columns.map((col) => (
-                  <Column key={col.id} column={col} />
-                ))}
-              </AnimatePresence>
+              {columns.map((col) => (
+                <Column key={col.id} column={col} />
+              ))}
 
               <button
                 onClick={handleAddColumn}
-                className="w-72 flex-shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 py-5 text-gray-400 dark:border-gray-600 dark:text-gray-500"
+                className="w-72 flex-shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 py-5 text-gray-400 transition hover:bg-white/30 dark:border-gray-600 dark:text-gray-500 dark:hover:bg-black/10"
               >
                 + Add column
               </button>

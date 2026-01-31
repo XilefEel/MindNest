@@ -1,14 +1,11 @@
-import { Button } from "@/components/ui/button";
 import { Trash, Plus } from "lucide-react";
 import {
   setActiveDraggingId,
-  useActiveDraggingId,
   useBoardActions,
   useBoardCards,
 } from "@/stores/useBoardStore";
 import ColumnCard from "./ColumnCard";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { useSortable } from "@dnd-kit/sortable";
 import {
   SortableContext,
@@ -21,10 +18,10 @@ import ColumnContextMenu from "@/components/context-menu/ColumnContextMenu";
 export default function Column({ column }: { column: BoardColumn }) {
   const [title, setTitle] = useState(column.title);
   const [isEditing, setIsEditing] = useState(false);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { createCard, updateColumn, removeColumn } = useBoardActions();
-  const activeDraggingId = useActiveDraggingId();
 
   const {
     attributes,
@@ -42,10 +39,10 @@ export default function Column({ column }: { column: BoardColumn }) {
   });
 
   const style = {
+    backgroundColor: column.color,
     transform: transform ? `translateX(${transform.x}px)` : undefined,
     transition,
     opacity: isDragging ? 0.5 : 1,
-    backgroundColor: column.color,
   };
 
   const cards = useBoardCards();
@@ -62,7 +59,7 @@ export default function Column({ column }: { column: BoardColumn }) {
       await createCard({
         columnId: column.id,
         title: `New Card ${cards.length + 1}`,
-        description: String(cards.length + 1),
+        description: "",
         orderIndex: cards.length + 1,
       });
     } catch (error) {
@@ -111,85 +108,72 @@ export default function Column({ column }: { column: BoardColumn }) {
 
   return (
     <ColumnContextMenu column={column}>
-      <motion.div
+      <div
+        ref={setNodeRef}
         key={column.id}
-        // layout={!activeDraggingId}
-        // exit={{ opacity: 0 }}
-        // transition={{
-        //   layout: { duration: 0.25, ease: "easeInOut" },
-        //   duration: 0.15,
-        // }}
+        style={style}
+        className="flex w-72 flex-shrink-0 flex-col overflow-hidden rounded-2xl border border-black/5 shadow-lg"
       >
         <div
-          ref={setNodeRef}
-          style={style}
-          className="flex w-72 flex-shrink-0 flex-col rounded-xl shadow-sm dark:border-gray-700"
+          className="flex cursor-grab items-center gap-1 bg-black/5 px-4 py-2.5 active:cursor-grabbing"
+          {...listeners}
+          {...attributes}
         >
-          <div
-            className="flex items-center gap-2 border-b border-gray-200 px-4 py-2.5 dark:border-gray-700"
-            {...listeners}
-            {...attributes}
-          >
-            {isEditing ? (
-              <input
-                ref={inputRef}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                onBlur={handleSubmit}
-                onKeyDown={handleKeyDown}
-                className="w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-800"
-              />
-            ) : (
-              <h3
-                className="flex-1 cursor-pointer text-sm font-semibold"
-                onClick={() => setIsEditing(true)}
-              >
-                {column.title}
-              </h3>
-            )}
-
-            <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium dark:bg-gray-700">
-              {filteredCards.length}
-            </span>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => removeColumn(column.id)}
-              className="size-8 text-red-400 hover:bg-red-100 hover:text-red-500 dark:hover:bg-red-950 dark:hover:text-red-400"
+          {isEditing ? (
+            <input
+              ref={inputRef}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              onBlur={handleSubmit}
+              onKeyDown={handleKeyDown}
+              className="flex-1 rounded-lg border-0 bg-white px-3 py-1.5 text-sm font-semibold shadow-sm outline-none dark:bg-gray-700"
+            />
+          ) : (
+            <h3
+              className="flex-1 cursor-pointer text-sm font-bold text-white drop-shadow-md"
+              onDoubleClick={() => setIsEditing(true)}
             >
-              <Trash className="size-4" />
-            </Button>
-          </div>
+              {column.title}
+            </h3>
+          )}
 
-          <div className="py-2 transition-all duration-200">
-            {filteredCards.length > 0 ? (
-              <SortableContext
-                items={cardIds}
-                strategy={verticalListSortingStrategy}
-              >
-                <AnimatePresence mode="popLayout">
-                  {filteredCards.map((card) => (
-                    <ColumnCard key={card.id} card={card} />
-                  ))}
-                </AnimatePresence>
-              </SortableContext>
-            ) : (
-              <div className="border-gray-00 flex min-h-[120px] items-center justify-center rounded-lg border-2 border-dashed text-sm dark:border-gray-600">
-                Drop cards here
-              </div>
-            )}
-          </div>
+          <span className="flex size-6 items-center justify-center rounded-full bg-black/20 text-xs font-bold text-white shadow-sm">
+            {filteredCards.length}
+          </span>
 
           <button
-            onClick={handleAddCard}
-            className="flex items-center gap-2 rounded-b-xl border-t border-gray-200 px-4 py-3 text-sm font-medium transition-colors duration-200 hover:bg-white/30 dark:border-gray-700"
+            onClick={() => removeColumn(column.id)}
+            className="flex size-8 cursor-pointer items-center justify-center rounded-lg text-white/80 transition hover:bg-black/10 hover:text-white"
           >
-            <Plus className="size-4" />
-            Add card
+            <Trash className="size-4" />
           </button>
         </div>
-      </motion.div>
+
+        <div className="flex flex-1 flex-col gap-2 px-2 py-3">
+          {filteredCards.length > 0 ? (
+            <SortableContext
+              items={cardIds}
+              strategy={verticalListSortingStrategy}
+            >
+              {filteredCards.map((card) => (
+                <ColumnCard key={card.id} card={card} />
+              ))}
+            </SortableContext>
+          ) : (
+            <div className="flex min-h-[120px] items-center justify-center rounded-xl border-2 border-dashed border-white/30 text-sm font-medium text-white/70">
+              Drop cards here
+            </div>
+          )}
+        </div>
+
+        <button
+          onClick={handleAddCard}
+          className="flex cursor-pointer items-center gap-2 bg-black/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-black/15"
+        >
+          <Plus className="size-4" />
+          New
+        </button>
+      </div>
     </ColumnContextMenu>
   );
 }

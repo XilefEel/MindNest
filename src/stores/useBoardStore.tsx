@@ -279,6 +279,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     if (overData.type === "card") {
       const activeIndex = cards.findIndex((c) => c.id === active.id);
       const overIndex = cards.findIndex((c) => c.id === over.id);
+
       if (activeIndex === -1 || overIndex === -1) return;
 
       if (cards[activeIndex].columnId !== cards[overIndex].columnId) {

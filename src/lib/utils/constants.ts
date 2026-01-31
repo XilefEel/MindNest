@@ -9,6 +9,10 @@ export const COLORS = [
   "#E879F9", // fuchsia-400
   "#34D399", // emerald-400
   "#F472B6", // pink-400
-  "#FFFFFF", // white
-  "#1F2937", // gray-800
+  "#A78BFA", // violet-400
+  "#FDE047", // yellow-400
+  "#22D3EE", // cyan-400
+  "#4ADE80", // green-400
+  "#C084FC", // purple-400
+  "#38BDF8", // sky-400
 ];
