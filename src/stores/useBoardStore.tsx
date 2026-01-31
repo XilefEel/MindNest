@@ -7,7 +7,7 @@ import {
   NewBoardColumn,
 } from "@/lib/types/board";
 import { parseDragData, withStoreErrorHandler } from "@/lib/utils/general";
-import { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core";
+import { DragEndEvent, DragStartEvent, DragMoveEvent } from "@dnd-kit/core";
 import { create } from "zustand";
 import { sortCards } from "@/lib/utils/boards";
 import { useShallow } from "zustand/react/shallow";
@@ -60,7 +60,7 @@ type BoardState = {
   deleteCard: (cardId: number) => Promise<void>;
 
   handleDragStart: (event: DragStartEvent) => void;
-  handleDragOver: (event: DragOverEvent) => void;
+  handleDragMove: (event: DragMoveEvent) => void;
   handleDragEnd: (event: DragEndEvent) => Promise<void>;
 };
 
@@ -264,7 +264,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     }
   },
 
-  handleDragOver: (event) => {
+  handleDragMove: (event) => {
     const { active, over } = event;
 
     if (!over || active.id === over.id) return;
@@ -274,24 +274,29 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
     if (!activeData || !overData || activeData.type !== "card") return;
 
-    set((state) => {
-      const activeIndex = state.cards.findIndex((c) => c.id === active.id);
-      const overIndex = state.cards.findIndex((c) => c.id === over.id);
+    const { cards } = get();
 
-      if (overData.type === "card") {
-        state.cards[activeIndex].columnId = state.cards[overIndex].columnId;
+    if (overData.type === "card") {
+      const activeIndex = cards.findIndex((c) => c.id === active.id);
+      const overIndex = cards.findIndex((c) => c.id === over.id);
+      if (activeIndex === -1 || overIndex === -1) return;
 
-        return { cards: arrayMove(state.cards, activeIndex, overIndex) };
+      if (cards[activeIndex].columnId !== cards[overIndex].columnId) {
+        cards[activeIndex].columnId = cards[overIndex].columnId;
       }
 
-      if (overData.type === "column") {
-        state.cards[activeIndex].columnId = Number(over.id);
+      set({ cards: arrayMove(cards, activeIndex, overIndex) });
+      return;
+    }
 
-        return { cards: arrayMove(state.cards, activeIndex, activeIndex) };
-      }
+    if (overData.type === "column") {
+      const activeIndex = cards.findIndex((c) => c.id === active.id);
+      if (activeIndex === -1) return;
 
-      return state;
-    });
+      cards[activeIndex].columnId = over.id as number;
+
+      set({ cards: arrayMove(cards, activeIndex, activeIndex) });
+    }
   },
 
   handleDragEnd: async (event) => {
@@ -311,9 +316,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         return { columns: arrayMove(state.columns, activeIndex, overIndex) };
       });
 
-      const { columns } = get();
-
-      const indexed = columns.map((col, i) => ({ ...col, orderIndex: i }));
+      const indexed = get().columns.map((col, i) => ({
+        ...col,
+        orderIndex: i,
+      }));
 
       set({ columns: indexed });
 
@@ -324,7 +330,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     }
 
     if (activeData.type === "card") {
-      const { cards } = get();
+      const { cards, columns } = get();
 
       const indexed = cards.map((card) => {
         const cardsInColumn = cards.filter((c) => c.columnId === card.columnId);
@@ -341,7 +347,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       const movedCard = indexed.find((c) => c.id === active.id)!;
 
       await updateNestlingTimestamp(
-        get().columns.find((col) => col.id === movedCard.columnId)!.nestlingId,
+        columns.find((col) => col.id === movedCard.columnId)!.nestlingId,
       );
     }
   },
@@ -379,7 +385,7 @@ export const useBoardActions = () =>
       deleteCard: state.deleteCard,
 
       handleDragStart: state.handleDragStart,
-      handleDragOver: state.handleDragOver,
+      handleDragMove: state.handleDragMove,
       handleDragEnd: state.handleDragEnd,
     })),
   );

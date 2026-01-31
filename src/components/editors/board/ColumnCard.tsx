@@ -36,7 +36,7 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
 
   const style = {
     // transform: CSS.Transform.toString(transform),
-    // transition,
+    transition,
     opacity: isDragging ? 0.5 : 1,
   };
 
@@ -76,6 +76,7 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
         console.error("Failed to update card:", err);
       }
     }
+
     setIsEditingTitle(false);
     setIsEditingDescription(false);
   };
@@ -138,7 +139,7 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
               ) : (
                 <h3
                   className="cursor-pointer font-semibold"
-                  onClick={() => setIsEditingTitle(true)}
+                  onDoubleClick={() => setIsEditingTitle(true)}
                 >
                   {card.title}
                 </h3>
@@ -158,7 +159,7 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
               ) : (
                 <p
                   className="mt-1 cursor-pointer text-sm text-gray-600 dark:text-gray-300"
-                  onClick={() => setIsEditingDescription(true)}
+                  onDoubleClick={() => setIsEditingDescription(true)}
                 >
                   {description || (
                     <span className="text-gray-300">Add description…</span>

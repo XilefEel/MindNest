@@ -42,7 +42,7 @@ export default function BoardEditor() {
     getBoard,
     createColumn,
     handleDragStart,
-    handleDragOver,
+    handleDragMove,
     handleDragEnd,
   } = useBoardActions();
 
@@ -56,7 +56,7 @@ export default function BoardEditor() {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 10,
       },
     }),
   );
@@ -97,7 +97,7 @@ export default function BoardEditor() {
         <DndContext
           sensors={sensors}
           onDragStart={handleDragStart}
-          onDragOver={handleDragOver}
+          onDragMove={handleDragMove}
           onDragEnd={handleDragEnd}
         >
           <SortableContext
@@ -105,11 +105,11 @@ export default function BoardEditor() {
             strategy={horizontalListSortingStrategy}
           >
             <div className="flex flex-row items-start gap-4 p-2">
-              {/* <AnimatePresence mode="sync"> */}
-              {columns.map((col) => (
-                <Column key={col.id} column={col} />
-              ))}
-              {/* </AnimatePresence> */}
+              <AnimatePresence mode="sync">
+                {columns.map((col) => (
+                  <Column key={col.id} column={col} />
+                ))}
+              </AnimatePresence>
 
               <button
                 onClick={handleAddColumn}
