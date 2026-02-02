@@ -3,8 +3,16 @@ import { PlannerEventType } from "@/lib/types/calendar";
 import { startOfWeek } from "date-fns";
 import { getDateFromWeekDay, getDayFromDate } from "@/lib/utils/date";
 import PlannerEventContextMenu from "@/components/context-menu/PlannerEventContextMenu";
-import { useRef, useState } from "react";
 import { usePlannerActions } from "@/stores/usePlannerStore";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useState } from "react";
+import EventPopover from "./EventPopover";
+import { cn } from "@/lib/utils/general";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export default function PlannerEvent({
   event,
@@ -13,29 +21,14 @@ export default function PlannerEvent({
   event: PlannerEventType;
   colWidth: number;
 }) {
-  const [title, setTitle] = useState(event.title);
-  const [isEditing, setIsEditing] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
+  const [isOpen, setIsOpen] = useState(false);
   const { updateEvent } = usePlannerActions();
-
-  const handleSubmit = async () => {
-    const newTitle = title.trim();
-
-    if (newTitle && newTitle !== event.title) {
-      try {
-        await updateEvent(event.id, { title: newTitle });
-      } catch (err) {
-        console.error("Failed to update event:", err);
-      }
-    }
-
-    setIsEditing(false);
-  };
+  const activeBackgroundId = useActiveBackgroundId();
 
   const onDragStop = (e: any, d: any) => {
-    const currentDay = getDayFromDate(event.date);
     console.log(e);
+
+    const currentDay = getDayFromDate(event.date);
     const absoluteX = currentDay * colWidth + d.x;
     const absoluteY = d.y;
 
@@ -53,6 +46,7 @@ export default function PlannerEvent({
 
   const onResizeStop = (e: any, dir: any, ref: any, delta: any) => {
     console.log(e);
+
     const newDuration = Math.round(ref.offsetHeight / 64);
 
     if (dir === "top") {
@@ -66,68 +60,66 @@ export default function PlannerEvent({
     }
   };
 
-  const onKeyDown = (e: any) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleSubmit();
-    }
-    if (e.key === "Escape") {
-      e.preventDefault();
-      setTitle(event.title);
-      setIsEditing(false);
-    }
-  };
-
   return (
-    <PlannerEventContextMenu event={event}>
-      <Rnd
-        key={event.id}
-        size={{ width: "100%", height: event.duration * 64 }}
-        minWidth="100%"
-        maxWidth="100%"
-        position={{
-          x: 0,
-          y: event.startTime * 64,
-        }}
-        enableResizing={{
-          top: true,
-          right: false,
-          bottom: true,
-          left: false,
-          topRight: false,
-          bottomRight: false,
-          bottomLeft: false,
-          topLeft: false,
-        }}
-        onDragStop={(e, d) => onDragStop(e, d)}
-        onResizeStop={(e, dir, ref, delta) => onResizeStop(e, dir, ref, delta)}
-        className="absolute z-10 rounded-lg border border-none p-2 text-sm shadow-lg"
-        style={{
-          backgroundColor: event.color,
-        }}
-      >
-        {isEditing ? (
-          <input
-            ref={inputRef}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            onBlur={handleSubmit}
-            onKeyDown={(e) => onKeyDown(e)}
-            className="w-full bg-transparent font-semibold transition-colors duration-200 outline-none focus:ring-0"
-            autoFocus
-            onFocus={(e) => e.target.select()}
-          />
-        ) : (
-          <h3
-            className="cursor-pointer rounded px-1 py-0.5 font-semibold transition-colors duration-150 hover:text-gray-700"
-            onClick={() => {
-              setIsEditing(true);
-            }}
-          >
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            top: event.startTime * 64,
+            height: event.duration * 64,
+          }}
+        />
+      </PopoverTrigger>
+
+      <PlannerEventContextMenu event={event}>
+        <Rnd
+          key={event.id}
+          size={{ width: "100%", height: event.duration * 64 }}
+          minWidth="100%"
+          maxWidth="100%"
+          position={{
+            x: 0,
+            y: event.startTime * 64,
+          }}
+          enableResizing={{
+            top: true,
+            right: false,
+            bottom: true,
+            left: false,
+            topRight: false,
+            bottomRight: false,
+            bottomLeft: false,
+            topLeft: false,
+          }}
+          onDragStop={(e, d) => onDragStop(e, d)}
+          onResizeStop={(e, dir, ref, delta) =>
+            onResizeStop(e, dir, ref, delta)
+          }
+          className="absolute z-10 rounded-lg border border-none p-2 text-sm shadow-lg"
+          style={{
+            backgroundColor: event.color,
+          }}
+          onClick={() => setIsOpen(true)}
+        >
+          <h3 className="cursor-pointer rounded px-1 py-0.5 font-semibold">
             {event.title}
           </h3>
+        </Rnd>
+      </PlannerEventContextMenu>
+
+      <PopoverContent
+        side="right"
+        align="start"
+        className={cn(
+          "w-80 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+          activeBackgroundId &&
+            "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
-      </Rnd>
-    </PlannerEventContextMenu>
+      >
+        <EventPopover event={event} onClose={() => setIsOpen(false)} />
+      </PopoverContent>
+    </Popover>
   );
 }

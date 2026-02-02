@@ -1,7 +1,7 @@
 import { useFolders, useNestlings } from "@/stores/useNestlingStore";
 import { useBackgrounds, useMusic } from "@/stores/useNestStore";
 import { useSettingsModal } from "@/stores/useModalStore";
-import NestlingPopOver from "./NestlingPopOver";
+import NestlingPopOver from "./NestlingPopover";
 import StatsCard from "./StatsCard";
 
 export default function StatsSection() {

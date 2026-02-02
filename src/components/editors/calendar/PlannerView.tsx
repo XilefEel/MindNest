@@ -1,7 +1,6 @@
 import { getDayFromDate } from "@/lib/utils/date";
 import { cn, getRandomElement } from "@/lib/utils/general";
 import { addDays, format, startOfWeek } from "date-fns";
-import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import PlannerEvent from "./PlannerEvent";
 import { useEvents, usePlannerActions } from "@/stores/usePlannerStore";
@@ -18,13 +17,7 @@ export type EventType = {
   duration: number;
 };
 
-export default function PlannerView({
-  selectedDate,
-  variants,
-}: {
-  selectedDate: Date;
-  variants: any;
-}) {
+export default function PlannerView() {
   const activeNestling = useActiveNestling();
   if (!activeNestling) return;
 
@@ -34,7 +27,8 @@ export default function PlannerView({
   const colRef = useRef<HTMLDivElement>(null);
   const [colWidth, setColWidth] = useState(1);
 
-  const weekStart = startOfWeek(selectedDate, { weekStartsOn: 0 }); // 0 = Sunday
+  const weekStart = startOfWeek(new Date(), { weekStartsOn: 0 }); // 0 = Sunday
+
   const weekDaysWithDates = Array.from({ length: 7 }, (_, i) =>
     addDays(weekStart, i),
   );
@@ -51,13 +45,12 @@ export default function PlannerView({
     const newEvent: NewPlannerEventType = {
       nestlingId: activeNestling.id,
       date: format(clickedDate, "yyyy-MM-dd"),
-      title: format(clickedDate, "yyyy-MM-dd"),
+      title: "New Event",
       description: null,
       startTime: startHour,
       duration: 1,
       color: getRandomElement(COLORS),
     };
-    console.log(newEvent);
     createEvent(newEvent);
   };
 
@@ -76,16 +69,9 @@ export default function PlannerView({
 
     return () => observer.disconnect();
   }, []);
+
   return (
-    <motion.div
-      key="planner"
-      variants={variants}
-      initial="plannerEnter"
-      animate="plannerCenter"
-      exit="plannerExit"
-      transition={{ duration: 0.4, ease: "easeInOut" }}
-      className="absolute h-full w-full px-6"
-    >
+    <div className="absolute h-full w-full px-6">
       <div ref={colRef} className="grid h-full grid-cols-7">
         {weekDaysWithDates.map((day) => (
           <div className="py-2 text-center font-medium">
@@ -122,10 +108,6 @@ export default function PlannerView({
                       clickedDate: day,
                       startHour: hour,
                     });
-                    console.log({
-                      day,
-                      hour,
-                    });
                   }}
                 >
                   {dayIndex === 0 && (
@@ -149,6 +131,6 @@ export default function PlannerView({
           </div>
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }
