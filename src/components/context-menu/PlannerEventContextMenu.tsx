@@ -48,7 +48,6 @@ export default function PlannerEventContextMenu({
                       key={color}
                       className="relative h-8 w-8 rounded-full border-2 border-gray-200 transition-all duration-200 hover:scale-110 dark:border-gray-600"
                       style={{ backgroundColor: color }}
-                      title={color}
                       onClick={() => onChangeColor(color)}
                     >
                       {event.color === color && (

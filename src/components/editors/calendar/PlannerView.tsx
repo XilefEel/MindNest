@@ -1,23 +1,15 @@
 import { getDayFromDate } from "@/lib/utils/date";
 import { cn, getRandomElement } from "@/lib/utils/general";
-import { addDays, format, startOfWeek } from "date-fns";
+import { addDays, format, isSameDay, startOfWeek } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 import PlannerEvent from "./PlannerEvent";
 import { useEvents, usePlannerActions } from "@/stores/usePlannerStore";
 import { NewPlannerEventType } from "@/lib/types/calendar";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
-import { COLORS } from "@/lib/utils/constants";
+import { COLORS, gridHeight } from "@/lib/utils/constants";
 import { useActiveNestling } from "@/stores/useNestlingStore";
 
-export type EventType = {
-  id: number;
-  title: string;
-  day: number;
-  startHour: number;
-  duration: number;
-};
-
-export default function PlannerView() {
+export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
   const activeNestling = useActiveNestling();
   if (!activeNestling) return;
 
@@ -27,7 +19,7 @@ export default function PlannerView() {
   const colRef = useRef<HTMLDivElement>(null);
   const [colWidth, setColWidth] = useState(1);
 
-  const weekStart = startOfWeek(new Date(), { weekStartsOn: 0 }); // 0 = Sunday
+  const weekStart = startOfWeek(selectedDate, { weekStartsOn: 0 }); // 0 = Sunday
 
   const weekDaysWithDates = Array.from({ length: 7 }, (_, i) =>
     addDays(weekStart, i),
@@ -72,11 +64,27 @@ export default function PlannerView() {
 
   return (
     <div className="absolute h-full w-full px-6">
-      <div ref={colRef} className="grid h-full grid-cols-7">
+      <div ref={colRef} className="grid h-full grid-cols-7 items-center">
         {weekDaysWithDates.map((day) => (
-          <div className="py-2 text-center font-medium">
-            <div className="text-xs text-gray-500">{format(day, "EEE")}</div>
-            <div className="text-xl">{format(day, "d")}</div>
+          <div className="flex flex-col gap-1 py-4 text-center font-medium">
+            <div
+              className={cn(
+                "text-xs text-gray-500",
+                isSameDay(day, new Date()) &&
+                  "text-teal-500 dark:text-teal-400",
+              )}
+            >
+              {format(day, "EEE")}
+            </div>
+            <div
+              className={cn(
+                "mx-auto flex h-8 w-8 items-center justify-center text-2xl",
+                isSameDay(day, new Date()) &&
+                  "rounded-full bg-teal-500 p-5 text-white",
+              )}
+            >
+              {format(day, "d")}
+            </div>
           </div>
         ))}
 
@@ -93,15 +101,16 @@ export default function PlannerView() {
               {Array.from({ length: 24 }, (_, hour) => (
                 <div
                   key={hour}
+                  style={{ height: gridHeight * 4 }}
                   className={cn(
-                    "h-16 border-t",
+                    "border-t",
                     activeBackgroundId
                       ? "border-gray-200/30 dark:border-gray-700/30"
                       : "border-gray-200 dark:border-gray-700",
                     hour % 2 === 0 &&
                       (activeBackgroundId
                         ? "bg-white/20 dark:bg-black/20"
-                        : "bg-white/20 dark:bg-gray-800/50"),
+                        : "bg-gray-100 dark:bg-gray-800/50"),
                   )}
                   onDoubleClick={() => {
                     handleDoubleClick({

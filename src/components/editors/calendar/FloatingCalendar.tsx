@@ -68,7 +68,7 @@ export default function FloatingCalendar({
       <PopoverTrigger asChild>
         <button
           className={cn(
-            "fixed right-6 bottom-6 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-teal-500 text-white shadow-lg",
+            "fixed right-6 bottom-6 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-teal-500 text-white shadow-lg transition hover:bg-teal-600",
             activeBackgroundId &&
               "bg-white/20 backdrop-blur-md dark:bg-black/20",
           )}
@@ -108,7 +108,7 @@ export default function FloatingCalendar({
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-7 gap-2">
+        <div className="mt-4 mb-2 grid grid-cols-7 gap-2">
           {weekDays.map((day) => (
             <div
               key={day}
@@ -119,7 +119,7 @@ export default function FloatingCalendar({
           ))}
         </div>
 
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-7 gap-2 space-y-1">
           {days.map((day) => {
             return (
               <button

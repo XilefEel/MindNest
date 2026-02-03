@@ -22,7 +22,11 @@ export default function CalendarEditor() {
 
   const nestlingData = useMemo(() => ({ title }), [title]);
   useAutoSave(activeNestling.id!, nestlingData, updateNestling);
-  const { start, end } = getWeekRange(new Date());
+
+  const { start, end } = useMemo(
+    () => getWeekRange(selectedDate),
+    [selectedDate],
+  );
 
   useEffect(() => {
     getEvents({
@@ -30,7 +34,7 @@ export default function CalendarEditor() {
       start,
       end,
     });
-  }, [activeNestling.id]);
+  }, [activeNestling.id, start, end]);
 
   return (
     <div className="relative mx-auto p-4">
@@ -42,7 +46,7 @@ export default function CalendarEditor() {
         />
       </div>
 
-      <PlannerView />
+      <PlannerView selectedDate={selectedDate} />
 
       <FloatingCalendar
         selectedDate={selectedDate}

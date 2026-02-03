@@ -83,7 +83,7 @@ export default function EventPopover({
           ) : (
             <h3
               onClick={() => setIsEditingTitle(true)}
-              className="cursor-pointer truncate rounded px-2 py-1 text-lg font-semibold transition-colors hover:bg-gray-50 hover:text-teal-600"
+              className="cursor-pointer truncate rounded px-2 py-1 text-lg font-semibold transition-colors hover:bg-gray-50 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400"
             >
               {title}
             </h3>
@@ -105,7 +105,7 @@ export default function EventPopover({
           ) : (
             <p
               onClick={() => setIsEditingDescription(true)}
-              className="line-clamp-3 cursor-pointer rounded px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+              className="line-clamp-3 cursor-pointer rounded px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50 hover:text-teal-500 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-teal-400"
             >
               {description || (
                 <span className="text-gray-400 italic">Add description...</span>
@@ -116,17 +116,17 @@ export default function EventPopover({
       </div>
 
       <div className="space-y-2 text-sm tracking-wide">
-        <div className="flex items-center gap-3 text-gray-700">
+        <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
           <Calendar size={16} className="text-gray-400" />
           <span>{format(parseISO(event.date), "EEE, MMM d yyyy")}</span>
         </div>
 
-        <div className="flex items-center gap-3 text-gray-700">
+        <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
           <Clock size={16} className="text-gray-400" />
           <span>{event.startTime}:00</span>
         </div>
 
-        <div className="flex items-center gap-3 text-gray-700">
+        <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
           <Timer size={16} className="text-gray-400" />
           <span>
             {event.duration} {event.duration === 1 ? "hr" : "hrs"}

@@ -13,6 +13,7 @@ import { useState } from "react";
 import EventPopover from "./EventPopover";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { gridHeight } from "@/lib/utils/constants";
 
 export default function PlannerEvent({
   event,
@@ -33,7 +34,10 @@ export default function PlannerEvent({
     const absoluteY = d.y;
 
     const newDay = Math.max(0, Math.min(6, Math.round(absoluteX / colWidth)));
-    const newHour = Math.max(0, Math.min(23, Math.round(absoluteY / 64)));
+    const newHour = Math.max(
+      0,
+      Math.min(23, Math.round(absoluteY / (gridHeight * 4))),
+    );
 
     const baseWeekDate = startOfWeek(new Date(event.date));
     const newDate = getDateFromWeekDay(baseWeekDate, newDay);
@@ -47,10 +51,10 @@ export default function PlannerEvent({
   const onResizeStop = (e: any, dir: any, ref: any, delta: any) => {
     console.log(e);
 
-    const newDuration = Math.round(ref.offsetHeight / 64);
+    const newDuration = Math.round(ref.offsetHeight / (gridHeight * 4));
 
     if (dir === "top") {
-      const movedHours = Math.round(delta.height / 64);
+      const movedHours = Math.round(delta.height / (gridHeight * 4));
       updateEvent(event.id, {
         startTime: event.startTime - movedHours,
         duration: event.duration + movedHours,
@@ -67,8 +71,8 @@ export default function PlannerEvent({
           style={{
             position: "absolute",
             inset: 0,
-            top: event.startTime * 64,
-            height: event.duration * 64,
+            top: event.startTime * (gridHeight * 4),
+            height: event.duration * (gridHeight * 4),
           }}
         />
       </PopoverTrigger>
@@ -76,12 +80,12 @@ export default function PlannerEvent({
       <PlannerEventContextMenu event={event}>
         <Rnd
           key={event.id}
-          size={{ width: "100%", height: event.duration * 64 }}
+          size={{ width: "100%", height: event.duration * (gridHeight * 4) }}
           minWidth="100%"
           maxWidth="100%"
           position={{
             x: 0,
-            y: event.startTime * 64,
+            y: event.startTime * (gridHeight * 4),
           }}
           enableResizing={{
             top: true,
@@ -97,15 +101,20 @@ export default function PlannerEvent({
           onResizeStop={(e, dir, ref, delta) =>
             onResizeStop(e, dir, ref, delta)
           }
-          className="absolute z-10 rounded-lg border border-none p-2 text-sm shadow-lg"
+          className={cn(
+            "absolute z-10 cursor-pointer rounded-lg px-3 text-sm text-white shadow-lg",
+            event.duration > 1 && "py-2",
+          )}
           style={{
             backgroundColor: event.color,
+            zIndex: 10 + event.startTime,
           }}
           onClick={() => setIsOpen(true)}
         >
-          <h3 className="cursor-pointer rounded px-1 py-0.5 font-semibold">
-            {event.title}
-          </h3>
+          <h3 className="truncate font-semibold">{event.title}</h3>
+          <p className="text-xs text-gray-100">
+            {event.startTime}:00 - {event.startTime + event.duration}:00
+          </p>
         </Rnd>
       </PlannerEventContextMenu>
 
