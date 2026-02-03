@@ -8,12 +8,14 @@ import {
 } from "@/stores/useNestlingStore";
 import { getWeekRange } from "@/lib/utils/date";
 import { usePlannerActions } from "@/stores/usePlannerStore";
+import FloatingCalendar from "./FloatingCalendar";
 
 export default function CalendarEditor() {
   const activeNestling = useActiveNestling();
   if (!activeNestling) return;
 
   const [title, setTitle] = useState(activeNestling.title);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const { getEvents } = usePlannerActions();
   const { updateNestling } = useNestlingActions();
@@ -41,6 +43,11 @@ export default function CalendarEditor() {
       </div>
 
       <PlannerView />
+
+      <FloatingCalendar
+        selectedDate={selectedDate}
+        onDateSelect={setSelectedDate}
+      />
     </div>
   );
 }
