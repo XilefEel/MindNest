@@ -1,7 +1,7 @@
 import { Rnd } from "react-rnd";
 import { PlannerEventType } from "@/lib/types/calendar";
-import { format, startOfWeek } from "date-fns";
-import { getDateFromWeekDay, getDayFromDate } from "@/lib/utils/date";
+import { addDays, format, startOfWeek } from "date-fns";
+import { getDayFromDate } from "@/lib/utils/date";
 import PlannerEventContextMenu from "@/components/context-menu/PlannerEventContextMenu";
 import { usePlannerActions } from "@/stores/usePlannerStore";
 import {
@@ -26,21 +26,19 @@ export default function PlannerEvent({
   const { updateEvent } = usePlannerActions();
   const activeBackgroundId = useActiveBackgroundId();
 
-  const onDragStop = (e: any, d: any) => {
-    console.log(e);
-
+  const onDragStop = (d: any) => {
     const currentDay = getDayFromDate(event.date);
     const absoluteX = currentDay * colWidth + d.x;
     const absoluteY = d.y;
 
     const newDay = Math.max(0, Math.min(6, Math.round(absoluteX / colWidth)));
-    const newHour = Math.max(
-      0,
-      Math.min(23, Math.round(absoluteY / (gridHeight * 4))),
-    );
 
-    const baseWeekDate = startOfWeek(new Date(event.date));
-    const newDate = getDateFromWeekDay(baseWeekDate, newDay);
+    const calculatedHour = Math.round(absoluteY / gridHeight);
+
+    const newHour = Math.min(Math.max(0, calculatedHour), 24 - event.duration);
+
+    const weekStart = startOfWeek(new Date(event.date));
+    const newDate = format(addDays(weekStart, newDay), "yyyy-MM-dd");
 
     updateEvent(event.id, {
       date: newDate,
@@ -48,19 +46,32 @@ export default function PlannerEvent({
     });
   };
 
-  const onResizeStop = (e: any, dir: any, ref: any, delta: any) => {
-    console.log(e);
-
-    const newDuration = Math.round(ref.offsetHeight / (gridHeight * 4));
-
+  const onResizeStop = (dir: any, ref: any, delta: any) => {
     if (dir === "top") {
-      const movedHours = Math.round(delta.height / (gridHeight * 4));
+      const heightChange = Math.round(delta.height / gridHeight);
+      const newStartTime = event.startTime - heightChange;
+      const newDuration = event.duration + heightChange;
+
+      const finalStartTime = Math.max(0, newStartTime);
+
+      const finalDuration =
+        newStartTime < 0
+          ? event.startTime + event.duration
+          : Math.max(1, newDuration);
+
       updateEvent(event.id, {
-        startTime: event.startTime - movedHours,
-        duration: event.duration + movedHours,
+        startTime: finalStartTime,
+        duration: finalDuration,
       });
     } else {
-      updateEvent(event.id, { duration: newDuration });
+      const newDuration = Math.round(ref.offsetHeight / gridHeight);
+      const maxDuration = 24 - event.startTime;
+
+      const finalDuration = Math.min(newDuration, maxDuration);
+
+      updateEvent(event.id, {
+        duration: Math.max(1, finalDuration),
+      });
     }
   };
 
@@ -71,8 +82,8 @@ export default function PlannerEvent({
           style={{
             position: "absolute",
             inset: 0,
-            top: event.startTime * (gridHeight * 4),
-            height: event.duration * (gridHeight * 4),
+            top: event.startTime * gridHeight,
+            height: event.duration * gridHeight,
           }}
         />
       </PopoverTrigger>
@@ -80,12 +91,12 @@ export default function PlannerEvent({
       <PlannerEventContextMenu event={event}>
         <Rnd
           key={event.id}
-          size={{ width: "100%", height: event.duration * (gridHeight * 4) }}
+          size={{ width: "100%", height: event.duration * gridHeight }}
           minWidth="100%"
           maxWidth="100%"
           position={{
             x: 0,
-            y: event.startTime * (gridHeight * 4),
+            y: event.startTime * gridHeight,
           }}
           enableResizing={{
             top: true,
@@ -97,10 +108,8 @@ export default function PlannerEvent({
             bottomLeft: false,
             topLeft: false,
           }}
-          onDragStop={(e, d) => onDragStop(e, d)}
-          onResizeStop={(e, dir, ref, delta) =>
-            onResizeStop(e, dir, ref, delta)
-          }
+          onDragStop={(_, d) => onDragStop(d)}
+          onResizeStop={(_, dir, ref, delta) => onResizeStop(dir, ref, delta)}
           className={cn(
             "absolute z-10 cursor-pointer rounded-lg px-3 text-sm tracking-wide text-white shadow-lg",
             event.duration > 1 && "py-2",

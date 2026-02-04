@@ -21,4 +21,4 @@ export const COLORS = [
   "#9CA3AF", // gray-400
 ];
 
-export const gridHeight = 10;
+export const gridHeight = 40;

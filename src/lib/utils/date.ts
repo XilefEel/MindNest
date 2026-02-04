@@ -4,12 +4,6 @@ export function getDayFromDate(date: string): number {
   return new Date(date).getDay(); // 0 = Sunday, 6 = Saturday
 }
 
-export function getDateFromWeekDay(baseWeekDate: Date, day: number): string {
-  const result = new Date(baseWeekDate);
-  result.setDate(baseWeekDate.getDate() + day);
-  return format(result, "yyyy-MM-dd");
-}
-
 export function getWeekRange(selectedDate: Date): {
   start: string;
   end: string;

@@ -13,6 +13,7 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
   const activeNestling = useActiveNestling();
   if (!activeNestling) return;
 
+  const activeBackgroundId = useActiveBackgroundId();
   const { createEvent } = usePlannerActions();
   const events = useEvents();
 
@@ -27,7 +28,14 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
     addDays(weekStart, i),
   );
 
-  const activeBackgroundId = useActiveBackgroundId();
+  const eventsByDay = weekDaysWithDates.map((_, dayIndex) =>
+    events.filter((event) => getDayFromDate(event.date) === dayIndex),
+  );
+
+  const currentHour = currentTime.getHours();
+  const currentMinute = currentTime.getMinutes();
+  const currentTimePosition = (currentHour + currentMinute / 60) * gridHeight;
+  const isToday = (day: Date) => isSameDay(day, currentTime);
 
   const handleDoubleClick = ({
     clickedDate,
@@ -52,13 +60,14 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
     if (!colRef.current) return;
 
     const updateWidth = () => {
-      if (!colRef.current) return;
-      setColWidth(colRef.current.offsetWidth / 7);
+      if (colRef.current) {
+        setColWidth(colRef.current.offsetWidth / 7);
+      }
     };
 
     updateWidth();
 
-    const observer = new ResizeObserver(() => updateWidth());
+    const observer = new ResizeObserver(updateWidth);
     observer.observe(colRef.current);
 
     return () => observer.disconnect();
@@ -71,17 +80,14 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
     return () => clearInterval(interval);
   }, []);
 
-  const currentHour = currentTime.getHours();
-  const currentMinute = currentTime.getMinutes();
-  const currentTimePosition =
-    (currentHour + currentMinute / 60) * (gridHeight * 4);
-  const isToday = (day: Date) => isSameDay(day, currentTime);
-
   return (
     <div className="absolute h-full w-full px-6">
       <div ref={colRef} className="grid h-full grid-cols-7 items-center">
         {weekDaysWithDates.map((day) => (
-          <div className="flex flex-col gap-1 py-4 text-center font-medium">
+          <div
+            key={day.toISOString()}
+            className="flex flex-col gap-1 py-4 text-center font-medium"
+          >
             <div
               className={cn(
                 "text-xs text-gray-600 dark:text-gray-300",
@@ -116,7 +122,7 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
               {Array.from({ length: 24 }, (_, hour) => (
                 <div
                   key={hour}
-                  style={{ height: gridHeight * 4 }}
+                  style={{ height: gridHeight }}
                   className={cn(
                     "border-t",
                     activeBackgroundId
@@ -153,15 +159,9 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
               </div>
             )}
 
-            {events
-              .filter((event) => getDayFromDate(event.date) === dayIndex)
-              .map((event) => (
-                <PlannerEvent
-                  key={event.id}
-                  event={event}
-                  colWidth={colWidth}
-                />
-              ))}
+            {eventsByDay[dayIndex].map((event) => (
+              <PlannerEvent key={event.id} event={event} colWidth={colWidth} />
+            ))}
           </div>
         ))}
       </div>
