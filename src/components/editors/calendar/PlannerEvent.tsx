@@ -1,6 +1,6 @@
 import { Rnd } from "react-rnd";
 import { PlannerEventType } from "@/lib/types/calendar";
-import { startOfWeek } from "date-fns";
+import { format, startOfWeek } from "date-fns";
 import { getDateFromWeekDay, getDayFromDate } from "@/lib/utils/date";
 import PlannerEventContextMenu from "@/components/context-menu/PlannerEventContextMenu";
 import { usePlannerActions } from "@/stores/usePlannerStore";
@@ -102,7 +102,7 @@ export default function PlannerEvent({
             onResizeStop(e, dir, ref, delta)
           }
           className={cn(
-            "absolute z-10 cursor-pointer rounded-lg px-3 text-sm text-white shadow-lg",
+            "absolute z-10 cursor-pointer rounded-lg px-3 text-sm tracking-wide text-white shadow-lg",
             event.duration > 1 && "py-2",
           )}
           style={{
@@ -113,7 +113,11 @@ export default function PlannerEvent({
         >
           <h3 className="truncate font-semibold">{event.title}</h3>
           <p className="text-xs text-gray-100">
-            {event.startTime}:00 - {event.startTime + event.duration}:00
+            {format(new Date(0, 0, 0, event.startTime, 0), "h a")} -{" "}
+            {format(
+              new Date(0, 0, 0, event.startTime + event.duration, 0),
+              "h a",
+            )}
           </p>
         </Rnd>
       </PlannerEventContextMenu>

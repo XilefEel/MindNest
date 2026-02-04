@@ -22,6 +22,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { createPortal } from "react-dom";
 
 interface FloatingCalendarProps {
   selectedDate: Date;
@@ -63,16 +64,10 @@ export default function FloatingCalendar({
     });
   };
 
-  return (
+  return createPortal(
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <button
-          className={cn(
-            "fixed right-6 bottom-6 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-teal-500 text-white shadow-lg transition hover:bg-teal-600",
-            activeBackgroundId &&
-              "bg-white/20 backdrop-blur-md dark:bg-black/20",
-          )}
-        >
+        <button className="fixed right-6 bottom-6 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-teal-500 text-white shadow-lg transition hover:bg-teal-600">
           <Calendar className="h-5 w-5" />
         </button>
       </PopoverTrigger>
@@ -140,6 +135,7 @@ export default function FloatingCalendar({
           })}
         </div>
       </PopoverContent>
-    </Popover>
+    </Popover>,
+    document.body,
   );
 }

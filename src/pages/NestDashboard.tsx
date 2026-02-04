@@ -12,7 +12,6 @@ import LoadingScreen from "@/components/LoadingScreen";
 import NoteEditor from "@/components/editors/note/NoteEditor";
 import BoardEditor from "@/components/editors/board/BoardEditor";
 import CalendarEditor from "@/components/editors/calendar/CalendarEditor";
-import JournalEditor from "@/components/editors/journal/JournalEditor";
 import GalleryEditor from "@/components/editors/gallery/GalleryEditor";
 import useRestore from "@/hooks/useRestore";
 import MindmapEditor from "@/components/editors/mindmap/MindmapEditor";
@@ -152,8 +151,6 @@ export default function NestDashboardPage() {
             ) : activeNestling &&
               activeNestling?.nestlingType === "calendar" ? (
               <CalendarEditor key={activeNestling.id} />
-            ) : activeNestling && activeNestling?.nestlingType === "journal" ? (
-              <JournalEditor key={activeNestling.id} />
             ) : activeNestling && activeNestling?.nestlingType === "gallery" ? (
               <GalleryEditor key={activeNestling.id} />
             ) : activeNestling?.nestlingType === "mindmap" ? (

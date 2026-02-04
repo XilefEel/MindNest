@@ -19,6 +19,8 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
   const colRef = useRef<HTMLDivElement>(null);
   const [colWidth, setColWidth] = useState(1);
 
+  const [currentTime, setCurrentTime] = useState(new Date());
+
   const weekStart = startOfWeek(selectedDate, { weekStartsOn: 0 }); // 0 = Sunday
 
   const weekDaysWithDates = Array.from({ length: 7 }, (_, i) =>
@@ -62,6 +64,19 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentHour = currentTime.getHours();
+  const currentMinute = currentTime.getMinutes();
+  const currentTimePosition =
+    (currentHour + currentMinute / 60) * (gridHeight * 4);
+  const isToday = (day: Date) => isSameDay(day, currentTime);
+
   return (
     <div className="absolute h-full w-full px-6">
       <div ref={colRef} className="grid h-full grid-cols-7 items-center">
@@ -69,7 +84,7 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
           <div className="flex flex-col gap-1 py-4 text-center font-medium">
             <div
               className={cn(
-                "text-xs text-gray-500",
+                "text-xs text-gray-600 dark:text-gray-300",
                 isSameDay(day, new Date()) &&
                   "text-teal-500 dark:text-teal-400",
               )}
@@ -120,13 +135,23 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
                   }}
                 >
                   {dayIndex === 0 && (
-                    <div className="absolute -mt-2 -ml-12 text-xs text-gray-500 dark:text-white">
-                      {hour}:00
+                    <div className="absolute -mt-2 -ml-16 w-14 text-right text-xs tracking-wide text-gray-600 dark:text-gray-300">
+                      {format(new Date(0, 0, 0, hour, 0), "h a")}
                     </div>
                   )}
                 </div>
               ))}
             </div>
+
+            {isToday(day) && (
+              <div
+                className="absolute right-0 left-0 z-50 flex items-center"
+                style={{ top: currentTimePosition - 6 }}
+              >
+                <div className="h-3 w-3 rounded-full bg-red-600" />
+                <div className="h-0.5 flex-1 bg-red-600" />
+              </div>
+            )}
 
             {events
               .filter((event) => getDayFromDate(event.date) === dayIndex)
