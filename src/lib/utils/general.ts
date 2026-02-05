@@ -55,13 +55,12 @@ export const withStoreErrorHandler = <
 export const mergeWithCurrent = <T extends Record<string, any>>(
   current: T,
   updates: Partial<T>,
-): T => {
-  const result = { ...current };
-  for (const key in updates) {
-    if (updates[key] !== undefined) result[key] = updates[key];
-  }
-  return result;
-};
+): T => ({
+  ...current,
+  ...Object.fromEntries(
+    Object.entries(updates).filter(([_, value]) => value !== undefined),
+  ),
+});
 
 export const parseDragData = (item: { id: string | number; data: any }) => {
   if (item.data.current.type === "column") {

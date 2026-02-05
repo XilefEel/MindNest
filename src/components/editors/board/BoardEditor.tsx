@@ -62,7 +62,7 @@ export default function BoardEditor() {
     try {
       createColumn({
         nestlingId: activeNestling.id!,
-        title: `New Column ${columns.length + 1}`,
+        title: "New Column",
         orderIndex: columns.length + 1,
         color: getRandomElement(COLORS),
       });

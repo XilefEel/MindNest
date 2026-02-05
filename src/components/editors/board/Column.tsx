@@ -58,7 +58,7 @@ export default function Column({ column }: { column: BoardColumn }) {
     try {
       await createCard({
         columnId: column.id,
-        title: `New Card ${cards.length + 1}`,
+        title: "New Card",
         description: "",
         orderIndex: cards.length + 1,
       });
@@ -73,12 +73,7 @@ export default function Column({ column }: { column: BoardColumn }) {
     try {
       const newTitle = title.trim();
       if (newTitle && newTitle !== column.title) {
-        await updateColumn({
-          id: column.id,
-          title: newTitle,
-          orderIndex: column.orderIndex,
-          color: column.color,
-        });
+        await updateColumn(column.id, { title: newTitle });
       }
     } catch (error) {
       toast.error("Failed to update column title.");

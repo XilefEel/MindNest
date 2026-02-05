@@ -71,7 +71,7 @@ export default function EventPopover({
 
   return (
     <div className="flex flex-col gap-3 pr-8">
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-1">
         <div className="min-w-0 flex-1">
           {isEditingTitle ? (
             <input
@@ -81,7 +81,7 @@ export default function EventPopover({
               onBlur={handleSaveTitle}
               autoFocus
               className={cn(
-                "mb-1 w-full rounded border border-teal-500 px-2 py-1 text-lg font-semibold focus:ring-2 focus:ring-teal-500 focus:outline-none",
+                "w-full rounded border border-teal-500 px-2 py-1 text-lg font-semibold focus:ring-2 focus:ring-teal-500 focus:outline-none",
                 activeBackgroundId && "bg-white/50 dark:bg-black/50",
               )}
               placeholder="Event title"
@@ -110,7 +110,7 @@ export default function EventPopover({
               autoFocus
               rows={6}
               className={cn(
-                "mt-1 w-full resize-none rounded border border-teal-500 px-2 py-1 text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none",
+                "w-full resize-none rounded border border-teal-500 px-2 py-1 text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none",
                 activeBackgroundId && "bg-white/50 dark:bg-black/50",
               )}
               placeholder="Add description..."

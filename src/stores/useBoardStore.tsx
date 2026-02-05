@@ -6,7 +6,11 @@ import {
   NewBoardCard,
   NewBoardColumn,
 } from "@/lib/types/board";
-import { parseDragData, withStoreErrorHandler } from "@/lib/utils/general";
+import {
+  mergeWithCurrent,
+  parseDragData,
+  withStoreErrorHandler,
+} from "@/lib/utils/general";
 import { DragEndEvent, DragStartEvent, DragMoveEvent } from "@dnd-kit/core";
 import { create } from "zustand";
 import { sortCards } from "@/lib/utils/boards";
@@ -29,34 +33,12 @@ type BoardState = {
 
   createColumn: (column: NewBoardColumn) => Promise<void>;
   duplicateColumn: (column: BoardColumn) => Promise<void>;
-  updateColumn: ({
-    id,
-    title,
-    orderIndex,
-    color,
-  }: {
-    id: number;
-    title: string;
-    orderIndex: number;
-    color: string;
-  }) => Promise<void>;
+  updateColumn: (id: number, updates: Partial<BoardColumn>) => Promise<void>;
   removeColumn: (columnId: number) => Promise<void>;
 
   createCard: (card: NewBoardCard) => Promise<void>;
   duplicateCard: (card: BoardCard) => Promise<void>;
-  updateCard: ({
-    id,
-    title,
-    description,
-    orderIndex,
-    columnId,
-  }: {
-    id: number;
-    title: string;
-    description: string | null;
-    orderIndex: number;
-    columnId: number;
-  }) => Promise<void>;
+  updateCard: (id: number, updates: Partial<BoardCard>) => Promise<void>;
   deleteCard: (cardId: number) => Promise<void>;
 
   handleDragStart: (event: DragStartEvent) => void;
@@ -137,19 +119,24 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     await updateNestlingTimestamp(newColumn.nestlingId);
   }),
 
-  updateColumn: withStoreErrorHandler(
-    set,
-    async ({ id, title, orderIndex, color }) => {
-      await boardApi.updateBoardColumn({ id, title, orderIndex, color });
+  updateColumn: withStoreErrorHandler(set, async (id, updates) => {
+    const current = get().columns.find((col) => col.id === id);
+    if (!current) throw new Error("Column not found");
 
-      set((state) => ({
-        columns: state.columns.map((col) =>
-          col.id === id ? { ...col, title, orderIndex, color } : col,
-        ),
-      }));
-      await updateNestlingTimestamp(id);
-    },
-  ),
+    const updated = {
+      ...mergeWithCurrent(current, updates),
+      updatedAt: new Date().toISOString(),
+    };
+
+    await Promise.all([
+      boardApi.updateBoardColumn({ ...updated, id }),
+      updateNestlingTimestamp(current.nestlingId),
+    ]);
+
+    set((state) => ({
+      columns: state.columns.map((col) => (col.id === id ? updated : col)),
+    }));
+  }),
 
   removeColumn: withStoreErrorHandler(set, async (columnId) => {
     await boardApi.deleteBoardColumn(columnId);
@@ -206,28 +193,27 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     );
   }),
 
-  updateCard: withStoreErrorHandler(
-    set,
-    async ({ id, title, description, orderIndex, columnId }) => {
-      await boardApi.updateBoardCard({
-        id,
-        title,
-        description,
-        orderIndex,
-        columnId,
-      });
-      set((state) => ({
-        cards: state.cards.map((card) =>
-          card.id === id
-            ? { ...card, title, description, orderIndex, columnId }
-            : card,
-        ),
-      }));
-      await updateNestlingTimestamp(
-        get().columns.find((col) => col.id === columnId)!.nestlingId,
-      );
-    },
-  ),
+  updateCard: withStoreErrorHandler(set, async (id, updates) => {
+    const current = get().cards.find((c) => c.id === id);
+    if (!current) throw new Error("Card not found");
+
+    const column = get().columns.find((col) => col.id === current.columnId);
+    if (!column) throw new Error("Column not found");
+
+    const updated = {
+      ...mergeWithCurrent(current, updates),
+      updatedAt: new Date().toISOString(),
+    };
+
+    await Promise.all([
+      boardApi.updateBoardCard({ ...updated, id }),
+      updateNestlingTimestamp(column.nestlingId),
+    ]);
+
+    set((state) => ({
+      cards: state.cards.map((card) => (card.id === id ? updated : card)),
+    }));
+  }),
 
   deleteCard: withStoreErrorHandler(set, async (cardId) => {
     await boardApi.deleteBoardCard(cardId);
