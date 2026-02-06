@@ -40,6 +40,26 @@ CREATE TABLE IF NOT EXISTS nestlings (
     FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE SET NULL
 );
 
+CREATE TABLE IF NOT EXISTS tags (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nest_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    color TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY (nest_id) REFERENCES nests(id) ON DELETE CASCADE,
+    UNIQUE(nest_id, name)
+);
+
+CREATE TABLE IF NOT EXISTS nestling_tags (
+    nestling_id INTEGER NOT NULL,
+    tag_id INTEGER NOT NULL,
+    created_at TEXT NOT NULL,
+    PRIMARY KEY (nestling_id, tag_id),
+    FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS background_images (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nest_id INTEGER NOT NULL,

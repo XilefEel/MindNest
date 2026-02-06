@@ -46,6 +46,10 @@ use handler::bookmark::{
     create_bookmark, delete_bookmark, get_bookmarks, toggle_bookmark_favorite,
 };
 
+use handler::tag::{
+    attach_tag, create_tag, delete_tag, detach_tag, get_nestling_tags, get_tags, update_tag,
+};
+
 use crate::utils::db::{init_db, AppDb};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -149,11 +153,19 @@ pub fn run() {
             get_music,
             update_music,
             delete_music,
-            //Bookmark
+            // Bookmark
             create_bookmark,
             get_bookmarks,
             toggle_bookmark_favorite,
-            delete_bookmark
+            delete_bookmark,
+            // Tag
+            create_tag,
+            get_tags,
+            update_tag,
+            delete_tag,
+            attach_tag,
+            get_nestling_tags,
+            detach_tag
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
