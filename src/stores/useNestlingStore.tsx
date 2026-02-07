@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import * as nestlingApi from "@/lib/api/nestling";
 import * as folderApi from "@/lib/api/folder";
+import * as tagApi from "@/lib/api/tag";
 import { Folder, NewFolder } from "@/lib/types/folder";
 import { Nestling, NewNestling } from "@/lib/types/nestling";
 import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
@@ -8,12 +9,15 @@ import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { useShallow } from "zustand/react/shallow";
 import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 import { saveRecentNestling, saveLastNestling } from "@/lib/storage/nestling";
+import { NewTag, Tag } from "@/lib/types/tag";
 
 type NestlingState = {
   nestlings: Nestling[];
   activeNestlingId: number | null;
   folders: Folder[];
   activeFolderId: number | null;
+  tags: Tag[];
+  selectedNestlingTags: Tag[];
 
   openFolders: Record<number, boolean>;
   activeDraggingNestlingId: number | null;
@@ -45,6 +49,15 @@ type NestlingState = {
 
   handleDragStart: (event: DragStartEvent) => void;
   handleDragEnd: (event: DragEndEvent, nestId: number) => Promise<void>;
+
+  loadTags: (nestId: number) => Promise<void>;
+  createTag: (data: NewTag) => Promise<void>;
+  updateTag: (id: number, name: string, color: string) => Promise<void>;
+  deleteTag: (id: number) => Promise<void>;
+
+  attachTagToNestling: (nestlingId: number, tagId: number) => Promise<void>;
+  detachTagFromNestling: (nestlingId: number, tagId: number) => Promise<void>;
+  loadNestlingTags: (nestlingId: number) => Promise<void>;
 };
 
 export const useNestlingStore = create<NestlingState>((set, get) => ({
@@ -57,6 +70,9 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   activeFolderId: null,
   openFolders: {},
   activeDraggingNestlingId: null,
+
+  tags: [],
+  selectedNestlingTags: [],
 
   setActiveNestlingId: (number) => set({ activeNestlingId: number }),
 
@@ -250,6 +266,65 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
       throw error;
     }
   },
+
+  loadTags: withStoreErrorHandler(set, async (nestId) => {
+    const tags = await tagApi.getTags(nestId);
+    set({ tags });
+  }),
+
+  createTag: withStoreErrorHandler(set, async (data) => {
+    const tag = await tagApi.createTag(data);
+    set((state) => ({
+      tags: [...state.tags, tag],
+    }));
+  }),
+
+  updateTag: withStoreErrorHandler(set, async (id, name, color) => {
+    await tagApi.updateTag(id, name, color);
+    set((state) => ({
+      tags: state.tags.map((t) => (t.id === id ? { ...t, name, color } : t)),
+    }));
+  }),
+
+  deleteTag: withStoreErrorHandler(set, async (id) => {
+    await tagApi.deleteTag(id);
+    set((state) => ({
+      tags: state.tags.filter((t) => t.id !== id),
+      selectedNestlingTags: state.selectedNestlingTags.filter(
+        (t) => t.id !== id,
+      ),
+    }));
+  }),
+
+  attachTagToNestling: withStoreErrorHandler(set, async (nestlingId, tagId) => {
+    await tagApi.attachTag(nestlingId, tagId);
+    set((state) => {
+      const tag = state.tags.find((t) => t.id === tagId);
+      if (tag) {
+        return {
+          selectedNestlingTags: [...state.selectedNestlingTags, tag],
+        };
+      }
+      return state;
+    });
+  }),
+
+  detachTagFromNestling: withStoreErrorHandler(
+    set,
+    async (nestlingId, tagId) => {
+      await tagApi.detachTag(nestlingId, tagId);
+      set((state) => ({
+        selectedNestlingTags: state.selectedNestlingTags.filter(
+          (t) => t.id !== tagId,
+        ),
+      }));
+    },
+  ),
+
+  loadNestlingTags: withStoreErrorHandler(set, async (nestlingId) => {
+    const tags = await tagApi.getNestlingTags(nestlingId);
+    set({ selectedNestlingTags: tags });
+  }),
 }));
 
 export const useNestlingActions = () =>
@@ -275,6 +350,15 @@ export const useNestlingActions = () =>
       fetchSidebar: state.fetchSidebar,
       handleDragStart: state.handleDragStart,
       handleDragEnd: state.handleDragEnd,
+
+      loadTags: state.loadTags,
+      createTag: state.createTag,
+      updateTag: state.updateTag,
+      deleteTag: state.deleteTag,
+
+      attachTagToNestling: state.attachTagToNestling,
+      detachTagFromNestling: state.detachTagFromNestling,
+      loadNestlingTags: state.loadNestlingTags,
     })),
   );
 
@@ -293,3 +377,8 @@ export const useFolders = () => useNestlingStore((state) => state.folders);
 
 export const useActiveFolderId = () =>
   useNestlingStore((state) => state.activeFolderId);
+
+export const useTags = () => useNestlingStore((state) => state.tags);
+
+export const useSelectedNestlingTags = () =>
+  useNestlingStore((state) => state.selectedNestlingTags);

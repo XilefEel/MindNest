@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS tags (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nest_id INTEGER NOT NULL,
     name TEXT NOT NULL,
-    color TEXT,
+    color TEXT NOT NULL,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
     FOREIGN KEY (nest_id) REFERENCES nests(id) ON DELETE CASCADE,

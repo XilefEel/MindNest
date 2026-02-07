@@ -5,7 +5,7 @@ pub struct Tag {
     pub id: i64,
     pub nest_id: i64,
     pub name: String,
-    pub color: Option<String>,
+    pub color: String,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -14,7 +14,7 @@ pub struct Tag {
 pub struct NewTag {
     pub nest_id: i64,
     pub name: String,
-    pub color: Option<String>,
+    pub color: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
