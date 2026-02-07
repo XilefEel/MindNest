@@ -3,7 +3,7 @@ import { WithBase } from "./base";
 export type Tag = WithBase<NewTag>;
 
 export type NewTag = {
-  nest_id: number;
+  nestId: number;
   name: string;
   color: string;
 };

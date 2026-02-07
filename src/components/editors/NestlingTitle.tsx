@@ -1,10 +1,18 @@
 import { Nestling } from "@/lib/types/nestling";
 import { findFolderPath } from "@/lib/utils/folders";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
-import { useFolders, useNestlingActions } from "@/stores/useNestlingStore";
+import {
+  useFolders,
+  useNestlingActions,
+  useSelectedNestlingTags,
+} from "@/stores/useNestlingStore";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import { Folder } from "lucide-react";
+import { Folder, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { NestlingTag } from "./NestlingTag";
+import { cn } from "@/lib/utils/general";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import TagPopover from "./TagPopover";
 
 export default function NestlingTitle({
   title,
@@ -16,7 +24,10 @@ export default function NestlingTitle({
   nestling: Nestling;
 }) {
   const folders = useFolders();
-  const { updateNestling } = useNestlingActions();
+  const { updateNestling, getNestlingTags, detachTag } = useNestlingActions();
+  const nestlingTags = useSelectedNestlingTags();
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const [showPicker, setShowPicker] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -39,6 +50,10 @@ export default function NestlingTitle({
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    getNestlingTags(nestling.id);
+  }, [nestling.id]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -88,9 +103,39 @@ export default function NestlingTitle({
           placeholder="Title..."
         />
       </div>
+
       <div className="mt-2 flex items-center gap-2">
-        <Folder className="h-5 w-10" />
+        <Folder className="h-5 w-5" />
         <span>{findFolderPath(nestling.folderId, folders) || "No folder"}</span>
+
+        <div className="flex flex-wrap items-center gap-1.5">
+          {nestlingTags.map((tag) => (
+            <NestlingTag
+              key={tag.id}
+              tag={tag}
+              onRemove={() => detachTag(nestling.id, tag.id)}
+            />
+          ))}
+
+          <Popover open={isOpen} onOpenChange={setIsOpen}>
+            <PopoverTrigger asChild>
+              <button className="flex items-center gap-1 rounded-full border border-gray-300 px-2 py-0.5 text-xs text-gray-600 transition-colors hover:border-gray-400 hover:bg-gray-50">
+                <Plus size={12} />
+                Add tag
+              </button>
+            </PopoverTrigger>
+
+            <PopoverContent
+              align="start"
+              side="right"
+              className={cn(
+                "w-96 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+              )}
+            >
+              <TagPopover nestlingId={nestling.id} />
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
     </div>
   );

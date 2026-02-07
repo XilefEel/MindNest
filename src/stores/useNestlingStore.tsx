@@ -50,14 +50,14 @@ type NestlingState = {
   handleDragStart: (event: DragStartEvent) => void;
   handleDragEnd: (event: DragEndEvent, nestId: number) => Promise<void>;
 
-  loadTags: (nestId: number) => Promise<void>;
-  createTag: (data: NewTag) => Promise<void>;
+  getTags: (nestId: number) => Promise<void>;
+  addTag: (data: NewTag) => Promise<Tag>;
   updateTag: (id: number, name: string, color: string) => Promise<void>;
   deleteTag: (id: number) => Promise<void>;
 
-  attachTagToNestling: (nestlingId: number, tagId: number) => Promise<void>;
-  detachTagFromNestling: (nestlingId: number, tagId: number) => Promise<void>;
-  loadNestlingTags: (nestlingId: number) => Promise<void>;
+  attachTag: (nestlingId: number, tagId: number) => Promise<void>;
+  detachTag: (nestlingId: number, tagId: number) => Promise<void>;
+  getNestlingTags: (nestlingId: number) => Promise<void>;
 };
 
 export const useNestlingStore = create<NestlingState>((set, get) => ({
@@ -267,16 +267,17 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     }
   },
 
-  loadTags: withStoreErrorHandler(set, async (nestId) => {
+  getTags: withStoreErrorHandler(set, async (nestId) => {
     const tags = await tagApi.getTags(nestId);
     set({ tags });
   }),
 
-  createTag: withStoreErrorHandler(set, async (data) => {
+  addTag: withStoreErrorHandler(set, async (data) => {
     const tag = await tagApi.createTag(data);
     set((state) => ({
       tags: [...state.tags, tag],
     }));
+    return tag;
   }),
 
   updateTag: withStoreErrorHandler(set, async (id, name, color) => {
@@ -296,7 +297,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     }));
   }),
 
-  attachTagToNestling: withStoreErrorHandler(set, async (nestlingId, tagId) => {
+  attachTag: withStoreErrorHandler(set, async (nestlingId, tagId) => {
     await tagApi.attachTag(nestlingId, tagId);
     set((state) => {
       const tag = state.tags.find((t) => t.id === tagId);
@@ -309,19 +310,16 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     });
   }),
 
-  detachTagFromNestling: withStoreErrorHandler(
-    set,
-    async (nestlingId, tagId) => {
-      await tagApi.detachTag(nestlingId, tagId);
-      set((state) => ({
-        selectedNestlingTags: state.selectedNestlingTags.filter(
-          (t) => t.id !== tagId,
-        ),
-      }));
-    },
-  ),
+  detachTag: withStoreErrorHandler(set, async (nestlingId, tagId) => {
+    await tagApi.detachTag(nestlingId, tagId);
+    set((state) => ({
+      selectedNestlingTags: state.selectedNestlingTags.filter(
+        (t) => t.id !== tagId,
+      ),
+    }));
+  }),
 
-  loadNestlingTags: withStoreErrorHandler(set, async (nestlingId) => {
+  getNestlingTags: withStoreErrorHandler(set, async (nestlingId) => {
     const tags = await tagApi.getNestlingTags(nestlingId);
     set({ selectedNestlingTags: tags });
   }),
@@ -351,14 +349,14 @@ export const useNestlingActions = () =>
       handleDragStart: state.handleDragStart,
       handleDragEnd: state.handleDragEnd,
 
-      loadTags: state.loadTags,
-      createTag: state.createTag,
+      getTags: state.getTags,
+      addTag: state.addTag,
       updateTag: state.updateTag,
       deleteTag: state.deleteTag,
 
-      attachTagToNestling: state.attachTagToNestling,
-      detachTagFromNestling: state.detachTagFromNestling,
-      loadNestlingTags: state.loadNestlingTags,
+      attachTag: state.attachTag,
+      detachTag: state.detachTag,
+      getNestlingTags: state.getNestlingTags,
     })),
   );
 
