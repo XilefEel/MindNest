@@ -20,6 +20,7 @@ export default function BaseContextMenu({
             activeBackgroundId &&
               "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
           )}
+          onClick={(e) => e.stopPropagation()}
         >
           {content}
         </ContextMenu.Content>

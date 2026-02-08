@@ -284,6 +284,9 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     await tagApi.updateTag(id, name, color);
     set((state) => ({
       tags: state.tags.map((t) => (t.id === id ? { ...t, name, color } : t)),
+      selectedNestlingTags: state.selectedNestlingTags.map((t) =>
+        t.id === id ? { ...t, name, color } : t,
+      ),
     }));
   }),
 

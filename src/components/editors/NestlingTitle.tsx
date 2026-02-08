@@ -108,25 +108,27 @@ export default function NestlingTitle({
 
         <Popover open={isOpen} onOpenChange={setIsOpen}>
           <PopoverTrigger asChild>
-            {nestlingTags.length > 0 ? (
-              <div className="flex cursor-pointer flex-wrap items-center gap-1.5">
-                {nestlingTags.map((tag) => (
-                  <NestlingTag key={tag.id} tag={tag} />
-                ))}
-              </div>
-            ) : (
-              <button
-                className={cn(
-                  "flex cursor-pointer items-center gap-1 rounded-full border px-2 py-0.5 text-xs transition-colors",
-                  "text-gray-600 dark:text-gray-300",
-                  "border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500",
-                  "hover:bg-gray-50 dark:hover:bg-gray-700",
-                )}
-              >
-                <Plus size={12} />
-                Add tag
-              </button>
-            )}
+            <div>
+              {nestlingTags.length > 0 ? (
+                <div className="flex cursor-pointer flex-wrap items-center gap-1.5">
+                  {nestlingTags.map((tag) => (
+                    <NestlingTag key={tag.id} tag={tag} />
+                  ))}
+                </div>
+              ) : (
+                <button
+                  className={cn(
+                    "flex cursor-pointer items-center gap-1 rounded-full border px-2 py-0.5 text-xs transition-colors",
+                    "text-gray-600 dark:text-gray-300",
+                    "border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500",
+                    "hover:bg-gray-50 dark:hover:bg-gray-700",
+                  )}
+                >
+                  <Plus size={12} />
+                  Add tag
+                </button>
+              )}
+            </div>
           </PopoverTrigger>
           <PopoverContent
             align="start"

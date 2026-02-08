@@ -36,12 +36,7 @@ export default function ColumnContextMenu({
 
   const handleEditColumn = async (color: string) => {
     try {
-      await updateColumn({
-        id: column.id,
-        title: column.title,
-        orderIndex: column.orderIndex,
-        color: color,
-      });
+      await updateColumn(column.id, { color });
     } catch (error) {
       console.error("Failed to update node:", error);
     }
