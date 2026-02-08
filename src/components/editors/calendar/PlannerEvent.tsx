@@ -10,7 +10,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
-import EventPopover from "./EventPopover";
+import EventPopover from "../../popovers/EventPopover";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { gridHeight } from "@/lib/utils/constants";

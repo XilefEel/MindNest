@@ -7,12 +7,12 @@ import {
   useSelectedNestlingTags,
 } from "@/stores/useNestlingStore";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import { Folder, Plus } from "lucide-react";
+import { Dot, Folder, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { NestlingTag } from "./NestlingTag";
 import { cn } from "@/lib/utils/general";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import TagPopover from "./TagPopover";
+import TagPopover from "../popovers/TagPopover";
 
 export default function NestlingTitle({
   title,
@@ -24,7 +24,7 @@ export default function NestlingTitle({
   nestling: Nestling;
 }) {
   const folders = useFolders();
-  const { updateNestling, getNestlingTags, detachTag } = useNestlingActions();
+  const { updateNestling, getNestlingTags } = useNestlingActions();
   const nestlingTags = useSelectedNestlingTags();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -76,11 +76,7 @@ export default function NestlingTitle({
             onClick={() => setShowPicker(!showPicker)}
             className="flex w-10 cursor-pointer items-center justify-center text-3xl font-bold transition-opacity hover:opacity-70"
           >
-            {nestling.icon ? (
-              <p>{nestling.icon}</p>
-            ) : (
-              <Icon className="size-8" />
-            )}
+            {nestling.icon ? <p>{nestling.icon}</p> : <Icon size={32} />}
           </button>
 
           {showPicker && (
@@ -105,37 +101,42 @@ export default function NestlingTitle({
       </div>
 
       <div className="mt-2 flex items-center gap-2">
-        <Folder className="h-5 w-5" />
+        <Folder size={20} />
         <span>{findFolderPath(nestling.folderId, folders) || "No folder"}</span>
 
-        <div className="flex flex-wrap items-center gap-1.5">
-          {nestlingTags.map((tag) => (
-            <NestlingTag
-              key={tag.id}
-              tag={tag}
-              onRemove={() => detachTag(nestling.id, tag.id)}
-            />
-          ))}
+        {nestlingTags.length > 0 && <Dot size={20} />}
 
-          <Popover open={isOpen} onOpenChange={setIsOpen}>
-            <PopoverTrigger asChild>
-              <button className="flex items-center gap-1 rounded-full border border-gray-300 px-2 py-0.5 text-xs text-gray-600 transition-colors hover:border-gray-400 hover:bg-gray-50">
+        <Popover open={isOpen} onOpenChange={setIsOpen}>
+          <PopoverTrigger asChild>
+            {nestlingTags.length > 0 ? (
+              <div className="flex cursor-pointer flex-wrap items-center gap-1.5">
+                {nestlingTags.map((tag) => (
+                  <NestlingTag key={tag.id} tag={tag} />
+                ))}
+              </div>
+            ) : (
+              <button
+                className={cn(
+                  "flex cursor-pointer items-center gap-1 rounded-full border px-2 py-0.5 text-xs transition-colors",
+                  "text-gray-600 dark:text-gray-300",
+                  "border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500",
+                  "hover:bg-gray-50 dark:hover:bg-gray-700",
+                )}
+              >
                 <Plus size={12} />
                 Add tag
               </button>
-            </PopoverTrigger>
-
-            <PopoverContent
-              align="start"
-              side="right"
-              className={cn(
-                "w-96 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
-              )}
-            >
-              <TagPopover nestlingId={nestling.id} />
-            </PopoverContent>
-          </Popover>
-        </div>
+            )}
+          </PopoverTrigger>
+          <PopoverContent
+            align="start"
+            className={cn(
+              "w-96 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+            )}
+          >
+            <TagPopover nestlingId={nestling.id} />
+          </PopoverContent>
+        </Popover>
       </div>
     </div>
   );

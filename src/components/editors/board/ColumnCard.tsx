@@ -9,7 +9,7 @@ import { setActiveDraggingId, useBoardActions } from "@/stores/useBoardStore";
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import CardContextMenu from "@/components/context-menu/CardContextMenu";
-import CardPopover from "./CardPopover";
+import CardPopover from "../../popovers/CardPopover";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 
