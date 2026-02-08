@@ -18,11 +18,3 @@ pub struct NewTag {
     pub name: String,
     pub color: String,
 }
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct NestlingTag {
-    pub nestling_id: i64,
-    pub tag_id: i64,
-    pub created_at: String,
-}

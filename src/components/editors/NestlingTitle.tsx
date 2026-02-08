@@ -13,6 +13,8 @@ import { NestlingTag } from "./NestlingTag";
 import { cn } from "@/lib/utils/general";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import TagPopover from "../popovers/TagPopover";
+import TagEditPopover from "../popovers/TagEditPopover";
+import { toast } from "sonner";
 
 export default function NestlingTitle({
   title,
@@ -24,11 +26,10 @@ export default function NestlingTitle({
   nestling: Nestling;
 }) {
   const folders = useFolders();
-  const { updateNestling, getNestlingTags } = useNestlingActions();
+  const { updateNestling, getNestlingTags, detachTag } = useNestlingActions();
   const nestlingTags = useSelectedNestlingTags();
 
   const [isOpen, setIsOpen] = useState(false);
-
   const [showPicker, setShowPicker] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
   const Icon = getNestlingIcon(nestling.nestlingType);
@@ -48,6 +49,15 @@ export default function NestlingTitle({
       setShowPicker(false);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const handleDetachTag = async (tagId: number) => {
+    try {
+      await detachTag(nestling.id, tagId);
+    } catch (error) {
+      toast.error("Failed to detach tag");
+      console.error("Failed to detach tag:", error);
     }
   };
 
@@ -106,29 +116,43 @@ export default function NestlingTitle({
 
         {nestlingTags.length > 0 && <Dot size={20} />}
 
+        {nestlingTags.map((tag) => (
+          <Popover key={tag.id}>
+            <PopoverTrigger asChild>
+              <button>
+                <NestlingTag
+                  tag={tag}
+                  onRemove={() => handleDetachTag(tag.id)}
+                />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="start"
+              className={cn(
+                "w-60 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+              )}
+            >
+              <TagEditPopover tag={tag} />
+            </PopoverContent>
+          </Popover>
+        ))}
+
         <Popover open={isOpen} onOpenChange={setIsOpen}>
           <PopoverTrigger asChild>
-            <div>
-              {nestlingTags.length > 0 ? (
-                <div className="flex cursor-pointer flex-wrap items-center gap-1.5">
-                  {nestlingTags.map((tag) => (
-                    <NestlingTag key={tag.id} tag={tag} />
-                  ))}
-                </div>
-              ) : (
-                <button
-                  className={cn(
-                    "flex cursor-pointer items-center gap-1 rounded-full border px-2 py-0.5 text-xs transition-colors",
-                    "text-gray-600 dark:text-gray-300",
-                    "border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500",
-                    "hover:bg-gray-50 dark:hover:bg-gray-700",
-                  )}
-                >
-                  <Plus size={12} />
-                  Add tag
-                </button>
+            <button
+              className={cn(
+                "cursor-pointer rounded-full border text-xs transition-colors",
+                "text-gray-600 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-200",
+                "border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500",
+                "hover:bg-gray-200/50 dark:hover:bg-gray-700",
+                nestlingTags.length > 0
+                  ? "p-1"
+                  : "flex items-center gap-1 px-2 py-0.5",
               )}
-            </div>
+            >
+              <Plus size={12} />
+              {nestlingTags.length === 0 && <span>Add tag</span>}
+            </button>
           </PopoverTrigger>
           <PopoverContent
             align="start"
