@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import TagPopover from "../popovers/TagPopover";
 import TagEditPopover from "../popovers/TagEditPopover";
 import { toast } from "sonner";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export default function NestlingTitle({
   title,
@@ -25,9 +26,10 @@ export default function NestlingTitle({
   setTitle: (title: string) => void;
   nestling: Nestling;
 }) {
+  const activeBackgroundId = useActiveBackgroundId();
   const folders = useFolders();
-  const { updateNestling, getNestlingTags, detachTag } = useNestlingActions();
   const nestlingTags = useSelectedNestlingTags();
+  const { updateNestling, getNestlingTags, detachTag } = useNestlingActions();
 
   const [isOpen, setIsOpen] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
@@ -130,6 +132,8 @@ export default function NestlingTitle({
               align="start"
               className={cn(
                 "w-60 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+                activeBackgroundId &&
+                  "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
               )}
             >
               <TagEditPopover tag={tag} />
@@ -148,6 +152,8 @@ export default function NestlingTitle({
                 nestlingTags.length > 0
                   ? "p-1"
                   : "flex items-center gap-1 px-2 py-0.5",
+                activeBackgroundId &&
+                  "border-0 bg-white/30 backdrop-blur-sm hover:bg-white/50 dark:bg-black/30 dark:hover:bg-black/50",
               )}
             >
               <Plus size={12} />
@@ -157,7 +163,9 @@ export default function NestlingTitle({
           <PopoverContent
             align="start"
             className={cn(
-              "w-96 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+              "w-80 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+              activeBackgroundId &&
+                "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
             )}
           >
             <TagPopover nestlingId={nestling.id} />

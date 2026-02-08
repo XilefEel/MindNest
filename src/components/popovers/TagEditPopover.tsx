@@ -4,9 +4,13 @@ import { useState } from "react";
 import { Tag } from "@/lib/types/tag";
 import { useNestlingActions } from "@/stores/useNestlingStore";
 import { toast } from "@/lib/utils/toast";
+import { cn } from "@/lib/utils/general";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export default function TagEditPopover({ tag }: { tag: Tag }) {
   const { updateTag } = useNestlingActions();
+  const activeBackgroundId = useActiveBackgroundId();
+
   const [name, setName] = useState(tag.name);
 
   const handleSave = () => {
@@ -41,7 +45,7 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <label className="flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-gray-200">
+        <label className="mb-1 flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-gray-200">
           <TagIcon size={14} />
           <span>Name</span>
         </label>
@@ -52,7 +56,15 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
           onKeyDown={handleKeyDown}
           placeholder="Tag name..."
           autoFocus
-          className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-teal-400"
+          className={cn(
+            "w-full rounded-lg border px-3 py-1 text-sm shadow-sm transition",
+            "dark:text-gray-100 dark:placeholder-gray-400",
+            "bg-white dark:bg-gray-800",
+            "focus:ring-2 focus:ring-teal-500 focus:outline-none dark:focus:ring-teal-400",
+            "border-gray-300 dark:border-gray-600",
+            activeBackgroundId &&
+              "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+          )}
         />
       </div>
 
@@ -65,7 +77,10 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
           {COLORS.map((color) => (
             <button
               key={color}
-              className="relative h-8 w-8 rounded-full border-2 border-gray-200 transition-all hover:scale-110 dark:border-gray-600"
+              className={cn(
+                "relative h-8 w-8 rounded-full border-2 border-gray-200 transition-all hover:scale-110 dark:border-gray-600",
+                activeBackgroundId && "border-white/10 dark:border-black/10",
+              )}
               style={{ backgroundColor: color }}
               onClick={() => handleColorChange(color)}
             >

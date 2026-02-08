@@ -1,4 +1,5 @@
 import { Tag } from "@/lib/types/tag";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { X } from "lucide-react";
 
 export function NestlingTag({
@@ -12,12 +13,14 @@ export function NestlingTag({
   onRemove?: (tagId: number) => void;
   removeIcon?: React.ReactNode;
 }) {
+  const activeBackgroundId = useActiveBackgroundId();
+
   return (
     <div
       className="group relative flex cursor-pointer items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium shadow-xs transition-all select-none hover:scale-105 hover:shadow-sm"
       style={{
-        backgroundColor: `${tag.color}30`,
-        color: tag.color,
+        backgroundColor: activeBackgroundId ? `${tag.color}` : `${tag.color}30`,
+        color: activeBackgroundId ? "#ffffff" : tag.color,
         border: `1px solid ${tag.color}`,
       }}
       onClick={onClick}

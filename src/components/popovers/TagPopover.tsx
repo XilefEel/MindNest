@@ -6,8 +6,8 @@ import {
 import { NestlingTag } from "../editors/NestlingTag";
 import { Plus, Search, TagIcon, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useActiveNestId } from "@/stores/useNestStore";
-import { getRandomElement } from "@/lib/utils/general";
+import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
+import { cn, getRandomElement } from "@/lib/utils/general";
 import { COLORS } from "@/lib/utils/constants";
 import { toast } from "@/lib/utils/toast";
 
@@ -16,6 +16,7 @@ export default function TagPopover({ nestlingId }: { nestlingId: number }) {
   const selectedNestlingTags = useSelectedNestlingTags();
   const activeNestId = useActiveNestId();
   const { deleteTag, attachTag, addTag } = useNestlingActions();
+  const activeBackgroundId = useActiveBackgroundId();
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -59,7 +60,15 @@ export default function TagPopover({ nestlingId }: { nestlingId: number }) {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search or create a tag..."
-          className="w-full rounded-lg border border-gray-300 bg-white py-1 pr-4 pl-9 text-sm shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-teal-400"
+          className={cn(
+            "w-full rounded-lg border py-1 pr-4 pl-9 text-sm shadow-sm transition",
+            "dark:text-gray-100 dark:placeholder-gray-400",
+            "bg-white dark:bg-gray-800",
+            "focus:ring-2 focus:ring-teal-500 focus:outline-none dark:focus:ring-teal-400",
+            "border-gray-300 dark:border-gray-600",
+            activeBackgroundId &&
+              "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+          )}
         />
       </div>
 
