@@ -1,21 +1,12 @@
-import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
 import { saveLastNestling } from "@/lib/storage/nestling";
-import { findFolderPath } from "@/lib/utils/folders";
-import { cn } from "@/lib/utils/general";
-import { getNestlingIcon } from "@/lib/utils/nestlings";
-import {
-  useFolders,
-  useNestlingActions,
-  useNestlings,
-} from "@/stores/useNestlingStore";
-import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
-import { ArrowRight, Folder, Pin } from "lucide-react";
+import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
+import { useActiveNestId } from "@/stores/useNestStore";
+import { Pin } from "lucide-react";
+import PinnedCard from "./PinnedCard";
 
 export default function PinnedSection() {
   const activeNestId = useActiveNestId();
-  const activeBackgroundId = useActiveBackgroundId();
   const nestlings = useNestlings();
-  const folders = useFolders();
   const { setActiveNestlingId } = useNestlingActions();
 
   const pinnedNestlings = nestlings.filter((n) => n.isPinned === true);
@@ -41,54 +32,13 @@ export default function PinnedSection() {
           </p>
         )}
 
-        {pinnedNestlings.map((nestling, i) => {
-          const Icon = getNestlingIcon(nestling.nestlingType);
-          return (
-            <NestlingContextMenu nestlingId={nestling.id}>
-              <div
-                key={i}
-                onClick={() => handleClick(nestling.id)}
-                className={cn(
-                  "group cursor-pointer rounded-xl border border-l-4 p-4 shadow-sm hover:shadow-md",
-                  "bg-white dark:bg-gray-800",
-                  "border-gray-200 border-l-pink-500 hover:border-pink-500 dark:border-gray-800 dark:border-l-pink-500 dark:hover:hover:border-pink-500",
-                  "transition hover:scale-105",
-                  activeBackgroundId &&
-                    "border-t-0 border-r-0 border-b-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
-                )}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-1 font-semibold">
-                      <div className="flex w-6 items-center justify-center">
-                        {nestling.icon ? (
-                          <p>{nestling.icon}</p>
-                        ) : (
-                          <Icon className="size-4 flex-shrink-0" />
-                        )}
-                      </div>
-
-                      <span>{nestling.title}</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                      <Folder className="h-4 w-6" />
-                      <span>
-                        {findFolderPath(nestling.folderId, folders) ||
-                          "No Folder"}
-                      </span>
-                    </div>
-                  </div>
-                  <ArrowRight
-                    className={cn(
-                      "h-5 w-5 text-gray-300 transition",
-                      activeBackgroundId && "text-gray-400",
-                    )}
-                  />
-                </div>
-              </div>
-            </NestlingContextMenu>
-          );
-        })}
+        {pinnedNestlings.map((nestling) => (
+          <PinnedCard
+            key={nestling.id}
+            nestling={nestling}
+            onClick={handleClick}
+          />
+        ))}
       </div>
     </div>
   );
