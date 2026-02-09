@@ -5,6 +5,7 @@ use crate::{
 };
 use chrono::Utc;
 use rusqlite::params;
+use std::collections::HashMap;
 
 pub fn insert_tag_into_db(db: &AppDb, data: NewTag) -> DbResult<Tag> {
     let connection = db.connection.lock().unwrap();
@@ -107,32 +108,43 @@ pub fn add_tag_to_nestling(db: &AppDb, nestling_id: i64, tag_id: i64) -> DbResul
     Ok(())
 }
 
-pub fn get_tags_for_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Tag>> {
+pub fn get_all_nestling_tags_for_nest(
+    db: &AppDb,
+    nest_id: i64,
+) -> DbResult<HashMap<i64, Vec<Tag>>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
         "
-            SELECT tags.id, tags.nest_id, tags.name, tags.color, tags.created_at, tags.updated_at
-            FROM tags
-            JOIN nestling_tags ON tags.id = nestling_tags.tag_id
-            WHERE nestling_tags.nestling_id = ?1
-            ORDER BY tags.name ASC",
+        SELECT nt.nestling_id, t.id, t.nest_id, t.name, t.color, t.created_at, t.updated_at
+        FROM nestling_tags nt
+        JOIN tags t ON nt.tag_id = t.id
+        JOIN nestlings n ON nt.nestling_id = n.id
+        WHERE n.nest_id = ?1
+        ORDER BY nt.nestling_id",
     )?;
 
-    let rows = statement.query_map([nestling_id], |row| {
-        Ok(Tag {
-            id: row.get(0)?,
-            nest_id: row.get(1)?,
-            name: row.get(2)?,
-            color: row.get(3)?,
-            created_at: row.get(4)?,
-            updated_at: row.get(5)?,
-        })
-    })?;
+    let mut rows = statement.query([nest_id])?;
+    let mut nestling_tags_map: HashMap<i64, Vec<Tag>> = HashMap::new();
 
-    let result = rows.collect::<Result<Vec<Tag>, _>>()?;
+    while let Some(row) = rows.next()? {
+        let nestling_id: i64 = row.get(0)?;
+        let tag = Tag {
+            id: row.get(1)?,
+            nest_id: row.get(2)?,
+            name: row.get(3)?,
+            color: row.get(4)?,
+            created_at: row.get(5)?,
+            updated_at: row.get(6)?,
+        };
 
-    Ok(result)
+        nestling_tags_map
+            .entry(nestling_id)
+            .or_insert_with(Vec::new)
+            .push(tag);
+    }
+
+    Ok(nestling_tags_map)
 }
 
 pub fn remove_tag_from_nestling(db: &AppDb, nestling_id: i64, tag_id: i64) -> DbResult<()> {

@@ -1,7 +1,7 @@
 import {
   useNestlingActions,
+  useNestlingTags,
   useTags,
-  useSelectedNestlingTags,
 } from "@/stores/useNestlingStore";
 import { NestlingTag } from "../editors/NestlingTag";
 import { Plus, Search, TagIcon, Trash2 } from "lucide-react";
@@ -13,7 +13,7 @@ import { toast } from "@/lib/utils/toast";
 
 export default function TagPopover({ nestlingId }: { nestlingId: number }) {
   const tags = useTags();
-  const selectedNestlingTags = useSelectedNestlingTags();
+  const selectedNestlingTags = useNestlingTags(nestlingId);
   const activeNestId = useActiveNestId();
   const { deleteTag, attachTag, addTag } = useNestlingActions();
   const activeBackgroundId = useActiveBackgroundId();

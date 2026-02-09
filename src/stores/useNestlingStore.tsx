@@ -17,7 +17,7 @@ type NestlingState = {
   folders: Folder[];
   activeFolderId: number | null;
   tags: Tag[];
-  selectedNestlingTags: Tag[];
+  nestlingTagsMap: Record<number, Tag[]>;
 
   openFolders: Record<number, boolean>;
   activeDraggingNestlingId: number | null;
@@ -57,7 +57,7 @@ type NestlingState = {
 
   attachTag: (nestlingId: number, tagId: number) => Promise<void>;
   detachTag: (nestlingId: number, tagId: number) => Promise<void>;
-  getNestlingTags: (nestlingId: number) => Promise<void>;
+  getAllNestlingTags: (nestId: number) => Promise<void>;
 };
 
 export const useNestlingStore = create<NestlingState>((set, get) => ({
@@ -72,9 +72,9 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   activeDraggingNestlingId: null,
 
   tags: [],
-  selectedNestlingTags: [],
+  nestlingTagsMap: {},
 
-  setActiveNestlingId: (number) => set({ activeNestlingId: number }),
+  setActiveNestlingId: (nestlingId) => set({ activeNestlingId: nestlingId }),
 
   setActiveFolderId: (folderId) => set({ activeFolderId: folderId }),
 
@@ -284,8 +284,11 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     await tagApi.updateTag(id, name, color);
     set((state) => ({
       tags: state.tags.map((t) => (t.id === id ? { ...t, name, color } : t)),
-      selectedNestlingTags: state.selectedNestlingTags.map((t) =>
-        t.id === id ? { ...t, name, color } : t,
+      nestlingTagsMap: Object.fromEntries(
+        Object.entries(state.nestlingTagsMap).map(([nestlingId, tags]) => [
+          Number(nestlingId),
+          tags.map((t) => (t.id === id ? { ...t, name, color } : t)),
+        ]),
       ),
     }));
   }),
@@ -294,8 +297,11 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     await tagApi.deleteTag(id);
     set((state) => ({
       tags: state.tags.filter((t) => t.id !== id),
-      selectedNestlingTags: state.selectedNestlingTags.filter(
-        (t) => t.id !== id,
+      nestlingTagsMap: Object.fromEntries(
+        Object.entries(state.nestlingTagsMap).map(([nestlingId, tags]) => [
+          Number(nestlingId),
+          tags.filter((t) => t.id !== id),
+        ]),
       ),
     }));
   }),
@@ -303,28 +309,35 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   attachTag: withStoreErrorHandler(set, async (nestlingId, tagId) => {
     await tagApi.attachTag(nestlingId, tagId);
     set((state) => {
-      const tag = state.tags.find((t) => t.id === tagId);
-      if (tag) {
-        return {
-          selectedNestlingTags: [...state.selectedNestlingTags, tag],
-        };
-      }
-      return state;
+      const tagToAttach = state.tags.find((t) => t.id === tagId);
+      if (!tagToAttach) return state;
+
+      const currentTags = state.nestlingTagsMap[nestlingId] || [];
+      return {
+        nestlingTagsMap: {
+          ...state.nestlingTagsMap,
+          [nestlingId]: [...currentTags, tagToAttach],
+        },
+      };
     });
   }),
 
   detachTag: withStoreErrorHandler(set, async (nestlingId, tagId) => {
     await tagApi.detachTag(nestlingId, tagId);
-    set((state) => ({
-      selectedNestlingTags: state.selectedNestlingTags.filter(
-        (t) => t.id !== tagId,
-      ),
-    }));
+    set((state) => {
+      const currentTags = state.nestlingTagsMap[nestlingId] || [];
+      return {
+        nestlingTagsMap: {
+          ...state.nestlingTagsMap,
+          [nestlingId]: currentTags.filter((t) => t.id !== tagId),
+        },
+      };
+    });
   }),
 
-  getNestlingTags: withStoreErrorHandler(set, async (nestlingId) => {
-    const tags = await tagApi.getNestlingTags(nestlingId);
-    set({ selectedNestlingTags: tags });
+  getAllNestlingTags: withStoreErrorHandler(set, async (nestId) => {
+    const nestlingTagsMap = await tagApi.getAllNestlingTags(nestId);
+    set({ nestlingTagsMap });
   }),
 }));
 
@@ -359,7 +372,7 @@ export const useNestlingActions = () =>
 
       attachTag: state.attachTag,
       detachTag: state.detachTag,
-      getNestlingTags: state.getNestlingTags,
+      getAllNestlingTags: state.getAllNestlingTags,
     })),
   );
 
@@ -381,5 +394,7 @@ export const useActiveFolderId = () =>
 
 export const useTags = () => useNestlingStore((state) => state.tags);
 
-export const useSelectedNestlingTags = () =>
-  useNestlingStore((state) => state.selectedNestlingTags);
+export const useNestlingTags = (nestlingId: number) =>
+  useNestlingStore(
+    useShallow((state) => state.nestlingTagsMap[nestlingId] || []),
+  );

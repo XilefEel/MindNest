@@ -47,7 +47,7 @@ use handler::bookmark::{
 };
 
 use handler::tag::{
-    attach_tag, create_tag, delete_tag, detach_tag, get_nestling_tags, get_tags, update_tag,
+    attach_tag, create_tag, delete_tag, detach_tag, get_all_nestling_tags, get_tags, update_tag,
 };
 
 use crate::utils::db::{init_db, AppDb};
@@ -164,7 +164,7 @@ pub fn run() {
             update_tag,
             delete_tag,
             attach_tag,
-            get_nestling_tags,
+            get_all_nestling_tags,
             detach_tag
         ])
         .run(tauri::generate_context!())

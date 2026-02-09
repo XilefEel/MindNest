@@ -28,8 +28,10 @@ export async function attachTag(
   return await invoke("attach_tag", { nestlingId, tagId });
 }
 
-export async function getNestlingTags(nestlingId: number): Promise<Tag[]> {
-  return await invoke("get_nestling_tags", { nestlingId });
+export async function getAllNestlingTags(
+  nestId: number,
+): Promise<Record<number, Tag[]>> {
+  return await invoke("get_all_nestling_tags", { nestId });
 }
 
 export async function detachTag(

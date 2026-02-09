@@ -25,6 +25,7 @@ export default function useRestore({
     setFolderOpen,
     fetchSidebar,
     getTags,
+    getAllNestlingTags,
   } = useNestlingActions();
   const { setActiveNestId, setActiveBackgroundId, getBackgrounds, getMusic } =
     useNestActions();
@@ -35,13 +36,11 @@ export default function useRestore({
     async function restore() {
       setLoading(true);
       try {
-        // Fetch last nest and set as active
         const lastNest = await getNestFromId(Number(id));
         setNest(lastNest);
         setActiveNestId(lastNest.id);
         await saveLastNestId(lastNest.id);
 
-        // Fetch last nestling and background from store and db
         const [lastNestlingId, lastBackgroundImage] = await Promise.all([
           getLastNestling(lastNest.id),
           getLastBackgroundImage(lastNest.id),
@@ -49,14 +48,13 @@ export default function useRestore({
           getBackgrounds(lastNest.id),
           getMusic(lastNest.id),
           getTags(lastNest.id),
+          getAllNestlingTags(lastNest.id),
         ]);
 
-        // Find last nestling from zustand store
         const lastNestling = useNestlingStore
           .getState()
           .nestlings.find((n) => n.id === lastNestlingId);
 
-        // Set last nestling and its folder as active
         if (lastNestling && Number(id) === lastNestling.nestId) {
           setActiveNestlingId(lastNestling.id);
 
@@ -75,7 +73,6 @@ export default function useRestore({
           }
         }
 
-        // Set last background
         if (lastBackgroundImage != null)
           setActiveBackgroundId(lastBackgroundImage);
       } catch (error) {

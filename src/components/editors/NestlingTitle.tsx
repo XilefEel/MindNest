@@ -4,7 +4,7 @@ import { getNestlingIcon } from "@/lib/utils/nestlings";
 import {
   useFolders,
   useNestlingActions,
-  useSelectedNestlingTags,
+  useNestlingTags,
 } from "@/stores/useNestlingStore";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { Dot, Folder, Plus } from "lucide-react";
@@ -28,8 +28,8 @@ export default function NestlingTitle({
 }) {
   const activeBackgroundId = useActiveBackgroundId();
   const folders = useFolders();
-  const nestlingTags = useSelectedNestlingTags();
-  const { updateNestling, getNestlingTags, detachTag } = useNestlingActions();
+  const nestlingTags = useNestlingTags(nestling.id);
+  const { updateNestling, detachTag } = useNestlingActions();
 
   const [isOpen, setIsOpen] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
@@ -62,10 +62,6 @@ export default function NestlingTitle({
       console.error("Failed to detach tag:", error);
     }
   };
-
-  useEffect(() => {
-    getNestlingTags(nestling.id);
-  }, [nestling.id]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
