@@ -7,6 +7,8 @@ import BaseContextMenu from "./BaseContextMenu";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useImageModal } from "@/stores/useModalStore";
+import ContextMenuSeparator from "./ContextMenuSeparator";
+
 export default function ImageContextMenu({
   imageId,
   children,
@@ -126,12 +128,7 @@ export default function ImageContextMenu({
             text="Download"
           />
 
-          <ContextMenu.Separator
-            className={cn(
-              "mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700",
-              activeBackgroundId && "bg-white/10 dark:bg-black/10",
-            )}
-          />
+          <ContextMenuSeparator />
 
           <ContextMenuItem
             action={() => handleDeleteImage(imageId)}

@@ -1,10 +1,10 @@
 import BaseContextMenu from "./BaseContextMenu";
-import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Copy, ExternalLink, Star, Trash2 } from "lucide-react";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import ContextMenuItem from "./ContextMenuItem";
 import { Bookmark } from "@/lib/types/bookmark";
 import { openUrl } from "@tauri-apps/plugin-opener";
+import ContextMenuSeparator from "./ContextMenuSeparator";
 
 export default function BookmarkContextMenu({
   children,
@@ -33,7 +33,7 @@ export default function BookmarkContextMenu({
             action={() => writeText(bookmark.url)}
           />
 
-          <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
+          <ContextMenuSeparator />
 
           <ContextMenuItem
             Icon={Star}

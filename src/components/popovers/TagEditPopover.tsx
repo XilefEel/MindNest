@@ -33,7 +33,7 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
     if (e.key === "Enter") e.currentTarget.blur();
   };
 
-  const handleColorChange = (color: string) => {
+  const handleChangeColor = (color: string) => {
     try {
       updateTag(tag.id, name.trim() || tag.name, color);
     } catch (error) {
@@ -79,10 +79,10 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
               key={color}
               className={cn(
                 "relative h-8 w-8 rounded-full border-2 border-gray-200 transition-all hover:scale-110 dark:border-gray-600",
-                activeBackgroundId && "border-black/10 dark:border-white/10",
+                activeBackgroundId && "border-black/20 dark:border-white/20",
               )}
               style={{ backgroundColor: color }}
-              onClick={() => handleColorChange(color)}
+              onClick={() => handleChangeColor(color)}
             >
               {tag.color === color && (
                 <Check className="absolute inset-0 m-auto h-4 w-4 text-white drop-shadow" />

@@ -1,12 +1,12 @@
 import { GalleryAlbum } from "@/lib/types/gallery";
 import { useGalleryActions } from "@/stores/useGalleryStore";
-import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, PlusSquare, Download, Trash2 } from "lucide-react";
 import { toast } from "@/lib/utils/toast";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { useActiveNestlingId } from "@/stores/useNestlingStore";
 import { useAlbumModal } from "@/stores/useModalStore";
+import ContextMenuSeparator from "./ContextMenuSeparator";
 
 export default function AlbumContextMenu({
   album,
@@ -84,7 +84,7 @@ export default function AlbumContextMenu({
             }}
           />
 
-          <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
+          <ContextMenuSeparator />
 
           <ContextMenuItem
             Icon={Trash2}

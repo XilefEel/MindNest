@@ -1,10 +1,10 @@
-import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Trash, Copy } from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { BoardCard } from "@/lib/types/board";
 import { useBoardActions } from "@/stores/useBoardStore";
 import { toast } from "@/lib/utils/toast";
+import ContextMenuSeperator from "./ContextMenuSeparator";
 
 export default function CardContextMenu({
   card,
@@ -43,7 +43,7 @@ export default function CardContextMenu({
             action={handleDuplicateCard}
           />
 
-          <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
+          <ContextMenuSeperator />
 
           <ContextMenuItem
             Icon={Trash}

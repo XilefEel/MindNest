@@ -1,5 +1,6 @@
 import { getNestFromId } from "@/lib/api/nest";
 import { getLastBackgroundImage } from "@/lib/storage/background-image";
+import { getLastBackgroundMusic } from "@/lib/storage/background-music";
 import { saveLastNestId } from "@/lib/storage/nest";
 import { getLastNestling } from "@/lib/storage/nestling";
 import { Nest } from "@/lib/types/nest";
@@ -27,8 +28,13 @@ export default function useRestore({
     getTags,
     getAllNestlingTags,
   } = useNestlingActions();
-  const { setActiveNestId, setActiveBackgroundId, getBackgrounds, getMusic } =
-    useNestActions();
+  const {
+    setActiveNestId,
+    setActiveBackgroundId,
+    setActiveMusicId,
+    getBackgrounds,
+    getMusic,
+  } = useNestActions();
 
   if (!id) return;
 
@@ -41,15 +47,17 @@ export default function useRestore({
         setActiveNestId(lastNest.id);
         await saveLastNestId(lastNest.id);
 
-        const [lastNestlingId, lastBackgroundImage] = await Promise.all([
-          getLastNestling(lastNest.id),
-          getLastBackgroundImage(lastNest.id),
-          fetchSidebar(lastNest.id),
-          getBackgrounds(lastNest.id),
-          getMusic(lastNest.id),
-          getTags(lastNest.id),
-          getAllNestlingTags(lastNest.id),
-        ]);
+        const [lastNestlingId, lastBackgroundImage, lastBackgroundMusicId] =
+          await Promise.all([
+            getLastNestling(lastNest.id),
+            getLastBackgroundImage(lastNest.id),
+            getLastBackgroundMusic(lastNest.id),
+            fetchSidebar(lastNest.id),
+            getBackgrounds(lastNest.id),
+            getMusic(lastNest.id),
+            getTags(lastNest.id),
+            getAllNestlingTags(lastNest.id),
+          ]);
 
         const lastNestling = useNestlingStore
           .getState()
@@ -75,6 +83,9 @@ export default function useRestore({
 
         if (lastBackgroundImage != null)
           setActiveBackgroundId(lastBackgroundImage);
+
+        if (lastBackgroundMusicId != null)
+          setActiveMusicId(lastBackgroundMusicId);
       } catch (error) {
         console.error("Failed to restore", error);
       } finally {

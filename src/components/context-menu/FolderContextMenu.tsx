@@ -1,4 +1,3 @@
-import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, Trash2, FolderPlus, Copy, FilePlus } from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
@@ -9,6 +8,7 @@ import {
   useFolderModal,
   useNestlingModal,
 } from "@/stores/useModalStore";
+import ContextMenuSeperator from "./ContextMenuSeparator";
 
 export default function FolderContextMenu({
   folderId,
@@ -40,7 +40,7 @@ export default function FolderContextMenu({
             Icon={Copy}
             text="Duplicate Folder"
           />
-          <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
+          <ContextMenuSeperator />
 
           <ContextMenuItem
             action={() => {
@@ -62,7 +62,7 @@ export default function FolderContextMenu({
             text="New Folder"
           />
 
-          <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
+          <ContextMenuSeperator />
 
           <ContextMenuItem
             Icon={Trash2}

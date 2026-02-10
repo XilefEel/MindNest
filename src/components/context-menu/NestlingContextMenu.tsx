@@ -1,10 +1,10 @@
-import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Edit3, Trash2, Copy, Archive, Pin, PinOff } from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
 import { toast } from "@/lib/utils/toast";
 import { useDeleteModal } from "@/stores/useModalStore";
+import ContextMenuSeperator from "./ContextMenuSeparator";
 
 export default function NestlingContextMenu({
   nestlingId,
@@ -53,7 +53,7 @@ export default function NestlingContextMenu({
             action={handlePinNestling}
           />
 
-          <ContextMenu.Separator className="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-700" />
+          <ContextMenuSeperator />
 
           <ContextMenuItem
             Icon={Archive}
