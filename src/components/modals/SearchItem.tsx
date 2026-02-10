@@ -6,14 +6,14 @@ import { Folder } from "lucide-react";
 import { NestlingTag } from "../editors/NestlingTag";
 
 export default function SearchItem({ nestling }: { nestling: Nestling }) {
-  const NestlingIcon = getNestlingIcon(nestling.nestlingType);
+  const Icon = getNestlingIcon(nestling.nestlingType);
   const nestlingTags = useNestlingTags(nestling.id);
   const { folders } = useNestlingStore();
   return (
     <>
       <div className="flex items-center gap-1">
         <div className="flex w-6 items-center justify-center">
-          {nestling.icon ? <p>{nestling.icon}</p> : <NestlingIcon />}
+          {nestling.icon ? <p>{nestling.icon}</p> : <Icon />}
         </div>
 
         <span>{nestling.title}</span>

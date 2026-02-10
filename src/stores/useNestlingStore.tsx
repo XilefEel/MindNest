@@ -394,6 +394,9 @@ export const useActiveFolderId = () =>
 
 export const useTags = () => useNestlingStore((state) => state.tags);
 
+export const useNestlingTagsMap = () =>
+  useNestlingStore((state) => state.nestlingTagsMap);
+
 export const useNestlingTags = (nestlingId: number) =>
   useNestlingStore(
     useShallow((state) => state.nestlingTagsMap[nestlingId] || []),
