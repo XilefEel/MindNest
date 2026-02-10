@@ -79,7 +79,7 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
               key={color}
               className={cn(
                 "relative h-8 w-8 rounded-full border-2 border-gray-200 transition-all hover:scale-110 dark:border-gray-600",
-                activeBackgroundId && "border-white/10 dark:border-black/10",
+                activeBackgroundId && "border-black/10 dark:border-white/10",
               )}
               style={{ backgroundColor: color }}
               onClick={() => handleColorChange(color)}

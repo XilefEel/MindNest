@@ -5,27 +5,20 @@ import {
   CommandList,
   CommandEmpty,
   CommandGroup,
-  CommandItem,
   CommandSeparator,
+  CommandItem,
 } from "../ui/command";
 import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
-import {
-  useFolders,
-  useNestlingActions,
-  useNestlings,
-} from "@/stores/useNestlingStore";
-import { getNestlingIcon } from "@/lib/utils/nestlings";
+import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
 import { saveLastNestling } from "@/lib/storage/nestling";
-import { findFolderPath } from "@/lib/utils/folders";
-import { Folder } from "lucide-react";
 import { useSearchModal } from "@/stores/useModalStore";
+import SearchItem from "./SearchItem";
 
 export default function SearchModal() {
   const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
   const nestlings = useNestlings();
-  const folders = useFolders();
   const { setActiveNestlingId } = useNestlingActions();
 
   const { isSearchOpen, setIsSearchOpen } = useSearchModal();
@@ -63,76 +56,36 @@ export default function SearchModal() {
         >
           {filteredNestlings
             .filter((nestling) => nestling.isPinned)
-            .map((nestling) => {
-              const NestlingIcon = getNestlingIcon(nestling.nestlingType);
-              return (
-                <CommandItem
-                  key={nestling.id}
-                  onSelect={() => handleSelectNestling(nestling.id)}
-                  className={cn(
-                    "flex cursor-pointer flex-row items-center justify-between p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
-                    activeBackgroundId &&
-                      "hover:bg-white/30 hover:dark:bg-black/30",
-                  )}
-                >
-                  <div className="flex items-center gap-1">
-                    <div className="flex w-6 items-center justify-center">
-                      {nestling.icon ? (
-                        <p>{nestling.icon}</p>
-                      ) : (
-                        <NestlingIcon className="flex-shrink-0" />
-                      )}
-                    </div>
-
-                    <span>{nestling.title}</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                    <Folder className="h-4 w-6" />
-                    <span>
-                      {findFolderPath(nestling.folderId, folders) ||
-                        "No Folder"}
-                    </span>
-                  </div>
-                </CommandItem>
-              );
-            })}
+            .map((nestling) => (
+              <CommandItem
+                key={nestling.id}
+                onSelect={() => handleSelectNestling(nestling.id)}
+                className={cn(
+                  "flex cursor-pointer flex-row items-center justify-between p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
+                  activeBackgroundId &&
+                    "hover:bg-white/30 hover:dark:bg-black/30",
+                )}
+              >
+                <SearchItem key={nestling.id} nestling={nestling} />
+              </CommandItem>
+            ))}
         </CommandGroup>
         <CommandSeparator className="my-1" />
         <CommandGroup heading={<span className="text-base">🪺 Nestlings</span>}>
           {filteredNestlings.length > 0 &&
-            filteredNestlings.map((nestling) => {
-              const NestlingIcon = getNestlingIcon(nestling.nestlingType);
-              return (
-                <CommandItem
-                  key={nestling.id}
-                  onSelect={() => handleSelectNestling(nestling.id)}
-                  className={cn(
-                    "flex cursor-pointer flex-row items-center justify-between p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
-                    activeBackgroundId &&
-                      "hover:bg-white/30 hover:dark:bg-black/30",
-                  )}
-                >
-                  <div className="flex items-center gap-1">
-                    <div className="flex w-6 items-center justify-center">
-                      {nestling.icon ? (
-                        <p>{nestling.icon}</p>
-                      ) : (
-                        <NestlingIcon className="flex-shrink-0" />
-                      )}
-                    </div>
-
-                    <span>{nestling.title}</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                    <Folder className="h-4 w-6" />
-                    <span>
-                      {findFolderPath(nestling.folderId, folders) ||
-                        "No Folder"}
-                    </span>
-                  </div>
-                </CommandItem>
-              );
-            })}
+            filteredNestlings.map((nestling) => (
+              <CommandItem
+                key={nestling.id}
+                onSelect={() => handleSelectNestling(nestling.id)}
+                className={cn(
+                  "flex cursor-pointer flex-row items-center justify-between p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
+                  activeBackgroundId &&
+                    "hover:bg-white/30 hover:dark:bg-black/30",
+                )}
+              >
+                <SearchItem key={nestling.id} nestling={nestling} />
+              </CommandItem>
+            ))}
         </CommandGroup>
       </CommandList>
     </CommandDialog>

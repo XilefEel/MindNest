@@ -108,7 +108,7 @@ export default function NestlingTitle({
         />
       </div>
 
-      <div className="mt-2 flex items-center gap-2">
+      <div className="mt-2 flex items-center gap-2 text-gray-800 dark:text-gray-200">
         <Folder size={20} />
         <span>{findFolderPath(nestling.folderId, folders) || "No folder"}</span>
 
