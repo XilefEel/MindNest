@@ -11,7 +11,7 @@ import {
 import { useNestActions } from "@/stores/useNestStore";
 import { useEffect } from "react";
 
-export default function useRestore({
+export default function useLoadNest({
   id,
   setNest,
   setLoading,

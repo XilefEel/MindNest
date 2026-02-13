@@ -1,3 +1,4 @@
+import { toast } from "@/lib/utils/toast";
 import {
   useActiveMusicId,
   useMusic,
@@ -79,10 +80,10 @@ export default function BackgroundMusicPlayer() {
       if (audioIsPaused) {
         audio.pause();
       } else {
-        audio
-          .play()
-          .then(() => console.log("Audio playing successfully"))
-          .catch((error) => console.error("Failed to play music:", error));
+        audio.play().catch((error) => {
+          toast.error("Failed to play music");
+          console.error("Failed to play music:", error);
+        });
       }
     } else {
       audio.pause();

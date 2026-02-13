@@ -4,9 +4,11 @@ import {
   Eye,
   FilePlus,
   FolderPlus,
+  Image,
   Palette,
   PanelLeft,
   PanelTop,
+  Play,
   Search,
   Settings,
 } from "lucide-react";
@@ -19,49 +21,61 @@ export default function KeyboardShortcutsSection() {
       keys: ["Ctrl", "T"],
       description: "Toggle topbar",
       category: "Navigation",
-      Icon: <PanelTop className="size-4" />,
+      Icon: PanelTop,
     },
     {
       keys: ["Ctrl", "S"],
       description: "Toggle sidebar",
       category: "Navigation",
-      Icon: <PanelLeft className="size-4" />,
+      Icon: PanelLeft,
     },
     {
       keys: ["Ctrl", "H"],
       description: "Hide/show cards",
       category: "Navigation",
-      Icon: <Eye className="size-4" />,
+      Icon: Eye,
     },
     {
       keys: ["Ctrl", "N"],
       description: "Create new nestling",
       category: "Actions",
-      Icon: <FilePlus className="size-4" />,
+      Icon: FilePlus,
     },
     {
       keys: ["Ctrl", "F"],
       description: "Create new folder",
       category: "Actions",
-      Icon: <FolderPlus className="size-4" />,
+      Icon: FolderPlus,
     },
     {
       keys: ["Ctrl", "K"],
       description: "Open search",
       category: "Actions",
-      Icon: <Search className="size-4" />,
+      Icon: Search,
     },
     {
       keys: ["Ctrl", "I"],
       description: "Open settings",
       category: "Actions",
-      Icon: <Settings className="size-4" />,
+      Icon: Settings,
+    },
+    {
+      keys: ["Ctrl", "M"],
+      description: "Play/pause background music",
+      category: "Actions",
+      Icon: Play,
     },
     {
       keys: ["Ctrl", "D"],
       description: "Cycle theme",
       category: "Appearance",
-      Icon: <Palette className="size-4" />,
+      Icon: Palette,
+    },
+    {
+      keys: ["Ctrl", "B"],
+      description: "Toggle background",
+      category: "Appearance",
+      Icon: Image,
     },
   ];
 
@@ -102,7 +116,7 @@ export default function KeyboardShortcutsSection() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex-shrink-0 text-gray-500 dark:text-gray-400">
-                      {shortcut.Icon}
+                      <shortcut.Icon size={16} />
                     </div>
                     <span className="text-sm text-gray-800 dark:text-gray-200">
                       {shortcut.description}

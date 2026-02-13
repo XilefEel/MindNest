@@ -27,6 +27,7 @@ type NestState = {
 
   activeNestId: number | null;
   activeBackgroundId: number | null;
+  storedBackgroundId: number | null;
   activeMusicId: number | null;
 
   audioCurrentTime: number;
@@ -76,6 +77,7 @@ export const useNestStore = create<NestState>((set, get) => ({
 
   activeNestId: null,
   activeBackgroundId: null,
+  storedBackgroundId: null,
   activeMusicId: null,
 
   audioCurrentTime: 0,
@@ -134,7 +136,10 @@ export const useNestStore = create<NestState>((set, get) => ({
   setActiveBackgroundId: async (backgroundId) => {
     if (backgroundId) {
       await saveLastBackgroundImage(get().activeNestId!, backgroundId);
-      set({ activeBackgroundId: backgroundId });
+      set({
+        activeBackgroundId: backgroundId,
+        storedBackgroundId: backgroundId,
+      });
     } else {
       set({ activeBackgroundId: null });
     }
@@ -353,6 +358,9 @@ export const useBackgrounds = () => useNestStore((state) => state.backgrounds);
 
 export const useActiveBackgroundId = () =>
   useNestStore((state) => state.activeBackgroundId);
+
+export const useStoredBackgroundId = () =>
+  useNestStore((state) => state.storedBackgroundId);
 
 export const useMusic = () => useNestStore((state) => state.music);
 

@@ -1,4 +1,4 @@
-import { Edit3, Trash2, Copy, Archive, Pin, PinOff } from "lucide-react";
+import { Edit3, Trash2, Copy, Pin, PinOff } from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
@@ -54,12 +54,6 @@ export default function NestlingContextMenu({
           />
 
           <ContextMenuSeperator />
-
-          <ContextMenuItem
-            Icon={Archive}
-            text="Archive"
-            action={() => console.log("Archive", nestlingId)}
-          />
 
           <ContextMenuItem
             Icon={Trash2}

@@ -69,19 +69,13 @@ export default function AlbumContextMenu({
           <ContextMenuItem
             Icon={PlusSquare}
             text="Add Images"
-            action={() => {
-              handleSelectImage(album.id);
-              console.log("Add images to album");
-            }}
+            action={() => handleSelectImage(album.id)}
           />
 
           <ContextMenuItem
             Icon={Download}
             text="Download All"
-            action={() => {
-              handleDownloadAlbum(album.id);
-              console.log("Download album");
-            }}
+            action={() => handleDownloadAlbum(album.id)}
           />
 
           <ContextMenuSeparator />
@@ -90,10 +84,7 @@ export default function AlbumContextMenu({
             Icon={Trash2}
             text="Delete Album"
             isDelete
-            action={() => {
-              handleDeleteAlbum(album.id);
-              console.log("Delete album");
-            }}
+            action={() => handleDeleteAlbum(album.id)}
           />
         </>
       }

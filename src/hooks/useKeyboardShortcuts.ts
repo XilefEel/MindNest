@@ -7,6 +7,12 @@ import {
   useSettingsModal,
 } from "@/stores/useModalStore";
 import { useThemeToggle } from "@/components/nest-dashboard/settings/theme-toggle";
+import {
+  useActiveBackgroundId,
+  useNestActions,
+  useNestStore,
+  useStoredBackgroundId,
+} from "@/stores/useNestStore";
 
 export function useKeyboardShortcuts({
   nestId,
@@ -29,11 +35,19 @@ export function useKeyboardShortcuts({
   isCardHidden: boolean;
   setIsCardHidden: (val: boolean) => void;
 }) {
+  const activeBackgroundId = useActiveBackgroundId();
+  const storedBackgroundId = useStoredBackgroundId();
+  const { setActiveBackgroundId, clearActiveBackgroundId, setAudioIsPaused } =
+    useNestActions();
+
+  const audioIsPaused = useNestStore((state) => state.audioIsPaused);
+
   const { isNestlingOpen, openNestlingModal, closeNestlingModal } =
     useNestlingModal();
   const { isFolderOpen, openFolderModal, closeFolderModal } = useFolderModal();
   const { isSettingsOpen, setIsSettingsOpen } = useSettingsModal();
   const { isSearchOpen, setIsSearchOpen } = useSearchModal();
+
   const cycleTheme = useThemeToggle();
 
   useEffect(() => {
@@ -83,6 +97,18 @@ export function useKeyboardShortcuts({
           case "d":
             e.preventDefault();
             cycleTheme();
+            break;
+
+          case "b":
+            e.preventDefault();
+            activeBackgroundId
+              ? clearActiveBackgroundId()
+              : setActiveBackgroundId(storedBackgroundId);
+            break;
+
+          case "m":
+            e.preventDefault();
+            setAudioIsPaused(!audioIsPaused);
             break;
         }
       }

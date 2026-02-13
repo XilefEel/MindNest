@@ -13,7 +13,7 @@ import NoteEditor from "@/components/editors/note/NoteEditor";
 import BoardEditor from "@/components/editors/board/BoardEditor";
 import CalendarEditor from "@/components/editors/calendar/CalendarEditor";
 import GalleryEditor from "@/components/editors/gallery/GalleryEditor";
-import useRestore from "@/hooks/useRestore";
+import useLoadNest from "@/hooks/useLoadNest";
 import MindmapEditor from "@/components/editors/mindmap/MindmapEditor";
 import FloatingMusicPlayer from "@/components/nest-dashboard/music/FloatingMusicPlayer";
 import BookmarkEditor from "@/components/editors/bookmark/BookmarkEditor";
@@ -42,7 +42,7 @@ export default function NestDashboardPage() {
     ? convertFileSrc(activeBackgroundImage.filePath)
     : null;
 
-  useRestore({ id, setNest, setLoading });
+  useLoadNest({ id, setNest, setLoading });
 
   useKeyboardShortcuts({
     nestId: nest?.id || 0,

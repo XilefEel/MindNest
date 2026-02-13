@@ -35,8 +35,6 @@ export default function SearchModal() {
     isTagSearch ? searchQuery.slice(1) : searchQuery
   ).toLowerCase();
 
-  console.log("Search query:", query, "Is tag search:", isTagSearch);
-
   const filteredNestlings = nestlings.filter((nestling) => {
     if (isTagSearch) {
       const nestlingTags = nestlingTagsMap[nestling.id] || [];
@@ -45,8 +43,6 @@ export default function SearchModal() {
       return nestling.title.toLowerCase().includes(query);
     }
   });
-
-  console.log("Filtered nestlings:", filteredNestlings);
 
   const handleSelectNestling = (nestlingId: number) => {
     setActiveNestlingId(nestlingId);

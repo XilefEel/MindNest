@@ -37,7 +37,6 @@ export default function JournalSidebarContent({
     setIsEntryOpen(true);
     setIsDrawerOpen(false);
 
-    console.log("Selected entry:", entry);
     setTimeout(() => setIsSwitching(false), 200);
   };
 
