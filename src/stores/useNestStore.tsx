@@ -33,6 +33,7 @@ type NestState = {
   audioCurrentTime: number;
   audioIsPlaying: boolean;
   audioIsPaused: boolean;
+  musicVolume: number;
 
   activeDraggingId: string | null;
 
@@ -58,6 +59,7 @@ type NestState = {
   setAudioCurrentTime: (time: number) => void;
   setAudioIsPlaying: (playing: boolean) => void;
   setAudioIsPaused: (paused: boolean) => void;
+  setMusicVolume: (volume: number) => void;
 
   handleDragStart: (event: DragStartEvent) => void;
   handleDragEnd: (event: DragEndEvent) => Promise<void>;
@@ -79,6 +81,8 @@ export const useNestStore = create<NestState>((set, get) => ({
   activeBackgroundId: null,
   storedBackgroundId: null,
   activeMusicId: null,
+
+  musicVolume: 0.5,
 
   audioCurrentTime: 0,
   audioIsPlaying: false,
@@ -207,6 +211,8 @@ export const useNestStore = create<NestState>((set, get) => ({
 
   setAudioIsPaused: (paused: boolean) => set({ audioIsPaused: paused }),
 
+  setMusicVolume: (volume: number) => set({ musicVolume: volume }),
+
   setActiveMusicId: async (musicId) => {
     if (musicId) {
       await saveLastBackgroundMusic(get().activeNestId!, musicId);
@@ -330,6 +336,7 @@ export const useNestActions = () =>
       setAudioCurrentTime: state.setAudioCurrentTime,
       setAudioIsPlaying: state.setAudioIsPlaying,
       setAudioIsPaused: state.setAudioIsPaused,
+      setMusicVolume: state.setMusicVolume,
 
       handleDragStart: state.handleDragStart,
       handleDragEnd: state.handleDragEnd,
@@ -372,6 +379,8 @@ export const useAudioIsPaused = () =>
 
 export const useAudioCurrentTime = () =>
   useNestStore((state) => state.audioCurrentTime);
+
+export const useMusicVolume = () => useNestStore((state) => state.musicVolume);
 
 export const useActiveDraggingId = () =>
   useNestStore((state) => state.activeDraggingId);

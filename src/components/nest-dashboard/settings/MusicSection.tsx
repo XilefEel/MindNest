@@ -2,6 +2,7 @@ import {
   useActiveBackgroundId,
   useActiveNestId,
   useMusic,
+  useMusicVolume,
   useNestActions,
 } from "@/stores/useNestStore";
 import { toast } from "@/lib/utils/toast";
@@ -19,12 +20,16 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { AnimatePresence } from "framer-motion";
+import { Volume2, VolumeOff } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
 
 export default function MusicSection() {
   const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
   const music = useMusic();
-  const { selectMusic, handleDragStart, handleDragEnd } = useNestActions();
+  const volume = useMusicVolume();
+  const { selectMusic, handleDragStart, handleDragEnd, setMusicVolume } =
+    useNestActions();
 
   const musicIds = music.map((m) => m.id);
 
@@ -87,6 +92,24 @@ export default function MusicSection() {
           </SortableContext>
         </div>
       </DndContext>
+
+      <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-700/30">
+        {volume > 0 ? (
+          <Volume2 className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+        ) : (
+          <VolumeOff className="h-4 w-4 text-gray-300 dark:text-gray-500" />
+        )}
+        <Slider
+          value={[volume * 100]}
+          onValueChange={(value) => setMusicVolume(value[0] / 100)}
+          max={100}
+          step={1}
+          className="flex-1"
+        />
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          {Math.round(volume * 100)}%
+        </span>
+      </div>
 
       <div className="flex items-center justify-between pt-2">
         <div className="flex flex-col">

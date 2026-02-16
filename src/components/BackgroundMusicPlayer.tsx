@@ -4,6 +4,7 @@ import {
   useMusic,
   useNestActions,
   useAudioIsPaused,
+  useMusicVolume,
 } from "@/stores/useNestStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { useEffect, useRef } from "react";
@@ -12,6 +13,7 @@ export default function BackgroundMusicPlayer() {
   const activeMusicId = useActiveMusicId();
   const music = useMusic();
   const audioIsPaused = useAudioIsPaused();
+  const volume = useMusicVolume();
   const {
     setAudioCurrentTime,
     setAudioIsPlaying,
@@ -23,9 +25,15 @@ export default function BackgroundMusicPlayer() {
   const activeMusic = music.find((m) => m.id === activeMusicId);
 
   useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
+
+  useEffect(() => {
     if (!audioRef.current) {
       audioRef.current = new Audio();
-      audioRef.current.volume = 0.5;
+      audioRef.current.volume = volume;
     }
 
     const audio = audioRef.current;
