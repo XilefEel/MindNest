@@ -210,7 +210,6 @@ function MindmapEditorContent() {
           data: {
             label: `Node ${nodes.length + 1}`,
             color: getRandomElement(COLORS),
-            textColor: "#000000",
           },
           type: "custom",
         });
@@ -245,7 +244,6 @@ function MindmapEditorContent() {
         data: {
           label: `Node ${nodes.length + 1}`,
           color: getRandomElement(COLORS),
-          textColor: "#000000",
         },
         type: "custom",
       });

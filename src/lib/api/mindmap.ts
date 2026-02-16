@@ -23,7 +23,6 @@ export async function updateNode(
   width: number,
   label: string,
   color: string,
-  textColor: string,
   type: string,
 ): Promise<void> {
   return invoke<void>("update_node", {
@@ -35,7 +34,6 @@ export async function updateNode(
     width,
     label,
     color,
-    textColor,
     nodeType: type,
   });
 }

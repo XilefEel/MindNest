@@ -8,7 +8,7 @@ export default function ResizableNodeSelected({
   selected,
   id,
 }: {
-  data: { label: string; color: string; text_color: string };
+  data: { label: string; color: string };
   selected: any;
   id: string;
 }) {
@@ -46,7 +46,6 @@ export default function ResizableNodeSelected({
         className="h-full rounded border border-gray-200 p-3"
         style={{
           backgroundColor: data.color,
-          color: data.text_color,
         }}
       >
         <NodeResizer

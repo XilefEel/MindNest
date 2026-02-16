@@ -72,7 +72,6 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
       updated.width,
       updated.data.label,
       updated.data.color,
-      updated.data.textColor,
       updated.type,
     );
 

@@ -24,23 +24,14 @@ export default function MindmapContextMenu({
   const nodes = useMindmapNodes();
   const edges = useMindmapEdges();
 
-  const handleEditNode = async (color: string, text?: boolean) => {
+  const handleEditNode = async (color: string) => {
     try {
-      if (text) {
-        await updateNode(parseInt(node.id), {
-          data: {
-            ...node.data,
-            textColor: color,
-          },
-        });
-      } else {
-        await updateNode(parseInt(node.id), {
-          data: {
-            ...node.data,
-            color,
-          },
-        });
-      }
+      await updateNode(node.id, {
+        data: {
+          ...node.data,
+          color,
+        },
+      });
     } catch (error) {
       console.error("Failed to update node:", error);
     }
@@ -48,7 +39,7 @@ export default function MindmapContextMenu({
 
   const handleDeleteNode = async () => {
     try {
-      await deleteNode(parseInt(node.id));
+      await deleteNode(node.id);
     } catch (error) {}
   };
 
@@ -65,7 +56,6 @@ export default function MindmapContextMenu({
         data: {
           label: `Node ${nodes.length + 1}`,
           color: getRandomElement(COLORS),
-          textColor: "#000000",
         },
         type: "custom",
       });
@@ -92,7 +82,6 @@ export default function MindmapContextMenu({
         data: {
           label: `Node ${nodes.length + 1}`,
           color: getRandomElement(COLORS),
-          textColor: "#000000",
         },
         type: "custom",
       });

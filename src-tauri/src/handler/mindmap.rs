@@ -28,11 +28,10 @@ pub fn update_node(
     width: i64,
     label: String,
     color: String,
-    text_color: String,
     node_type: String,
 ) -> DbResult<()> {
     update_node_in_db(
-        &db, id, position_x, position_y, height, width, label, color, text_color, node_type,
+        &db, id, position_x, position_y, height, width, label, color, node_type,
     )
 }
 

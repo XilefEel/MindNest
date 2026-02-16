@@ -12,7 +12,6 @@ pub struct Position {
 pub struct MindmapNodeData {
     pub label: String,
     pub color: String,
-    pub text_color: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -53,7 +52,6 @@ pub struct MindmapNodeDB {
     pub width: i64,
     pub label: String,
     pub color: String,
-    pub text_color: String,
     #[serde(rename = "type")]
     pub node_type: String,
     pub created_at: String,
@@ -70,7 +68,6 @@ pub struct NewMindmapNodeDB {
     pub width: i64,
     pub label: String,
     pub color: String,
-    pub text_color: String,
     #[serde(rename = "type")]
     pub node_type: String,
 }

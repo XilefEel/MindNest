@@ -176,7 +176,6 @@ CREATE TABLE IF NOT EXISTS mindmap_nodes (
     width INTEGER NOT NULL,
     label TEXT,
     color TEXT NOT NULL,
-    text_color TEXT NOT NULL,
     node_type TEXT NOT NULL,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,

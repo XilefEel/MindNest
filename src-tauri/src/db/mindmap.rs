@@ -14,9 +14,9 @@ pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> DbResult<Mindm
         .prepare("
             INSERT INTO mindmap_nodes (
                 nestling_id, position_x, position_y, height, width, label,
-                color, text_color, node_type, created_at, updated_at
-            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
-            RETURNING id, nestling_id, position_x, position_y, height, width, label, color, text_color, node_type, created_at, updated_at"
+                color, node_type, created_at, updated_at
+            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
+            RETURNING id, nestling_id, position_x, position_y, height, width, label, color, node_type, created_at, updated_at"
         )?;
 
     let node = statement.query_row(
@@ -28,7 +28,6 @@ pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> DbResult<Mindm
             data.width,
             data.label,
             data.color,
-            data.text_color,
             data.node_type,
             created_at,
             created_at
@@ -43,10 +42,9 @@ pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> DbResult<Mindm
                 width: row.get(5)?,
                 label: row.get(6)?,
                 color: row.get(7)?,
-                text_color: row.get(8)?,
-                node_type: row.get(9)?,
-                created_at: row.get(10)?,
-                updated_at: row.get(11)?,
+                node_type: row.get(8)?,
+                created_at: row.get(9)?,
+                updated_at: row.get(10)?,
             })
         },
     )?;
@@ -59,7 +57,7 @@ pub fn get_nodes_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Mindm
 
     let mut statement = connection
         .prepare("
-            SELECT id, nestling_id, position_x, position_y, height, width, label, color, text_color, node_type, created_at, updated_at
+            SELECT id, nestling_id, position_x, position_y, height, width, label, color, node_type, created_at, updated_at
             FROM mindmap_nodes
             WHERE nestling_id = ?1"
         )?;
@@ -74,10 +72,9 @@ pub fn get_nodes_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Mindm
             width: row.get(5)?,
             label: row.get(6)?,
             color: row.get(7)?,
-            text_color: row.get(8)?,
-            node_type: row.get(9)?,
-            created_at: row.get(10)?,
-            updated_at: row.get(11)?,
+            node_type: row.get(8)?,
+            created_at: row.get(9)?,
+            updated_at: row.get(10)?,
         })
     })?;
 
@@ -95,7 +92,6 @@ pub fn update_node_in_db(
     width: i64,
     label: String,
     color: String,
-    text_color: String,
     node_type: String,
 ) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
@@ -104,8 +100,8 @@ pub fn update_node_in_db(
     connection
         .execute("
             UPDATE mindmap_nodes
-            SET position_x = ?1, position_y = ?2, height = ?3, width = ?4, label = ?5, color = ?6, text_color = ?7, node_type = ?8, updated_at = ?9
-            WHERE id = ?10",
+            SET position_x = ?1, position_y = ?2, height = ?3, width = ?4, label = ?5, color = ?6, node_type = ?7, updated_at = ?8
+            WHERE id = ?9",
             params![
                 position_x,
                 position_y,
@@ -113,7 +109,6 @@ pub fn update_node_in_db(
                 width,
                 label,
                 color,
-                text_color,
                 node_type,
                 updated_at,
                 id

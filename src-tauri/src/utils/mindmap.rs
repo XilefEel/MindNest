@@ -17,7 +17,6 @@ impl From<MindmapNodeDB> for MindmapNode {
             data: MindmapNodeData {
                 label: db.label,
                 color: db.color,
-                text_color: db.text_color,
             },
             node_type: db.node_type,
             created_at: db.created_at,
@@ -36,7 +35,6 @@ impl From<NewMindmapNode> for NewMindmapNodeDB {
             width: node.width,
             label: node.data.label,
             color: node.data.color,
-            text_color: node.data.text_color,
             node_type: node.node_type,
         }
     }

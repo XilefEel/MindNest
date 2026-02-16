@@ -8,7 +8,6 @@ export type NewMindmapNode = {
   data: {
     label: string;
     color: string;
-    textColor: string;
   };
   type: string;
 };
