@@ -6,16 +6,16 @@ import {
   MindmapEdge,
 } from "../types/mindmap";
 
-export async function createNode(data: NewMindmapNode): Promise<MindmapNode> {
-  return invoke("create_node", { data });
+export async function createNode(data: NewMindmapNode) {
+  return invoke<MindmapNode>("create_node", { data });
 }
 
-export async function getNodes(nestlingId: number): Promise<MindmapNode[]> {
-  return invoke("get_nodes", { nestlingId });
+export async function getNodes(nestlingId: number) {
+  return invoke<MindmapNode[]>("get_nodes", { nestlingId });
 }
 
 export async function updateNode(
-  id: number,
+  id: string,
   nestlingId: number,
   positionX: number,
   positionY: number,
@@ -26,8 +26,8 @@ export async function updateNode(
   textColor: string,
   type: string,
 ): Promise<void> {
-  return invoke("update_node", {
-    id,
+  return invoke<void>("update_node", {
+    id: parseInt(id),
     nestlingId,
     positionX,
     positionY,
@@ -40,19 +40,18 @@ export async function updateNode(
   });
 }
 
-export async function deleteNode(id: number): Promise<void> {
-  return invoke("delete_node", { id });
+export async function deleteNode(id: string) {
+  return invoke<void>("delete_node", { id: parseInt(id) });
 }
 
-// Edge functions
-export async function createEdge(edge: NewMindmapEdge): Promise<MindmapEdge> {
-  return invoke("create_edge", { data: edge });
+export async function createEdge(edge: NewMindmapEdge) {
+  return invoke<MindmapEdge>("create_edge", { data: edge });
 }
 
-export async function getEdges(nestlingId: number): Promise<MindmapEdge[]> {
-  return invoke("get_edges", { nestlingId });
+export async function getEdges(nestlingId: number) {
+  return invoke<MindmapEdge[]>("get_edges", { nestlingId });
 }
 
-export async function deleteEdge(id: number): Promise<void> {
-  return invoke("delete_edge", { id });
+export async function deleteEdge(id: string): Promise<void> {
+  return invoke("delete_edge", { id: parseInt(id) });
 }

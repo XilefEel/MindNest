@@ -14,14 +14,14 @@ export default function ZoomSlider() {
         variant="ghost"
         size="icon"
         onClick={() => zoomOut({ duration: 300 })}
-        className="rounded-lg transition-all hover:scale-105 hover:bg-gray-100/50 active:scale-98 dark:hover:bg-gray-800/50"
+        className="rounded-lg transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
       >
         <Minus />
       </Button>
 
       <div className="flex items-center px-2">
         <Slider
-          className="[&_[data-slot=slider-range]]:bg-primary w-[120px] [&_[data-slot=slider-thumb]]:size-4 [&_[data-slot=slider-thumb]]:border-2 [&_[data-slot=slider-thumb]]:shadow-md [&_[data-slot=slider-thumb]]:transition-transform hover:[&_[data-slot=slider-thumb]]:scale-110 [&_[data-slot=slider-track]]:h-2 [&_[data-slot=slider-track]]:bg-gray-400/50 [&_[data-slot=slider-track]]:dark:bg-gray-600/50"
+          className="w-24"
           min={minZoom}
           max={maxZoom}
           step={0.01}
@@ -33,13 +33,13 @@ export default function ZoomSlider() {
       <Button
         variant="ghost"
         onClick={() => zoomIn({ duration: 300 })}
-        className="rounded-lg transition-all hover:scale-105 hover:bg-gray-100/50 active:scale-98 dark:hover:bg-gray-800/50"
+        className="rounded-lg transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
       >
         <Plus />
       </Button>
 
       <Button
-        className="rounded-lg transition-all hover:scale-105 hover:bg-gray-100/50 active:scale-98 dark:hover:bg-gray-800/50"
+        className="rounded-lg transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
         variant="ghost"
         onClick={() => zoomTo(1, { duration: 300 })}
       >
@@ -52,7 +52,7 @@ export default function ZoomSlider() {
       <Button
         variant="ghost"
         onClick={() => fitView({ duration: 300 })}
-        className="rounded-lg transition-all hover:scale-105 hover:bg-gray-100/50 active:scale-98 dark:hover:bg-gray-800/50"
+        className="rounded-lg transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
       >
         <Maximize />
       </Button>

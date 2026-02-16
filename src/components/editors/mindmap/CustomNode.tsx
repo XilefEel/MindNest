@@ -21,7 +21,7 @@ export default function ResizableNodeSelected({
 
   const handleBlur = async () => {
     if (label !== data.label) {
-      await updateNode(parseInt(id), {
+      await updateNode(id, {
         data: {
           ...currentNode.data,
           label,

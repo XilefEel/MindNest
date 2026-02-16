@@ -1,11 +1,5 @@
 import { COLORS } from "@/lib/utils/constants";
-import {
-  Trash,
-  CirclePlus,
-  CornerDownRight,
-  CornerUpLeft,
-  Type,
-} from "lucide-react";
+import { Trash, CirclePlus, CornerDownRight, CornerUpLeft } from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { MindmapNode } from "@/lib/types/mindmap";
@@ -152,13 +146,6 @@ export default function MindmapContextMenu({
             element={node.data}
             handleChangeColor={handleEditNode}
             label="Change Node Color"
-          />
-
-          <ColorPickerMenu
-            element={{ color: node.data.textColor }}
-            handleChangeColor={(color) => handleEditNode(color, true)}
-            label="Change Text Color"
-            Icon={Type}
           />
 
           <ContextMenuSeparator />

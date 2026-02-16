@@ -20,7 +20,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { AnimatePresence } from "framer-motion";
-import { Volume2, VolumeOff } from "lucide-react";
+import { Volume2, VolumeX } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 
 export default function MusicSection() {
@@ -97,7 +97,7 @@ export default function MusicSection() {
         {volume > 0 ? (
           <Volume2 className="h-4 w-4 text-gray-600 dark:text-gray-400" />
         ) : (
-          <VolumeOff className="h-4 w-4 text-gray-300 dark:text-gray-500" />
+          <VolumeX className="h-4 w-4 text-gray-300 dark:text-gray-500" />
         )}
         <Slider
           value={[volume * 100]}

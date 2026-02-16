@@ -77,7 +77,7 @@ function MindmapEditorContent() {
         ) {
           const node = nodes.find((n) => n.id === change.id);
           if (node) {
-            updateNode(parseInt(node.id), {
+            updateNode(node.id, {
               position: change.position,
             });
           }
@@ -89,13 +89,13 @@ function MindmapEditorContent() {
         ) {
           const node = nodes.find((n) => n.id === change.id);
           if (node) {
-            updateNode(parseInt(node.id), {
+            updateNode(node.id, {
               width: change.dimensions.width,
               height: change.dimensions.height,
             });
           }
         }
-        if (change.type === "remove") deleteNode(parseInt(change.id));
+        if (change.type === "remove") deleteNode(change.id);
       });
     },
     [nodes, updateNode, setNodes, deleteNode],
@@ -138,9 +138,7 @@ function MindmapEditorContent() {
       setEdges(newEdges);
 
       try {
-        await Promise.all(
-          deletedNodes.map((node) => deleteNode(parseInt(node.id))),
-        );
+        await Promise.all(deletedNodes.map((node) => deleteNode(node.id)));
 
         const edgesToCreate = newEdges.filter(
           (edge) => !edges.some((e) => e.id === edge.id),
@@ -168,7 +166,7 @@ function MindmapEditorContent() {
       setEdges(updatedEdges);
 
       changes.forEach((change) => {
-        if (change.type === "remove") deleteEdge(parseInt(change.id));
+        if (change.type === "remove") deleteEdge(change.id);
       });
     },
     [edges, setEdges, deleteEdge],
@@ -261,7 +259,7 @@ function MindmapEditorContent() {
     if (nodes.length === 0) return;
 
     try {
-      await Promise.all(nodes.map((node) => deleteNode(parseInt(node.id))));
+      await Promise.all(nodes.map((node) => deleteNode(node.id)));
       toast.success("All nodes deleted");
     } catch (error) {
       toast.error("Failed to delete all");

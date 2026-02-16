@@ -22,12 +22,12 @@ type MindmapStore = {
 
   createNode: (node: NewMindmapNode) => Promise<MindmapNode>;
   getNodes: (nestlingId: number) => Promise<void>;
-  updateNode: (nodeId: number, updates: Partial<MindmapNode>) => Promise<void>;
-  deleteNode: (nodeId: number) => Promise<void>;
+  updateNode: (id: string, updates: Partial<MindmapNode>) => Promise<void>;
+  deleteNode: (id: string) => Promise<void>;
 
   createEdge: (edge: NewMindmapEdge) => Promise<MindmapEdge>;
   getEdges: (nestlingId: number) => Promise<void>;
-  deleteEdge: (id: number) => Promise<void>;
+  deleteEdge: (id: string) => Promise<void>;
 };
 
 export const useMindmapStore = create<MindmapStore>((set, get) => ({
@@ -54,17 +54,17 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
     set({ nodes, loading: false });
   }),
 
-  updateNode: withStoreErrorHandler(set, async (nodeId, updates) => {
-    const current = get().nodes.find((n) => n.id === nodeId.toString());
+  updateNode: withStoreErrorHandler(set, async (id, updates) => {
+    const current = get().nodes.find((n) => n.id === id);
     if (!current) throw new Error("Node not found");
     const updated = mergeWithCurrent(current, updates);
 
     set((state) => ({
-      nodes: state.nodes.map((n) => (n.id === nodeId.toString() ? updated : n)),
+      nodes: state.nodes.map((n) => (n.id === id ? updated : n)),
     }));
 
     await mindmapApi.updateNode(
-      nodeId,
+      id,
       updated.nestlingId,
       updated.position.x,
       updated.position.y,
@@ -79,17 +79,13 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
     await updateNestlingTimestamp(updated.nestlingId);
   }),
 
-  deleteNode: withStoreErrorHandler(set, async (nodeId: number) => {
-    const nestlingId = get().nodes.find(
-      (n) => n.id === nodeId.toString(),
-    )?.nestlingId;
+  deleteNode: withStoreErrorHandler(set, async (id) => {
+    const nestlingId = get().nodes.find((n) => n.id === id)?.nestlingId;
 
-    await mindmapApi.deleteNode(nodeId);
+    await mindmapApi.deleteNode(id);
     set((state) => ({
-      nodes: state.nodes.filter((n) => n.id !== nodeId.toString()),
-      edges: state.edges.filter(
-        (e) => e.source !== nodeId.toString() && e.target !== nodeId.toString(),
-      ),
+      nodes: state.nodes.filter((n) => n.id !== id),
+      edges: state.edges.filter((e) => e.source !== id && e.target !== id),
     }));
 
     if (nestlingId) {
@@ -110,10 +106,10 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
     set({ edges });
   }),
 
-  deleteEdge: withStoreErrorHandler(set, async (id: number) => {
+  deleteEdge: withStoreErrorHandler(set, async (id) => {
     await mindmapApi.deleteEdge(id);
     set((state) => ({
-      edges: state.edges.filter((e) => e.id !== id.toString()),
+      edges: state.edges.filter((e) => e.id !== id),
     }));
   }),
 }));
