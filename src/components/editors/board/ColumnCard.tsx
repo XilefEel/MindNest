@@ -33,6 +33,8 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
     },
   });
 
+  console.log(transform);
+
   const style = {
     transition,
     opacity: isDragging ? 0.5 : 1,

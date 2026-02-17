@@ -1,6 +1,6 @@
 use crate::db::tag::{
-    add_tag_to_nestling, get_tags_by_nest, update_tag_in_db, delete_tag_from_db,
-    insert_tag_into_db, get_all_nestling_tags_for_nest, remove_tag_from_nestling,
+    add_tag_to_nestling, delete_tag_from_db, get_all_nestling_tags_for_nest, get_tags_by_nest,
+    insert_tag_into_db, remove_tag_from_nestling, update_tag_in_db,
 };
 use crate::models::tag::{NewTag, Tag};
 use crate::utils::db::AppDb;
@@ -38,7 +38,10 @@ pub fn attach_tag(db: tauri::State<AppDb>, nestling_id: i64, tag_id: i64) -> DbR
 }
 
 #[tauri::command]
-pub fn get_all_nestling_tags(db: tauri::State<AppDb>, nest_id: i64) -> DbResult<HashMap<i64, Vec<Tag>>> {
+pub fn get_all_nestling_tags(
+    db: tauri::State<AppDb>,
+    nest_id: i64,
+) -> DbResult<HashMap<i64, Vec<Tag>>> {
     get_all_nestling_tags_for_nest(&db, nest_id)
 }
 

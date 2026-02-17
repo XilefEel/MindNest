@@ -1,5 +1,6 @@
 use rusqlite::Connection;
 use std::sync::Mutex;
+use tauri::Manager;
 
 pub struct AppDb {
     pub(crate) connection: Mutex<Connection>,
@@ -8,7 +9,13 @@ pub struct AppDb {
 impl AppDb {
     pub fn new(path: &str) -> Result<Self, rusqlite::Error> {
         let connection = Connection::open(path)?;
-        connection.execute("PRAGMA foreign_keys = ON;", [])?;
+
+        connection.execute_batch(
+            "PRAGMA foreign_keys = ON;
+             PRAGMA journal_mode = WAL;
+             PRAGMA busy_timeout = 5000;",
+        )?;
+
         Ok(Self {
             connection: Mutex::new(connection),
         })
@@ -24,4 +31,15 @@ pub fn init_db(db: &AppDb) -> Result<(), String> {
         .map_err(|e| e.to_string())?;
 
     Ok(())
+}
+
+pub fn get_db_path(app: &tauri::App) -> String {
+    let app_dir = app
+        .path()
+        .app_data_dir()
+        .expect("Failed to get app directory");
+
+    std::fs::create_dir_all(&app_dir).expect("Failed to create app data directory");
+
+    app_dir.join("app.db").to_string_lossy().to_string()
 }

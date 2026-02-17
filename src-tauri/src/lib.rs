@@ -50,20 +50,33 @@ use handler::tag::{
     attach_tag, create_tag, delete_tag, detach_tag, get_all_nestling_tags, get_tags, update_tag,
 };
 
-use crate::utils::db::{init_db, AppDb};
+use crate::utils::db::{get_db_path, init_db, AppDb};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
+            println!("{}, {argv:?}, {cwd}", app.package_info().name);
+
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.set_focus();
+                let _ = window.unminimize();
+            }
+        }))
         .plugin(tauri_plugin_clipboard_manager::init())
         .setup(|app| {
-            let db = AppDb::new("test.db").map_err(|e| {
-                println!("Failed to create DB: {}", e);
+            let db_path = get_db_path(app);
+
+            println!("Database path: {:?}", db_path);
+
+            let db = AppDb::new(&db_path.to_string()).map_err(|e| {
+                println!("Failed to open database: {}", e);
                 format!("Failed to open database: {}", e)
             })?;
+
             init_db(&db).map_err(|e| {
-                println!("Failed to init DB: {}", e);
-                format!("Failed to initialize database: {}", e)
+                println!("Failed to init database: {}", e);
+                format!("Failed to init database: {}", e)
             })?;
 
             app.manage(db);
