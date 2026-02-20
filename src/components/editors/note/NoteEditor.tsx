@@ -109,7 +109,7 @@ export default function NoteEditor() {
   }, [editor]);
 
   return (
-    <div className="flex h-full w-full flex-col gap-3 overflow-hidden">
+    <div className="flex h-full w-full flex-col gap-3">
       <NestlingTitle
         title={title}
         setTitle={setTitle}

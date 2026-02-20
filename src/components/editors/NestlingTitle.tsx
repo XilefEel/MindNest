@@ -7,7 +7,7 @@ import {
   useNestlingTags,
 } from "@/stores/useNestlingStore";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import { Dot, Folder, Plus } from "lucide-react";
+import { ChevronDown, Dot, Folder, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { NestlingTag } from "./NestlingTag";
 import { cn } from "@/lib/utils/general";
@@ -33,6 +33,8 @@ export default function NestlingTitle({
 
   const [isOpen, setIsOpen] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   const pickerRef = useRef<HTMLDivElement>(null);
   const Icon = getNestlingIcon(nestling.nestlingType);
 
@@ -77,14 +79,28 @@ export default function NestlingTitle({
   }, [showPicker]);
 
   return (
-    <div>
-      <div className="flex flex-row items-center gap-2">
+    <div className="flex flex-col">
+      <div className="group relative flex flex-row items-center gap-2 text-gray-900 transition-all dark:text-gray-100">
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="absolute -left-6 cursor-pointer text-gray-600 opacity-0 transition-opacity group-hover:opacity-100 hover:opacity-70 dark:text-gray-400"
+        >
+          <ChevronDown size={24} className={isCollapsed ? "-rotate-90" : ""} />
+        </button>
+
         <div className="relative" ref={pickerRef}>
           <button
             onClick={() => setShowPicker(!showPicker)}
-            className="flex w-10 cursor-pointer items-center justify-center text-3xl font-bold transition-opacity hover:opacity-70"
+            className={cn(
+              "flex w-8 cursor-pointer items-center justify-center text-3xl font-bold transition-opacity hover:opacity-70",
+              isCollapsed && "w-6 text-xl",
+            )}
           >
-            {nestling.icon ? <p>{nestling.icon}</p> : <Icon size={32} />}
+            {nestling.icon ? (
+              <p>{nestling.icon}</p>
+            ) : (
+              <Icon size={isCollapsed ? 24 : 32} />
+            )}
           </button>
 
           {showPicker && (
@@ -103,12 +119,20 @@ export default function NestlingTitle({
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full min-w-0 resize-none bg-transparent text-3xl font-bold outline-none"
+          className={cn(
+            "w-full min-w-0 resize-none bg-transparent text-3xl font-bold outline-none",
+            isCollapsed && "text-xl font-semibold",
+          )}
           placeholder="Title..."
         />
       </div>
 
-      <div className="mt-2 flex items-center gap-2 text-gray-800 dark:text-gray-200">
+      <div
+        className={cn(
+          "mt-2 flex items-center gap-2 text-gray-800 dark:text-gray-200",
+          isCollapsed && "hidden",
+        )}
+      >
         <Folder size={20} />
         <span>{findFolderPath(nestling.folderId, folders) || "No folder"}</span>
 

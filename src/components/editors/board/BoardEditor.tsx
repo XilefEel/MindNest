@@ -101,7 +101,7 @@ export default function BoardEditor() {
             items={columnIds}
             strategy={horizontalListSortingStrategy}
           >
-            <div className="flex flex-row items-start gap-4 p-2">
+            <div className="flex flex-row items-start gap-4 pt-2">
               {columns.map((col) => (
                 <Column key={col.id} column={col} />
               ))}

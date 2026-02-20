@@ -89,7 +89,7 @@ export default function BookmarkEditor() {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={cn("space-y-4")}
+      className="space-y-4"
     >
       <NestlingTitle
         title={title}

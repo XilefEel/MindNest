@@ -37,14 +37,12 @@ export default function CalendarEditor() {
   }, [activeNestling.id, start, end]);
 
   return (
-    <div className="relative mx-auto p-4">
-      <div className="flex">
-        <NestlingTitle
-          title={title}
-          setTitle={setTitle}
-          nestling={activeNestling}
-        />
-      </div>
+    <div className="relative mx-auto">
+      <NestlingTitle
+        title={title}
+        setTitle={setTitle}
+        nestling={activeNestling}
+      />
 
       <PlannerView selectedDate={selectedDate} />
 

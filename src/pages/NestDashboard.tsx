@@ -66,7 +66,8 @@ export default function NestDashboardPage() {
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
-      className="flex h-screen cursor-default flex-col bg-gray-50 pb-3 md:pb-6 dark:bg-gray-900"
+      className="flex h-screen cursor-default flex-col bg-gray-50 pb-3 select-none md:pb-6 dark:bg-gray-900"
+      onContextMenu={(e) => e.preventDefault()}
     >
       <div
         className={cn(
@@ -135,7 +136,7 @@ export default function NestDashboardPage() {
 
           <main
             className={cn(
-              "relative mx-3 flex-1 p-5 md:mx-8",
+              "relative mx-3 flex-1 px-5 pt-3 md:mx-8",
               activeNestling?.nestlingType === "note"
                 ? "overflow-hidden"
                 : "overflow-y-auto",
