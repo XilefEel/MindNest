@@ -25,7 +25,7 @@ export default function PinnedNestlings({
             e.stopPropagation();
           }}
           className={cn(
-            "flex cursor-pointer items-center gap-2 rounded px-2 py-1 font-medium transition-all duration-150 ease-in-out hover:bg-teal-50 dark:hover:bg-gray-700",
+            "flex items-center gap-2 rounded px-2 py-1 font-medium transition-all duration-150 ease-in-out hover:bg-teal-50 dark:hover:bg-gray-700",
             activeBackgroundId && "hover:bg-white/20 dark:hover:bg-black/20",
           )}
         >

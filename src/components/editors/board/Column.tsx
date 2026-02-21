@@ -125,7 +125,7 @@ export default function Column({ column }: { column: BoardColumn }) {
             />
           ) : (
             <h3
-              className="flex-1 cursor-pointer text-sm font-bold text-white drop-shadow-md"
+              className="flex-1 text-sm font-bold text-white drop-shadow-md"
               onDoubleClick={() => setIsEditing(true)}
             >
               {column.title}
@@ -138,7 +138,7 @@ export default function Column({ column }: { column: BoardColumn }) {
 
           <button
             onClick={() => removeColumn(column.id)}
-            className="flex size-8 cursor-pointer items-center justify-center rounded-lg text-white/80 transition hover:bg-black/10 hover:text-white"
+            className="flex size-8 items-center justify-center rounded-lg text-white/80 transition hover:bg-black/10 hover:text-white"
           >
             <Trash className="size-4" />
           </button>
@@ -163,7 +163,7 @@ export default function Column({ column }: { column: BoardColumn }) {
 
         <button
           onClick={handleAddCard}
-          className="flex cursor-pointer items-center gap-2 bg-black/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-black/15"
+          className="flex items-center gap-2 bg-black/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-black/15"
         >
           <Plus className="size-4" />
           New

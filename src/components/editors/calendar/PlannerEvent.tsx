@@ -111,7 +111,7 @@ export default function PlannerEvent({
           onDragStop={(_, d) => onDragStop(d)}
           onResizeStop={(_, dir, ref, delta) => onResizeStop(dir, ref, delta)}
           className={cn(
-            "absolute z-10 cursor-pointer rounded-lg px-3 text-sm tracking-wide text-white shadow-lg",
+            "absolute z-10 rounded-lg px-3 text-sm tracking-wide text-white shadow-lg",
             event.duration > 1 && "py-2",
           )}
           style={{

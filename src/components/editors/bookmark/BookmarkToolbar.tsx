@@ -66,7 +66,7 @@ export default function BookmarkToolbar({
           <button
             onClick={() => handleAddBookmark(url)}
             disabled={isAdding || !url.trim()}
-            className="flex cursor-pointer items-center justify-center gap-1 rounded-lg bg-teal-400 px-3 text-white shadow-sm transition hover:bg-teal-500 disabled:cursor-default disabled:opacity-50 disabled:hover:bg-teal-400 dark:bg-teal-500 dark:hover:bg-teal-600 disabled:dark:bg-teal-500"
+            className="flex items-center justify-center gap-1 rounded-lg bg-teal-400 px-3 text-white shadow-sm transition hover:bg-teal-500 disabled:cursor-default disabled:opacity-50 disabled:hover:bg-teal-400 dark:bg-teal-500 dark:hover:bg-teal-600 disabled:dark:bg-teal-500"
           >
             <Plus className="size-4" />
             {isAdding ? "Adding..." : "Add"}
@@ -95,7 +95,7 @@ export default function BookmarkToolbar({
             onClick={handleOpenAll}
             disabled={bookmarks.length === 0}
             className={cn(
-              "cursor-pointer rounded p-2 transition-all duration-200",
+              "rounded p-2 transition-all duration-200",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
               "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
               "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
@@ -112,7 +112,7 @@ export default function BookmarkToolbar({
             onClick={() => exportBookmarksToJson(bookmarks, title)}
             disabled={bookmarks.length === 0}
             className={cn(
-              "cursor-pointer rounded p-2 transition-all duration-200",
+              "rounded p-2 transition-all duration-200",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
               "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
               "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",

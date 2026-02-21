@@ -66,7 +66,7 @@ export default function RenameImageModal() {
       footer={
         <Button
           onClick={handleEditImage}
-          className="cursor-pointer rounded-lg bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-600 dark:hover:bg-teal-700"
+          className="rounded-lg bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-600 dark:hover:bg-teal-700"
         >
           Save
         </Button>

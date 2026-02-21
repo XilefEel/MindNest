@@ -151,7 +151,7 @@ export default function NestlingModal() {
         <Button
           onClick={handleSaveNestling}
           disabled={isSaving || !title.trim()}
-          className="cursor-pointer rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
+          className="rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
         >
           {isSaving ? "Creating..." : "Create"}
         </Button>

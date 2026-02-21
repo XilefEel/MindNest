@@ -37,7 +37,7 @@ export default function AlbumCard({
         {viewMode === "grid" ? (
           <div
             className={cn(
-              "w-64 flex-shrink-0 cursor-pointer overflow-hidden rounded-lg border bg-white shadow-sm transition hover:shadow-md",
+              "w-64 flex-shrink-0 overflow-hidden rounded-lg border bg-white shadow-sm transition hover:shadow-md",
               "border-gray-200 hover:border-teal-300 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-teal-500",
               isOver && "ring-2 ring-teal-400",
             )}
@@ -61,7 +61,7 @@ export default function AlbumCard({
         ) : (
           <div
             className={cn(
-              "w-full cursor-pointer overflow-hidden rounded-lg border bg-white shadow-sm transition hover:shadow-md dark:hover:bg-gray-800",
+              "w-full overflow-hidden rounded-lg border bg-white shadow-sm transition hover:shadow-md dark:hover:bg-gray-800",
               "border-gray-100 hover:border-teal-300 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-teal-500",
               isOver && "ring-2 ring-teal-400",
             )}

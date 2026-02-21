@@ -56,7 +56,7 @@ export default function BaseModal({
         onClick={(e) => e.stopPropagation()}
         onDoubleClick={(e) => e.stopPropagation()}
         className={cn(
-          "flex flex-col items-stretch justify-start",
+          "flex flex-col items-stretch justify-start select-none",
           "rounded-2xl border-0 p-6 shadow-xl transition-all ease-in-out",
           "bg-white dark:bg-gray-800",
           isLarge && "min-w-3xl",
@@ -80,7 +80,7 @@ export default function BaseModal({
               <DialogClose asChild>
                 <Button
                   variant="ghost"
-                  className="cursor-pointer rounded-lg bg-gray-200 text-black hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                  className="rounded-lg bg-gray-200 text-black hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
                 >
                   Cancel
                 </Button>

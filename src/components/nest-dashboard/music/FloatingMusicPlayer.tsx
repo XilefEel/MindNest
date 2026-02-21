@@ -63,14 +63,14 @@ export default function FloatingMusicPlayer() {
           onDoubleClick={(e) => {
             e.stopPropagation();
           }}
-          className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-purple-500 text-white transition hover:bg-purple-600"
+          className="flex size-9 shrink-0 items-center justify-center rounded-full bg-purple-500 text-white transition hover:bg-purple-600"
         >
           {audioIsPaused ? <Play size={16} /> : <Pause size={16} />}
         </button>
 
         <button
           onClick={handleClose}
-          className="flex cursor-pointer items-center justify-center text-gray-400 transition hover:text-gray-600 dark:hover:text-gray-300"
+          className="flex items-center justify-center text-gray-400 transition hover:text-gray-600 dark:hover:text-gray-300"
         >
           <X size={16} />
         </button>

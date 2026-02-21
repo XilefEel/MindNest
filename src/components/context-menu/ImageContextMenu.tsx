@@ -85,7 +85,7 @@ export default function ImageContextMenu({
                 e.stopPropagation();
               }}
               className={cn(
-                "mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
+                "mx-1 flex items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
                 activeBackgroundId &&
                   "hover:bg-white/30 dark:hover:bg-black/30",
               )}

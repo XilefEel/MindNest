@@ -41,7 +41,7 @@ export default function NestSettings() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              "w-full cursor-pointer rounded-lg px-4 py-2 text-sm",
+              "w-full rounded-lg px-4 py-2 text-sm",
               activeTab === tab.id
                 ? activeBackgroundId
                   ? "bg-teal-500/20 font-medium text-teal-900 backdrop-blur-sm dark:bg-teal-400/20 dark:text-teal-100"

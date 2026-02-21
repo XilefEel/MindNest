@@ -65,7 +65,7 @@ export default function RecentSection() {
         {recentNestlings.length > 0 && (
           <div
             onClick={handleClear}
-            className="cursor-pointer text-xs text-gray-500 transition-all duration-100 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-300"
+            className="text-xs text-gray-500 transition-all duration-100 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-300"
           >
             Clear all
           </div>

@@ -89,7 +89,7 @@ export default function NestlingTitle({
       <div className="group relative flex flex-row items-center text-gray-900 transition-all dark:text-gray-100">
         <button
           onClick={() => setIsTitleCollapsed(!isTitleCollapsed)}
-          className="w-0 cursor-pointer opacity-0 transition-all group-hover:mr-2 group-hover:w-6 group-hover:opacity-100 dark:text-gray-400"
+          className="w-0 opacity-0 transition-all group-hover:mr-2 group-hover:w-6 group-hover:opacity-100 dark:text-gray-400"
         >
           <ChevronDown
             size={24}
@@ -101,7 +101,7 @@ export default function NestlingTitle({
           <button
             onClick={() => setShowPicker(!showPicker)}
             className={cn(
-              "flex w-8 cursor-pointer items-center justify-center text-3xl font-bold transition-opacity hover:opacity-70",
+              "flex w-8 items-center justify-center text-3xl font-bold transition-opacity hover:opacity-70",
               isTitleCollapsed && "w-6 text-xl",
             )}
           >
@@ -117,7 +117,7 @@ export default function NestlingTitle({
               <EmojiPicker onEmojiClick={handleEmojiClick} lazyLoadEmojis />
               <div
                 onClick={handleClearEmoji}
-                className="absolute right-4 bottom-4 z-50 cursor-pointer rounded-lg bg-red-500 px-3 py-1 text-white transition-all duration-150 hover:scale-105 hover:bg-red-700"
+                className="absolute right-4 bottom-4 z-50 rounded-lg bg-red-500 px-3 py-1 text-white transition-all duration-150 hover:scale-105 hover:bg-red-700"
               >
                 Clear
               </div>
@@ -174,7 +174,7 @@ export default function NestlingTitle({
           <PopoverTrigger asChild>
             <button
               className={cn(
-                "cursor-pointer rounded-full border text-xs transition-colors",
+                "rounded-full border text-xs transition-colors",
                 "text-gray-600 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-200",
                 "border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500",
                 "hover:bg-gray-200/50 dark:hover:bg-gray-700",

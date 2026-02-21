@@ -123,7 +123,7 @@ export default function AlbumView({
             </BaseToolTip>
           </div>
           <Button
-            className="cursor-pointer bg-teal-400 text-white transition duration-200 hover:bg-teal-600"
+            className="bg-teal-400 text-white transition duration-200 hover:bg-teal-600"
             onClick={() => handleDownloadAlbum(album.id)}
           >
             <Download />

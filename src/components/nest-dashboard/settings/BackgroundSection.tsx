@@ -74,7 +74,7 @@ export default function BackgroundSection() {
               key={image.id}
               onClick={() => handleSelectBackground(image.id)}
               className={cn(
-                "group relative aspect-video cursor-pointer overflow-hidden rounded-lg ring-2 transition-all duration-150",
+                "group relative aspect-video overflow-hidden rounded-lg ring-2 transition-all duration-150",
                 activeBackgroundId === image.id
                   ? "ring-teal-500 dark:ring-teal-400"
                   : "ring-gray-200 hover:ring-gray-300 dark:ring-gray-700 dark:hover:ring-gray-600",
@@ -91,7 +91,7 @@ export default function BackgroundSection() {
                   e.stopPropagation();
                   handleDeleteBackground(image.id);
                 }}
-                className="absolute top-2 right-2 cursor-pointer rounded-full bg-red-500/90 p-1.5 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-red-600"
+                className="absolute top-2 right-2 rounded-full bg-red-500/90 p-1.5 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-red-600"
               >
                 <Trash2 size={14} />
               </button>
@@ -114,14 +114,14 @@ export default function BackgroundSection() {
           {activeBackgroundId && (
             <button
               onClick={() => clearActiveBackgroundId()}
-              className="cursor-pointer rounded-lg bg-blue-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-blue-600"
+              className="rounded-lg bg-blue-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-blue-600"
             >
               Clear
             </button>
           )}
           <button
             onClick={handleUploadBackground}
-            className="cursor-pointer rounded-lg bg-teal-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-teal-600"
+            className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-teal-600"
           >
             Upload
           </button>

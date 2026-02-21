@@ -18,19 +18,19 @@ export default function Titlebar() {
         )}
       >
         <div
-          className="flex h-6 cursor-pointer items-center justify-center px-4 transition-colors duration-200 hover:bg-gray-100 hover:dark:bg-zinc-700"
+          className="flex h-6 items-center justify-center px-4 transition-colors duration-200 hover:bg-gray-100 hover:dark:bg-zinc-700"
           onClick={() => appWindow.minimize()}
         >
           <Minus className="size-4" />
         </div>
         <div
-          className="flex h-6 cursor-pointer items-center justify-center px-4 text-xs transition-colors duration-200 hover:bg-gray-100 hover:dark:bg-zinc-700"
+          className="flex h-6 items-center justify-center px-4 text-xs transition-colors duration-200 hover:bg-gray-100 hover:dark:bg-zinc-700"
           onClick={() => appWindow.toggleMaximize()}
         >
           <Maximize className="size-4" />
         </div>
         <div
-          className="flex h-6 cursor-pointer items-center justify-center px-4 transition-colors duration-200 hover:bg-red-500 hover:dark:bg-red-500"
+          className="flex h-6 items-center justify-center px-4 transition-colors duration-200 hover:bg-red-500 hover:dark:bg-red-500"
           onClick={() => appWindow.close()}
         >
           <X className="size-4" />

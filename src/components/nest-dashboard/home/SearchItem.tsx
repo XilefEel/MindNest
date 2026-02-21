@@ -24,7 +24,7 @@ export default function SearchItem({
       key={nestling.id}
       onClick={() => handleClick(nestling.id)}
       className={cn(
-        "flex cursor-pointer flex-row items-center justify-between gap-2 p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
+        "flex flex-row items-center justify-between gap-2 p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
         activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
       )}
     >

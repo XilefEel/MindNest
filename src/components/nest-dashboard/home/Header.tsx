@@ -76,14 +76,14 @@ export default function Header({ nestId }: { nestId: number }) {
       <div className="flex gap-3 text-sm font-semibold md:text-base">
         <button
           onClick={() => openNestlingModal(nestId)}
-          className="flex cursor-pointer items-center gap-1 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 px-3.5 py-1.5 text-white shadow-lg transition hover:scale-105 hover:shadow-xl"
+          className="flex items-center gap-1 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 px-3.5 py-1.5 text-white shadow-lg transition hover:scale-105 hover:shadow-xl"
         >
           <Plus className="size-4" /> Nestling
         </button>
 
         <button
           onClick={() => openFolderModal(nestId)}
-          className="flex cursor-pointer items-center gap-1 rounded-xl bg-gradient-to-r from-purple-500 to-purple-600 px-3.5 py-1.5 text-white shadow-lg transition hover:scale-105 hover:shadow-xl"
+          className="flex items-center gap-1 rounded-xl bg-gradient-to-r from-purple-500 to-purple-600 px-3.5 py-1.5 text-white shadow-lg transition hover:scale-105 hover:shadow-xl"
         >
           <Plus className="size-4" /> Folder
         </button>

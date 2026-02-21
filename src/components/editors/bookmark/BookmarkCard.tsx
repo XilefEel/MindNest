@@ -88,7 +88,7 @@ export default function BookmarkCard({
           <button
             onClick={() => handleToggleFavorite(bookmark.id)}
             className={cn(
-              "absolute top-2 left-2 cursor-pointer rounded-full p-2 shadow-md transition-colors",
+              "absolute top-2 left-2 rounded-full p-2 shadow-md transition-colors",
               bookmark.isFavorite
                 ? "bg-yellow-400 opacity-100"
                 : "bg-white/80 opacity-0 group-hover:opacity-100 hover:bg-white/90 dark:bg-gray-900/80 dark:hover:bg-gray-900/90",
@@ -106,7 +106,7 @@ export default function BookmarkCard({
 
           <button
             onClick={() => handleDelete(bookmark.id)}
-            className="absolute top-2 right-2 cursor-pointer rounded-full bg-white/80 p-2 opacity-0 shadow-md transition-all group-hover:opacity-100 hover:bg-white/90 dark:bg-gray-900/80 dark:hover:bg-gray-900/90"
+            className="absolute top-2 right-2 rounded-full bg-white/80 p-2 opacity-0 shadow-md transition-all group-hover:opacity-100 hover:bg-white/90 dark:bg-gray-900/80 dark:hover:bg-gray-900/90"
           >
             <Trash2 className="h-4 w-4 text-gray-500 transition-colors hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400" />
           </button>
@@ -161,7 +161,7 @@ export default function BookmarkCard({
         <button
           onClick={() => handleToggleFavorite(bookmark.id)}
           className={cn(
-            "absolute top-3 left-3 cursor-pointer rounded-full p-2 transition-colors",
+            "absolute top-3 left-3 rounded-full p-2 transition-colors",
             bookmark.isFavorite
               ? "bg-yellow-400 opacity-100"
               : cn(
@@ -185,7 +185,7 @@ export default function BookmarkCard({
         <button
           onClick={() => handleDelete(bookmark.id)}
           className={cn(
-            "absolute top-3 right-3 cursor-pointer rounded-full p-2 opacity-0 transition-all group-hover:opacity-100 hover:bg-gray-100 dark:hover:bg-gray-700",
+            "absolute top-3 right-3 rounded-full p-2 opacity-0 transition-all group-hover:opacity-100 hover:bg-gray-100 dark:hover:bg-gray-700",
             activeBackgroundId &&
               "border-0 hover:bg-white/30 hover:dark:bg-black/30",
           )}

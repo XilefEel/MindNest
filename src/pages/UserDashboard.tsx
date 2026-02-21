@@ -28,7 +28,7 @@ export default function DashboardPage() {
   }, [isSidebarOpen]);
 
   return (
-    <div className="flex h-screen cursor-default overflow-hidden bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-white">
+    <div className="flex h-screen overflow-hidden bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-white">
       {isSidebarOpen && (
         <div
           className="fixed inset-0 z-30 bg-black/30 md:hidden"
@@ -66,7 +66,7 @@ export default function DashboardPage() {
       <div className="flex flex-1 flex-col">
         <header className="bg-white p-4 md:hidden dark:bg-gray-950">
           <button
-            className="cursor-pointer rounded-md bg-white p-2 transition-colors duration-200 hover:bg-gray-100 dark:text-black"
+            className="rounded-md bg-white p-2 transition-colors duration-200 hover:bg-gray-100 dark:text-black"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           >
             <Menu />

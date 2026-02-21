@@ -33,7 +33,7 @@ export default function NestPreview() {
           </div>
         </div>
         <AddNestModal userId={user.id}>
-          <div className="flex cursor-pointer items-center rounded-lg bg-teal-500 p-2 px-3 text-sm font-semibold text-white transition hover:bg-teal-700">
+          <div className="flex items-center rounded-lg bg-teal-500 p-2 px-3 text-sm font-semibold text-white transition hover:bg-teal-700">
             <Plus className="mr-1 size-4" /> Create Nest
           </div>
         </AddNestModal>

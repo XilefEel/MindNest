@@ -21,7 +21,7 @@ export default function ToolBarItem({
         onClick={onFormat}
         aria-label={label}
         className={cn(
-          "cursor-pointer rounded p-1 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
+          "rounded p-1 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
           activeBackgroundId &&
             "hover:bg-white/30 hover:text-black dark:hover:bg-black/30",
           isActive &&

@@ -89,7 +89,7 @@ export default function JournalSidebarContent({
                 key={entry.id}
                 onClick={() => handleSelectEntry(entry)}
                 className={cn(
-                  "cursor-pointer rounded-xl border border-slate-200 bg-white p-3 transition-all duration-200 hover:border-teal-300 hover:text-teal-600 hover:shadow-md dark:border-slate-600 dark:bg-slate-800 dark:hover:border-teal-400 dark:hover:text-teal-400",
+                  "rounded-xl border border-slate-200 bg-white p-3 transition-all duration-200 hover:border-teal-300 hover:text-teal-600 hover:shadow-md dark:border-slate-600 dark:bg-slate-800 dark:hover:border-teal-400 dark:hover:text-teal-400",
                   activeBackgroundId &&
                     "border-none bg-white/30 backdrop-blur-sm dark:bg-black/20",
                 )}

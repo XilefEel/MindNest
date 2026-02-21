@@ -21,7 +21,7 @@ export default function DiscoverPreview() {
         <DiscoverCard />
         <DiscoverCard />
       </div>
-      <Button className="mt-5 flex w-full cursor-pointer items-center gap-2 bg-blue-400 text-white hover:bg-blue-500">
+      <Button className="mt-5 flex w-full items-center gap-2 bg-blue-400 text-white hover:bg-blue-500">
         Discover More Nests
       </Button>
     </div>

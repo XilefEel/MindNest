@@ -17,7 +17,7 @@ export default function NestCard({ nest }: { nest: Nest }) {
     <div className="group relative overflow-hidden rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl dark:bg-gray-800">
       <div
         onClick={() => handleNavigate(nest.id)}
-        className="flex cursor-pointer items-center"
+        className="flex items-center"
       >
         <div className="flex w-full flex-col space-y-2">
           <div className="flex items-center justify-between">
@@ -29,7 +29,7 @@ export default function NestCard({ nest }: { nest: Nest }) {
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
-                className="flex size-4 cursor-pointer items-center rounded-lg hover:text-teal-500 dark:text-white"
+                className="flex size-4 items-center rounded-lg hover:text-teal-500 dark:text-white"
               >
                 <EllipsisVertical className="size-4" />
               </div>

@@ -167,7 +167,7 @@ export default function NestlingItem({
       >
         <div
           className={cn(
-            "flex w-full max-w-full cursor-pointer items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition duration-100 ease-in-out",
+            "flex w-full max-w-full items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition-colors duration-100 ease-in-out",
             activeBackgroundId
               ? nestling.id === activeNestling?.id
                 ? "bg-white/50 font-bold dark:bg-black/50"
@@ -183,7 +183,7 @@ export default function NestlingItem({
             <button
               ref={emojiButtonRef}
               onClick={toggleEmojiPicker}
-              className="flex w-5 cursor-pointer items-center justify-center transition hover:opacity-70"
+              className="flex w-5 items-center justify-center transition-opacity duration-100 hover:opacity-70"
             >
               {nestling.icon ? (
                 <p>{nestling.icon}</p>
@@ -194,7 +194,7 @@ export default function NestlingItem({
 
             <div
               className={cn(
-                "min-w-0 flex-1 rounded text-gray-900 transition duration-100 dark:text-gray-100",
+                "min-w-0 flex-1 rounded text-gray-900 transition-all duration-100 dark:text-gray-100",
                 isEditing
                   ? activeBackgroundId
                     ? "bg-white/10 px-2 py-0.5 shadow-md ring-2 ring-teal-500 backdrop-blur-sm dark:bg-black/10"
@@ -246,7 +246,7 @@ export default function NestlingItem({
               {nestling.icon && (
                 <button
                   onClick={handleClearEmoji}
-                  className="absolute right-4 bottom-4 z-50 cursor-pointer rounded-lg bg-red-500 px-3 py-1 text-sm font-medium text-white transition duration-100 hover:bg-red-600"
+                  className="absolute right-4 bottom-4 z-50 rounded-lg bg-red-500 px-3 py-1 text-sm font-medium text-white transition duration-100 hover:bg-red-600"
                 >
                   Clear
                 </button>

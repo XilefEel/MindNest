@@ -107,7 +107,7 @@ export default function AuthForm({
       <Button
         type="submit"
         className={cn(
-          "w-full cursor-pointer transition disabled:cursor-not-allowed disabled:opacity-50",
+          "w-full transition disabled:cursor-not-allowed disabled:opacity-50",
           "bg-teal-500 text-white hover:bg-teal-600 active:bg-teal-700",
           "dark:bg-teal-400 dark:text-black dark:hover:bg-teal-300 dark:active:bg-teal-200",
         )}

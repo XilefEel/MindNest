@@ -29,7 +29,7 @@ export default function StatCard({
     <div
       className={cn(
         "flex flex-col items-center justify-center rounded-2xl shadow-sm",
-        "group cursor-pointer rounded-xl border border-b-4 p-4 hover:shadow-md",
+        "group rounded-xl border border-b-4 p-4 hover:shadow-md",
         "bg-white dark:bg-gray-800",
         "border-gray-200 border-b-orange-500 hover:border-orange-500 dark:border-gray-800 dark:border-b-orange-500 dark:hover:border-orange-500",
         "transition",

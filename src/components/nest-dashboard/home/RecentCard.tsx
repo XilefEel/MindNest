@@ -26,7 +26,7 @@ export default function RecentCard({
       <div
         onClick={() => onClick(nestling.id)}
         className={cn(
-          "group cursor-pointer rounded-xl border border-l-4 p-4 shadow-sm hover:shadow-md",
+          "group rounded-xl border border-l-4 p-4 shadow-sm hover:shadow-md",
           "bg-white dark:bg-gray-800",
           "border-gray-200 border-l-blue-500 hover:border-blue-500 dark:border-gray-800 dark:border-l-blue-500 dark:hover:hover:border-blue-500",
           "transition hover:scale-105",

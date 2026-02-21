@@ -79,7 +79,7 @@ export default function SearchModal() {
                   key={nestling.id}
                   onSelect={() => handleSelectNestling(nestling.id)}
                   className={cn(
-                    "flex cursor-pointer flex-row items-center justify-between p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
+                    "flex flex-row items-center justify-between p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
                     activeBackgroundId &&
                       "hover:bg-white/30 hover:dark:bg-black/30",
                   )}
@@ -103,7 +103,7 @@ export default function SearchModal() {
                     key={nestling.id}
                     onSelect={() => handleSelectNestling(nestling.id)}
                     className={cn(
-                      "flex cursor-pointer flex-row items-center justify-between p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
+                      "flex flex-row items-center justify-between p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
                       activeBackgroundId &&
                         "hover:bg-white/30 hover:dark:bg-black/30",
                     )}

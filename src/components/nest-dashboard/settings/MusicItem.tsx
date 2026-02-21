@@ -147,7 +147,7 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
           >
             <button
               onClick={handlePlayMusic}
-              className="flex size-11 cursor-pointer items-center justify-center rounded-md bg-purple-500 text-white transition hover:bg-purple-600"
+              className="flex size-11 items-center justify-center rounded-md bg-purple-500 text-white transition hover:bg-purple-600"
             >
               {isPlaying ? <Pause size={18} /> : <Play size={18} />}
             </button>
@@ -187,7 +187,7 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
 
             <button
               onClick={handleDeleteMusic}
-              className="cursor-pointer rounded-md p-1.5 text-gray-400 opacity-0 transition group-hover:opacity-100 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
+              className="rounded-md p-1.5 text-gray-400 opacity-0 transition group-hover:opacity-100 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
             >
               <Trash2 size={16} />
             </button>

@@ -5,7 +5,7 @@ import Footer from "@/components/welcome/Footer";
 
 export default function WelcomePage() {
   return (
-    <div className="flex min-h-screen cursor-default flex-col py-6">
+    <div className="flex min-h-screen flex-col py-6">
       <Heading />
       <Heroes />
       <Footer />

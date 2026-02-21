@@ -67,7 +67,7 @@ export default function FloatingCalendar({
   return createPortal(
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <button className="fixed right-6 bottom-6 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-teal-500 text-white shadow-lg transition hover:bg-teal-600">
+        <button className="fixed right-6 bottom-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-teal-500 text-white shadow-lg transition hover:bg-teal-600">
           <Calendar className="h-5 w-5" />
         </button>
       </PopoverTrigger>
@@ -89,14 +89,14 @@ export default function FloatingCalendar({
           <div className="flex flex-row items-center gap-1">
             <button
               onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-              className="cursor-pointer rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-600"
+              className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-600"
             >
               <ChevronLeft size={20} />
             </button>
 
             <button
               onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-              className="cursor-pointer rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-600"
+              className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-600"
             >
               <ChevronRight size={20} />
             </button>

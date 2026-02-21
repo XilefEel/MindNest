@@ -66,7 +66,7 @@ export default function NestDashboardPage() {
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
-      className="flex h-screen cursor-default flex-col bg-gray-50 pb-3 select-none md:pb-6 dark:bg-gray-900"
+      className="flex h-screen flex-col bg-gray-50 pb-3 select-none md:pb-6 dark:bg-gray-900"
       onContextMenu={(e) => e.preventDefault()}
     >
       <div
@@ -83,7 +83,7 @@ export default function NestDashboardPage() {
         >
           <div
             className={cn(
-              "cursor-pointer transition-all duration-300 md:px-6",
+              "transition-all duration-300 md:px-6",
               isTopbarCollapsed ? "-translate-y-11/12" : "translate-y-0",
             )}
             onDoubleClick={() => setIsTopbarCollapsed(!isTopbarCollapsed)}

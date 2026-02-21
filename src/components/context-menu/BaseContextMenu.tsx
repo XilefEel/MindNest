@@ -16,7 +16,7 @@ export default function BaseContextMenu({
       <ContextMenu.Portal>
         <ContextMenu.Content
           className={cn(
-            "animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white px-1 py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800",
+            "animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white px-1 py-2 shadow-lg select-none dark:border-gray-700 dark:bg-gray-800",
             activeBackgroundId &&
               "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
           )}

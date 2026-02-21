@@ -18,7 +18,7 @@ export default function ({
     <Button
       variant="ghost"
       className={cn(
-        "cursor-pointer rounded-lg hover:bg-teal-100 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
+        "rounded-lg hover:bg-teal-100 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
         activeBackgroundId && "hover:bg-white/20 dark:hover:bg-black/20",
         isHidden && "block md:hidden",
       )}
