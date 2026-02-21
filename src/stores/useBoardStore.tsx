@@ -351,11 +351,6 @@ export const setActiveDraggingId = (id: string | null) => {
 export const useActiveDraggingId = () =>
   useBoardStore((state) => state.activeDraggingId);
 
-export const useActiveColumn = () =>
-  useBoardStore((state) => state.activeColumn);
-
-export const useActiveCard = () => useBoardStore((state) => state.activeCard);
-
 export const useBoardActions = () =>
   useBoardStore(
     useShallow((state) => ({

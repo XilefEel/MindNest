@@ -7,7 +7,6 @@ import {
 import { User } from "@/lib/types/user";
 import LoadingScreen from "@/components/LoadingScreen";
 
-// Define the shape of the auth context
 type AuthContextType = {
   user: User | null;
   login: (user: User) => Promise<void>;
@@ -58,7 +57,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// Custom hook to use the auth context
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be inside AuthProvider");

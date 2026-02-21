@@ -30,7 +30,6 @@ export const nestlingTypes: NestlingTypeOption[] = [
     color: "bg-purple-500",
   },
   { value: "calendar", label: "Calendar", icon: Calendar, color: "bg-red-500" },
-  // { value: "journal", label: "Journal", icon: Notebook, color: "bg-amber-500" },
   {
     value: "bookmark",
     label: "Bookmark",

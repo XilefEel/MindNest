@@ -1,14 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import {
-  GalleryAlbum,
-  GalleryImage,
-  NewGalleryAlbum,
-  NewGalleryImage,
-} from "../types/gallery";
-
-export async function addImage(data: NewGalleryImage) {
-  return await invoke<GalleryImage>("add_image", { data });
-}
+import { GalleryAlbum, GalleryImage, NewGalleryAlbum } from "../types/gallery";
 
 export async function importImage(
   nestlingId: number,

@@ -1,9 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { BackgroundImage, NewBackgroundImage } from "../types/background-image";
-
-export async function addBackground(data: NewBackgroundImage) {
-  return await invoke<BackgroundImage>("add_background", { data });
-}
+import { BackgroundImage } from "../types/background-image";
 
 export async function importBackground(nestId: number, filePath: string) {
   return await invoke<BackgroundImage>("import_background", {

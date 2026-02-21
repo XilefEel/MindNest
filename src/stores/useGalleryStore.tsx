@@ -181,7 +181,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   downloadImage: withStoreErrorHandler(set, async (id: number) => {
     const filePath = await save({
       title: "Save Image",
-      defaultPath: `${"image"}.png`,
+      defaultPath: "image.png",
       filters: [
         {
           name: "Image Files",
