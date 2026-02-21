@@ -15,7 +15,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import TagPopover from "../popovers/TagPopover";
 import TagEditPopover from "../popovers/TagEditPopover";
 import { toast } from "sonner";
-import { useActiveBackgroundId } from "@/stores/useNestStore";
+import {
+  useActiveBackgroundId,
+  useIsTitleCollapsed,
+  useNestStore,
+} from "@/stores/useNestStore";
 
 export default function NestlingTitle({
   title,
@@ -33,23 +37,25 @@ export default function NestlingTitle({
 
   const [isOpen, setIsOpen] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const isTitleCollapsed = useIsTitleCollapsed();
+  const { setIsTitleCollapsed } = useNestStore();
 
   const pickerRef = useRef<HTMLDivElement>(null);
   const Icon = getNestlingIcon(nestling.nestlingType);
 
-  const handleEmojiClick = (emojiData: EmojiClickData) => {
+  const handleEmojiClick = async (emojiData: EmojiClickData) => {
     try {
-      updateNestling(nestling.id, { icon: emojiData.emoji });
+      await updateNestling(nestling.id, { icon: emojiData.emoji });
       setShowPicker(false);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleClearEmoji = () => {
+  const handleClearEmoji = async () => {
     try {
-      updateNestling(nestling.id, { icon: null });
+      await updateNestling(nestling.id, { icon: null });
       setShowPicker(false);
     } catch (error) {
       console.error(error);
@@ -80,12 +86,15 @@ export default function NestlingTitle({
 
   return (
     <div className="flex flex-col">
-      <div className="group relative flex flex-row items-center gap-2 text-gray-900 transition-all dark:text-gray-100">
+      <div className="group relative flex flex-row items-center text-gray-900 transition-all dark:text-gray-100">
         <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="absolute -left-6 cursor-pointer text-gray-600 opacity-0 transition-opacity group-hover:opacity-100 hover:opacity-70 dark:text-gray-400"
+          onClick={() => setIsTitleCollapsed(!isTitleCollapsed)}
+          className="w-0 cursor-pointer opacity-0 transition-all group-hover:mr-2 group-hover:w-6 group-hover:opacity-100 dark:text-gray-400"
         >
-          <ChevronDown size={24} className={isCollapsed ? "-rotate-90" : ""} />
+          <ChevronDown
+            size={24}
+            className={isTitleCollapsed ? "-rotate-90" : ""}
+          />
         </button>
 
         <div className="relative" ref={pickerRef}>
@@ -93,13 +102,13 @@ export default function NestlingTitle({
             onClick={() => setShowPicker(!showPicker)}
             className={cn(
               "flex w-8 cursor-pointer items-center justify-center text-3xl font-bold transition-opacity hover:opacity-70",
-              isCollapsed && "w-6 text-xl",
+              isTitleCollapsed && "w-6 text-xl",
             )}
           >
             {nestling.icon ? (
               <p>{nestling.icon}</p>
             ) : (
-              <Icon size={isCollapsed ? 24 : 32} />
+              <Icon size={isTitleCollapsed ? 24 : 32} />
             )}
           </button>
 
@@ -120,8 +129,8 @@ export default function NestlingTitle({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className={cn(
-            "w-full min-w-0 resize-none bg-transparent text-3xl font-bold outline-none",
-            isCollapsed && "text-xl font-semibold",
+            "w-full min-w-0 resize-none bg-transparent pl-2 text-3xl font-bold outline-none",
+            isTitleCollapsed && "text-xl font-semibold",
           )}
           placeholder="Title..."
         />
@@ -130,7 +139,7 @@ export default function NestlingTitle({
       <div
         className={cn(
           "mt-2 flex items-center gap-2 text-gray-800 dark:text-gray-200",
-          isCollapsed && "hidden",
+          isTitleCollapsed && "hidden",
         )}
       >
         <Folder size={20} />

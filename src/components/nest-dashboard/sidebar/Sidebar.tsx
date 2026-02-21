@@ -50,10 +50,10 @@ export default function Sidebar({
     return nestlings.filter((n) => n.isPinned);
   }, [nestlings]);
 
-  const handleHomeClick = () => {
+  const handleHomeClick = async () => {
     setActiveNestlingId(null);
     setIsSidebarOpen(false);
-    clearLastNestling(nestId);
+    await clearLastNestling(nestId);
   };
 
   useEffect(() => {
@@ -67,10 +67,9 @@ export default function Sidebar({
       <aside
         style={{ scrollbarGutter: "stable" }}
         className={cn(
-          "flex h-full flex-col overflow-x-hidden overflow-y-auto rounded-tr-2xl rounded-br-2xl p-5",
-          activeBackgroundId
-            ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
-            : "border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800",
+          "flex h-full flex-col overflow-x-hidden overflow-y-auto rounded-tr-2xl rounded-br-2xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800/50",
+          activeBackgroundId &&
+            "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
         <ToolBar nestId={nestId} />

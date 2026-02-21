@@ -37,6 +37,8 @@ type NestState = {
 
   activeDraggingId: string | null;
 
+  isTitleCollapsed: boolean;
+
   loading: boolean;
   error: string | null;
 
@@ -70,6 +72,8 @@ type NestState = {
   getMusic: (nestId: number) => Promise<void>;
   updateMusic: (id: number, title: string, orderIndex: number) => Promise<void>;
   deleteMusic: (id: number) => Promise<void>;
+
+  setIsTitleCollapsed: (collapsed: boolean) => void;
 };
 
 export const useNestStore = create<NestState>((set, get) => ({
@@ -89,6 +93,8 @@ export const useNestStore = create<NestState>((set, get) => ({
   audioIsPaused: false,
 
   activeDraggingId: null,
+
+  isTitleCollapsed: false,
 
   error: null,
   loading: false,
@@ -174,7 +180,7 @@ export const useNestStore = create<NestState>((set, get) => ({
         nestId,
         filePath,
       );
-      get().setActiveBackgroundId(newBackground.id);
+      await get().setActiveBackgroundId(newBackground.id);
       if (newBackground) {
         set((state) => ({
           backgrounds: [newBackground, ...state.backgrounds],
@@ -315,6 +321,10 @@ export const useNestStore = create<NestState>((set, get) => ({
 
     if (get().activeMusicId === musicId) set({ activeMusicId: null });
   }),
+
+  setIsTitleCollapsed: (collapsed: boolean) => {
+    set({ isTitleCollapsed: collapsed });
+  },
 }));
 
 export const useNestActions = () =>
@@ -347,6 +357,8 @@ export const useNestActions = () =>
       getMusic: state.getMusic,
       updateMusic: state.updateMusic,
       deleteMusic: state.deleteMusic,
+
+      setIsTitleCollapsed: state.setIsTitleCollapsed,
     })),
   );
 
@@ -354,12 +366,6 @@ export const useNests = () => useNestStore((state) => state.nests);
 
 export const useActiveNestId = () =>
   useNestStore((state) => state.activeNestId);
-
-export const useActiveNest = () =>
-  useNestStore((state) => {
-    const { activeNestId, nests } = state;
-    return nests.find((n) => n.id === activeNestId) ?? null;
-  });
 
 export const useBackgrounds = () => useNestStore((state) => state.backgrounds);
 
@@ -382,5 +388,5 @@ export const useAudioCurrentTime = () =>
 
 export const useMusicVolume = () => useNestStore((state) => state.musicVolume);
 
-export const useActiveDraggingId = () =>
-  useNestStore((state) => state.activeDraggingId);
+export const useIsTitleCollapsed = () =>
+  useNestStore((state) => state.isTitleCollapsed);

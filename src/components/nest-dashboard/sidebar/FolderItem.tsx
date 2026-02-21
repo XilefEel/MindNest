@@ -94,7 +94,7 @@ export default function FolderItem({
         <div
           style={style}
           className={cn(
-            "flex cursor-pointer items-center justify-between gap-1 rounded px-2 py-1 transition-colors duration-200 hover:bg-teal-50 dark:hover:bg-gray-700",
+            "flex cursor-pointer items-center justify-between gap-1 rounded px-2 py-1 transition duration-100 hover:bg-teal-50 dark:hover:bg-gray-700",
             activeBackgroundId
               ? "hover:bg-white/20 dark:hover:bg-black/20"
               : "hover:bg-teal-50 dark:hover:bg-gray-700",
@@ -103,14 +103,14 @@ export default function FolderItem({
           <div className="flex min-w-0 flex-1 items-center gap-1.5">
             <ChevronDown
               className={cn(
-                "size-4 flex-shrink-0 transition-transform duration-200",
+                "size-4 flex-shrink-0 transition duration-100",
                 isFolderOpen ? "rotate-0" : "-rotate-90",
               )}
             />
             <FolderIcon className="size-4 flex-shrink-0" />
             <div
               className={cn(
-                "min-w-0 flex-1 rounded transition-all duration-200",
+                "min-w-0 flex-1 rounded text-gray-900 transition duration-100 dark:text-gray-100",
                 isEditing &&
                   "bg-white px-2 py-0.5 shadow-md ring-2 ring-teal-500 dark:bg-gray-800",
               )}
