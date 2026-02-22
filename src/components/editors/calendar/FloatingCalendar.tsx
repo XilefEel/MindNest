@@ -24,15 +24,13 @@ import {
 } from "@/components/ui/popover";
 import { createPortal } from "react-dom";
 
-interface FloatingCalendarProps {
-  selectedDate: Date;
-  onDateSelect: (date: Date) => void;
-}
-
 export default function FloatingCalendar({
   selectedDate,
   onDateSelect,
-}: FloatingCalendarProps) {
+}: {
+  selectedDate: Date;
+  onDateSelect: (date: Date) => void;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -51,6 +49,13 @@ export default function FloatingCalendar({
   for (let day = startDate; day <= endDate; day = addDays(day, 1)) {
     days.push(day);
   }
+
+  const isInCurrentWeek = (date: Date) => {
+    const today = new Date();
+    const weekStart = startOfWeek(today);
+    const weekEnd = endOfWeek(today);
+    return date >= weekStart && date <= weekEnd;
+  };
 
   const handleDateClick = (date: Date) => {
     onDateSelect(date);
@@ -89,14 +94,14 @@ export default function FloatingCalendar({
           <div className="flex flex-row items-center gap-1">
             <button
               onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-              className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-600"
+              className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-400"
             >
               <ChevronLeft size={20} />
             </button>
 
             <button
               onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-              className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-600"
+              className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-400"
             >
               <ChevronRight size={20} />
             </button>
@@ -123,10 +128,14 @@ export default function FloatingCalendar({
                 className={cn(
                   "flex size-8 items-center justify-center rounded-full text-sm transition-colors",
                   "hover:bg-gray-100 dark:hover:bg-gray-700",
+                  isInCurrentWeek(day) &&
+                    !isSameDay(day, new Date()) &&
+                    "bg-teal-100 text-teal-700 hover:bg-teal-200/70 dark:bg-teal-700/20 dark:text-teal-300 dark:hover:bg-teal-700/30",
                   isSameDay(day, new Date()) &&
-                    "bg-teal-500 text-white hover:bg-teal-600",
+                    "bg-teal-500 text-white hover:bg-teal-600 dark:bg-teal-400 dark:hover:bg-teal-500",
+                  !isSameMonth(day, currentMonth) &&
+                    "text-gray-300 dark:text-gray-600",
                   isSameDay(day, selectedDate) && "border border-teal-500",
-                  !isSameMonth(day, currentMonth) && "text-gray-300",
                 )}
               >
                 {format(day, "d")}

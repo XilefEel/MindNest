@@ -37,7 +37,7 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
   const currentTimePosition = (currentHour + currentMinute / 60) * gridHeight;
   const isToday = (day: Date) => isSameDay(day, currentTime);
 
-  const handleDoubleClick = ({
+  const handleDoubleClick = async ({
     clickedDate,
     startHour,
   }: {
@@ -53,7 +53,7 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
       duration: 1,
       color: getRandomElement(COLORS),
     };
-    createEvent(newEvent);
+    await createEvent(newEvent);
   };
 
   useEffect(() => {
