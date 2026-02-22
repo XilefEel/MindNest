@@ -32,10 +32,10 @@ export default function BasePopover({
         align={align}
         side={side}
         className={cn(
-          "border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+          "border-gray-200 bg-white select-none dark:border-gray-700 dark:bg-gray-800",
           width,
           activeBackgroundId &&
-            "border-0 bg-white/50 backdrop-blur-sm dark:bg-black/50",
+            "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
         {content}

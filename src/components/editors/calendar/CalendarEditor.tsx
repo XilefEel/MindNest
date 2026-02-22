@@ -82,7 +82,7 @@ export default function CalendarEditor() {
         </div>
       </div>
 
-      <PlannerView selectedDate={selectedDate} />
+      <PlannerView selectedDate={selectedDate} onDateSelect={setSelectedDate} />
 
       <FloatingCalendar
         selectedDate={selectedDate}

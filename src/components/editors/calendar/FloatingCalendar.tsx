@@ -19,6 +19,7 @@ import { createPortal } from "react-dom";
 import * as calendarApi from "@/lib/api/calendar";
 import BasePopover from "@/components/popovers/BasePopover";
 import { getWeekRange } from "@/lib/utils/date";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export default function FloatingCalendar({
   selectedDate,
@@ -30,6 +31,8 @@ export default function FloatingCalendar({
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [monthEvents, setMonthEvents] = useState<Set<string>>(new Set());
+
+  const activeBackgroundId = useActiveBackgroundId();
 
   const activeNestlingId = useActiveNestlingId();
   const { getEvents } = usePlannerActions();
@@ -103,14 +106,14 @@ export default function FloatingCalendar({
             <div className="flex flex-row items-center gap-1">
               <button
                 onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-400"
+                className="rounded-full p-1 text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
                 <ChevronLeft size={20} />
               </button>
 
               <button
                 onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-400"
+                className="rounded-full p-1 text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
                 <ChevronRight size={20} />
               </button>
@@ -138,13 +141,15 @@ export default function FloatingCalendar({
                     className={cn(
                       "flex size-8 items-center justify-center rounded-full text-sm transition-colors",
                       "hover:bg-gray-100 dark:hover:bg-gray-700",
+                      activeBackgroundId &&
+                        "hover:bg-white/30 dark:hover:bg-black/30",
                       isInCurrentWeek(day) &&
                         !isSameDay(day, new Date()) &&
                         "bg-teal-100 text-teal-700 hover:bg-teal-200/70 dark:bg-teal-700/20 dark:text-teal-300 dark:hover:bg-teal-700/30",
                       isSameDay(day, new Date()) &&
                         "bg-teal-500 text-white hover:bg-teal-600 dark:bg-teal-400 dark:hover:bg-teal-500",
                       !isSameMonth(day, currentMonth) &&
-                        "text-gray-300 dark:text-gray-600",
+                        "text-gray-400 dark:text-gray-500",
                       isSameDay(day, selectedDate) && "border border-teal-500",
                     )}
                   >

@@ -89,7 +89,7 @@ export default function NestlingTitle({
       <div className="group relative flex flex-row items-center text-gray-900 transition-all dark:text-gray-100">
         <button
           onClick={() => setIsTitleCollapsed(!isTitleCollapsed)}
-          className="w-0 opacity-0 transition-all group-hover:mr-2 group-hover:w-6 group-hover:opacity-100 dark:text-gray-400"
+          className="w-0 text-gray-500 opacity-0 transition-all group-hover:mr-2 group-hover:w-6 group-hover:opacity-100 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         >
           <ChevronDown
             size={24}

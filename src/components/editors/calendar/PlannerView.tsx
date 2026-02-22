@@ -8,8 +8,15 @@ import { NewPlannerEventType } from "@/lib/types/calendar";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { COLORS, gridHeight } from "@/lib/utils/constants";
 import { useActiveNestling } from "@/stores/useNestlingStore";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
+export default function PlannerView({
+  selectedDate,
+  onDateSelect,
+}: {
+  selectedDate: Date;
+  onDateSelect: (date: Date) => void;
+}) {
   const activeNestling = useActiveNestling();
   if (!activeNestling) return;
 
@@ -56,6 +63,16 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
     await createEvent(newEvent);
   };
 
+  const handleMoveWeek = (direction: "left" | "right") => {
+    if (direction === "left") {
+      const newDate = addDays(selectedDate, -7);
+      onDateSelect(newDate);
+    } else {
+      const newDate = addDays(selectedDate, 7);
+      onDateSelect(newDate);
+    }
+  };
+
   useEffect(() => {
     if (!colRef.current) return;
 
@@ -81,8 +98,25 @@ export default function PlannerView({ selectedDate }: { selectedDate: Date }) {
   }, []);
 
   return (
-    <div className="absolute h-full w-full px-6">
-      <div ref={colRef} className="grid h-full grid-cols-7 items-center">
+    <div className="h-full w-full px-8">
+      <div
+        ref={colRef}
+        className="relative grid h-full grid-cols-7 items-center"
+      >
+        <button
+          onClick={() => handleMoveWeek("left")}
+          className="absolute top-6 -left-6 text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
+          <ChevronLeft size={32} />
+        </button>
+
+        <button
+          onClick={() => handleMoveWeek("right")}
+          className="absolute top-6 -right-6 text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
+          <ChevronRight size={32} />
+        </button>
+
         {weekDaysWithDates.map((day) => (
           <div
             key={day.toISOString()}
