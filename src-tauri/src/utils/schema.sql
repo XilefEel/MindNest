@@ -84,6 +84,16 @@ CREATE TABLE IF NOT EXISTS background_music (
     FOREIGN KEY (nest_id) REFERENCES nests(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS note_templates (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nestling_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    content TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS board_columns (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nestling_id INTEGER NOT NULL,

@@ -9,5 +9,6 @@ pub mod journal;
 pub mod mindmap;
 pub mod nest;
 pub mod nestling;
+pub mod note;
 pub mod tag;
 pub mod user;

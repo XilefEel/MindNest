@@ -20,7 +20,7 @@ use handler::background_music::{add_music, delete_music, get_music, import_music
 
 use handler::user::{login_user, signup_user};
 
-use handler::note::edit_note;
+use handler::note::{edit_note, create_note_template,  get_note_templates, update_note_template, delete_note_template};
 
 use handler::board::{
     create_board_card, create_board_column, delete_board_card, delete_board_column, get_board_data,
@@ -111,6 +111,10 @@ pub fn run() {
             delete_folder,
             // Notes
             edit_note,
+            create_note_template,
+            get_note_templates,
+            update_note_template,
+            delete_note_template,
             // Board
             create_board_column,
             update_board_column,
