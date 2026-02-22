@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useAlbums, useGalleryActions } from "@/stores/useGalleryStore";
-import { ArrowLeft, Plus, Upload } from "lucide-react";
+import { ArrowLeft, Loader, Plus, Upload } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import NestlingTitle from "../NestlingTitle";
 import useAutoSave from "@/hooks/useAutoSave";
@@ -27,6 +27,12 @@ export default function GalleryEditor() {
   const [albumId, setAlbumId] = useState<number | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [currentView, setCurrentView] = useState<"main" | "album">("main");
+
+  const { updateNestling } = useNestlingActions();
+  const { openAlbumModal } = useAlbumModal();
+
+  const nestlingData = useMemo(() => ({ title }), [title]);
+  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
   const currentAlbum = albums.find((album) => album.id === albumId) ?? null;
 
@@ -56,12 +62,6 @@ export default function GalleryEditor() {
     }
   };
 
-  const { updateNestling } = useNestlingActions();
-  const { openAlbumModal } = useAlbumModal();
-
-  const nestlingData = useMemo(() => ({ title }), [title]);
-  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
-
   useEffect(() => {
     setTitle(activeNestling.title);
   }, [activeNestling.title]);
@@ -76,15 +76,15 @@ export default function GalleryEditor() {
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-4">
           {currentView === "album" && (
-            <div
+            <button
               onClick={() => {
                 setCurrentView("main");
                 setAlbumId(null);
               }}
-              className="cursor-pointer"
+              className="text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
             >
-              <ArrowLeft />
-            </div>
+              <ArrowLeft size={20} />
+            </button>
           )}
           <NestlingTitle
             title={title}
@@ -100,9 +100,9 @@ export default function GalleryEditor() {
             className="flex items-center gap-2 rounded-lg bg-blue-500 px-3 py-1.5 text-white transition-colors hover:bg-blue-600"
           >
             {isUploading ? (
-              <div className="size-4 animate-spin rounded-full border-2 border-white"></div>
+              <Loader size={16} className="flex-shrink-0 animate-spin" />
             ) : (
-              <Upload className="size-4" />
+              <Upload size={16} className="flex-shrink-0" />
             )}
             <span className="hidden md:block">
               {isUploading ? "Uploading..." : "Add Images"}
@@ -116,7 +116,7 @@ export default function GalleryEditor() {
               albumId !== null ? "hidden" : "",
             )}
           >
-            <Plus className="size-4" />
+            <Plus size={16} className="flex-shrink-0" />
             <span className="hidden md:block">Add Album</span>
           </button>
         </div>

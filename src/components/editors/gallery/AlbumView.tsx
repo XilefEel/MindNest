@@ -1,17 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
-import { Columns3, Download, Folder, Image, Rows3 } from "lucide-react";
+import { Download, Folder, Image } from "lucide-react";
 import useAutoSave from "@/hooks/useAutoSave";
 import "react-photo-album/rows.css";
 import "yet-another-react-lightbox/styles.css";
 import { GalleryAlbum } from "@/lib/types/gallery";
 import { toast } from "@/lib/utils/toast";
-import { Button } from "@/components/ui/button";
 import ImageLayout from "./ImageLayout";
-import { cn } from "@/lib/utils/general";
 import { motion } from "framer-motion";
-import BaseToolTip from "@/components/BaseToolTip";
 import { useActiveNestling } from "@/stores/useNestlingStore";
+import LayoutToggle from "./LayoutToggle";
 
 export default function AlbumView({
   album,
@@ -92,43 +90,16 @@ export default function AlbumView({
           <Image size={20} />
           Images ({images.length})
         </h2>
-        <div className="flex items-center gap-2">
-          <div className="flex rounded border border-gray-200 bg-gray-100 p-1 dark:border-gray-700 dark:bg-gray-800">
-            <BaseToolTip label="Row layout">
-              <button
-                onClick={() => setLayoutMode("row")}
-                className={cn(
-                  "rounded p-2 transition duration-100",
-                  layoutMode === "row"
-                    ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
-                    : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-                )}
-              >
-                <Rows3 size={18} />
-              </button>
-            </BaseToolTip>
+        <div className="flex items-center gap-3">
+          <LayoutToggle layoutMode={layoutMode} setLayoutMode={setLayoutMode} />
 
-            <BaseToolTip label="Column Layout">
-              <button
-                onClick={() => setLayoutMode("column")}
-                className={cn(
-                  "rounded p-2 transition duration-100",
-                  layoutMode === "column"
-                    ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
-                    : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-                )}
-              >
-                <Columns3 size={18} />
-              </button>
-            </BaseToolTip>
-          </div>
-          <Button
-            className="bg-teal-400 text-white transition duration-200 hover:bg-teal-600"
+          <button
             onClick={() => handleDownloadAlbum(album.id)}
+            className="flex items-center gap-2 rounded-lg bg-purple-500 px-3 py-1.5 text-sm text-white transition-colors hover:bg-purple-600"
           >
-            <Download />
+            <Download size={16} />
             Download All
-          </Button>
+          </button>
         </div>
       </div>
       <ImageLayout album={album} layoutMode={layoutMode} />

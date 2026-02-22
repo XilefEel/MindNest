@@ -4,15 +4,8 @@ import { exportBookmarksToJson } from "@/lib/utils/bookmark";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import {
-  Plus,
-  ExternalLink,
-  Download,
-  Grid,
-  List,
-  Search,
-  Link,
-} from "lucide-react";
+import { Plus, ExternalLink, Download, Search, Link } from "lucide-react";
+import ViewToggle from "../gallery/ViewToggle";
 
 export default function BookmarkToolbar({
   title,
@@ -124,35 +117,7 @@ export default function BookmarkToolbar({
           </button>
         </BaseToolTip>
 
-        <div className="flex rounded border border-gray-200 bg-gray-100 p-1 dark:border-gray-700 dark:bg-gray-800">
-          <BaseToolTip label="Grid View">
-            <button
-              onClick={() => setViewMode("grid")}
-              className={cn(
-                "rounded p-2 transition duration-100",
-                viewMode === "grid"
-                  ? "bg-white text-teal-600 shadow-sm dark:bg-teal-500 dark:text-white"
-                  : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-              )}
-            >
-              <Grid size={18} />
-            </button>
-          </BaseToolTip>
-
-          <BaseToolTip label="List View">
-            <button
-              onClick={() => setViewMode("list")}
-              className={cn(
-                "rounded p-2 transition duration-100",
-                viewMode === "list"
-                  ? "bg-white text-teal-600 shadow-sm dark:bg-teal-500 dark:text-white"
-                  : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
-              )}
-            >
-              <List size={18} />
-            </button>
-          </BaseToolTip>
-        </div>
+        <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
       </div>
     </div>
   );
