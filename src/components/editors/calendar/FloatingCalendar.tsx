@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   format,
   startOfMonth,
@@ -23,6 +23,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { createPortal } from "react-dom";
+import * as calendarApi from "@/lib/api/calendar";
 
 export default function FloatingCalendar({
   selectedDate,
@@ -33,6 +34,7 @@ export default function FloatingCalendar({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [monthEvents, setMonthEvents] = useState<Set<string>>(new Set());
 
   const activeBackgroundId = useActiveBackgroundId();
   const activeNestlingId = useActiveNestlingId();
@@ -57,17 +59,34 @@ export default function FloatingCalendar({
     return date >= weekStart && date <= weekEnd;
   };
 
-  const handleDateClick = (date: Date) => {
+  const handleDateClick = async (date: Date) => {
     onDateSelect(date);
     setIsOpen(false);
 
     const { start, end } = getWeekRange(date);
-    getEvents({
+
+    await getEvents({
       nestlingId: activeNestlingId!,
       start,
       end,
     });
   };
+
+  useEffect(() => {
+    if (!isOpen || !activeNestlingId) return;
+
+    const fetch = async () => {
+      const events = await calendarApi.getPlannerEvents({
+        id: activeNestlingId,
+        start: format(monthStart, "yyyy-MM-dd"),
+        end: format(monthEnd, "yyyy-MM-dd"),
+      });
+
+      setMonthEvents(new Set(events.map((e) => e.date)));
+    };
+
+    fetch();
+  }, [isOpen, currentMonth, activeNestlingId]);
 
   return createPortal(
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -81,7 +100,7 @@ export default function FloatingCalendar({
         side="top"
         align="end"
         className={cn(
-          "w-80 border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800",
+          "w-80 border-gray-200 bg-white p-4 select-none dark:border-gray-700 dark:bg-gray-800",
           activeBackgroundId &&
             "border-0 bg-white/90 backdrop-blur-md dark:bg-black/90",
         )}
@@ -119,27 +138,32 @@ export default function FloatingCalendar({
           ))}
         </div>
 
-        <div className="grid grid-cols-7 gap-2 space-y-1">
+        <div className="grid grid-cols-7 gap-2">
           {days.map((day) => {
             return (
-              <button
-                key={day.toString()}
-                onClick={() => handleDateClick(day)}
-                className={cn(
-                  "flex size-8 items-center justify-center rounded-full text-sm transition-colors",
-                  "hover:bg-gray-100 dark:hover:bg-gray-700",
-                  isInCurrentWeek(day) &&
-                    !isSameDay(day, new Date()) &&
-                    "bg-teal-100 text-teal-700 hover:bg-teal-200/70 dark:bg-teal-700/20 dark:text-teal-300 dark:hover:bg-teal-700/30",
-                  isSameDay(day, new Date()) &&
-                    "bg-teal-500 text-white hover:bg-teal-600 dark:bg-teal-400 dark:hover:bg-teal-500",
-                  !isSameMonth(day, currentMonth) &&
-                    "text-gray-300 dark:text-gray-600",
-                  isSameDay(day, selectedDate) && "border border-teal-500",
+              <div className="relative flex flex-col items-center">
+                <button
+                  key={day.toString()}
+                  onClick={() => handleDateClick(day)}
+                  className={cn(
+                    "flex size-8 items-center justify-center rounded-full text-sm transition-colors",
+                    "hover:bg-gray-100 dark:hover:bg-gray-700",
+                    isInCurrentWeek(day) &&
+                      !isSameDay(day, new Date()) &&
+                      "bg-teal-100 text-teal-700 hover:bg-teal-200/70 dark:bg-teal-700/20 dark:text-teal-300 dark:hover:bg-teal-700/30",
+                    isSameDay(day, new Date()) &&
+                      "bg-teal-500 text-white hover:bg-teal-600 dark:bg-teal-400 dark:hover:bg-teal-500",
+                    !isSameMonth(day, currentMonth) &&
+                      "text-gray-300 dark:text-gray-600",
+                    isSameDay(day, selectedDate) && "border border-teal-500",
+                  )}
+                >
+                  {format(day, "d")}
+                </button>
+                {monthEvents.has(format(day, "yyyy-MM-dd")) && (
+                  <div className="absolute -bottom-0.5 h-1 w-1 rounded-full bg-teal-500" />
                 )}
-              >
-                {format(day, "d")}
-              </button>
+              </div>
             );
           })}
         </div>
