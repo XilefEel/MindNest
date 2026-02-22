@@ -74,9 +74,9 @@ export default function BaseModal({
           {body}
         </div>
 
-        {(footer || showCancel !== false) && (
+        {(footer || showCancel) && (
           <DialogFooter className="flex justify-between gap-2">
-            {showCancel !== false && (
+            {showCancel && (
               <DialogClose asChild>
                 <Button
                   variant="ghost"

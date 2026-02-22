@@ -3,7 +3,7 @@ import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { NestlingType, Nestling } from "@/lib/types/nestling";
 import { nestlingTypes } from "@/lib/utils/nestlings";
 
-export default function NestlingBreakdown({
+export default function NestlingPopover({
   nestlings,
 }: {
   nestlings: Nestling[];

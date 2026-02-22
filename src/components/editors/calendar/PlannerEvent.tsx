@@ -75,6 +75,7 @@ export default function PlannerEvent({
     }
   };
 
+  // Cannot use BasePopover because of the context menu and Rnd
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>

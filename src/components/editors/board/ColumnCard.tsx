@@ -1,22 +1,15 @@
 import { Trash } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { BoardCard } from "@/lib/types/board";
 import { setActiveDraggingId, useBoardActions } from "@/stores/useBoardStore";
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import CardContextMenu from "@/components/context-menu/CardContextMenu";
 import CardPopover from "../../popovers/CardPopover";
-import { cn } from "@/lib/utils/general";
-import { useActiveBackgroundId } from "@/stores/useNestStore";
+import BasePopover from "@/components/popovers/BasePopover.tsx";
 
 export default function ColumnCard({ card }: { card: BoardCard }) {
   const [isOpen, setIsOpen] = useState(false);
   const { deleteCard } = useBoardActions();
-  const activeBackgroundId = useActiveBackgroundId();
 
   const {
     attributes,
@@ -53,8 +46,13 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
 
   return (
     <CardContextMenu card={card}>
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger asChild>
+      <BasePopover
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        align="start"
+        side="right"
+        width="w-96"
+        trigger={
           <div
             ref={setNodeRef}
             style={style}
@@ -91,20 +89,9 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
               <Trash className="size-3.5" />
             </button>
           </div>
-        </PopoverTrigger>
-
-        <PopoverContent
-          align="start"
-          side="right"
-          className={cn(
-            "w-96 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
-            activeBackgroundId &&
-              "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
-          )}
-        >
-          <CardPopover card={card} onClose={() => setIsOpen(false)} />
-        </PopoverContent>
-      </Popover>
+        }
+        content={<CardPopover card={card} onClose={() => setIsOpen(false)} />}
+      />
     </CardContextMenu>
   );
 }

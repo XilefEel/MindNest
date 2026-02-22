@@ -11,7 +11,6 @@ import { ChevronDown, Dot, Folder, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { NestlingTag } from "./NestlingTag";
 import { cn } from "@/lib/utils/general";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import TagPopover from "../popovers/TagPopover";
 import TagEditPopover from "../popovers/TagEditPopover";
 import { toast } from "sonner";
@@ -20,6 +19,7 @@ import {
   useIsTitleCollapsed,
   useNestStore,
 } from "@/stores/useNestStore";
+import BasePopover from "../popovers/BasePopover";
 
 export default function NestlingTitle({
   title,
@@ -148,30 +148,25 @@ export default function NestlingTitle({
         {nestlingTags.length > 0 && <Dot size={20} />}
 
         {nestlingTags.map((tag) => (
-          <Popover key={tag.id}>
-            <PopoverTrigger asChild>
+          <BasePopover
+            key={tag.id}
+            width="w-60"
+            trigger={
               <button>
                 <NestlingTag
                   tag={tag}
                   onRemove={() => handleDetachTag(tag.id)}
                 />
               </button>
-            </PopoverTrigger>
-            <PopoverContent
-              align="start"
-              className={cn(
-                "w-60 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
-                activeBackgroundId &&
-                  "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
-              )}
-            >
-              <TagEditPopover tag={tag} />
-            </PopoverContent>
-          </Popover>
+            }
+            content={<TagEditPopover tag={tag} />}
+          />
         ))}
 
-        <Popover open={isOpen} onOpenChange={setIsOpen}>
-          <PopoverTrigger asChild>
+        <BasePopover
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          trigger={
             <button
               className={cn(
                 "rounded-full border text-xs transition-colors",
@@ -188,18 +183,9 @@ export default function NestlingTitle({
               <Plus size={12} />
               {nestlingTags.length === 0 && <span>Add tag</span>}
             </button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="start"
-            className={cn(
-              "w-80 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
-              activeBackgroundId &&
-                "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
-            )}
-          >
-            <TagPopover nestlingId={nestling.id} />
-          </PopoverContent>
-        </Popover>
+          }
+          content={<TagPopover nestlingId={nestling.id} />}
+        />
       </div>
     </div>
   );

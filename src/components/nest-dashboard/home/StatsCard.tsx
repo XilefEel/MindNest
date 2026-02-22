@@ -1,11 +1,7 @@
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { useState, ReactNode } from "react";
+import BasePopover from "@/components/popovers/BasePopover";
 
 export default function StatCard({
   label,
@@ -47,19 +43,14 @@ export default function StatCard({
 
   if (type === "popover" && popoverContent) {
     return (
-      <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-        <PopoverTrigger asChild>{cardContent}</PopoverTrigger>
-        <PopoverContent
-          side="right"
-          className={cn(
-            "w-80 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
-            activeBackgroundId &&
-              "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
-          )}
-        >
-          {popoverContent}
-        </PopoverContent>
-      </Popover>
+      <BasePopover
+        isOpen={popoverOpen}
+        setIsOpen={setPopoverOpen}
+        trigger={cardContent}
+        content={popoverContent}
+        side="right"
+        align="center"
+      />
     );
   }
 
