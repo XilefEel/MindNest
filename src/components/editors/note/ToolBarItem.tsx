@@ -10,7 +10,7 @@ export default function ToolBarItem({
 }: {
   Icon: any;
   label: string;
-  onFormat: () => void;
+  onFormat?: () => void;
   isActive?: boolean;
 }) {
   const activeBackgroundId = useActiveBackgroundId();

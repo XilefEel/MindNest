@@ -26,10 +26,10 @@ import ToolBarItem from "./ToolBarItem";
 import { useCurrentEditor, useEditorState } from "@tiptap/react";
 import { exportNoteToHTML } from "@/lib/utils/note";
 import { useState } from "react";
-import ToolBarDialog from "./ToolBarDialog";
-import BaseToolTip from "@/components/BaseToolTip";
+import ToolBarPopover from "./ToolBarPopover.tsx";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
+import NoteTemplatePopover from "@/components/popovers/NoteTemplatePopover.tsx";
 
 export default function ToolBar({ title }: { title: string }) {
   const activeBackgroundId = useActiveBackgroundId();
@@ -220,49 +220,42 @@ export default function ToolBar({ title }: { title: string }) {
         )}
       />
 
-      <ToolBarDialog
+      <ToolBarPopover
         editor={editor}
         type="image"
         isOpen={showImageDialog}
         setIsOpen={setShowImageDialog}
       >
-        <button aria-label="Add Image">
-          <BaseToolTip label="Add Image">
-            <ImagePlus
-              className={cn(
-                "rounded p-1 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
-                activeBackgroundId &&
-                  "hover:bg-white/ hover:text-black dark:hover:bg-black/30",
-              )}
-            />
-          </BaseToolTip>
+        <button>
+          <ToolBarItem Icon={ImagePlus} label="Add Image" />
         </button>
-      </ToolBarDialog>
+      </ToolBarPopover>
 
-      <ToolBarDialog
+      <ToolBarPopover
         editor={editor}
         type="youtube"
         isOpen={showYoutubeDialog}
         setIsOpen={setShowYoutubeDialog}
       >
-        <button aria-label="Insert YouTube Link">
-          <BaseToolTip label="Insert YouTube Link">
-            <Youtube
-              className={cn(
-                "rounded p-1 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
-                activeBackgroundId &&
-                  "hover:bg-white/30 hover:text-black dark:hover:bg-black/30",
-              )}
-            />
-          </BaseToolTip>
+        <button>
+          <ToolBarItem Icon={Youtube} label="Insert YouTube Link" />
         </button>
-      </ToolBarDialog>
+      </ToolBarPopover>
 
       <ToolBarItem
         Icon={Download}
         label="Export as HTML"
         onFormat={() => exportNoteToHTML(editor, title)}
       />
+
+      <div
+        className={cn(
+          "w-px rounded-full bg-gray-200 dark:bg-gray-700",
+          activeBackgroundId && "bg-gray-900 dark:bg-gray-100",
+        )}
+      />
+
+      <NoteTemplatePopover />
     </div>
   );
 }

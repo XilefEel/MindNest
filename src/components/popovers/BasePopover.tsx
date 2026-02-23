@@ -32,7 +32,7 @@ export default function BasePopover({
         align={align}
         side={side}
         className={cn(
-          "border-gray-200 bg-white select-none dark:border-gray-700 dark:bg-gray-800",
+          "rounded-xl border-gray-200 bg-white select-none dark:border-gray-700 dark:bg-gray-800",
           width,
           activeBackgroundId &&
             "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
