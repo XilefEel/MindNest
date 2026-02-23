@@ -1,49 +1,90 @@
-// import { create } from "zustand";
+import * as noteApi from "@/lib/api/note";
+import { NoteTemplate, NewNoteTemplate } from "@/lib/types/note";
+import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
+import { create } from "zustand";
+import { useShallow } from "zustand/react/shallow";
+import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
+import { useNestlingStore } from "@/stores/useNestlingStore.tsx";
 
-// type NoteState = {
-//   present: string;
-//   past: string[];
-//   future: string[];
-//   updateNote: (note: string) => void;
-//   undo: () => void;
-//   redo: () => void;
-//   reset: (note: string) => void;
-// };
+type NoteState = {
+  templates: NoteTemplate[];
+  loading: boolean;
+  error: string | null;
 
-// export const useNoteStore = create<NoteState>((set, get) => ({
-//   present: "",
-//   past: [],
-//   future: [],
+  addTemplate: (template: NewNoteTemplate) => Promise<NoteTemplate>;
+  useTemplate: (nestlingId: number, template: NoteTemplate) => Promise<void>;
+  getTemplates: (nestlingId: number) => Promise<void>;
+  updateTemplate: (id: number, updates: Partial<NoteTemplate>) => Promise<void>;
+  deleteTemplate: (id: number) => Promise<void>;
+};
 
-//   updateNote: (newContent: string) => {
-//     const { past, present } = get();
-//     set({ past: [...past, present], present: newContent, future: [] });
-//   },
+export const useNoteStore = create<NoteState>((set, get) => ({
+  activeEntry: null,
+  entries: [],
+  templates: [],
+  loading: false,
+  error: null,
 
-//   undo: () => {
-//     const { past, future, present } = get();
-//     if (past.length === 0) return;
+  addTemplate: withStoreErrorHandler(set, async (template: NewNoteTemplate) => {
+    const newTemplate = await noteApi.createNoteTemplate(template);
 
-//     const previous = past[past.length - 1];
-//     set({
-//       past: past.slice(0, past.length - 1),
-//       present: previous,
-//       future: [present, ...future],
-//     });
-//   },
-//   redo: () => {
-//     const { past, future, present } = get();
-//     if (future.length === 0) return;
+    set((state) => ({
+      templates: [...state.templates, newTemplate],
+    }));
 
-//     const next = future[0];
-//     set({
-//       past: [...past, present],
-//       present: next,
-//       future: future.slice(1),
-//     });
-//   },
+    await updateNestlingTimestamp(newTemplate.nestlingId);
+    return newTemplate;
+  }),
 
-//   reset: (note: string) => {
-//     set({ past: [], future: [], present: note });
-//   },
-// }));
+  useTemplate: withStoreErrorHandler(
+    set,
+    async (nestlingId: number, template: NoteTemplate) => {
+      await useNestlingStore.getState().updateNestling(nestlingId, {
+        content: template.content,
+      });
+    },
+  ),
+
+  getTemplates: withStoreErrorHandler(set, async (nestlingId: number) => {
+    const templates = await noteApi.getNoteTemplates(nestlingId);
+    set({ templates, loading: false });
+  }),
+
+  updateTemplate: withStoreErrorHandler(set, async (id, updates) => {
+    const current = get().templates.find((t) => t.id === id)!;
+    if (!current) throw new Error("Template not found");
+
+    const updated = mergeWithCurrent(current, updates);
+
+    await noteApi.updateNoteTemplate({ ...updated, id });
+
+    set((state) => ({
+      templates: state.templates.map((t) => (t.id === id ? updated : t)),
+    }));
+    await updateNestlingTimestamp(updated.nestlingId);
+  }),
+
+  deleteTemplate: withStoreErrorHandler(set, async (id: number) => {
+    await Promise.all([
+      noteApi.deleteNoteTemplate(id),
+      updateNestlingTimestamp(id),
+    ]);
+
+    set((state) => ({
+      templates: state.templates.filter((e) => e.id !== id),
+    }));
+  }),
+}));
+
+export const useTemplates = () => useNoteStore((state) => state.templates);
+
+export const useNoteActions = () =>
+  useNoteStore(
+    useShallow((state) => ({
+      addTemplate: state.addTemplate,
+      useTemplate: state.useTemplate,
+      getTemplates: state.getTemplates,
+      updateTemplate: state.updateTemplate,
+      deleteTemplate: state.deleteTemplate,
+    })),
+  );
