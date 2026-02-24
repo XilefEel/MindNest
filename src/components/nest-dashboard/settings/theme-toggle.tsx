@@ -1,11 +1,12 @@
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Laptop } from "lucide-react";
+import { useCallback } from "react";
 
 export function useThemeToggle() {
   const { setTheme, theme } = useTheme();
 
-  const cycleTheme = () => {
+  const cycleTheme = useCallback(() => {
     const currentTheme = theme || "system";
 
     if (currentTheme === "light") {
@@ -15,7 +16,7 @@ export function useThemeToggle() {
     } else {
       setTheme("light");
     }
-  };
+  }, [theme, setTheme]);
 
   return cycleTheme;
 }

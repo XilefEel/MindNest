@@ -121,5 +121,6 @@ export function useKeyboardShortcuts({
     audioIsPaused,
     activeBackgroundId,
     storedBackgroundId,
+    cycleTheme,
   ]);
 }

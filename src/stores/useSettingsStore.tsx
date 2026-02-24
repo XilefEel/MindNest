@@ -6,14 +6,14 @@ import {
 } from "@/lib/storage/settings";
 import { create } from "zustand";
 
+let debounceTimers: Partial<
+  Record<keyof Settings, ReturnType<typeof setTimeout>>
+> = {};
+
 type SettingsState = Settings & {
   loaded: boolean;
-
   loadSettings: () => Promise<void>;
-  setSetting: <K extends keyof Settings>(
-    key: K,
-    value: Settings[K],
-  ) => Promise<void>;
+  setSetting: <K extends keyof Settings>(key: K, value: Settings[K]) => void;
 };
 
 export const useSettingsStore = create<SettingsState>((set) => ({
@@ -23,14 +23,15 @@ export const useSettingsStore = create<SettingsState>((set) => ({
 
   loadSettings: async () => {
     const settings = await loadSettings();
-    set({
-      ...settings,
-      loaded: true,
-    });
+    set({ ...settings, loaded: true });
   },
 
-  setSetting: async (key, value) => {
+  setSetting: (key, value) => {
     set({ [key]: value } as Partial<SettingsState>);
-    await updateSetting(key, value);
+
+    clearTimeout(debounceTimers[key]);
+    debounceTimers[key] = setTimeout(async () => {
+      await updateSetting(key, value);
+    }, 300);
   },
 }));
