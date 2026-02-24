@@ -1,5 +1,5 @@
 import { User } from "../types/user";
-import { setItem, getItem, deleteItem } from "./session";
+import { setItem, getItem, deleteItem } from "./storage";
 
 export async function saveUserSession(user: User) {
   return setItem("user", user);

@@ -1,56 +1,58 @@
-import { getItem, setItem } from "./session";
+import { getMap, saveMap } from "./storage";
 
 type LastNestlings = Record<string, number>;
 type RecentNestlings = Record<string, number[]>;
 
-export async function saveLastNestling(nestId: number, nestlingId: number) {
-  const current = (await getItem<LastNestlings>("lastNestlings")) || {};
-  current[nestId.toString()] = nestlingId;
-  await setItem<LastNestlings>("lastNestlings", current);
-}
+const LAST_NESTLING_KEY = "lastNestlings";
+const RECENT_NESTLINGS_KEY = "recentNestlings";
 
 export async function getLastNestling(
   nestId: number | null,
 ): Promise<number | null> {
   if (nestId == null) return null;
-  const current = (await getItem<LastNestlings>("lastNestlings")) || {};
-  return current[nestId.toString()] ?? null;
+  const map = await getMap<LastNestlings>(LAST_NESTLING_KEY);
+  return map[nestId.toString()] ?? null;
+}
+
+export async function saveLastNestling(nestId: number, nestlingId: number) {
+  const map = await getMap<LastNestlings>(LAST_NESTLING_KEY);
+  map[nestId.toString()] = nestlingId;
+  await saveMap<LastNestlings>(LAST_NESTLING_KEY, map);
 }
 
 export async function clearLastNestling(nestId: number) {
-  const current = (await getItem<LastNestlings>("lastNestlings")) || {};
-  delete current[nestId.toString()];
-  await setItem<LastNestlings>("lastNestlings", current);
+  const map = await getMap<LastNestlings>(LAST_NESTLING_KEY);
+  delete map[nestId.toString()];
+  await saveMap<LastNestlings>(LAST_NESTLING_KEY, map);
+}
+
+export async function getRecentNestlings(
+  nestId: number | null,
+): Promise<number[]> {
+  if (nestId == null) return [];
+  const map = await getMap<RecentNestlings>(RECENT_NESTLINGS_KEY);
+  return map[nestId.toString()] ?? [];
 }
 
 export async function saveRecentNestling(
   nestId: number,
   recentNestlingId: number,
 ) {
-  const current = (await getItem<RecentNestlings>("recentNestlings")) || {};
-
+  const map = await getMap<RecentNestlings>(RECENT_NESTLINGS_KEY);
   const key = nestId.toString();
-  const currentList = current[key] ?? [];
 
+  const currentList = map[key] ?? [];
   const updatedList = [
     recentNestlingId,
-    ...currentList.filter((item) => item !== recentNestlingId),
+    ...currentList.filter((id) => id !== recentNestlingId),
   ];
-  current[key] = updatedList.slice(0, 10);
 
-  await setItem<RecentNestlings>("recentNestlings", current);
-}
-
-export async function getRecentNestlings(
-  nestId: number | null,
-): Promise<number[] | null> {
-  if (nestId == null) return [];
-  const current = (await getItem<RecentNestlings>("recentNestlings")) || {};
-  return current[nestId.toString()] ?? [];
+  map[key] = updatedList.slice(0, 10);
+  await saveMap<RecentNestlings>(RECENT_NESTLINGS_KEY, map);
 }
 
 export async function clearRecentNestlings(nestId: number) {
-  const current = (await getItem<RecentNestlings>("recentNestlings")) || {};
-  delete current[nestId.toString()];
-  await setItem<RecentNestlings>("recentNestlings", current);
+  const map = await getMap<RecentNestlings>(RECENT_NESTLINGS_KEY);
+  delete map[nestId.toString()];
+  await saveMap<RecentNestlings>(RECENT_NESTLINGS_KEY, map);
 }

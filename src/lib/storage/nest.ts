@@ -1,4 +1,4 @@
-import { setItem, getItem, deleteItem } from "./session";
+import { setItem, getItem, deleteItem } from "./storage";
 
 export async function saveLastNestId(nestId: number) {
   return setItem("lastNestId", nestId);

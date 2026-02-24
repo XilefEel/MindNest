@@ -1,26 +1,24 @@
-import { getItem, setItem } from "./session";
+import { getMap, saveMap } from "./storage";
 
 type LastBackgroundMusics = Record<string, number>;
-
-export async function saveLastBackgroundMusic(nestId: number, musicId: number) {
-  const current =
-    (await getItem<LastBackgroundMusics>("lastBackgroundMusic")) || {};
-  current[nestId.toString()] = musicId;
-  await setItem<LastBackgroundMusics>("lastBackgroundMusic", current);
-}
+const KEY = "lastBackgroundMusic";
 
 export async function getLastBackgroundMusic(
   nestId: number | null,
 ): Promise<number | null> {
   if (nestId == null) return null;
-  const current =
-    (await getItem<LastBackgroundMusics>("lastBackgroundMusic")) || {};
-  return current[nestId.toString()] ?? null;
+  const map = await getMap<LastBackgroundMusics>(KEY);
+  return map[nestId.toString()] ?? null;
+}
+
+export async function saveLastBackgroundMusic(nestId: number, musicId: number) {
+  const map = await getMap<LastBackgroundMusics>(KEY);
+  map[nestId.toString()] = musicId;
+  await saveMap<LastBackgroundMusics>(KEY, map);
 }
 
 export async function clearLastBackgroundMusic(nestId: number) {
-  const current =
-    (await getItem<LastBackgroundMusics>("lastBackgroundMusic")) || {};
-  delete current[nestId.toString()];
-  await setItem<LastBackgroundMusics>("lastBackgroundMusic", current);
+  const map = await getMap<LastBackgroundMusics>(KEY);
+  delete map[nestId.toString()];
+  await saveMap<LastBackgroundMusics>(KEY, map);
 }

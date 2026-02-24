@@ -25,3 +25,16 @@ export async function deleteItem(key: string) {
   await store.delete(key);
   await store.save();
 }
+
+export async function getMap<T extends Record<string, any>>(
+  key: string,
+): Promise<T> {
+  return (await getItem<T>(key)) || ({} as T);
+}
+
+export async function saveMap<T extends Record<string, any>>(
+  key: string,
+  map: T,
+): Promise<void> {
+  await setItem(key, map);
+}
