@@ -9,6 +9,7 @@ import {
   useNestlingStore,
 } from "@/stores/useNestlingStore";
 import { useNestActions } from "@/stores/useNestStore";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 import { useEffect } from "react";
 
 export default function useLoadNest({
@@ -28,6 +29,7 @@ export default function useLoadNest({
     getTags,
     getAllNestlingTags,
   } = useNestlingActions();
+
   const {
     setActiveNestId,
     setActiveBackgroundId,
@@ -35,6 +37,8 @@ export default function useLoadNest({
     getBackgrounds,
     getMusic,
   } = useNestActions();
+
+  const { loadSettings } = useSettingsStore();
 
   if (!id) return;
 
@@ -52,6 +56,8 @@ export default function useLoadNest({
             getLastNestling(lastNest.id),
             getLastBackgroundImage(lastNest.id),
             getLastBackgroundMusic(lastNest.id),
+
+            loadSettings(),
             fetchSidebar(lastNest.id),
             getBackgrounds(lastNest.id),
             getMusic(lastNest.id),

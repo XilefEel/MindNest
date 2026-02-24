@@ -19,6 +19,7 @@ import FloatingMusicPlayer from "@/components/nest-dashboard/music/FloatingMusic
 import BookmarkEditor from "@/components/editors/bookmark/BookmarkEditor";
 import GlobalModals from "@/components/modals/GlobalModals";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -26,18 +27,17 @@ export default function NestDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isTopbarCollapsed, setIsTopbarCollapsed] = useState(false);
   const [isCardHidden, setIsCardHidden] = useState(false);
+
+  const { topbarHidden, sidebarHidden, setSetting } = useSettingsStore();
 
   const activeNestling = useActiveNestling();
   const backgrounds = useBackgrounds();
   const activeBackgroundId = useActiveBackgroundId();
 
   const activeBackgroundImage = backgrounds.find(
-    (background) => background.id === activeBackgroundId,
+    (bg) => bg.id === activeBackgroundId,
   );
-
   const backgroundUrl = activeBackgroundImage
     ? convertFileSrc(activeBackgroundImage.filePath)
     : null;
@@ -46,10 +46,6 @@ export default function NestDashboardPage() {
 
   useKeyboardShortcuts({
     nestId: nest?.id || 0,
-    isTopbarCollapsed,
-    setIsTopbarCollapsed,
-    isSidebarCollapsed,
-    setIsSidebarCollapsed,
     isSidebarOpen,
     setIsSidebarOpen,
     isCardHidden,
@@ -78,15 +74,15 @@ export default function NestDashboardPage() {
         <nav
           className={cn(
             "shrink-0 transition-all duration-300 ease-in-out",
-            isTopbarCollapsed ? "h-0" : "h-24",
+            topbarHidden ? "h-0" : "h-24",
           )}
         >
           <div
             className={cn(
               "transition-all duration-300 md:px-6",
-              isTopbarCollapsed ? "-translate-y-11/12" : "translate-y-0",
+              topbarHidden ? "-translate-y-11/12" : "translate-y-0",
             )}
-            onDoubleClick={() => setIsTopbarCollapsed(!isTopbarCollapsed)}
+            onDoubleClick={() => setSetting("topbarHidden", !topbarHidden)}
           >
             <Topbar
               nest={nest}
@@ -95,6 +91,7 @@ export default function NestDashboardPage() {
             />
           </div>
         </nav>
+
         <div className="mt-6 flex flex-1 overflow-hidden">
           {isSidebarOpen && (
             <div
@@ -106,25 +103,19 @@ export default function NestDashboardPage() {
           <aside
             className={cn(
               "shrink-0 transition-all duration-300 ease-in-out",
-              // Mobile
               "w-0 md:w-72",
-              // Desktop
-              isSidebarCollapsed ? "md:w-0" : "md:w-72",
+              sidebarHidden ? "md:w-0" : "md:w-72",
             )}
           >
             <div
               className={cn(
                 "w-72 transition-transform duration-300 ease-in-out",
-                // Mobile
                 "fixed top-0 z-40 h-full md:z-0",
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full",
-                // Desktop
                 "md:relative",
-                isSidebarCollapsed
-                  ? "md:-translate-x-11/12"
-                  : "md:translate-x-0",
+                sidebarHidden ? "md:-translate-x-11/12" : "md:translate-x-0",
               )}
-              onDoubleClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              onDoubleClick={() => setSetting("sidebarHidden", !sidebarHidden)}
             >
               <Sidebar
                 nestId={nest.id}
@@ -147,12 +138,11 @@ export default function NestDashboardPage() {
           >
             {activeNestling && activeNestling.nestlingType === "note" ? (
               <NoteEditor key={activeNestling.id} />
-            ) : activeNestling && activeNestling?.nestlingType === "board" ? (
+            ) : activeNestling?.nestlingType === "board" ? (
               <BoardEditor key={activeNestling.id} />
-            ) : activeNestling &&
-              activeNestling?.nestlingType === "calendar" ? (
+            ) : activeNestling?.nestlingType === "calendar" ? (
               <CalendarEditor key={activeNestling.id} />
-            ) : activeNestling && activeNestling?.nestlingType === "gallery" ? (
+            ) : activeNestling?.nestlingType === "gallery" ? (
               <GalleryEditor key={activeNestling.id} />
             ) : activeNestling?.nestlingType === "mindmap" ? (
               <MindmapEditor key={activeNestling.id} />
@@ -166,7 +156,6 @@ export default function NestDashboardPage() {
       </div>
 
       <FloatingMusicPlayer />
-
       <GlobalModals />
     </div>
   );

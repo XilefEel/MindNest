@@ -1,4 +1,3 @@
-// hooks/useKeyboardShortcuts.ts
 import { useEffect } from "react";
 import {
   useNestlingModal,
@@ -13,33 +12,26 @@ import {
   useNestStore,
   useStoredBackgroundId,
 } from "@/stores/useNestStore";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 
 export function useKeyboardShortcuts({
   nestId,
-  isTopbarCollapsed,
-  setIsTopbarCollapsed,
-  isSidebarCollapsed,
-  setIsSidebarCollapsed,
   isSidebarOpen,
   setIsSidebarOpen,
   isCardHidden,
   setIsCardHidden,
 }: {
   nestId: number;
-  isTopbarCollapsed: boolean;
-  setIsTopbarCollapsed: (val: boolean) => void;
-  isSidebarCollapsed: boolean;
-  setIsSidebarCollapsed: (val: boolean) => void;
   isSidebarOpen: boolean;
   setIsSidebarOpen: (val: boolean) => void;
   isCardHidden: boolean;
   setIsCardHidden: (val: boolean) => void;
 }) {
+  const { topbarHidden, sidebarHidden, setSetting } = useSettingsStore();
   const activeBackgroundId = useActiveBackgroundId();
   const storedBackgroundId = useStoredBackgroundId();
   const { setActiveBackgroundId, clearActiveBackgroundId, setAudioIsPaused } =
     useNestActions();
-
   const audioIsPaused = useNestStore((state) => state.audioIsPaused);
 
   const { isNestlingOpen, openNestlingModal, closeNestlingModal } =
@@ -52,69 +44,82 @@ export function useKeyboardShortcuts({
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.ctrlKey || e.metaKey) {
-        switch (e.key) {
-          case "t":
-            e.preventDefault();
-            setIsTopbarCollapsed(!isTopbarCollapsed);
-            break;
+      if (!e.ctrlKey && !e.metaKey) return;
 
-          case "s":
-            e.preventDefault();
-            const isMobile = window.innerWidth < 768;
-            if (isMobile) {
-              setIsSidebarOpen(!isSidebarOpen);
-            } else {
-              setIsSidebarCollapsed(!isSidebarCollapsed);
-            }
-            break;
+      switch (e.key) {
+        case "t":
+          e.preventDefault();
+          setSetting("topbarHidden", !topbarHidden);
+          break;
 
-          case "h":
-            e.preventDefault();
-            setIsCardHidden(!isCardHidden);
-            break;
-
-          case "n":
-            e.preventDefault();
-            isNestlingOpen ? closeNestlingModal() : openNestlingModal(nestId);
-            break;
-
-          case "f":
-            e.preventDefault();
-            isFolderOpen ? closeFolderModal() : openFolderModal(nestId);
-            break;
-
-          case "k":
-            e.preventDefault();
-            setIsSearchOpen(!isSearchOpen);
-            break;
-
-          case "i":
-            e.preventDefault();
-            setIsSettingsOpen(!isSettingsOpen);
-            break;
-
-          case "d":
-            e.preventDefault();
-            cycleTheme();
-            break;
-
-          case "b":
-            e.preventDefault();
-            activeBackgroundId
-              ? clearActiveBackgroundId()
-              : setActiveBackgroundId(storedBackgroundId);
-            break;
-
-          case "m":
-            e.preventDefault();
-            setAudioIsPaused(!audioIsPaused);
-            break;
+        case "s": {
+          e.preventDefault();
+          const isMobile = window.innerWidth < 768;
+          if (isMobile) {
+            setIsSidebarOpen(!isSidebarOpen);
+          } else {
+            setSetting("sidebarHidden", !sidebarHidden);
+          }
+          break;
         }
+
+        case "h":
+          e.preventDefault();
+          setIsCardHidden(!isCardHidden);
+          break;
+
+        case "n":
+          e.preventDefault();
+          isNestlingOpen ? closeNestlingModal() : openNestlingModal(nestId);
+          break;
+
+        case "f":
+          e.preventDefault();
+          isFolderOpen ? closeFolderModal() : openFolderModal(nestId);
+          break;
+
+        case "k":
+          e.preventDefault();
+          setIsSearchOpen(!isSearchOpen);
+          break;
+
+        case "i":
+          e.preventDefault();
+          setIsSettingsOpen(!isSettingsOpen);
+          break;
+
+        case "d":
+          e.preventDefault();
+          cycleTheme();
+          break;
+
+        case "b":
+          e.preventDefault();
+          activeBackgroundId
+            ? clearActiveBackgroundId()
+            : setActiveBackgroundId(storedBackgroundId);
+          break;
+
+        case "m":
+          e.preventDefault();
+          setAudioIsPaused(!audioIsPaused);
+          break;
       }
     };
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  });
+  }, [
+    topbarHidden,
+    sidebarHidden,
+    isSidebarOpen,
+    isCardHidden,
+    isNestlingOpen,
+    isFolderOpen,
+    isSearchOpen,
+    isSettingsOpen,
+    audioIsPaused,
+    activeBackgroundId,
+    storedBackgroundId,
+  ]);
 }
