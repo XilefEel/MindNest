@@ -5,6 +5,7 @@ import { FilePen, Trash2, Check } from "lucide-react";
 import { useNoteActions, useTemplates } from "@/stores/useNoteStore.tsx";
 import { useActiveNestling } from "@/stores/useNestlingStore.tsx";
 import { cn } from "@/lib/utils/general";
+import { useActiveNestId } from "@/stores/useNestStore";
 
 export default function NoteTemplatePopover() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,8 +13,9 @@ export default function NoteTemplatePopover() {
   const [templateName, setTemplateName] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const activeNestId = useActiveNestId();
   const activeNestling = useActiveNestling();
-  if (!activeNestling) return;
+  if (!activeNestling || !activeNestId) return;
 
   const { getTemplates, addTemplate, useTemplate, deleteTemplate } =
     useNoteActions();
@@ -23,7 +25,7 @@ export default function NoteTemplatePopover() {
     const name = templateName.trim() || `Template ${noteTemplates.length + 1}`;
     try {
       await addTemplate({
-        nestlingId: activeNestling.id,
+        nestId: activeNestId,
         name,
         content: activeNestling.content,
       });
@@ -41,8 +43,8 @@ export default function NoteTemplatePopover() {
   }, [isSaving]);
 
   useEffect(() => {
-    if (isOpen && activeNestling.id) {
-      getTemplates(activeNestling.id);
+    if (isOpen && activeNestId) {
+      getTemplates(activeNestId);
     } else {
       setIsSaving(false);
       setTemplateName("");

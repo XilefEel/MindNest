@@ -1,7 +1,7 @@
 import { WithBase } from "./base";
 
 export type NewNoteTemplate = {
-  nestlingId: number;
+  nestId: number;
   name: string;
   content: string;
 };

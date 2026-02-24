@@ -39,14 +39,14 @@ pub fn insert_template_into_db(db: &AppDb, data: NewNoteTemplate) -> DbResult<No
 
     let mut statement = connection.prepare(
         "
-            INSERT INTO note_templates (nestling_id, name, content, created_at, updated_at)
+            INSERT INTO note_templates (nest_id, name, content, created_at, updated_at)
             VALUES (?1, ?2, ?3, ?4, ?5)
-            RETURNING id, nestling_id, name, content, created_at, updated_at",
+            RETURNING id, nest_id, name, content, created_at, updated_at",
     )?;
 
     let note_template = statement.query_row(
         params![
-            data.nestling_id,
+            data.nest_id,
             data.name,
             data.content,
             created_at,
@@ -55,7 +55,7 @@ pub fn insert_template_into_db(db: &AppDb, data: NewNoteTemplate) -> DbResult<No
         |row| {
             Ok(NoteTemplate {
                 id: row.get(0)?,
-                nestling_id: row.get(1)?,
+                nest_id: row.get(1)?,
                 name: row.get(2)?,
                 content: row.get(3)?,
                 created_at: row.get(4)?,
@@ -67,21 +67,21 @@ pub fn insert_template_into_db(db: &AppDb, data: NewNoteTemplate) -> DbResult<No
     Ok(note_template)
 }
 
-pub fn get_templates_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<NoteTemplate>> {
+pub fn get_templates_by_nestling(db: &AppDb, nest_id: i64) -> DbResult<Vec<NoteTemplate>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
         "
-            SELECT id, nestling_id, name, content, created_at, updated_at
+            SELECT id, nest_id, name, content, created_at, updated_at
             FROM note_templates
-            WHERE nestling_id = ?1",
+            WHERE nest_id = ?1",
     )?;
 
     let note_templates = statement
-        .query_map(params![nestling_id], |row| {
+        .query_map(params![nest_id], |row| {
             Ok(NoteTemplate {
                 id: row.get(0)?,
-                nestling_id: row.get(1)?,
+                nest_id: row.get(1)?,
                 name: row.get(2)?,
                 content: row.get(3)?,
                 created_at: row.get(4)?,

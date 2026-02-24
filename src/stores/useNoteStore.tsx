@@ -12,8 +12,8 @@ type NoteState = {
   error: string | null;
 
   addTemplate: (template: NewNoteTemplate) => Promise<NoteTemplate>;
-  useTemplate: (nestlingId: number, template: NoteTemplate) => Promise<void>;
-  getTemplates: (nestlingId: number) => Promise<void>;
+  useTemplate: (nestId: number, template: NoteTemplate) => Promise<void>;
+  getTemplates: (nestId: number) => Promise<void>;
   updateTemplate: (id: number, updates: Partial<NoteTemplate>) => Promise<void>;
   deleteTemplate: (id: number) => Promise<void>;
 };
@@ -32,21 +32,21 @@ export const useNoteStore = create<NoteState>((set, get) => ({
       templates: [...state.templates, newTemplate],
     }));
 
-    await updateNestlingTimestamp(newTemplate.nestlingId);
+    await updateNestlingTimestamp(newTemplate.nestId);
     return newTemplate;
   }),
 
   useTemplate: withStoreErrorHandler(
     set,
-    async (nestlingId: number, template: NoteTemplate) => {
-      await useNestlingStore.getState().updateNestling(nestlingId, {
+    async (nestId: number, template: NoteTemplate) => {
+      await useNestlingStore.getState().updateNestling(nestId, {
         content: template.content,
       });
     },
   ),
 
-  getTemplates: withStoreErrorHandler(set, async (nestlingId: number) => {
-    const templates = await noteApi.getNoteTemplates(nestlingId);
+  getTemplates: withStoreErrorHandler(set, async (nestId: number) => {
+    const templates = await noteApi.getNoteTemplates(nestId);
     set({ templates, loading: false });
   }),
 
@@ -61,7 +61,7 @@ export const useNoteStore = create<NoteState>((set, get) => ({
     set((state) => ({
       templates: state.templates.map((t) => (t.id === id ? updated : t)),
     }));
-    await updateNestlingTimestamp(updated.nestlingId);
+    await updateNestlingTimestamp(updated.nestId);
   }),
 
   deleteTemplate: withStoreErrorHandler(set, async (id: number) => {
