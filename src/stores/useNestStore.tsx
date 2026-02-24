@@ -37,8 +37,6 @@ type NestState = {
 
   activeDraggingId: string | null;
 
-  isTitleCollapsed: boolean;
-
   loading: boolean;
   error: string | null;
 
@@ -72,8 +70,6 @@ type NestState = {
   getMusic: (nestId: number) => Promise<void>;
   updateMusic: (id: number, title: string, orderIndex: number) => Promise<void>;
   deleteMusic: (id: number) => Promise<void>;
-
-  setIsTitleCollapsed: (collapsed: boolean) => void;
 };
 
 export const useNestStore = create<NestState>((set, get) => ({
@@ -321,10 +317,6 @@ export const useNestStore = create<NestState>((set, get) => ({
 
     if (get().activeMusicId === musicId) set({ activeMusicId: null });
   }),
-
-  setIsTitleCollapsed: (collapsed: boolean) => {
-    set({ isTitleCollapsed: collapsed });
-  },
 }));
 
 export const useNestActions = () =>
@@ -357,8 +349,6 @@ export const useNestActions = () =>
       getMusic: state.getMusic,
       updateMusic: state.updateMusic,
       deleteMusic: state.deleteMusic,
-
-      setIsTitleCollapsed: state.setIsTitleCollapsed,
     })),
   );
 
@@ -387,6 +377,3 @@ export const useAudioCurrentTime = () =>
   useNestStore((state) => state.audioCurrentTime);
 
 export const useMusicVolume = () => useNestStore((state) => state.musicVolume);
-
-export const useIsTitleCollapsed = () =>
-  useNestStore((state) => state.isTitleCollapsed);

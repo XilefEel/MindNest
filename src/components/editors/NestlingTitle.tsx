@@ -14,12 +14,9 @@ import { cn } from "@/lib/utils/general";
 import TagPopover from "../popovers/TagPopover";
 import TagEditPopover from "../popovers/TagEditPopover";
 import { toast } from "sonner";
-import {
-  useActiveBackgroundId,
-  useIsTitleCollapsed,
-  useNestStore,
-} from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import BasePopover from "../popovers/BasePopover";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 
 export default function NestlingTitle({
   title,
@@ -38,8 +35,7 @@ export default function NestlingTitle({
   const [isOpen, setIsOpen] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
 
-  const isTitleCollapsed = useIsTitleCollapsed();
-  const { setIsTitleCollapsed } = useNestStore();
+  const { nestlingTitleHidden, setSetting } = useSettingsStore();
 
   const pickerRef = useRef<HTMLDivElement>(null);
   const Icon = getNestlingIcon(nestling.nestlingType);
@@ -88,12 +84,14 @@ export default function NestlingTitle({
     <div className="flex flex-col">
       <div className="group relative flex flex-row items-center text-gray-900 transition-all dark:text-gray-100">
         <button
-          onClick={() => setIsTitleCollapsed(!isTitleCollapsed)}
+          onClick={() =>
+            setSetting("nestlingTitleHidden", !nestlingTitleHidden)
+          }
           className="w-0 text-gray-500 opacity-0 transition-all group-hover:mr-2 group-hover:w-6 group-hover:opacity-100 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         >
           <ChevronDown
             size={24}
-            className={isTitleCollapsed ? "-rotate-90" : ""}
+            className={nestlingTitleHidden ? "-rotate-90" : ""}
           />
         </button>
 
@@ -102,13 +100,13 @@ export default function NestlingTitle({
             onClick={() => setShowPicker(!showPicker)}
             className={cn(
               "flex w-8 items-center justify-center text-3xl font-bold transition-opacity hover:opacity-70",
-              isTitleCollapsed && "w-6 text-xl",
+              nestlingTitleHidden && "w-6 text-xl",
             )}
           >
             {nestling.icon ? (
               <p>{nestling.icon}</p>
             ) : (
-              <Icon size={isTitleCollapsed ? 24 : 32} />
+              <Icon size={nestlingTitleHidden ? 24 : 32} />
             )}
           </button>
 
@@ -130,7 +128,7 @@ export default function NestlingTitle({
           onChange={(e) => setTitle(e.target.value)}
           className={cn(
             "w-full min-w-0 resize-none bg-transparent pl-2 text-3xl font-bold outline-none",
-            isTitleCollapsed && "text-xl font-semibold",
+            nestlingTitleHidden && "text-xl font-semibold",
           )}
           placeholder="Title..."
         />
@@ -139,7 +137,7 @@ export default function NestlingTitle({
       <div
         className={cn(
           "mt-2 flex items-center gap-2 text-gray-800 dark:text-gray-200",
-          isTitleCollapsed && "hidden",
+          nestlingTitleHidden && "hidden",
         )}
       >
         <Folder size={20} />
