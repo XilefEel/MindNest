@@ -94,10 +94,10 @@ export default function FolderItem({
         <div
           style={style}
           className={cn(
-            "flex items-center justify-between gap-1 rounded px-2 py-1 transition-colors duration-100 hover:bg-teal-50 dark:hover:bg-gray-700",
+            "flex items-center justify-between gap-1 rounded px-2 py-1 transition-[background] hover:bg-teal-50 dark:hover:bg-gray-700",
             activeBackgroundId
               ? "hover:bg-white/20 dark:hover:bg-black/20"
-              : "hover:bg-teal-50 dark:hover:bg-gray-700",
+              : "hover:bg-gray-100 dark:hover:bg-gray-700",
           )}
         >
           <div className="flex min-w-0 flex-1 items-center gap-1.5">

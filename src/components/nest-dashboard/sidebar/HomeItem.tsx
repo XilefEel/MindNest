@@ -13,14 +13,14 @@ export default function HomeItem({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 rounded px-2 py-1 font-medium transition-colors duration-150 ease-in-out",
+        "flex items-center gap-2 rounded px-2 py-1 font-medium transition-[background]",
         activeBackgroundId
           ? activeNestlingId === null
-            ? "bg-white/50 font-bold dark:bg-black/50"
+            ? "bg-white/50 font-semibold dark:bg-black/50"
             : "hover:bg-white/20 dark:hover:bg-black/20"
           : activeNestlingId === null
-            ? "bg-teal-100 font-bold dark:bg-teal-400"
-            : "hover:bg-teal-50 dark:hover:bg-gray-700",
+            ? "bg-teal-100 font-semibold dark:bg-teal-400"
+            : "hover:bg-gray-100 dark:hover:bg-gray-700",
       )}
       onClick={handleHomeClick}
       onDoubleClick={(e) => e.stopPropagation()}

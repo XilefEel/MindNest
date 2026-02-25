@@ -102,7 +102,7 @@ export default function NestDashboardPage() {
 
           <aside
             className={cn(
-              "shrink-0 transition-all duration-300 ease-in-out",
+              "shrink-0 transition-[width] duration-300 ease-in-out",
               "w-0 md:w-72",
               sidebarHidden ? "md:w-0" : "md:w-72",
             )}

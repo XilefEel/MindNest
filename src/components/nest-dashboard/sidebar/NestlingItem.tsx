@@ -167,14 +167,14 @@ export default function NestlingItem({
       >
         <div
           className={cn(
-            "flex w-full max-w-full items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition-colors duration-100 ease-in-out",
+            "flex w-full max-w-full items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition-[background]",
             activeBackgroundId
               ? nestling.id === activeNestling?.id
-                ? "bg-white/50 font-bold dark:bg-black/50"
+                ? "bg-white/50 font-semibold dark:bg-black/50"
                 : "hover:bg-white/20 dark:hover:bg-black/20"
               : nestling.id === activeNestling?.id
-                ? "bg-teal-100 font-bold dark:bg-teal-400"
-                : "hover:bg-teal-50 dark:hover:bg-gray-700",
+                ? "bg-teal-100 font-semibold dark:bg-teal-400"
+                : "hover:bg-gray-100 dark:hover:bg-gray-700",
           )}
           onClick={() => handleSelect()}
           style={style}

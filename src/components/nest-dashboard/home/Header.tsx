@@ -64,11 +64,11 @@ export default function Header({ nestId }: { nestId: number }) {
   return (
     <header className="flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
       <div>
-        <h1 className="relative inline-block text-2xl font-bold tracking-tight text-slate-900 md:text-3xl dark:text-white">
+        <h1 className="relative inline-block text-2xl font-bold tracking-tight text-gray-900 md:text-3xl dark:text-white">
           {greeting}
           <span className="absolute -bottom-2 left-0 h-1 w-full rounded-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-300 dark:to-teal-400"></span>
         </h1>
-        <p className="mt-3 text-sm text-slate-600 md:text-base dark:text-slate-400">
+        <p className="mt-3 text-sm text-gray-600 md:text-base dark:text-gray-400">
           {subtext}
         </p>
       </div>
@@ -76,16 +76,16 @@ export default function Header({ nestId }: { nestId: number }) {
       <div className="flex gap-3 text-sm font-semibold md:text-base">
         <button
           onClick={() => openNestlingModal(nestId)}
-          className="flex items-center gap-1 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 px-3.5 py-1.5 text-white shadow-lg transition hover:scale-105 hover:shadow-xl"
+          className="flex items-center gap-1.5 rounded-xl bg-teal-500 px-3.5 py-1.5 text-white shadow-sm transition hover:bg-teal-600 hover:shadow-md"
         >
-          <Plus className="size-4" /> Nestling
+          <Plus size={20} /> Nestling
         </button>
 
         <button
           onClick={() => openFolderModal(nestId)}
-          className="flex items-center gap-1 rounded-xl bg-gradient-to-r from-purple-500 to-purple-600 px-3.5 py-1.5 text-white shadow-lg transition hover:scale-105 hover:shadow-xl"
+          className="flex items-center gap-1.5 rounded-xl bg-purple-500 px-3.5 py-1.5 text-white shadow-sm transition hover:bg-purple-600 hover:shadow-md"
         >
-          <Plus className="size-4" /> Folder
+          <Plus size={20} /> Folder
         </button>
       </div>
     </header>
