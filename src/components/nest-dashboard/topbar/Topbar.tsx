@@ -1,5 +1,4 @@
 import { Nest } from "@/lib/types/nest";
-import { Button } from "../../ui/button";
 import { Settings, Link, ArrowLeft, CircleUserRound, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils/general";
@@ -9,6 +8,7 @@ import TopbarButton from "./TopbarButton";
 import { useEffect, useRef, useState } from "react";
 import { clearLastNestId } from "@/lib/storage/nest";
 import { useSettingsModal } from "@/stores/useModalStore";
+import { useSettingsStore } from "@/stores/useSettingsStore.tsx";
 
 export default function Topbar({
   nest,
@@ -25,6 +25,7 @@ export default function Topbar({
   const { setActiveBackgroundId, setActiveNestId, updateNest } =
     useNestActions();
   const { setIsSettingsOpen } = useSettingsModal();
+  const { topbarHidden } = useSettingsStore();
 
   const handleExit = () => {
     navigate("/dashboard");
@@ -82,7 +83,12 @@ export default function Topbar({
     }
   }, [isEditing]);
   return (
-    <nav className="flex w-full items-center justify-between border-b p-2 pt-8 sm:p-4 sm:pt-10">
+    <nav
+      className={cn(
+        "flex w-full items-center justify-between border-b border-gray-900 p-2 pt-8 transition-[border] sm:p-4 sm:pt-10 dark:border-gray-100",
+        topbarHidden && "border-0",
+      )}
+    >
       <div
         className={cn(
           "flex items-center gap-3 p-1",
@@ -90,13 +96,15 @@ export default function Topbar({
             "rounded-xl bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
-        <TopbarButton action={handleExit} Icon={ArrowLeft} />
+        <TopbarButton label={"Go Back"} action={handleExit} Icon={ArrowLeft} />
 
         <TopbarButton
+          label={"Toggle Sidebar"}
           action={() => setIsSidebarOpen(!isSidebarOpen)}
           Icon={Menu}
           isHidden
         />
+
         <div
           className={cn(
             "rounded transition-all duration-200",
@@ -120,33 +128,33 @@ export default function Topbar({
           />
         </div>
       </div>
+
       <div
         className={cn(
-          "flex items-center p-1 sm:gap-2",
+          "flex items-center justify-center p-1 px-3",
           activeBackgroundId &&
             "rounded-xl bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
-        <TopbarButton action={() => console.log("share nest")} Icon={Link} />
+        <div className="flex items-center gap-3">
+          <TopbarButton
+            label={"Share"}
+            action={() => console.log("share nest")}
+            Icon={Link}
+          />
 
-        <Button
-          variant="ghost"
-          className={cn(
-            "rounded-lg hover:bg-teal-100 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
-            activeBackgroundId && "hover:bg-white/20 dark:hover:bg-black/20",
-          )}
-          onClick={() => setIsSettingsOpen(true)}
-          onDoubleClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <Settings className="size-4 sm:size-5" />
-        </Button>
+          <TopbarButton
+            label={"Settings"}
+            action={() => setIsSettingsOpen(true)}
+            Icon={Settings}
+          />
 
-        <TopbarButton
-          action={() => console.log("profile")}
-          Icon={CircleUserRound}
-        />
+          <TopbarButton
+            label={"Profile"}
+            action={() => console.log("profile")}
+            Icon={CircleUserRound}
+          />
+        </div>
       </div>
     </nav>
   );

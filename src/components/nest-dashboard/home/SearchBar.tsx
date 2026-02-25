@@ -54,7 +54,7 @@ export default function SearchBar() {
                 "bg-white text-black placeholder-gray-400",
                 "shadow-sm hover:shadow focus:shadow-md",
                 "focus:border-teal-500 focus:ring-teal-500",
-                "dark:bg-gray-700 dark:text-gray-100",
+                "dark:bg-gray-800 dark:text-gray-100",
                 "dark:focus:border-teal-400 dark:focus:ring-teal-400",
                 activeBackgroundId &&
                   "bg-white/10 backdrop-blur-sm dark:bg-black/10",

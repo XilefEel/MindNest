@@ -19,7 +19,8 @@ export default function BaseToolTip({
           sideOffset={8}
           className={cn(
             "data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-            "relative z-50 rounded-lg bg-white px-3 py-1 text-sm shadow-md dark:bg-gray-700",
+            "relative z-50 rounded-lg px-3 py-1 text-sm shadow-md",
+            "bg-white dark:bg-gray-800",
             activeBackgroundId &&
               "bg-white/30 backdrop-blur-sm dark:bg-black/30",
           )}

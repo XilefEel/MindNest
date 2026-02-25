@@ -28,7 +28,6 @@ export default function StatCard({
         "group rounded-xl border border-b-4 p-4 hover:shadow-md",
         "bg-white dark:bg-gray-800",
         "border-gray-200 border-b-orange-500 hover:border-orange-500 dark:border-gray-800 dark:border-b-orange-500 dark:hover:border-orange-500",
-        "transition",
         activeBackgroundId &&
           "border-t-0 border-r-0 border-l-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
       )}

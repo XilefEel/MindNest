@@ -110,7 +110,7 @@ export default function FolderItem({
             <FolderIcon className="size-4 flex-shrink-0" />
             <div
               className={cn(
-                "min-w-0 flex-1 rounded text-gray-900 transition-all duration-100 dark:text-gray-100",
+                "min-w-0 flex-1 rounded transition-all",
                 isEditing &&
                   "bg-white px-2 py-0.5 shadow-md ring-2 ring-teal-500 dark:bg-gray-800",
               )}

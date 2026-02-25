@@ -73,13 +73,13 @@ export default function NestDashboardPage() {
       >
         <nav
           className={cn(
-            "shrink-0 transition-all duration-300 ease-in-out",
+            "shrink-0 transition-[height] duration-300 ease-in-out",
             topbarHidden ? "h-0" : "h-24",
           )}
         >
           <div
             className={cn(
-              "transition-all duration-300 md:px-6",
+              "transition-transform duration-300 md:px-6",
               topbarHidden ? "-translate-y-11/12" : "translate-y-0",
             )}
             onDoubleClick={() => setSetting("topbarHidden", !topbarHidden)}
