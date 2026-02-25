@@ -4,7 +4,7 @@ let storePromise: Promise<Store> | null = null;
 
 function getStore() {
   if (!storePromise) {
-    storePromise = Store.load(".mindnest-auth.dat");
+    storePromise = Store.load(".mindnest.json");
   }
   return storePromise;
 }
