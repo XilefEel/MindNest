@@ -35,7 +35,12 @@ export default function NestSettings() {
 
   return (
     <div className="flex h-full flex-row gap-5">
-      <div className="flex w-50 flex-col gap-1 border-r border-gray-200 pr-5 dark:border-gray-700">
+      <div
+        className={cn(
+          "flex w-50 flex-col gap-1 border-r border-gray-200 pr-5 dark:border-gray-700",
+          activeBackgroundId && "border-black/30 dark:border-white/30",
+        )}
+      >
         {tabs.map((tab) => (
           <button
             key={tab.id}

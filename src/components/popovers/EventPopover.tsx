@@ -82,7 +82,7 @@ export default function EventPopover({
               autoFocus
               className={cn(
                 "w-full rounded border border-teal-500 px-2 py-1 text-lg font-semibold focus:ring-2 focus:ring-teal-500 focus:outline-none",
-                activeBackgroundId && "bg-white/50 dark:bg-black/50",
+                activeBackgroundId && "bg-white/30 dark:bg-black/30",
               )}
               placeholder="Event title"
             />
@@ -92,7 +92,7 @@ export default function EventPopover({
               className={cn(
                 "truncate rounded px-2 py-1 text-lg font-semibold transition-colors hover:bg-gray-50 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
                 activeBackgroundId &&
-                  "hover:bg-white/50 hover:dark:bg-black/50",
+                  "hover:bg-white/30 hover:dark:bg-black/30",
               )}
             >
               {title}
@@ -111,7 +111,7 @@ export default function EventPopover({
               rows={6}
               className={cn(
                 "w-full resize-none rounded border border-teal-500 px-2 py-1 text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none",
-                activeBackgroundId && "bg-white/50 dark:bg-black/50",
+                activeBackgroundId && "bg-white/30 dark:bg-black/30",
               )}
               placeholder="Add description..."
             />
@@ -121,7 +121,7 @@ export default function EventPopover({
               className={cn(
                 "line-clamp-3 rounded px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50 hover:text-teal-500 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-teal-400",
                 activeBackgroundId &&
-                  "hover:bg-white/50 hover:dark:bg-black/50",
+                  "hover:bg-white/30 hover:dark:bg-black/30",
               )}
             >
               {description || (

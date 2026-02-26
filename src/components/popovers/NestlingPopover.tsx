@@ -39,7 +39,7 @@ export default function NestlingPopover({
                   key={nestling.value}
                   className={cn(
                     "flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 dark:bg-gray-700/50",
-                    activeBackgroundId && "bg-white/50 dark:bg-black/30",
+                    activeBackgroundId && "bg-white/30 dark:bg-black/30",
                   )}
                 >
                   <div className="flex items-center gap-3">

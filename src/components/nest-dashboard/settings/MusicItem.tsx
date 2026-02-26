@@ -130,13 +130,13 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
           ref={setNodeRef}
           style={style}
           className={cn(
-            "group rounded-md p-2 transition-colors duration-200",
+            "group rounded-md p-2 transition-colors",
             isActive
               ? activeBackgroundId
                 ? "bg-purple-100/80 dark:bg-purple-900/40"
                 : "bg-purple-100 dark:bg-purple-900/40"
               : activeBackgroundId
-                ? "hover:bg-white/40 dark:hover:bg-black/40"
+                ? "hover:bg-white/30 dark:hover:bg-black/30"
                 : "hover:bg-gray-100 dark:hover:bg-gray-700",
           )}
         >
@@ -161,9 +161,12 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
                     "truncate rounded text-sm font-medium text-gray-900 transition-all duration-200 dark:text-gray-100",
                     isActive && "text-purple-600 dark:text-purple-400",
                     isEditing &&
-                      (activeBackgroundId
-                        ? "bg-white/10 px-2 py-0.5 shadow-md ring-2 ring-purple-500 backdrop-blur-sm dark:bg-black/10"
-                        : "bg-white px-2 py-0.5 shadow-md ring-2 ring-purple-500 dark:bg-gray-800"),
+                      cn(
+                        "px-2 py-0.5 shadow ring-2 ring-purple-500",
+                        activeBackgroundId
+                          ? "bg-white/10 backdrop-blur-sm dark:bg-black/10"
+                          : "bg-white dark:bg-gray-800",
+                      ),
                   )}
                 >
                   <input

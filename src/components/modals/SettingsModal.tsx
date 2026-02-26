@@ -34,7 +34,12 @@ export default function SettingsModal() {
       body={
         <div className="flex h-[500px] flex-col">
           {activeNestId && (
-            <div className="flex shrink-0 border-b border-gray-200 dark:border-gray-700">
+            <div
+              className={cn(
+                "flex shrink-0 border-b border-gray-200 dark:border-gray-700",
+                activeBackgroundId && "border-black/30 dark:border-white/30",
+              )}
+            >
               {tabs.map((tab) => (
                 <button
                   key={tab.id}

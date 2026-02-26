@@ -77,13 +77,15 @@ export default function BackgroundSection() {
                 "group relative aspect-video overflow-hidden rounded-lg ring-2 transition-all duration-150",
                 activeBackgroundId === image.id
                   ? "ring-teal-500 dark:ring-teal-400"
-                  : "ring-gray-200 hover:ring-gray-300 dark:ring-gray-700 dark:hover:ring-gray-600",
+                  : activeBackgroundId
+                    ? "ring-black/10 hover:ring-black/20 dark:ring-white/10 dark:hover:ring-white/20"
+                    : "ring-gray-200 hover:ring-gray-300 dark:ring-gray-700 dark:hover:ring-gray-600",
               )}
             >
               <img
                 src={convertFileSrc(image.filePath)}
                 alt="Background"
-                className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                className="h-full w-full object-cover transition-transform group-hover:scale-105"
                 loading="lazy"
               />
               <button

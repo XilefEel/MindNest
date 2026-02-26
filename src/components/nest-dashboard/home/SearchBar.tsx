@@ -50,14 +50,14 @@ export default function SearchBar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={cn(
-                "h-10 rounded-xl border-0 pl-12 text-base transition-shadow",
-                "bg-white text-black placeholder-gray-400",
+                "h-10 rounded-xl border pl-12 text-base transition-shadow",
+                "bg-white dark:bg-gray-800",
                 "shadow-sm hover:shadow focus:shadow-md",
-                "focus:border-teal-500 focus:ring-teal-500",
-                "dark:bg-gray-800 dark:text-gray-100",
-                "dark:focus:border-teal-400 dark:focus:ring-teal-400",
+                "text-gray-900 placeholder-gray-500 dark:text-gray-100 dark:placeholder-gray-400",
+                "focus:ring-teal-500 dark:focus:ring-teal-400",
+                "border-gray-300 focus:border-teal-50 dark:border-gray-600 dark:focus:border-teal-400",
                 activeBackgroundId &&
-                  "bg-white/10 backdrop-blur-sm dark:bg-black/10",
+                  "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
               )}
             />
           </div>

@@ -25,7 +25,7 @@ export default function SearchItem({
       onClick={() => handleClick(nestling.id)}
       className={cn(
         "flex flex-row items-center justify-between gap-2 p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
-        activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
+        activeBackgroundId && "hover:bg-black/5 hover:dark:bg-white/10",
       )}
     >
       <div className="flex items-center gap-1">

@@ -93,7 +93,12 @@ export default function MusicSection() {
         </div>
       </DndContext>
 
-      <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-700/30">
+      <div
+        className={cn(
+          "flex items-center gap-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-700/30",
+          activeBackgroundId && "bg-white/30 dark:bg-black/30",
+        )}
+      >
         {volume > 0 ? (
           <Volume2 className="h-4 w-4 text-gray-600 dark:text-gray-400" />
         ) : (

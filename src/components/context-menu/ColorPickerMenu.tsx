@@ -41,7 +41,7 @@ export default function ColorPickerMenu<T extends { color: string }>({
           className={cn(
             "animate-in fade-in-0 zoom-in-95 z-50 min-w-[160px] rounded-lg border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700 dark:bg-gray-800",
             activeBackgroundId &&
-              "border-0 bg-white/30 backdrop-blur-sm hover:bg-white/30 dark:bg-black/30 dark:hover:bg-black/30",
+              "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
           )}
         >
           <div className="grid grid-cols-4 gap-2">
