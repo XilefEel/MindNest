@@ -16,7 +16,7 @@ export function TextField({
   const activeBackgroundId = useActiveBackgroundId();
 
   return (
-    <div className="space-y-1">
+    <div className="flex flex-col gap-1">
       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
         {label}
       </label>
@@ -25,12 +25,13 @@ export function TextField({
         onChange={(e) => setText(e.target.value)}
         placeholder={placeholder}
         className={cn(
-          "w-full rounded-md border px-3 py-2 text-sm",
-          "border-gray-300 bg-white text-black placeholder-gray-400",
-          "focus:border-teal-500 focus:ring-teal-500",
-          "dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500",
-          "dark:focus:border-teal-400 dark:focus:ring-teal-400",
-          activeBackgroundId && "bg-white/10 backdrop-blur-sm dark:bg-black/10",
+          "w-full rounded-md border px-3 py-2 text-sm shadow transition-colors",
+          "bg-white dark:bg-gray-800",
+          "text-gray-900 placeholder-gray-500 dark:text-gray-100 dark:placeholder-gray-400",
+          "focus:ring-teal-500 dark:focus:ring-teal-400",
+          "border-gray-300 focus:border-teal-50 dark:border-gray-600 dark:focus:border-teal-400",
+          activeBackgroundId &&
+            "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
         )}
       />
     </div>
