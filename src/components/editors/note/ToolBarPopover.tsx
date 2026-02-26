@@ -64,12 +64,13 @@ export default function YouTubeLinkDialog({
           className="flex-1 bg-transparent outline-none focus:outline-none dark:text-white dark:placeholder-gray-400"
           autoFocus
         />
+
         <div className="flex flex-row items-center gap-1 pl-3">
           <button
             onClick={handleInsert}
             disabled={!linkUrl.trim()}
             className={cn(
-              "rounded p-1 text-gray-500 transition-all duration-150 hover:bg-gray-100 hover:text-teal-500 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-gray-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-teal-400 dark:disabled:hover:bg-transparent dark:disabled:hover:text-gray-400",
+              "rounded p-1 text-gray-500 transition-colors hover:bg-teal-50 hover:text-teal-500 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-gray-500 dark:text-gray-400 dark:hover:bg-teal-900/30 dark:hover:text-teal-400 dark:disabled:hover:bg-transparent dark:disabled:hover:text-gray-400",
               activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
             )}
           >
@@ -82,7 +83,7 @@ export default function YouTubeLinkDialog({
             onClick={() => linkUrl.trim() && openUrl(linkUrl)}
             disabled={!linkUrl.trim()}
             className={cn(
-              "rounded p-1 text-gray-500 transition-all duration-150 hover:bg-gray-100 hover:text-blue-500 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-gray-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-blue-400 dark:disabled:hover:bg-transparent dark:disabled:hover:text-gray-400",
+              "rounded p-1 text-gray-500 transition-colors hover:bg-blue-50 hover:text-blue-500 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-gray-500 dark:text-gray-400 dark:hover:bg-blue-900/30 dark:hover:text-blue-400 dark:disabled:hover:bg-transparent dark:disabled:hover:text-gray-400",
               activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
             )}
           >
@@ -92,7 +93,7 @@ export default function YouTubeLinkDialog({
           <button
             onClick={handleClose}
             className={cn(
-              "rounded p-1 text-gray-500 transition-all duration-150 hover:bg-gray-100 hover:text-red-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-red-400",
+              "rounded p-1 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-500 dark:text-gray-400 dark:hover:bg-red-900/30 dark:hover:text-red-400",
               activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
             )}
           >

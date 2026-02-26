@@ -72,7 +72,7 @@ export default function NestSettings() {
                 Restore all settings to defaults
               </p>
             </div>
-            <button className="rounded-lg bg-red-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-red-600">
+            <button className="rounded-lg bg-red-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-red-600">
               Reset
             </button>
           </div>

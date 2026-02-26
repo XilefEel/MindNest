@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { toast } from "@/lib/utils/toast";
 import {
   useNestlingActions,
@@ -93,7 +92,7 @@ export default function NestlingModal() {
                     key={typeOption.value}
                     onClick={() => setNestlingType(typeOption.value)}
                     className={cn(
-                      "relative flex items-center gap-3 rounded-lg p-4 transition-all duration-200",
+                      "relative flex items-center gap-3 rounded-lg p-4 transition-colors",
                       isSelected
                         ? activeBackgroundId
                           ? "bg-teal-300/20 shadow-md backdrop-blur-sm dark:bg-teal-400/20"
@@ -148,13 +147,13 @@ export default function NestlingModal() {
         </div>
       }
       footer={
-        <Button
+        <button
           onClick={handleSaveNestling}
           disabled={isSaving || !title.trim()}
-          className="rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
+          className="flex items-center rounded-lg bg-teal-500 px-4 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600"
         >
           {isSaving ? "Creating..." : "Create"}
-        </Button>
+        </button>
       }
     >
       <div />

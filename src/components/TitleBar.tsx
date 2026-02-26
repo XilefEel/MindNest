@@ -6,6 +6,7 @@ import { Maximize, Minus, X } from "lucide-react";
 export default function Titlebar() {
   const appWindow = getCurrentWindow();
   const activeBackgroundId = useActiveBackgroundId();
+
   return (
     <div
       data-tauri-drag-region
@@ -18,19 +19,25 @@ export default function Titlebar() {
         )}
       >
         <div
-          className="flex h-6 items-center justify-center px-4 transition-colors duration-200 hover:bg-gray-100 hover:dark:bg-zinc-700"
+          className={cn(
+            "flex h-6 items-center justify-center px-4 transition-colors hover:bg-gray-200 hover:dark:bg-gray-700",
+            activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
+          )}
           onClick={() => appWindow.minimize()}
         >
           <Minus className="size-4" />
         </div>
         <div
-          className="flex h-6 items-center justify-center px-4 text-xs transition-colors duration-200 hover:bg-gray-100 hover:dark:bg-zinc-700"
+          className={cn(
+            "flex h-6 items-center justify-center px-4 transition-colors hover:bg-gray-200 hover:dark:bg-gray-700",
+            activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
+          )}
           onClick={() => appWindow.toggleMaximize()}
         >
           <Maximize className="size-4" />
         </div>
         <div
-          className="flex h-6 items-center justify-center px-4 transition-colors duration-200 hover:bg-red-500 hover:dark:bg-red-500"
+          className="flex h-6 items-center justify-center px-4 transition-colors hover:bg-red-500"
           onClick={() => appWindow.close()}
         >
           <X className="size-4" />

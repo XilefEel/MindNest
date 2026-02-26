@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
-import { Button } from "../ui/button";
 import { useEffect } from "react";
 
 export default function BaseModal({
@@ -78,12 +77,9 @@ export default function BaseModal({
           <DialogFooter className="flex justify-between gap-2">
             {showCancel && (
               <DialogClose asChild>
-                <Button
-                  variant="ghost"
-                  className="rounded-lg bg-gray-200 text-black hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-                >
+                <button className="flex items-center rounded-lg bg-gray-200 px-4 py-1.5 text-sm text-black shadow transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
                   Cancel
-                </Button>
+                </button>
               </DialogClose>
             )}
             {footer}

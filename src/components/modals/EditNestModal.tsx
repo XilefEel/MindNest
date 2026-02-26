@@ -1,6 +1,5 @@
 import { Nest } from "@/lib/types/nest";
 import { useState } from "react";
-import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
 import { toast } from "@/lib/utils/toast";
 import { useNestActions } from "@/stores/useNestStore";
@@ -69,21 +68,21 @@ export default function EditNestModal({
         }
         footer={
           <>
-            <Button
+            <button
               onClick={handleDeleteNest}
-              className="mr-auto rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
+              className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-1.5 text-sm text-white shadow transition-colors hover:bg-red-600"
             >
               <Trash size={14} />
               Delete
-            </Button>
+            </button>
             <div className="flex gap-2">
-              <Button
+              <button
                 onClick={handleEditNest}
                 disabled={!title}
-                className="rounded-lg bg-teal-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-700 disabled:opacity-50"
+                className="flex items-center rounded-lg bg-teal-500 px-4 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600"
               >
                 Save
-              </Button>
+              </button>
             </div>
           </>
         }

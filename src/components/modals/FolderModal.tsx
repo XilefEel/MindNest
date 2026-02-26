@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { toast } from "@/lib/utils/toast";
 import {
   useNestlingActions,
@@ -62,13 +61,13 @@ export default function FolderModal() {
         />
       }
       footer={
-        <Button
+        <button
           onClick={handleSaveFolder}
           disabled={isSaving || !title.trim()}
-          className="rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
+          className="flex items-center rounded-lg bg-teal-500 px-4 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600"
         >
           {isSaving ? "Creating..." : "Create"}
-        </Button>
+        </button>
       }
     >
       <div />

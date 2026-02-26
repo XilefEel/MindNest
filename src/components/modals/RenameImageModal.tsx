@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
 import { useEffect, useState } from "react";
 import { toast } from "@/lib/utils/toast";
@@ -64,12 +63,12 @@ export default function RenameImageModal() {
         </>
       }
       footer={
-        <Button
+        <button
           onClick={handleEditImage}
-          className="rounded-lg bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-600 dark:hover:bg-teal-700"
+          className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600"
         >
           Save
-        </Button>
+        </button>
       }
     >
       <div />

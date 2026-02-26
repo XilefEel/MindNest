@@ -24,14 +24,17 @@ import {
   useNestlingActions,
 } from "@/stores/useNestlingStore";
 import { COLORS } from "@/lib/utils/constants";
-import { getRandomElement } from "@/lib/utils/general";
+import { cn, getRandomElement } from "@/lib/utils/general";
 import ColumnCard from "./ColumnCard";
 import { createPortal } from "react-dom";
+import { Plus } from "lucide-react";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export default function BoardEditor() {
   const activeNestling = useActiveNestling();
   if (!activeNestling) return;
 
+  const activeBackgroundId = useActiveBackgroundId();
   const columns = useBoardColumns();
   const cards = useBoardCards();
   const activeDraggingId = useActiveDraggingId();
@@ -108,9 +111,17 @@ export default function BoardEditor() {
 
               <button
                 onClick={handleAddColumn}
-                className="w-72 flex-shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 py-5 text-gray-400 transition hover:bg-white/30 dark:border-gray-600 dark:text-gray-500 dark:hover:bg-black/10"
+                className={cn(
+                  "flex w-72 flex-shrink-0 items-center justify-center gap-2 rounded-lg py-5 transition-colors",
+                  "text-gray-600 dark:text-gray-400",
+                  "border-2 border-dashed border-gray-600 dark:border-gray-400",
+                  "hover:bg-gray-100 hover:dark:bg-gray-800",
+                  activeBackgroundId &&
+                    "hover:bg-white/30 dark:hover:bg-black/10",
+                )}
               >
-                + Add column
+                <Plus size={16} />
+                Add column
               </button>
             </div>
           </SortableContext>

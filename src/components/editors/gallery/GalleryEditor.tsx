@@ -93,11 +93,11 @@ export default function GalleryEditor() {
           />
         </div>
 
-        <div className="flex gap-3 text-sm">
+        <div className="flex gap-3">
           <button
             onClick={handleSelectImage}
             disabled={isUploading}
-            className="flex items-center gap-2 rounded-lg bg-blue-500 px-3 py-1.5 text-white transition-colors hover:bg-blue-600"
+            className="flex items-center gap-2 rounded-lg bg-blue-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-blue-600"
           >
             {isUploading ? (
               <Loader size={16} className="flex-shrink-0 animate-spin" />
@@ -112,7 +112,7 @@ export default function GalleryEditor() {
           <button
             onClick={() => openAlbumModal(activeNestling.id)}
             className={cn(
-              "flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-white transition-colors hover:bg-teal-600",
+              "flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600",
               albumId !== null ? "hidden" : "",
             )}
           >

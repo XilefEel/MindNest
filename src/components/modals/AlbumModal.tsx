@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { toast } from "@/lib/utils/toast";
 import { useGalleryActions, useGalleryStore } from "@/stores/useGalleryStore";
 import BaseModal from "./BaseModal";
@@ -83,17 +82,17 @@ export default function AlbumModal() {
         </>
       }
       footer={
-        <Button
+        <button
           onClick={handleSaveAlbum}
           disabled={loading || !name.trim()}
-          className="rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
+          className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600"
         >
           {loading
             ? "Saving..."
             : albumToEdit
               ? "Update Album"
               : "Create Album"}
-        </Button>
+        </button>
       }
     >
       <div />

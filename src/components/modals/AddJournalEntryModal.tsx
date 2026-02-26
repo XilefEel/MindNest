@@ -1,80 +1,80 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useNestlingActions } from "@/stores/useNestlingStore";
-import { useJournalActions, useJournalStore } from "@/stores/useJournalStore";
-import { JournalEntry } from "@/lib/types/journal";
-import BaseModal from "./BaseModal";
-import { TextField } from "./TextField";
-import { toast } from "@/lib/utils/toast";
-import { useActiveNestId } from "@/stores/useNestStore";
-import { useActiveNestling } from "@/stores/useNestlingStore";
+// import { useState } from "react";
+// import { Button } from "@/components/ui/button";
+// import { useNestlingActions } from "@/stores/useNestlingStore";
+// import { useJournalActions, useJournalStore } from "@/stores/useJournalStore";
+// import { JournalEntry } from "@/lib/types/journal";
+// import BaseModal from "./BaseModal";
+// import { TextField } from "./TextField";
+// import { toast } from "@/lib/utils/toast";
+// import { useActiveNestId } from "@/stores/useNestStore";
+// import { useActiveNestling } from "@/stores/useNestlingStore";
 
-export default function AddJournalEntryModal({
-  setActiveEntry,
-  children,
-}: {
-  setActiveEntry: (entry: JournalEntry) => void;
-  children: React.ReactNode;
-}) {
-  const activeNestId = useActiveNestId();
-  const activeNestling = useActiveNestling();
-  if (!activeNestling) return;
+// export default function AddJournalEntryModal({
+//   setActiveEntry,
+//   children,
+// }: {
+//   setActiveEntry: (entry: JournalEntry) => void;
+//   children: React.ReactNode;
+// }) {
+//   const activeNestId = useActiveNestId();
+//   const activeNestling = useActiveNestling();
+//   if (!activeNestling) return;
 
-  const { fetchSidebar } = useNestlingActions();
-  const { addEntry } = useJournalActions();
-  const loading = useJournalStore((state) => state.loading);
+//   const { fetchSidebar } = useNestlingActions();
+//   const { addEntry } = useJournalActions();
+//   const loading = useJournalStore((state) => state.loading);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [title, setTitle] = useState("");
+//   const [isOpen, setIsOpen] = useState(false);
+//   const [title, setTitle] = useState("");
 
-  const handleExit = async () => {
-    await fetchSidebar(activeNestId!);
-    setTitle("");
-    setIsOpen(false);
-  };
+//   const handleExit = async () => {
+//     await fetchSidebar(activeNestId!);
+//     setTitle("");
+//     setIsOpen(false);
+//   };
 
-  const handleCreateEntry = async () => {
-    try {
-      const newEntry = await addEntry({
-        nestlingId: activeNestling.id,
-        title: title,
-        content: "",
-        entryDate: new Date().toISOString().split("T")[0],
-      });
-      setActiveEntry(newEntry);
-      handleExit();
-      toast.success(`Journal entry "${title}" created successfully!`);
-    } catch (error) {
-      toast.error("Failed to create a new journal entry.");
-    }
-  };
+//   const handleCreateEntry = async () => {
+//     try {
+//       const newEntry = await addEntry({
+//         nestlingId: activeNestling.id,
+//         title: title,
+//         content: "",
+//         entryDate: new Date().toISOString().split("T")[0],
+//       });
+//       setActiveEntry(newEntry);
+//       handleExit();
+//       toast.success(`Journal entry "${title}" created successfully!`);
+//     } catch (error) {
+//       toast.error("Failed to create a new journal entry.");
+//     }
+//   };
 
-  return (
-    <BaseModal
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
-      onSubmit={handleCreateEntry}
-      title="Create a New Journal Entry"
-      description="Start writing your journal entry."
-      body={
-        <TextField
-          label="Entry Title"
-          text={title}
-          setText={setTitle}
-          placeholder="e.g. My First Journal Entry"
-        />
-      }
-      footer={
-        <Button
-          onClick={handleCreateEntry}
-          disabled={loading || !title.trim()}
-          className="rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
-        >
-          {loading ? "Creating..." : "Create"}
-        </Button>
-      }
-    >
-      {children}
-    </BaseModal>
-  );
-}
+//   return (
+//     <BaseModal
+//       isOpen={isOpen}
+//       setIsOpen={setIsOpen}
+//       onSubmit={handleCreateEntry}
+//       title="Create a New Journal Entry"
+//       description="Start writing your journal entry."
+//       body={
+//         <TextField
+//           label="Entry Title"
+//           text={title}
+//           setText={setTitle}
+//           placeholder="e.g. My First Journal Entry"
+//         />
+//       }
+//       footer={
+//         <Button
+//           onClick={handleCreateEntry}
+//           disabled={loading || !title.trim()}
+//           className="rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
+//         >
+//           {loading ? "Creating..." : "Create"}
+//         </Button>
+//       }
+//     >
+//       {children}
+//     </BaseModal>
+//   );
+// }

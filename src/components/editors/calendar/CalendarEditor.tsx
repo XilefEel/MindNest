@@ -71,15 +71,13 @@ export default function CalendarEditor() {
           nestling={activeNestling}
         />
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={duplicateWeek}
-            className="flex items-center gap-1.5 rounded-lg bg-teal-500 px-3 py-1.5 text-sm text-white shadow transition hover:bg-teal-600"
-          >
-            <CalendarPlus className="h-4 w-4" />
-            Duplicate Week
-          </button>
-        </div>
+        <button
+          onClick={duplicateWeek}
+          className="flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600"
+        >
+          <CalendarPlus className="h-4 w-4" />
+          Duplicate Week
+        </button>
       </div>
 
       <PlannerView selectedDate={selectedDate} onDateSelect={setSelectedDate} />

@@ -91,7 +91,11 @@ export default function BackgroundSection() {
                   e.stopPropagation();
                   handleDeleteBackground(image.id);
                 }}
-                className="absolute top-2 right-2 rounded-full bg-red-500/90 p-1.5 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-red-600"
+                className={cn(
+                  "absolute top-2 right-2 rounded-full p-1.5 opacity-0 shadow-md transition-all group-hover:opacity-100",
+                  "bg-white/80 hover:bg-red-50 dark:bg-gray-900/80 dark:hover:bg-red-950",
+                  "text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400",
+                )}
               >
                 <Trash2 size={14} />
               </button>
@@ -114,14 +118,14 @@ export default function BackgroundSection() {
           {activeBackgroundId && (
             <button
               onClick={() => clearActiveBackgroundId()}
-              className="rounded-lg bg-blue-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-blue-600"
+              className="rounded-lg bg-blue-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-600"
             >
               Clear
             </button>
           )}
           <button
             onClick={handleUploadBackground}
-            className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-teal-600"
+            className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-600"
           >
             Upload
           </button>

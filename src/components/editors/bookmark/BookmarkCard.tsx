@@ -91,24 +91,26 @@ export default function BookmarkCard({
               "absolute top-2 left-2 rounded-full p-2 shadow-md transition-colors",
               bookmark.isFavorite
                 ? "bg-yellow-400 opacity-100"
-                : "bg-white/80 opacity-0 group-hover:opacity-100 hover:bg-white/90 dark:bg-gray-900/80 dark:hover:bg-gray-900/90",
+                : "bg-white/80 text-gray-500 opacity-0 group-hover:opacity-100 hover:bg-yellow-50 hover:text-yellow-400 dark:bg-gray-900/80 dark:text-gray-400 dark:hover:bg-yellow-800 hover:dark:text-yellow-500",
             )}
           >
             <Star
               className={cn(
-                "h-4 w-4 transition-all",
-                bookmark.isFavorite
-                  ? "fill-white text-white"
-                  : "text-gray-400 hover:text-yellow-400 dark:text-gray-300",
+                "size-4 transition-all",
+                bookmark.isFavorite ? "fill-white text-white" : "",
               )}
             />
           </button>
 
           <button
             onClick={() => handleDelete(bookmark.id)}
-            className="absolute top-2 right-2 rounded-full bg-white/80 p-2 opacity-0 shadow-md transition-all group-hover:opacity-100 hover:bg-white/90 dark:bg-gray-900/80 dark:hover:bg-gray-900/90"
+            className={cn(
+              "absolute top-2 right-2 rounded-full p-2 opacity-0 shadow-md transition-all group-hover:opacity-100",
+              "bg-white/80 hover:bg-red-50 dark:bg-gray-900/80 dark:hover:bg-red-950",
+              "text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400",
+            )}
           >
-            <Trash2 className="h-4 w-4 text-gray-500 transition-colors hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400" />
+            <Trash2 className="size-4" />
           </button>
         </div>
       </BookmarkContextMenu>
@@ -161,23 +163,16 @@ export default function BookmarkCard({
         <button
           onClick={() => handleToggleFavorite(bookmark.id)}
           className={cn(
-            "absolute top-3 left-3 rounded-full p-2 transition-colors",
+            "absolute top-3 left-3 rounded-full p-2 shadow-md transition-colors",
             bookmark.isFavorite
               ? "bg-yellow-400 opacity-100"
-              : cn(
-                  "opacity-0 group-hover:opacity-100",
-                  activeBackgroundId
-                    ? "border-0 hover:bg-white/30 hover:dark:bg-black/30"
-                    : "hover:bg-gray-100 dark:hover:bg-gray-700",
-                ),
+              : "bg-white/80 text-gray-500 opacity-0 group-hover:opacity-100 hover:bg-yellow-50 hover:text-yellow-400 dark:bg-gray-900/80 dark:text-gray-400 dark:hover:bg-yellow-800 hover:dark:text-yellow-500",
           )}
         >
           <Star
             className={cn(
-              "h-4 w-4 transition-all",
-              bookmark.isFavorite
-                ? "fill-white text-white"
-                : "text-gray-400 hover:text-yellow-400 dark:text-gray-300",
+              "size-4 transition-all",
+              bookmark.isFavorite ? "fill-white text-white" : "",
             )}
           />
         </button>
@@ -185,12 +180,12 @@ export default function BookmarkCard({
         <button
           onClick={() => handleDelete(bookmark.id)}
           className={cn(
-            "absolute top-3 right-3 rounded-full p-2 opacity-0 transition-all group-hover:opacity-100 hover:bg-gray-100 dark:hover:bg-gray-700",
-            activeBackgroundId &&
-              "border-0 hover:bg-white/30 hover:dark:bg-black/30",
+            "absolute top-3 right-3 rounded-full p-2 opacity-0 transition-all group-hover:opacity-100",
+            "bg-white/80 hover:bg-red-50 dark:bg-gray-900/80 dark:hover:bg-red-950",
+            "text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400",
           )}
         >
-          <Trash2 className="h-4 w-4 text-gray-500 transition-colors hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400" />
+          <Trash2 className="size-4" />
         </button>
       </div>
     </BookmarkContextMenu>

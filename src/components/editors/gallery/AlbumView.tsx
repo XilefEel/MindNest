@@ -95,7 +95,7 @@ export default function AlbumView({
 
           <button
             onClick={() => handleDownloadAlbum(album.id)}
-            className="flex items-center gap-2 rounded-lg bg-purple-500 px-3 py-1.5 text-sm text-white transition-colors hover:bg-purple-600"
+            className="flex items-center gap-2 rounded-lg bg-purple-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-purple-600"
           >
             <Download size={16} />
             Download All

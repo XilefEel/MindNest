@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { toast } from "@/lib/utils/toast";
 import { useNestActions } from "@/stores/useNestStore";
 import BaseModal from "./BaseModal";
@@ -46,13 +45,13 @@ export default function AddNestModal({
       description="Give your nest a title. You can always change it later."
       body={<TextField label="Title" text={title} setText={setTitle} />}
       footer={
-        <Button
+        <button
           onClick={handleCreateNest}
           disabled={loading || !title.trim()}
-          className="rounded-lg bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50"
+          className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600"
         >
           {loading ? "Creating..." : "Create"}
-        </Button>
+        </button>
       }
     >
       {children}
