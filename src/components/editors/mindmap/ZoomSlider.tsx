@@ -1,7 +1,6 @@
 import { Maximize, Minus, Plus } from "lucide-react";
 import { useViewport, useStore, useReactFlow } from "@xyflow/react";
 import { Slider } from "@/components/ui/slider";
-import { Button } from "@/components/ui/button";
 
 export default function ZoomSlider() {
   const { zoom } = useViewport();
@@ -10,14 +9,12 @@ export default function ZoomSlider() {
   const maxZoom = useStore((state) => state.maxZoom);
   return (
     <div className="flex gap-1.5">
-      <Button
-        variant="ghost"
-        size="icon"
+      <button
         onClick={() => zoomOut({ duration: 300 })}
-        className="rounded-lg transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
+        className="rounded-lg px-2.5 py-2 transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
       >
-        <Minus />
-      </Button>
+        <Minus size={16} />
+      </button>
 
       <div className="flex items-center px-2">
         <Slider
@@ -30,32 +27,29 @@ export default function ZoomSlider() {
         />
       </div>
 
-      <Button
-        variant="ghost"
+      <button
         onClick={() => zoomIn({ duration: 300 })}
-        className="rounded-lg transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
+        className="rounded-lg px-2.5 py-2 transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
       >
-        <Plus />
-      </Button>
+        <Plus size={16} />
+      </button>
 
-      <Button
-        className="rounded-lg transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
-        variant="ghost"
+      <button
+        className="flex w-18 items-center justify-center rounded-lg py-2 transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
         onClick={() => zoomTo(1, { duration: 300 })}
       >
         <span className="text-sm">
           {(100 * zoom).toFixed(0)}
           <span className="text-xs">%</span>
         </span>
-      </Button>
+      </button>
 
-      <Button
-        variant="ghost"
+      <button
         onClick={() => fitView({ duration: 300 })}
-        className="rounded-lg transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
+        className="rounded-lg px-2.5 py-2 transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
       >
-        <Maximize />
-      </Button>
+        <Maximize size={16} />
+      </button>
     </div>
   );
 }

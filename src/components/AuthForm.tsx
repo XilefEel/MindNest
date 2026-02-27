@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SignupData, LoginData } from "@/lib/types/user";
 import { toast } from "@/lib/utils/toast";
@@ -112,12 +111,12 @@ export default function AuthForm({
         />
       </div>
 
-      <Button
+      <button
         type="submit"
         className={cn(
-          "w-full transition disabled:cursor-not-allowed disabled:opacity-50",
-          "bg-teal-500 text-white hover:bg-teal-600 active:bg-teal-700",
-          "dark:bg-teal-400 dark:text-black dark:hover:bg-teal-300 dark:active:bg-teal-200",
+          "w-full rounded-lg py-2 text-sm text-white shadow transition-colors",
+          "bg-teal-500 hover:bg-teal-600",
+          "disabled:opacity-50 disabled:hover:bg-teal-500 disabled:dark:bg-teal-500",
         )}
         disabled={
           loading || !email || !password || (type === "signup" && !username)
@@ -130,7 +129,7 @@ export default function AuthForm({
           : type === "signup"
             ? "Create Account"
             : "Log In"}
-      </Button>
+      </button>
     </form>
   );
 }
