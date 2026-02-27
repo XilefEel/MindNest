@@ -85,8 +85,7 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
         await updateMusic(track.id, title, track.orderIndex);
         toast.success("Music title updated successfully!");
       } catch (error) {
-        console.error("Failed to update music title:", error);
-        toast.error("Failed to update music title");
+        toast.error("Failed to update music title.");
       }
     }
   };
@@ -108,8 +107,7 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
       await deleteMusic(track.id);
       toast.success("Music deleted successfully!");
     } catch (error) {
-      console.error("Failed to delete music:", error);
-      toast.error("Failed to delete music");
+      toast.error("Failed to delete music.");
     }
   };
 

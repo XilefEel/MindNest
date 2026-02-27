@@ -26,11 +26,10 @@ export default function BackgroundSection() {
       if (selected) {
         toast.success("Image uploaded successfully!");
       } else {
-        toast.error("No image selected");
+        toast.error("No image selected.");
       }
     } catch (error) {
-      console.error("Failed to upload image:", error);
-      toast.error("Failed to upload image");
+      toast.error("Failed to upload image.");
     }
   };
 
@@ -39,7 +38,7 @@ export default function BackgroundSection() {
       setActiveBackgroundId(id);
       toast.success("Image selected successfully!");
     } catch (error) {
-      toast.error("Failed to select image");
+      toast.error("Failed to select image.");
     }
   };
 
@@ -48,7 +47,7 @@ export default function BackgroundSection() {
       await deleteBackground(id);
       toast.success("Image deleted successfully!");
     } catch (error) {
-      toast.error("Failed to delete image");
+      toast.error("Failed to delete image.");
     }
   };
 

@@ -22,7 +22,6 @@ type NestlingState = {
   openFolders: Record<number, boolean>;
   activeDraggingNestlingId: number | null;
   loading: boolean;
-  error: string | null;
 
   setActiveNestlingId: (nestlingId: number | null) => void;
   setActiveFolderId: (folder: number | null) => void;
@@ -64,7 +63,6 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   nestlings: [],
   folders: [],
   loading: false,
-  error: null,
 
   activeNestlingId: null,
   activeFolderId: null,
@@ -262,7 +260,6 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
         }));
       }
     } catch (error) {
-      console.error(error);
       throw error;
     }
   },

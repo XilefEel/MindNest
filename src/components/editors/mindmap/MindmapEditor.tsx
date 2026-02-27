@@ -153,8 +153,7 @@ function MindmapEditorContent() {
           ),
         );
       } catch (error) {
-        console.error("Failed to delete node:", error);
-        toast.error("Failed to delete node");
+        toast.error("Failed to delete node.");
       }
     },
     [nodes, edges, setEdges, deleteNode, createEdge],
@@ -184,8 +183,7 @@ function MindmapEditorContent() {
         });
       } catch (error) {
         setEdges(edges);
-        console.error("Failed to create edge:", error);
-        toast.error("Failed to create edge");
+        toast.error("Failed to create edge.");
       }
     },
     [edges, setEdges, createEdge],
@@ -248,8 +246,7 @@ function MindmapEditorContent() {
         type: "custom",
       });
     } catch (error) {
-      toast.error("Failed to add node");
-      console.error("Failed to add node:", error);
+      toast.error("Failed to add node.");
     }
   };
 
@@ -260,8 +257,7 @@ function MindmapEditorContent() {
       await Promise.all(nodes.map((node) => deleteNode(node.id)));
       toast.success("All nodes deleted");
     } catch (error) {
-      toast.error("Failed to delete all");
-      console.error("Failed to delete all:", error);
+      toast.error("Failed to delete all.");
     }
   };
 

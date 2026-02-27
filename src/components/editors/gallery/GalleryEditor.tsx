@@ -54,11 +54,11 @@ export default function GalleryEditor() {
       if (selected) {
         toast.success("Image uploaded successfully!");
       } else {
-        toast.error("No image selected");
+        toast.error("No image selected.");
       }
       setIsUploading(false);
     } catch (error) {
-      toast.error("Failed to upload image");
+      toast.error("Failed to upload image.");
     }
   };
 

@@ -29,9 +29,9 @@ export default function ImageContextMenu({
   const handleDownloadImage = async (id: number) => {
     try {
       await downloadImage(id);
-      toast.success("Album downloaded successfully!");
+      toast.success("Image downloaded successfully!");
     } catch (error) {
-      toast.error("Failed to download image");
+      toast.error("Failed to download image.");
     }
   };
 
@@ -40,8 +40,7 @@ export default function ImageContextMenu({
       await duplicateImage(id);
       toast.success("Image duplicated successfully!");
     } catch (error) {
-      toast.error("Failed to duplicate image");
-      console.error("Failed to duplicate image:", error);
+      toast.error("Failed to duplicate image.");
     }
   };
 

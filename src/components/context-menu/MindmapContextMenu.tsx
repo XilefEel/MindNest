@@ -11,6 +11,7 @@ import {
 import { getRandomElement } from "@/lib/utils/general";
 import ColorPickerMenu from "./ColorPickerMenu";
 import ContextMenuSeparator from "./ContextMenuSeparator";
+import { toast } from "@/lib/utils/toast";
 
 export default function MindmapContextMenu({
   children,
@@ -33,7 +34,7 @@ export default function MindmapContextMenu({
         },
       });
     } catch (error) {
-      console.error("Failed to update node:", error);
+      toast.error("Failed to update node.");
     }
   };
 
@@ -65,7 +66,7 @@ export default function MindmapContextMenu({
         target: newNode.id,
       });
     } catch (error) {
-      console.error("Failed to add node:", error);
+      toast.error("Failed to add node.");
     }
   };
 
@@ -101,11 +102,11 @@ export default function MindmapContextMenu({
         if (parentNode) {
           await handleAddChild(parentNode);
         } else {
-          console.error("Parent node not found");
+          toast.error("Parent node not found.");
         }
       }
     } catch (error) {
-      console.error("Failed to add node:", error);
+      toast.error("Failed to add node.");
     }
   };
 

@@ -62,7 +62,6 @@ export const exportNoteToHTML = async (editor: Editor, title: string) => {
       toast.success("Note exported successfully!");
     }
   } catch (error) {
-    console.error("Error exporting note: ", error);
-    toast.error("Error exporting note");
+    toast.error("Error exporting note.");
   }
 };

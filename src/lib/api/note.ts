@@ -17,8 +17,8 @@ export async function createNoteTemplate(data: NewNoteTemplate) {
   return await invoke<NoteTemplate>("create_note_template", { data });
 }
 
-export async function getNoteTemplates(nestlingId: number) {
-  return await invoke<NoteTemplate[]>("get_note_templates", { nestlingId });
+export async function getNoteTemplates(nestId: number) {
+  return await invoke<NoteTemplate[]>("get_note_templates", { nestId });
 }
 
 export async function updateNoteTemplate({

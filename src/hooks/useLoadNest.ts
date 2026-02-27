@@ -4,6 +4,7 @@ import { getLastBackgroundMusic } from "@/lib/storage/background-music";
 import { saveLastNestId } from "@/lib/storage/nest";
 import { getLastNestling } from "@/lib/storage/nestling";
 import { Nest } from "@/lib/types/nest";
+import { toast } from "@/lib/utils/toast";
 import {
   useNestlingActions,
   useNestlingStore,
@@ -93,7 +94,7 @@ export default function useLoadNest({
         if (lastBackgroundMusicId != null)
           setActiveMusicId(lastBackgroundMusicId);
       } catch (error) {
-        console.error("Failed to restore", error);
+        toast.error("Failed to restore.");
       } finally {
         setLoading(false);
       }

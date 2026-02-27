@@ -6,6 +6,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import CardContextMenu from "@/components/context-menu/CardContextMenu";
 import CardPopover from "../../popovers/CardPopover";
 import BasePopover from "@/components/popovers/BasePopover.tsx";
+import { toast } from "@/lib/utils/toast";
 
 export default function ColumnCard({ card }: { card: BoardCard }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +39,7 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
     try {
       await deleteCard(card.id);
     } catch (err) {
-      console.error("Failed to delete card:", err);
+      toast.error("Failed to delete card.");
     } finally {
       setActiveDraggingId(null);
     }

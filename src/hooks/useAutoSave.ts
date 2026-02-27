@@ -1,3 +1,4 @@
+import { toast } from "@/lib/utils/toast";
 import { useEffect, useRef, useState } from "react";
 
 type AutoSaveStatus = "idle" | "saving" | "saved" | "error";
@@ -28,7 +29,7 @@ export default function useAutoSave(
         setAutoSaveStatus("saved");
         setTimeout(() => setAutoSaveStatus("idle"), 1000);
       } catch (error) {
-        console.error("Auto-save failed:", error);
+        toast.error("Auto-save failed.");
         setAutoSaveStatus("error");
       }
     }, debounceTime);

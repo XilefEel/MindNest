@@ -49,7 +49,7 @@ export const toast = {
           <XCircle className="size-5 text-red-600 dark:text-red-400" />
         </div>
         <p className="flex-1 text-sm font-medium text-gray-900 select-none dark:text-gray-100">
-          {message}
+          {message} See logs for more details.
         </p>
         <button
           onClick={() => sonnerToast.dismiss(id)}

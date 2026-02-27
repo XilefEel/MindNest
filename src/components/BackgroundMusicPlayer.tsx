@@ -88,9 +88,8 @@ export default function BackgroundMusicPlayer() {
       if (audioIsPaused) {
         audio.pause();
       } else {
-        audio.play().catch((error) => {
-          toast.error("Failed to play music");
-          console.error("Failed to play music:", error);
+        audio.play().catch(() => {
+          toast.error("Failed to play music.");
         });
       }
     } else {

@@ -45,7 +45,7 @@ export default function NestlingTitle({
       await updateNestling(nestling.id, { icon: emojiData.emoji });
       setShowPicker(false);
     } catch (error) {
-      console.error(error);
+      toast.error("Failed to update nestling icon.");
     }
   };
 
@@ -54,7 +54,7 @@ export default function NestlingTitle({
       await updateNestling(nestling.id, { icon: null });
       setShowPicker(false);
     } catch (error) {
-      console.error(error);
+      toast.error("Failed to clear nestling icon.");
     }
   };
 
@@ -62,8 +62,7 @@ export default function NestlingTitle({
     try {
       await detachTag(nestling.id, tagId);
     } catch (error) {
-      toast.error("Failed to detach tag");
-      console.error("Failed to detach tag:", error);
+      toast.error("Failed to detach tag.");
     }
   };
 

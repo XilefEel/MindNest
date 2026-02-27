@@ -33,8 +33,7 @@ export default function DeleteModal() {
         toast.success("Folder deleted");
       }
     } catch (error) {
-      console.error("Failed to delete:", error);
-      toast.error("Failed to delete");
+      toast.error("Failed to delete.");
     }
   };
 

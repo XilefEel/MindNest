@@ -35,7 +35,6 @@ export default function CardPopover({
       updateCard(card.id, { title: newTitle });
       setIsEditingTitle(false);
     } catch (error) {
-      console.error("Failed to update card:", error);
       toast.error("Failed to update card title.");
       setTitle(card.title);
     }
@@ -47,7 +46,6 @@ export default function CardPopover({
       updateCard(card.id, { description: newDescription });
       setIsEditingDescription(false);
     } catch (error) {
-      console.error("Failed to update card:", error);
       toast.error("Failed to update card description.");
       setDescription(card.description || "");
     }

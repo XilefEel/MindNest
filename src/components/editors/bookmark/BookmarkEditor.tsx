@@ -51,8 +51,7 @@ export default function BookmarkEditor() {
       setUrl("");
       toast.success("Bookmark added!");
     } catch (error) {
-      toast.error("Failed to add bookmark");
-      console.error("Failed to add bookmark:", error);
+      toast.error("Failed to add bookmark.");
     } finally {
       setIsAdding(false);
     }

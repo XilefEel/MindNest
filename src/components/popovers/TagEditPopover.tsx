@@ -24,8 +24,7 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
         updateTag(tag.id, name.trim(), tag.color);
       }
     } catch (error) {
-      toast.error("Failed to update tag name");
-      console.error("Failed to update tag name:", error);
+      toast.error("Failed to update tag name.");
     }
   };
 
@@ -37,8 +36,7 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
     try {
       updateTag(tag.id, name.trim() || tag.name, color);
     } catch (error) {
-      toast.error("Failed to update tag color");
-      console.error("Failed to update tag color:", error);
+      toast.error("Failed to update tag color.");
     }
   };
 

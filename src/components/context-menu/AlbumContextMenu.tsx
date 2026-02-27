@@ -27,10 +27,10 @@ export default function AlbumContextMenu({
       if (selected) {
         toast.success("Image uploaded successfully!");
       } else {
-        toast.error("No image selected");
+        toast.error("No image selected.");
       }
     } catch (error) {
-      toast.error("Failed to upload image");
+      toast.error("Failed to upload image.");
     }
   };
 
@@ -39,7 +39,7 @@ export default function AlbumContextMenu({
       await downloadAlbum(id);
       toast.success("Album downloaded successfully!");
     } catch (error) {
-      toast.error("Failed to download album");
+      toast.error("Failed to download album.");
     }
   };
 
@@ -48,7 +48,7 @@ export default function AlbumContextMenu({
       await deleteAlbum(id);
       toast.success("Album deleted successfully!");
     } catch (error) {
-      toast.error("Failed to delete album");
+      toast.error("Failed to delete album.");
     }
   };
 

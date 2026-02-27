@@ -9,7 +9,6 @@ import { useNestlingStore } from "@/stores/useNestlingStore.tsx";
 type NoteState = {
   templates: NoteTemplate[];
   loading: boolean;
-  error: string | null;
 
   addTemplate: (template: NewNoteTemplate) => Promise<NoteTemplate>;
   useTemplate: (nestId: number, template: NoteTemplate) => Promise<void>;
@@ -23,7 +22,6 @@ export const useNoteStore = create<NoteState>((set, get) => ({
   entries: [],
   templates: [],
   loading: false,
-  error: null,
 
   addTemplate: withStoreErrorHandler(set, async (template: NewNoteTemplate) => {
     const newTemplate = await noteApi.createNoteTemplate(template);

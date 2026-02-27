@@ -15,7 +15,6 @@ type JournalState = {
   entries: JournalEntry[];
   templates: JournalTemplate[];
   loading: boolean;
-  error: string | null;
 
   setActiveEntry: (entry: JournalEntry) => void;
   addEntry: (entry: NewJournalEntry) => Promise<JournalEntry>;
@@ -41,7 +40,6 @@ export const useJournalStore = create<JournalState>((set, get) => ({
   entries: [],
   templates: [],
   loading: false,
-  error: null,
 
   setActiveEntry: (entry: JournalEntry) => set({ activeEntry: entry }),
 

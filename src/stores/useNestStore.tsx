@@ -38,7 +38,6 @@ type NestState = {
   activeDraggingId: string | null;
 
   loading: boolean;
-  error: string | null;
 
   // Nest
   setActiveNestId: (nest: number | null) => void;
@@ -92,7 +91,6 @@ export const useNestStore = create<NestState>((set, get) => ({
 
   isTitleCollapsed: false,
 
-  error: null,
   loading: false,
 
   setActiveNestId: (nestId) => {

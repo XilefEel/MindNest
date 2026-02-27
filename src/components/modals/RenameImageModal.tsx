@@ -26,8 +26,7 @@ export default function RenameImageModal() {
       closeImageModal();
       toast.success("Image updated successfully!");
     } catch (error) {
-      toast.error("Failed to edit image");
-      console.error("Failed to edit image:", error);
+      toast.error("Failed to edit image.");
     }
   };
 

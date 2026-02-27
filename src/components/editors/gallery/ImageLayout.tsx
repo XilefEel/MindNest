@@ -59,8 +59,7 @@ export default function ImageLayout({
       await removeImage(id);
       toast.success("Image deleted successfully!");
     } catch (error) {
-      toast.error("Failed to delete image");
-      console.error("Failed to delete image:", error);
+      toast.error("Failed to delete image.");
     }
   };
 
@@ -76,7 +75,7 @@ export default function ImageLayout({
         toast.success("Image removed from favorites!");
       }
     } catch (error) {
-      toast.error("Failed to add image to favorites");
+      toast.error("Failed to add image to favorites.");
     }
   };
 
@@ -91,7 +90,7 @@ export default function ImageLayout({
     const imageFiles = files.filter((file) => file.type.startsWith("image/"));
 
     if (imageFiles.length === 0) {
-      alert("Please drop image files only");
+      toast.error("Please drop image files only.");
       return;
     }
 
@@ -107,7 +106,7 @@ export default function ImageLayout({
       }
       toast.success("Image uploaded successfully!");
     } catch (error) {
-      toast.error("Failed to upload image");
+      toast.error("Failed to upload image.");
     } finally {
       setIsUploading(false);
     }

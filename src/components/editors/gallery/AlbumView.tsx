@@ -35,7 +35,7 @@ export default function AlbumView({
       await downloadAlbum(id);
       toast.success("Album downloaded successfully!");
     } catch (error) {
-      toast.error("Failed to download album");
+      toast.error("Failed to download album.");
     }
   };
 

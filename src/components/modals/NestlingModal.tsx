@@ -53,10 +53,9 @@ export default function NestlingModal() {
         nestlingType: nestlingType,
       });
       toast.success(`Nestling "${title}" created successfully!`);
-
       handleClose();
     } catch (error) {
-      console.error("Failed to create nestling:", error);
+      toast.error("Failed to create nestling.");
     } finally {
       setIsSaving(false);
     }

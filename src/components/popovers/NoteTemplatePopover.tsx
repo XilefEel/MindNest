@@ -6,6 +6,7 @@ import { useNoteActions, useTemplates } from "@/stores/useNoteStore.tsx";
 import { useActiveNestling } from "@/stores/useNestlingStore.tsx";
 import { cn } from "@/lib/utils/general";
 import { useActiveNestId } from "@/stores/useNestStore";
+import { toast } from "@/lib/utils/toast";
 
 export default function NoteTemplatePopover() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +33,7 @@ export default function NoteTemplatePopover() {
       setIsSaving(false);
       setTemplateName("");
     } catch (error) {
-      console.error("Failed to save template:", error);
+      toast.error("Failed to save template.");
     }
   };
 

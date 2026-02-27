@@ -14,6 +14,7 @@ import { createPortal } from "react-dom";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { saveLastNestling } from "@/lib/storage/nestling";
+import { toast } from "@/lib/utils/toast";
 
 export default function NestlingItem({
   nestling,
@@ -97,7 +98,7 @@ export default function NestlingItem({
       await updateNestling(nestling.id, { icon: emojiData.emoji });
       setShowPicker(false);
     } catch (error) {
-      console.error(error);
+      toast.error("Failed to update emoji.");
     }
   };
 
@@ -107,7 +108,7 @@ export default function NestlingItem({
       await updateNestling(nestling.id, { icon: null });
       setShowPicker(false);
     } catch (error) {
-      console.error(error);
+      toast.error("Failed to clear emoji.");
     }
   };
 

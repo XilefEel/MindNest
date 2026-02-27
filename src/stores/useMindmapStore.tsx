@@ -15,7 +15,6 @@ type MindmapStore = {
   edges: MindmapEdge[];
   activeNode: MindmapNode | null;
   loading: boolean;
-  error: string | null;
 
   setNodes: (node: MindmapNode[]) => void;
   setEdges: (edges: MindmapEdge[]) => void;
@@ -35,7 +34,6 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
   edges: [],
   activeNode: null,
   loading: false,
-  error: null,
 
   setNodes: (nodes) => set({ nodes }),
   setEdges: (edges) => set({ edges }),

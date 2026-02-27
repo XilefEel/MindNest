@@ -5,6 +5,7 @@ import { BoardColumn } from "@/lib/types/board";
 import { useBoardActions } from "@/stores/useBoardStore";
 import ContextMenuSeperator from "./ContextMenuSeparator";
 import ColorPickerMenu from "./ColorPickerMenu";
+import { toast } from "@/lib/utils/toast";
 
 export default function ColumnContextMenu({
   column,
@@ -19,7 +20,7 @@ export default function ColumnContextMenu({
     try {
       await removeColumn(column.id);
     } catch (error) {
-      console.error("Error deleting column:", error);
+      toast.error("Error deleting column.");
     }
   };
 
@@ -27,7 +28,7 @@ export default function ColumnContextMenu({
     try {
       await duplicateColumn(column);
     } catch (error) {
-      console.error("Error duplicating column:", error);
+      toast.error("Error duplicating column.");
     }
   };
 
@@ -35,7 +36,7 @@ export default function ColumnContextMenu({
     try {
       await updateColumn(column.id, { color });
     } catch (error) {
-      console.error("Failed to update node:", error);
+      toast.error("Failed to update node.");
     }
   };
 

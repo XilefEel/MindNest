@@ -24,11 +24,14 @@ import NestlingTitle from "../NestlingTitle";
 import { cn } from "@/lib/utils/general";
 import BottomBar from "./BottomBar";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { useNoteStore } from "@/stores/useNoteStore";
 
 export default function NoteEditor() {
   const activeNestling = useActiveNestling();
   if (!activeNestling) return;
+
   const { updateNestling } = useNestlingActions();
+  const { getTemplates } = useNoteStore();
 
   const [title, setTitle] = useState(activeNestling.title);
   const [content, setContent] = useState({});
@@ -99,6 +102,10 @@ export default function NoteEditor() {
       editor.off("update", handleUpdate);
     };
   }, [editor]);
+
+  useEffect(() => {
+    getTemplates(activeNestling.nestId);
+  }, [activeNestling.nestId]);
 
   useEffect(() => {
     if (!activeNestling.content) return;

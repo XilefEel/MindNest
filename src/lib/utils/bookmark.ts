@@ -31,7 +31,6 @@ export const exportBookmarksToJson = async (
       toast.success("Bookmarks exported!");
     }
   } catch (error) {
-    console.error("Error exporting bookmarks: ", error);
-    toast.error("Failed to export bookmarks");
+    toast.error("Failed to export bookmarks.");
   }
 };

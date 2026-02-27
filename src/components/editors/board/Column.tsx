@@ -63,7 +63,7 @@ export default function Column({ column }: { column: BoardColumn }) {
         orderIndex: cards.length + 1,
       });
     } catch (error) {
-      console.error("Error adding column:", error);
+      toast.error("Error adding card to column.");
     } finally {
       setActiveDraggingId(null);
     }
@@ -77,7 +77,6 @@ export default function Column({ column }: { column: BoardColumn }) {
       }
     } catch (error) {
       toast.error("Failed to update column title.");
-      console.error(error);
     } finally {
       setIsEditing(false);
     }

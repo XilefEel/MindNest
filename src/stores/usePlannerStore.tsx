@@ -11,7 +11,6 @@ import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 type PlannerState = {
   events: PlannerEventType[];
   loading: boolean;
-  error: string | null;
 
   createEvent: (event: NewPlannerEventType) => Promise<void>;
   getEvents: ({
@@ -33,7 +32,6 @@ type PlannerState = {
 export const usePlannerStore = create<PlannerState>((set, get) => ({
   events: [],
   loading: false,
-  error: null,
 
   getEvents: withStoreErrorHandler(
     set,
@@ -78,7 +76,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
       set({ events: prevEvent.map((e) => (e.id === id ? updated : e)) });
       await calendarApi.updatePlannerEvent({ ...updated, id });
     } catch (error) {
-      set({ events: prevEvent, error: String(error) });
+      set({ events: prevEvent });
       throw error;
     } finally {
       set({ loading: false });

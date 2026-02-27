@@ -19,8 +19,7 @@ export default function CardContextMenu({
     try {
       await deleteCard(card.id);
     } catch (error) {
-      toast.error("Failed to delete card");
-      console.error(error);
+      toast.error("Failed to delete card.");
     }
   };
 
@@ -28,8 +27,7 @@ export default function CardContextMenu({
     try {
       await duplicateCard(card);
     } catch (error) {
-      toast.error("Failed to duplicate card");
-      console.error(error);
+      toast.error("Failed to duplicate card.");
     }
   };
 

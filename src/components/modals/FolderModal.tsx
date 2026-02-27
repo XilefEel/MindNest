@@ -38,8 +38,7 @@ export default function FolderModal() {
 
       handleCloseModal();
     } catch (error) {
-      toast.error("Failed to create folder");
-      console.error("Failed to create Folder:", error);
+      toast.error("Failed to create folder.");
     } finally {
       setIsSaving(false);
     }

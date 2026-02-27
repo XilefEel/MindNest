@@ -6,6 +6,7 @@ import {
 } from "../lib/storage/user";
 import { User } from "@/lib/types/user";
 import LoadingScreen from "@/components/LoadingScreen";
+import { toast } from "@/lib/utils/toast";
 
 type AuthContextType = {
   user: User | null;
@@ -25,7 +26,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await saveUserSession(user);
       setUser(user);
     } catch (error) {
-      console.error("Login failed:", error);
+      toast.error("Login failed.");
     }
   };
 
@@ -34,7 +35,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await clearUserSession();
       setUser(null);
     } catch (error) {
-      console.error("Logout failed:", error);
+      toast.error("Logout failed.");
     }
   };
 

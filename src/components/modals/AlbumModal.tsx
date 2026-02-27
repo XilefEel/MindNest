@@ -38,8 +38,7 @@ export default function AlbumModal() {
       }
       handleExit();
     } catch (error) {
-      toast.error("Failed to save album");
-      console.error("Failed to save album:", error);
+      toast.error("Failed to save album.");
     }
   };
 

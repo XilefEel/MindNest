@@ -20,7 +20,6 @@ type GalleryState = {
   albums: GalleryAlbum[];
   activeDraggingImageId: string | null;
   loading: boolean;
-  error: string | null;
 
   getImages: (nestlingId: number) => Promise<void>;
   selectImages: (
@@ -69,7 +68,6 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   activeDraggingImageId: null,
 
   loading: false,
-  error: null,
 
   getImages: withStoreErrorHandler(set, async (nestlingId: number) => {
     const images = await galleryApi.getImages(nestlingId);
@@ -266,7 +264,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       try {
         await get().updateImage(imageId, { albumId });
       } catch (error) {
-        set({ error: String(error) });
+        throw error;
       }
     }
   },

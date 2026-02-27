@@ -45,11 +45,10 @@ export default function MusicSection() {
       if (selected) {
         toast.success("Music uploaded successfully!");
       } else {
-        toast.error("No music selected");
+        toast.error("No music selected.");
       }
     } catch (error) {
-      console.error("Failed to upload music:", error);
-      toast.error("Failed to upload music");
+      toast.error("Failed to upload music.");
     }
   };
 

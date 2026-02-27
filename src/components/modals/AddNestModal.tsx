@@ -30,7 +30,7 @@ export default function AddNestModal({
       handleExit();
       toast.success(`Nest "${title}" created successfully!`);
     } catch (err) {
-      toast.error("Failed to create Nest");
+      toast.error("Failed to create nest.");
     } finally {
       setLoading(false);
     }

@@ -29,6 +29,7 @@ import ColumnCard from "./ColumnCard";
 import { createPortal } from "react-dom";
 import { Plus } from "lucide-react";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { toast } from "@/lib/utils/toast";
 
 export default function BoardEditor() {
   const activeNestling = useActiveNestling();
@@ -70,7 +71,7 @@ export default function BoardEditor() {
         color: getRandomElement(COLORS),
       });
     } catch (error) {
-      console.error("Error adding column:", error);
+      toast.error("Error adding column.");
     }
   };
 

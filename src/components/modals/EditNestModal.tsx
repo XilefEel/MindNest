@@ -26,8 +26,7 @@ export default function EditNestModal({
       handleExit();
       toast.success("Nest updated");
     } catch (error) {
-      toast.error("Failed to update nest");
-      console.error("Failed to update nest:", error);
+      toast.error("Failed to update nest.");
     }
   };
 
@@ -38,8 +37,7 @@ export default function EditNestModal({
       await clearLastNestling(nest.id);
       toast.success("Nest deleted");
     } catch (error) {
-      toast.error("Failed to delete nest");
-      console.error("Failed to delete nest:", error);
+      toast.error("Failed to delete nest.");
     } finally {
       handleExit();
     }

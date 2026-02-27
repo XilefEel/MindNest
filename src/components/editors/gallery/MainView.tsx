@@ -80,7 +80,7 @@ export default function MainView({
       handleDragEnd(event);
       toast.success("Image moved successfully!");
     } catch (error) {
-      toast.error("Failed to move image");
+      toast.error("Failed to move image.");
     }
   };
 

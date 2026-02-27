@@ -8,7 +8,6 @@ import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 type BookmarkState = {
   bookmarks: Bookmark[];
   loading: boolean;
-  error: string | null;
 
   getBookmarks: (nestlingId: number) => Promise<void>;
   createBookmark: (nestlingId: number, url: string) => Promise<void>;
@@ -19,7 +18,6 @@ type BookmarkState = {
 export const useBookmarkStore = create<BookmarkState>()((set, get) => ({
   bookmarks: [],
   loading: false,
-  error: null,
 
   getBookmarks: withStoreErrorHandler(set, async (nestlingId: number) => {
     const bookmarks = await bookmarkApi.getBookmarks(nestlingId);

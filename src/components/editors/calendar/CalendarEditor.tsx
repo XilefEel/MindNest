@@ -49,8 +49,7 @@ export default function CalendarEditor() {
 
       toast.success("Week duplicated successfully!");
     } catch (error) {
-      console.error("Error duplicating week:", error);
-      toast.error("Error duplicating week:");
+      toast.error("Error duplicating week.");
     }
   };
 

@@ -22,8 +22,7 @@ export default function BookmarkCard({
       toast.success("Bookmark deleted!");
       await deleteBookmark(id);
     } catch (error) {
-      toast.error("Failed to delete bookmark");
-      console.error("Failed to delete bookmark:", error);
+      toast.error("Failed to delete bookmark.");
     }
   };
 
@@ -31,8 +30,7 @@ export default function BookmarkCard({
     try {
       await toggleBookmarkFavorite(id);
     } catch (error) {
-      toast.error("Failed to toggle bookmark favorite");
-      console.error("Failed to toggle bookmark favorite:", error);
+      toast.error("Failed to toggle bookmark favorite.");
     }
   };
 

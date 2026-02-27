@@ -21,17 +21,17 @@ export default function AuthForm({
     e.preventDefault();
 
     if (!email.includes("@")) {
-      toast.error("Invalid email!");
+      toast.error("Invalid email.");
       return;
     }
 
     if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long!");
+      toast.error("Password must be at least 6 characters long.");
       return;
     }
 
     if (type === "signup" && !username.trim()) {
-      toast.error("Username is required!");
+      toast.error("Username is required.");
       return;
     }
 
@@ -42,8 +42,7 @@ export default function AuthForm({
 
       await onSubmit(data);
     } catch (error) {
-      toast.error(`Failed to ${type}! Please try again.`);
-      console.error(`Failed to ${type}!`, error);
+      toast.error(`Failed to ${type}.`);
     } finally {
       setLoading(false);
     }

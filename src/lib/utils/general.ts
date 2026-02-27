@@ -29,7 +29,7 @@ export function getRandomElement<T>(arr: T[]): T {
 }
 
 export const withStoreErrorHandler = <
-  TState extends { loading: boolean; error: string | null },
+  TState extends { loading: boolean },
   TArgs extends any[],
   TResult,
 >(
@@ -39,12 +39,9 @@ export const withStoreErrorHandler = <
   storeFn: (...args: TArgs) => Promise<TResult>,
 ) => {
   return async (...args: TArgs): Promise<TResult> => {
-    set({ loading: true, error: null } as Partial<TState>);
+    set({ loading: true } as Partial<TState>);
     try {
       return await storeFn(...args);
-    } catch (error) {
-      set({ error: String(error) } as Partial<TState>);
-      throw error;
     } finally {
       set({ loading: false } as Partial<TState>);
     }

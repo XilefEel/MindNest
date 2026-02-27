@@ -30,8 +30,7 @@ export default function TagPopover({ nestlingId }: { nestlingId: number }) {
     try {
       await attachTag(nestlingId, tagId);
     } catch (error) {
-      toast.error("Failed to attach tag");
-      console.error("Failed to attach tag:", error);
+      toast.error("Failed to attach tag.");
     }
   };
 
@@ -45,8 +44,7 @@ export default function TagPopover({ nestlingId }: { nestlingId: number }) {
 
       await attachTag(nestlingId, newTag.id);
     } catch (error) {
-      toast.error("Failed to create and attach tag");
-      console.error("Failed to create and attach tag:", error);
+      toast.error("Failed to create and attach tag.");
     } finally {
       setSearchQuery("");
     }

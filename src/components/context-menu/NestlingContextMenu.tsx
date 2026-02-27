@@ -30,8 +30,7 @@ export default function NestlingContextMenu({
         isPinned: !isPinned,
       });
     } catch (error) {
-      toast.error("Failed to pin nestling");
-      console.error(error);
+      toast.error("Failed to pin nestling.");
     }
   };
 

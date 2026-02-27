@@ -35,7 +35,6 @@ export default function EventPopover({
       updateEvent(event.id, { title: newTitle });
       setIsEditingTitle(false);
     } catch (error) {
-      console.error("Failed to update event:", error);
       toast.error("Failed to update event title.");
       setTitle(event.title);
     }
@@ -47,7 +46,6 @@ export default function EventPopover({
       updateEvent(event.id, { description: newDescription });
       setIsEditingDescription(false);
     } catch (error) {
-      console.error("Failed to update event:", error);
       toast.error("Failed to update event description.");
       setDescription(event.description || "");
     }

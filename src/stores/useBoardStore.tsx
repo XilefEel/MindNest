@@ -27,7 +27,6 @@ type BoardState = {
   activeColumn: BoardColumn | null;
   activeCard: BoardCard | null;
   loading: boolean;
-  error: string | null;
 
   getBoard: (nestlingId: number) => Promise<void>;
 
@@ -51,7 +50,6 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   cards: [],
   boardData: null,
   loading: false,
-  error: null,
 
   activeDraggingId: null,
   activeColumn: null,
