@@ -70,7 +70,7 @@ export default function NestlingModal() {
       title="Create Nestling"
       description="Give your nestling a title. You can always change it later."
       body={
-        <div className="space-y-6">
+        <div className="flex flex-col gap-6">
           <TextField
             label="Nestling Title"
             text={title}
@@ -78,13 +78,13 @@ export default function NestlingModal() {
             placeholder={`e.g. My ${nestlingTypes.find((type) => type.value === nestlingType)?.label || "Note"}`}
           />
 
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             <p className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
               Choose Nestling Type
             </p>
             <div className="grid grid-cols-2 gap-3">
               {nestlingTypes.map((typeOption) => {
-                const TypeIcon = typeOption.icon;
+                const Icon = typeOption.icon;
                 const isSelected = nestlingType === typeOption.value;
 
                 return (
@@ -95,8 +95,8 @@ export default function NestlingModal() {
                       "relative flex items-center gap-3 rounded-lg p-4 transition-colors",
                       isSelected
                         ? activeBackgroundId
-                          ? "bg-teal-300/20 shadow-md backdrop-blur-sm dark:bg-teal-400/20"
-                          : "border-2 border-teal-500 bg-teal-50 shadow-md dark:bg-teal-950/30"
+                          ? "bg-teal-300/20 shadow backdrop-blur-sm dark:bg-teal-400/20"
+                          : "border-2 border-teal-500 bg-teal-50 shadow dark:bg-teal-950/30"
                         : activeBackgroundId
                           ? "bg-white/10 backdrop-blur-sm hover:bg-white/40 hover:shadow-sm dark:hover:bg-white/20"
                           : "border-2 border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:hover:border-gray-600",
@@ -111,7 +111,7 @@ export default function NestlingModal() {
                         "text-white",
                       )}
                     >
-                      <TypeIcon
+                      <Icon
                         className={cn(
                           isSelected
                             ? "text-white"
@@ -150,7 +150,7 @@ export default function NestlingModal() {
         <button
           onClick={handleSaveNestling}
           disabled={isSaving || !title.trim()}
-          className="flex items-center rounded-lg bg-teal-500 px-4 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600"
+          className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600 disabled:opacity-50 disabled:hover:bg-teal-500 disabled:dark:bg-teal-500"
         >
           {isSaving ? "Creating..." : "Create"}
         </button>

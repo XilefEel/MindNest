@@ -73,7 +73,8 @@ export default function CalendarEditor() {
 
         <button
           onClick={duplicateWeek}
-          className="flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600"
+          disabled={events.length === 0}
+          className="flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600 disabled:opacity-50 disabled:hover:bg-teal-500 disabled:dark:bg-teal-500"
         >
           <CalendarPlus className="h-4 w-4" />
           Duplicate Week

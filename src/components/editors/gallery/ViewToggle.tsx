@@ -17,7 +17,7 @@ export default function ViewToggle({
           className={cn(
             "rounded p-2 transition duration-100",
             viewMode === "grid"
-              ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+              ? "bg-teal-50 text-teal-500 shadow-sm dark:bg-teal-400 dark:text-white"
               : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
           )}
         >
@@ -31,7 +31,7 @@ export default function ViewToggle({
           className={cn(
             "rounded p-2 transition duration-100",
             viewMode === "list"
-              ? "bg-white text-teal-600 shadow-sm dark:bg-teal-400 dark:text-white"
+              ? "bg-teal-50 text-teal-500 shadow-sm dark:bg-teal-400 dark:text-white"
               : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
           )}
         >

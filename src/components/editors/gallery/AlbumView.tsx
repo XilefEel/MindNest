@@ -47,6 +47,10 @@ export default function AlbumView({
     [title, description],
   );
 
+  const imagesInAlbum = useMemo(() => {
+    return images.filter((img) => img.albumId === album.id);
+  }, [images, album.id]);
+
   useAutoSave(album.id, albumData, updateAlbum);
 
   useEffect(() => {
@@ -95,7 +99,8 @@ export default function AlbumView({
 
           <button
             onClick={() => handleDownloadAlbum(album.id)}
-            className="flex items-center gap-2 rounded-lg bg-purple-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-purple-600"
+            disabled={imagesInAlbum.length === 0}
+            className="flex items-center gap-2 rounded-lg bg-purple-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-purple-600 disabled:opacity-50 disabled:hover:bg-purple-500 disabled:dark:bg-purple-500"
           >
             <Download size={16} />
             Download All

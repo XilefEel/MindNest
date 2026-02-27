@@ -3,11 +3,13 @@ import { cn } from "@/lib/utils/general";
 import { useNestlingModal, useFolderModal } from "@/stores/useModalStore";
 import { useNestlingActions } from "@/stores/useNestlingStore";
 import { FilePlus, FolderPlus, Minimize2, Maximize2 } from "lucide-react";
+import { useActiveBackgroundId } from "@/stores/useNestStore.tsx";
 
 export default function ToolBar({ nestId }: { nestId: number }) {
   const { toggleAllFolders } = useNestlingActions();
   const { openNestlingModal } = useNestlingModal();
   const { openFolderModal } = useFolderModal();
+  const activeBackgroundId = useActiveBackgroundId();
 
   const buttons = [
     {
@@ -40,10 +42,10 @@ export default function ToolBar({ nestId }: { nestId: number }) {
             onClick={btn.onClick}
             onDoubleClick={(e) => e.stopPropagation()}
             className={cn(
-              "rounded-lg p-2 text-gray-800 dark:text-gray-200",
+              "rounded-lg p-2 text-gray-800 transition-colors dark:text-gray-200",
               "hover:text-teal-500 dark:hover:text-teal-300",
-              "hover:bg-white/30 dark:hover:bg-white/10",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
+              activeBackgroundId && "hover:bg-white/20 dark:hover:bg-black/20",
             )}
           >
             {btn.icon}

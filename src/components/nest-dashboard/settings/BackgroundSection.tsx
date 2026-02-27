@@ -117,14 +117,14 @@ export default function BackgroundSection() {
         </div>
 
         <div className="flex gap-2">
-          {activeBackgroundId && (
-            <button
-              onClick={() => clearActiveBackgroundId()}
-              className="rounded-lg bg-blue-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-600"
-            >
-              Clear
-            </button>
-          )}
+          <button
+            onClick={() => clearActiveBackgroundId()}
+            disabled={!activeBackgroundId}
+            className="rounded-lg bg-blue-500 px-4 py-1.5 text-sm text-white shadow transition-colors hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 disabled:dark:bg-blue-500"
+          >
+            Clear
+          </button>
+
           <button
             onClick={handleUploadBackground}
             className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-600"
