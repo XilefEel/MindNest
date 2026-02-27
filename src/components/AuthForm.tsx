@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { SignupData, LoginData } from "@/lib/types/user";
 import { toast } from "@/lib/utils/toast";
 import { KeyRound, Mail, User } from "lucide-react";
@@ -55,10 +54,13 @@ export default function AuthForm({
     <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-6">
       {type === "signup" && (
         <div className="space-y-2">
-          <Label htmlFor="username">
+          <label
+            htmlFor="username"
+            className="flex items-center gap-1 text-sm leading-none font-medium select-none"
+          >
             <User size={16} />
             Username
-          </Label>
+          </label>
           <Input
             id="username"
             type="text"
@@ -73,9 +75,12 @@ export default function AuthForm({
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="email">
+        <label
+          htmlFor="email"
+          className="flex items-center gap-1 text-sm leading-none font-medium select-none"
+        >
           <Mail size={16} /> Email
-        </Label>
+        </label>
         <Input
           id="email"
           type="email"
@@ -89,9 +94,12 @@ export default function AuthForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">
+        <label
+          htmlFor="password"
+          className="flex items-center gap-1 text-sm leading-none font-medium select-none"
+        >
           <KeyRound size={16} /> Password
-        </Label>
+        </label>
         <Input
           id="password"
           type="password"
