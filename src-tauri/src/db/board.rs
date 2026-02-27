@@ -3,7 +3,7 @@ use crate::models::board::{
     BoardCard, BoardColumn, BoardColumnData, BoardData, NewBoardCard, NewBoardColumn,
 };
 use crate::utils::db::AppDb;
-use crate::utils::errors::DbResult;
+use crate::utils::errors::{DbResult, LogError};
 use chrono::Utc;
 use rusqlite::params;
 use std::collections::HashMap;
@@ -19,27 +19,29 @@ pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> DbResult
             RETURNING id, nestling_id, title, order_index, color, created_at, updated_at",
         )?;
 
-    let column = statement.query_row(
-        params![
-            data.nestling_id,
-            data.title,
-            data.order_index,
-            data.color,
-            created_at,
-            created_at
-        ],
-        |row| {
-            Ok(BoardColumn {
-                id: row.get(0)?,
-                nestling_id: row.get(1)?,
-                title: row.get(2)?,
-                order_index: row.get(3)?,
-                color: row.get(4)?,
-                created_at: row.get(5)?,
-                updated_at: row.get(6)?,
-            })
-        },
-    )?;
+    let column = statement
+        .query_row(
+            params![
+                data.nestling_id,
+                data.title,
+                data.order_index,
+                data.color,
+                created_at,
+                created_at
+            ],
+            |row| {
+                Ok(BoardColumn {
+                    id: row.get(0)?,
+                    nestling_id: row.get(1)?,
+                    title: row.get(2)?,
+                    order_index: row.get(3)?,
+                    color: row.get(4)?,
+                    created_at: row.get(5)?,
+                    updated_at: row.get(6)?,
+                })
+            },
+        )
+        .log_err("insert_board_column_into_db")?;
 
     Ok(column)
 }
@@ -54,13 +56,15 @@ pub fn update_board_column_in_db(
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
-    connection.execute(
-        "
+    connection
+        .execute(
+            "
             UPDATE board_columns
             SET title = ?1, order_index = ?2, color = ?3, updated_at = ?4
             WHERE id = ?5",
-        params![title, order_index, color, updated_at, id],
-    )?;
+            params![title, order_index, color, updated_at, id],
+        )
+        .log_err("update_board_column_in_db")?;
 
     Ok(())
 }
@@ -68,7 +72,9 @@ pub fn update_board_column_in_db(
 pub fn delete_board_column_from_db(db: &AppDb, id: i64) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
 
-    connection.execute("DELETE FROM board_columns WHERE id = ?1", params![id])?;
+    connection
+        .execute("DELETE FROM board_columns WHERE id = ?1", params![id])
+        .log_err("delete_board_column_from_db")?;
 
     Ok(())
 }
@@ -84,27 +90,29 @@ pub fn insert_board_card_into_db(db: &AppDb, data: NewBoardCard) -> DbResult<Boa
             RETURNING id, column_id, title, description, order_index, created_at, updated_at"
         )?;
 
-    let card = statement.query_row(
-        params![
-            data.column_id,
-            data.title,
-            data.description,
-            data.order_index,
-            created_at,
-            created_at
-        ],
-        |row| {
-            Ok(BoardCard {
-                id: row.get(0)?,
-                column_id: row.get(1)?,
-                title: row.get(2)?,
-                description: row.get(3)?,
-                order_index: row.get(4)?,
-                created_at: row.get(5)?,
-                updated_at: row.get(6)?,
-            })
-        },
-    )?;
+    let card = statement
+        .query_row(
+            params![
+                data.column_id,
+                data.title,
+                data.description,
+                data.order_index,
+                created_at,
+                created_at
+            ],
+            |row| {
+                Ok(BoardCard {
+                    id: row.get(0)?,
+                    column_id: row.get(1)?,
+                    title: row.get(2)?,
+                    description: row.get(3)?,
+                    order_index: row.get(4)?,
+                    created_at: row.get(5)?,
+                    updated_at: row.get(6)?,
+                })
+            },
+        )
+        .log_err("insert_board_card_into_db")?;
 
     Ok(card)
 }
@@ -120,13 +128,15 @@ pub fn update_board_card_in_db(
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
-    connection.execute(
-        "
+    connection
+        .execute(
+            "
             UPDATE board_cards 
             SET title = ?1, description = ?2, order_index = ?3, column_id = ?4, updated_at = ?5 
             WHERE id = ?6",
-        params![title, description, order_index, column_id, updated_at, id],
-    )?;
+            params![title, description, order_index, column_id, updated_at, id],
+        )
+        .log_err("update_board_card_in_db")?;
 
     Ok(())
 }
@@ -134,7 +144,9 @@ pub fn update_board_card_in_db(
 pub fn delete_board_card_from_db(db: &AppDb, id: i64) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
 
-    connection.execute("DELETE FROM board_cards WHERE id = ?1", params![id])?;
+    connection
+        .execute("DELETE FROM board_cards WHERE id = ?1", params![id])
+        .log_err("delete_board_card_from_db")?;
 
     Ok(())
 }
@@ -150,21 +162,22 @@ fn get_board_columns_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<B
             ORDER BY order_index ASC",
     )?;
 
-    let columns = statement.query_map([nestling_id], |row| {
-        Ok(BoardColumn {
-            id: row.get(0)?,
-            nestling_id: row.get(1)?,
-            title: row.get(2)?,
-            order_index: row.get(3)?,
-            color: row.get(4)?,
-            created_at: row.get(5)?,
-            updated_at: row.get(6)?,
+    let columns = statement
+        .query_map([nestling_id], |row| {
+            Ok(BoardColumn {
+                id: row.get(0)?,
+                nestling_id: row.get(1)?,
+                title: row.get(2)?,
+                order_index: row.get(3)?,
+                color: row.get(4)?,
+                created_at: row.get(5)?,
+                updated_at: row.get(6)?,
+            })
         })
-    })?;
+        .log_err("get_board_columns_by_nestling")?
+        .collect::<Result<Vec<_>, _>>()?;
 
-    let result = columns.collect::<Result<Vec<_>, _>>()?;
-
-    Ok(result)
+    Ok(columns)
 }
 
 fn get_all_cards_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<BoardCard>> {
@@ -180,21 +193,22 @@ fn get_all_cards_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Board
         )
         ?;
 
-    let cards = statement.query_map([nestling_id], |row| {
-        Ok(BoardCard {
-            id: row.get(0)?,
-            column_id: row.get(1)?,
-            title: row.get(2)?,
-            description: row.get(3)?,
-            order_index: row.get(4)?,
-            created_at: row.get(5)?,
-            updated_at: row.get(6)?,
+    let cards = statement
+        .query_map([nestling_id], |row| {
+            Ok(BoardCard {
+                id: row.get(0)?,
+                column_id: row.get(1)?,
+                title: row.get(2)?,
+                description: row.get(3)?,
+                order_index: row.get(4)?,
+                created_at: row.get(5)?,
+                updated_at: row.get(6)?,
+            })
         })
-    })?;
+        .log_err("get_all_cards_by_nestling")?
+        .collect::<Result<Vec<_>, _>>()?;
 
-    let result = cards.collect::<Result<Vec<_>, _>>()?;
-
-    Ok(result)
+    Ok(cards)
 }
 
 pub fn get_board_data_from_db(db: &AppDb, nestling_id: i64) -> DbResult<BoardData> {

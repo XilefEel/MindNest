@@ -2,7 +2,7 @@ use crate::models::mindmap::{
     MindmapEdge, MindmapEdgeDB, MindmapNode, MindmapNodeDB, NewMindmapEdgeDB, NewMindmapNodeDB,
 };
 use crate::utils::db::AppDb;
-use crate::utils::errors::DbResult;
+use crate::utils::errors::{DbResult, LogError};
 use chrono::Utc;
 use rusqlite::params;
 
@@ -19,35 +19,37 @@ pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> DbResult<Mindm
             RETURNING id, nestling_id, position_x, position_y, height, width, label, color, node_type, created_at, updated_at"
         )?;
 
-    let node = statement.query_row(
-        params![
-            data.nestling_id,
-            data.position_x,
-            data.position_y,
-            data.height,
-            data.width,
-            data.label,
-            data.color,
-            data.node_type,
-            created_at,
-            created_at
-        ],
-        |row| {
-            Ok(MindmapNodeDB {
-                id: row.get(0)?,
-                nestling_id: row.get(1)?,
-                position_x: row.get(2)?,
-                position_y: row.get(3)?,
-                height: row.get(4)?,
-                width: row.get(5)?,
-                label: row.get(6)?,
-                color: row.get(7)?,
-                node_type: row.get(8)?,
-                created_at: row.get(9)?,
-                updated_at: row.get(10)?,
-            })
-        },
-    )?;
+    let node = statement
+        .query_row(
+            params![
+                data.nestling_id,
+                data.position_x,
+                data.position_y,
+                data.height,
+                data.width,
+                data.label,
+                data.color,
+                data.node_type,
+                created_at,
+                created_at
+            ],
+            |row| {
+                Ok(MindmapNodeDB {
+                    id: row.get(0)?,
+                    nestling_id: row.get(1)?,
+                    position_x: row.get(2)?,
+                    position_y: row.get(3)?,
+                    height: row.get(4)?,
+                    width: row.get(5)?,
+                    label: row.get(6)?,
+                    color: row.get(7)?,
+                    node_type: row.get(8)?,
+                    created_at: row.get(9)?,
+                    updated_at: row.get(10)?,
+                })
+            },
+        )
+        .log_err("insert_node_into_db")?;
 
     Ok(node.into())
 }
@@ -62,25 +64,26 @@ pub fn get_nodes_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Mindm
             WHERE nestling_id = ?1"
         )?;
 
-    let rows = statement.query_map([nestling_id], |row| {
-        Ok(MindmapNodeDB {
-            id: row.get(0)?,
-            nestling_id: row.get(1)?,
-            position_x: row.get(2)?,
-            position_y: row.get(3)?,
-            height: row.get(4)?,
-            width: row.get(5)?,
-            label: row.get(6)?,
-            color: row.get(7)?,
-            node_type: row.get(8)?,
-            created_at: row.get(9)?,
-            updated_at: row.get(10)?,
+    let nodes = statement
+        .query_map([nestling_id], |row| {
+            Ok(MindmapNodeDB {
+                id: row.get(0)?,
+                nestling_id: row.get(1)?,
+                position_x: row.get(2)?,
+                position_y: row.get(3)?,
+                height: row.get(4)?,
+                width: row.get(5)?,
+                label: row.get(6)?,
+                color: row.get(7)?,
+                node_type: row.get(8)?,
+                created_at: row.get(9)?,
+                updated_at: row.get(10)?,
+            })
         })
-    })?;
+        .log_err("get_nodes_by_nestling")?
+        .collect::<Result<Vec<_>, _>>()?;
 
-    let result = rows.collect::<Result<Vec<_>, _>>()?;
-
-    Ok(result.into_iter().map(|node| node.into()).collect())
+    Ok(nodes.into_iter().map(|node| node.into()).collect())
 }
 
 pub fn update_node_in_db(
@@ -113,7 +116,7 @@ pub fn update_node_in_db(
                 updated_at,
                 id
             ],
-        )
+        ).log_err("update_node_in_db")
         ?;
 
     Ok(())
@@ -122,7 +125,9 @@ pub fn update_node_in_db(
 pub fn delete_node_from_db(db: &AppDb, id: i64) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
 
-    connection.execute("DELETE FROM mindmap_nodes WHERE id = ?1", params![id])?;
+    connection
+        .execute("DELETE FROM mindmap_nodes WHERE id = ?1", params![id])
+        .log_err("delete_node_from_db")?;
 
     Ok(())
 }
@@ -138,18 +143,20 @@ pub fn insert_edge_into_db(db: &AppDb, data: NewMindmapEdgeDB) -> DbResult<Mindm
             RETURNING id, source_id, target_id, created_at, updated_at",
     )?;
 
-    let edge = statement.query_row(
-        params![data.source_id, data.target_id, created_at, created_at],
-        |row| {
-            Ok(MindmapEdgeDB {
-                id: row.get(0)?,
-                source_id: row.get(1)?,
-                target_id: row.get(2)?,
-                created_at: row.get(3)?,
-                updated_at: row.get(4)?,
-            })
-        },
-    )?;
+    let edge = statement
+        .query_row(
+            params![data.source_id, data.target_id, created_at, created_at],
+            |row| {
+                Ok(MindmapEdgeDB {
+                    id: row.get(0)?,
+                    source_id: row.get(1)?,
+                    target_id: row.get(2)?,
+                    created_at: row.get(3)?,
+                    updated_at: row.get(4)?,
+                })
+            },
+        )
+        .log_err("insert_edge_into_db")?;
 
     Ok(edge.into())
 }
@@ -166,25 +173,28 @@ pub fn get_edges_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Mindm
             )",
     )?;
 
-    let rows = statement.query_map([nestling_id], |row| {
-        Ok(MindmapEdgeDB {
-            id: row.get(0)?,
-            source_id: row.get(1)?,
-            target_id: row.get(2)?,
-            created_at: row.get(3)?,
-            updated_at: row.get(4)?,
+    let edges = statement
+        .query_map([nestling_id], |row| {
+            Ok(MindmapEdgeDB {
+                id: row.get(0)?,
+                source_id: row.get(1)?,
+                target_id: row.get(2)?,
+                created_at: row.get(3)?,
+                updated_at: row.get(4)?,
+            })
         })
-    })?;
+        .log_err("get_edges_by_nestling")?
+        .collect::<Result<Vec<_>, _>>()?;
 
-    let result = rows.collect::<Result<Vec<_>, _>>()?;
-
-    Ok(result.into_iter().map(|edge| edge.into()).collect())
+    Ok(edges.into_iter().map(|edge| edge.into()).collect())
 }
 
 pub fn delete_edge_from_db(db: &AppDb, id: i64) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
 
-    connection.execute("DELETE FROM mindmap_edges WHERE id = ?1", params![id])?;
+    connection
+        .execute("DELETE FROM mindmap_edges WHERE id = ?1", params![id])
+        .log_err("delete_edge_from_db")?;
 
     Ok(())
 }

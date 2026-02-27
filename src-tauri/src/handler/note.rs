@@ -26,10 +26,7 @@ pub fn create_note_template(
 }
 
 #[tauri::command]
-pub fn get_note_templates(
-    db: tauri::State<AppDb>,
-    nest_id: i64,
-) -> DbResult<Vec<NoteTemplate>> {
+pub fn get_note_templates(db: tauri::State<AppDb>, nest_id: i64) -> DbResult<Vec<NoteTemplate>> {
     get_templates_by_nestling(&db, nest_id)
 }
 

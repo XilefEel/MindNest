@@ -20,13 +20,16 @@ use handler::background_music::{add_music, delete_music, get_music, import_music
 
 use handler::user::{login_user, signup_user};
 
-use handler::note::{edit_note, create_note_template,  get_note_templates, update_note_template, delete_note_template};
+use handler::note::{
+    create_note_template, delete_note_template, edit_note, get_note_templates, update_note_template,
+};
 
 use handler::board::{
     create_board_card, create_board_column, delete_board_card, delete_board_column, get_board_data,
     update_board_card, update_board_column,
 };
 use handler::calendar::{create_event, delete_event, get_events, update_event};
+
 use handler::journal::{
     delete_journal_entry, delete_journal_template, get_journal_entries, get_journal_templates,
     insert_journal_entry, insert_journal_template, update_journal_entry, update_journal_template,
@@ -63,26 +66,35 @@ pub fn run() {
                 let _ = window.unminimize();
             }
         }))
+        .plugin(
+            tauri_plugin_log::Builder::new()
+                .target(tauri_plugin_log::Target::new(
+                    tauri_plugin_log::TargetKind::LogDir {
+                        file_name: Some("mindnest".to_string()),
+                    },
+                ))
+                .level(log::LevelFilter::Warn)
+                .max_file_size(5_000_000)
+                .rotation_strategy(tauri_plugin_log::RotationStrategy::KeepOne)
+                .build(),
+        )
         .plugin(tauri_plugin_clipboard_manager::init())
         .setup(|app| {
             let db_path = get_db_path(app);
-
-            println!("Database path: {:?}", db_path);
+            log::info!("Database path: {:?}", db_path);
 
             let db = AppDb::new(&db_path.to_string()).map_err(|e| {
-                println!("Failed to open database: {}", e);
+                log::error!("Failed to open database: {}", e);
                 format!("Failed to open database: {}", e)
             })?;
 
             init_db(&db).map_err(|e| {
-                println!("Failed to init database: {}", e);
+                log::error!("Failed to init database: {}", e);
                 format!("Failed to init database: {}", e)
             })?;
 
             app.manage(db);
-
-            println!("Database initialized!");
-
+            log::info!("Database initialized!");
             Ok(())
         })
         .plugin(tauri_plugin_fs::init())

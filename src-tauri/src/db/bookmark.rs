@@ -2,7 +2,7 @@ use crate::{
     models::bookmark::{Bookmark, BookmarkMetadata, NewBookmark},
     utils::{
         db::AppDb,
-        errors::{DbError, DbResult},
+        errors::{DbError, DbResult, LogError},
     },
 };
 use chrono::Utc;
@@ -15,15 +15,27 @@ async fn fetch_metadata(url: &str) -> DbResult<BookmarkMetadata> {
     let client = Client::builder()
         .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
         .timeout(std::time::Duration::from_secs(10))
-        .build()?;
+        .build()
+        .log_err("fetch_metadata: failed to build client")?;
 
-    let response = client.get(url).send().await?;
+    let response = client.get(url).send().await.log_err(&format!(
+        "fetch_metadata: failed to send request to {}",
+        url
+    ))?;
 
     if !response.status().is_success() {
+        log::warn!(
+            "fetch_metadata: unsuccessful response for {}: {}",
+            url,
+            response.status()
+        );
         return Err(DbError::HttpError(response.error_for_status().unwrap_err()));
     }
 
-    let html = response.text().await?;
+    let html = response
+        .text()
+        .await
+        .log_err("fetch_metadata: failed to read response body")?;
 
     let document = Html::parse_document(&html);
 
@@ -78,31 +90,33 @@ fn insert_bookmark_into_db(db: &AppDb, data: NewBookmark) -> DbResult<Bookmark> 
             RETURNING id, nestling_id, url, title, description, image_url, is_favorite, created_at, updated_at"
         )?;
 
-    let bookmark = statement.query_row(
-        params![
-            data.nestling_id,
-            data.url,
-            data.title,
-            data.description,
-            data.image_url,
-            data.is_favorite,
-            created_at,
-            created_at
-        ],
-        |row| {
-            Ok(Bookmark {
-                id: row.get(0)?,
-                nestling_id: row.get(1)?,
-                url: row.get(2)?,
-                title: row.get(3)?,
-                description: row.get(4)?,
-                image_url: row.get(5)?,
-                is_favorite: row.get(6)?,
-                created_at: row.get(7)?,
-                updated_at: row.get(8)?,
-            })
-        },
-    )?;
+    let bookmark = statement
+        .query_row(
+            params![
+                data.nestling_id,
+                data.url,
+                data.title,
+                data.description,
+                data.image_url,
+                data.is_favorite,
+                created_at,
+                created_at
+            ],
+            |row| {
+                Ok(Bookmark {
+                    id: row.get(0)?,
+                    nestling_id: row.get(1)?,
+                    url: row.get(2)?,
+                    title: row.get(3)?,
+                    description: row.get(4)?,
+                    image_url: row.get(5)?,
+                    is_favorite: row.get(6)?,
+                    created_at: row.get(7)?,
+                    updated_at: row.get(8)?,
+                })
+            },
+        )
+        .log_err("insert_bookmark_into_db")?;
 
     Ok(bookmark)
 }
@@ -132,10 +146,12 @@ pub fn toggle_bookmark_favorite_in_db(db: &AppDb, id: i64) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
-    connection.execute(
-        "UPDATE bookmarks SET is_favorite = NOT is_favorite, updated_at = ?1 WHERE id = ?2",
-        params![updated_at, id],
-    )?;
+    connection
+        .execute(
+            "UPDATE bookmarks SET is_favorite = NOT is_favorite, updated_at = ?1 WHERE id = ?2",
+            params![updated_at, id],
+        )
+        .log_err("toggle_bookmark_favorite_in_db")?;
 
     Ok(())
 }
@@ -151,29 +167,32 @@ pub fn get_bookmarks_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<B
             ORDER BY is_favorite DESC, created_at DESC"
         )?;
 
-    let rows = statement.query_map([nestling_id], |row| {
-        Ok(Bookmark {
-            id: row.get(0)?,
-            nestling_id: row.get(1)?,
-            url: row.get(2)?,
-            title: row.get(3)?,
-            description: row.get(4)?,
-            image_url: row.get(5)?,
-            is_favorite: row.get(6)?,
-            created_at: row.get(7)?,
-            updated_at: row.get(8)?,
+    let bookmarks = statement
+        .query_map([nestling_id], |row| {
+            Ok(Bookmark {
+                id: row.get(0)?,
+                nestling_id: row.get(1)?,
+                url: row.get(2)?,
+                title: row.get(3)?,
+                description: row.get(4)?,
+                image_url: row.get(5)?,
+                is_favorite: row.get(6)?,
+                created_at: row.get(7)?,
+                updated_at: row.get(8)?,
+            })
         })
-    })?;
+        .log_err("get_bookmarks_by_nestling")?
+        .collect::<Result<Vec<Bookmark>, _>>()?;
 
-    let result = rows.collect::<Result<Vec<Bookmark>, _>>()?;
-
-    Ok(result)
+    Ok(bookmarks)
 }
 
 pub fn delete_bookmark_from_db(db: &AppDb, id: i64) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
 
-    connection.execute("DELETE FROM bookmarks WHERE id = ?1", params![id])?;
+    connection
+        .execute("DELETE FROM bookmarks WHERE id = ?1", params![id])
+        .log_err("delete_bookmark_from_db")?;
 
     Ok(())
 }

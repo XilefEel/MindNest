@@ -1,6 +1,9 @@
 use crate::{
     models::calendar::{NewPlannerEvent, PlannerEvent},
-    utils::{db::AppDb, errors::DbResult},
+    utils::{
+        db::AppDb,
+        errors::{DbResult, LogError},
+    },
 };
 use rusqlite::params;
 
@@ -19,33 +22,35 @@ pub fn insert_planner_event_into_db(db: &AppDb, data: NewPlannerEvent) -> DbResu
         )
         ?;
 
-    let event = statement.query_row(
-        params![
-            data.nestling_id,
-            data.date,
-            data.title,
-            data.description,
-            data.start_time,
-            data.duration,
-            data.color,
-            created_at,
-            created_at
-        ],
-        |row| {
-            Ok(PlannerEvent {
-                id: row.get(0)?,
-                nestling_id: row.get(1)?,
-                date: row.get(2)?,
-                title: row.get(3)?,
-                description: row.get(4)?,
-                start_time: row.get(5)?,
-                duration: row.get(6)?,
-                color: row.get(7)?,
-                created_at: row.get(8)?,
-                updated_at: row.get(9)?,
-            })
-        },
-    )?;
+    let event = statement
+        .query_row(
+            params![
+                data.nestling_id,
+                data.date,
+                data.title,
+                data.description,
+                data.start_time,
+                data.duration,
+                data.color,
+                created_at,
+                created_at
+            ],
+            |row| {
+                Ok(PlannerEvent {
+                    id: row.get(0)?,
+                    nestling_id: row.get(1)?,
+                    date: row.get(2)?,
+                    title: row.get(3)?,
+                    description: row.get(4)?,
+                    start_time: row.get(5)?,
+                    duration: row.get(6)?,
+                    color: row.get(7)?,
+                    created_at: row.get(8)?,
+                    updated_at: row.get(9)?,
+                })
+            },
+        )
+        .log_err("insert_planner_event_into_db")?;
 
     Ok(event)
 }
@@ -69,7 +74,7 @@ pub fn update_planner_event_in_db(
             SET date = ?1, title = ?2, description = ?3, start_time = ?4, duration = ?5, color = ?6, updated_at = ?7
             WHERE id = ?8",
             params![date, title, description, start_time, duration, color, updated_at, id]
-        )?;
+        ).log_err("update_planner_event_in_db")?;
 
     Ok(())
 }
@@ -77,7 +82,9 @@ pub fn update_planner_event_in_db(
 pub fn delete_planner_event_from_db(db: &AppDb, id: i64) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
 
-    connection.execute("DELETE FROM planner_events WHERE id = ?1", params![id])?;
+    connection
+        .execute("DELETE FROM planner_events WHERE id = ?1", params![id])
+        .log_err("delete_planner_event_from_db")?;
 
     Ok(())
 }
@@ -113,7 +120,8 @@ pub fn get_planner_events_from_range(
                 created_at: row.get(8)?,
                 updated_at: row.get(9)?,
             })
-        })?
+        })
+        .log_err("get_planner_events_from_range")?
         .collect::<Result<Vec<_>, _>>()?;
 
     Ok(events)

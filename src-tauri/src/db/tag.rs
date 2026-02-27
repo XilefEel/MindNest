@@ -1,4 +1,4 @@
-use crate::utils::errors::{DbError, DbResult};
+use crate::utils::errors::{DbError, DbResult, LogError};
 use crate::{
     models::tag::{NewTag, Tag},
     utils::db::AppDb,
@@ -18,19 +18,21 @@ pub fn insert_tag_into_db(db: &AppDb, data: NewTag) -> DbResult<Tag> {
             RETURNING id, nest_id, name, color, created_at, updated_at",
     )?;
 
-    let tag = statement.query_row(
-        params![data.nest_id, data.name, data.color, created_at, created_at],
-        |row| {
-            Ok(Tag {
-                id: row.get(0)?,
-                nest_id: row.get(1)?,
-                name: row.get(2)?,
-                color: row.get(3)?,
-                created_at: row.get(4)?,
-                updated_at: row.get(5)?,
-            })
-        },
-    )?;
+    let tag = statement
+        .query_row(
+            params![data.nest_id, data.name, data.color, created_at, created_at],
+            |row| {
+                Ok(Tag {
+                    id: row.get(0)?,
+                    nest_id: row.get(1)?,
+                    name: row.get(2)?,
+                    color: row.get(3)?,
+                    created_at: row.get(4)?,
+                    updated_at: row.get(5)?,
+                })
+            },
+        )
+        .log_err("insert_tag_into_db")?;
 
     Ok(tag)
 }
@@ -46,20 +48,21 @@ pub fn get_tags_by_nest(db: &AppDb, nest_id: i64) -> DbResult<Vec<Tag>> {
             ORDER BY name ASC",
     )?;
 
-    let rows = statement.query_map([nest_id], |row| {
-        Ok(Tag {
-            id: row.get(0)?,
-            nest_id: row.get(1)?,
-            name: row.get(2)?,
-            color: row.get(3)?,
-            created_at: row.get(4)?,
-            updated_at: row.get(5)?,
+    let tags = statement
+        .query_map([nest_id], |row| {
+            Ok(Tag {
+                id: row.get(0)?,
+                nest_id: row.get(1)?,
+                name: row.get(2)?,
+                color: row.get(3)?,
+                created_at: row.get(4)?,
+                updated_at: row.get(5)?,
+            })
         })
-    })?;
+        .log_err("get_tags_by_nest")?
+        .collect::<Result<Vec<Tag>, _>>()?;
 
-    let result = rows.collect::<Result<Vec<Tag>, _>>()?;
-
-    Ok(result)
+    Ok(tags)
 }
 
 pub fn update_tag_in_db(
@@ -71,13 +74,15 @@ pub fn update_tag_in_db(
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
-    connection.execute(
-        "
+    connection
+        .execute(
+            "
             UPDATE tags
             SET name = ?1, color = ?2, updated_at = ?3
             WHERE id = ?4",
-        params![name, color, updated_at, id],
-    )?;
+            params![name, color, updated_at, id],
+        )
+        .log_err("update_tag_in_db")?;
 
     Ok(())
 }
@@ -85,7 +90,9 @@ pub fn update_tag_in_db(
 pub fn delete_tag_from_db(db: &AppDb, id: i64) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
 
-    let rows_affected = connection.execute("DELETE FROM tags WHERE id = ?1", params![id])?;
+    let rows_affected = connection
+        .execute("DELETE FROM tags WHERE id = ?1", params![id])
+        .log_err("delete_tag_from_db")?;
 
     if rows_affected == 0 {
         return Err(DbError::NotFound);
@@ -98,12 +105,14 @@ pub fn add_tag_to_nestling(db: &AppDb, nestling_id: i64, tag_id: i64) -> DbResul
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
-    connection.execute(
-        "
+    connection
+        .execute(
+            "
             INSERT INTO nestling_tags (nestling_id, tag_id, created_at)
             VALUES (?1, ?2, ?3)",
-        params![nestling_id, tag_id, created_at],
-    )?;
+            params![nestling_id, tag_id, created_at],
+        )
+        .log_err("add_tag_to_nestling")?;
 
     Ok(())
 }
@@ -124,10 +133,13 @@ pub fn get_all_nestling_tags_for_nest(
         ORDER BY nt.nestling_id",
     )?;
 
-    let mut rows = statement.query([nest_id])?;
+    let mut rows = statement
+        .query([nest_id])
+        .log_err("get_all_nestling_tags_for_nest")?;
+
     let mut nestling_tags_map: HashMap<i64, Vec<Tag>> = HashMap::new();
 
-    while let Some(row) = rows.next()? {
+    while let Some(row) = rows.next().log_err("get_all_nestling_tags_for_nest")? {
         let nestling_id: i64 = row.get(0)?;
         let tag = Tag {
             id: row.get(1)?,
@@ -150,10 +162,12 @@ pub fn get_all_nestling_tags_for_nest(
 pub fn remove_tag_from_nestling(db: &AppDb, nestling_id: i64, tag_id: i64) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
 
-    let rows_affected = connection.execute(
-        "DELETE FROM nestling_tags WHERE nestling_id = ?1 AND tag_id = ?2",
-        params![nestling_id, tag_id],
-    )?;
+    let rows_affected = connection
+        .execute(
+            "DELETE FROM nestling_tags WHERE nestling_id = ?1 AND tag_id = ?2",
+            params![nestling_id, tag_id],
+        )
+        .log_err("remove_tag_from_nestling")?;
 
     if rows_affected == 0 {
         return Err(DbError::NotFound);

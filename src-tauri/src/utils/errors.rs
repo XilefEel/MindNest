@@ -43,3 +43,16 @@ impl serde::Serialize for DbError {
 }
 
 pub type DbResult<T> = Result<T, DbError>;
+
+pub trait LogError<T> {
+    fn log_err(self, context: &str) -> Self;
+}
+
+impl<T, E: std::fmt::Display> LogError<T> for Result<T, E> {
+    fn log_err(self, context: &str) -> Self {
+        self.map_err(|e| {
+            log::error!("{}: {}", context, e);
+            e
+        })
+    }
+}
