@@ -85,15 +85,15 @@ export default function Topbar({
   return (
     <nav
       className={cn(
-        "flex w-full items-center justify-between border-b border-gray-900 p-2 pt-8 transition-[border] sm:p-4 sm:pt-10 dark:border-gray-100",
+        "flex w-full items-center gap-3 border-b border-gray-900 p-2 pt-6 transition-[border] sm:pt-8 dark:border-gray-100",
         topbarHidden && "border-0",
       )}
     >
       <div
         className={cn(
-          "flex items-center gap-3 p-1",
+          "flex items-center justify-center p-1",
           activeBackgroundId &&
-            "rounded-xl bg-white/30 backdrop-blur-sm dark:bg-black/30",
+            "rounded-lg bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
         <TopbarButton label={"Go Back"} action={handleExit} Icon={ArrowLeft} />
@@ -104,7 +104,16 @@ export default function Topbar({
           Icon={Menu}
           isHidden
         />
+      </div>
 
+      <div
+        className={cn(
+          "flex items-center gap-3 p-1 px-3",
+          activeBackgroundId &&
+            "rounded-lg bg-white/30 backdrop-blur-sm dark:bg-black/30",
+        )}
+      >
+        <p className="hidden text-3xl sm:block">🪺</p>
         <div
           className={cn(
             "rounded transition-all duration-200",
@@ -131,9 +140,9 @@ export default function Topbar({
 
       <div
         className={cn(
-          "flex items-center justify-center p-1 px-3",
+          "ml-auto flex items-center justify-center p-1 px-3",
           activeBackgroundId &&
-            "rounded-xl bg-white/30 backdrop-blur-sm dark:bg-black/30",
+            "rounded-lg bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
         <div className="flex items-center gap-3">

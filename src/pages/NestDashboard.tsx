@@ -74,13 +74,13 @@ export default function NestDashboardPage() {
         <nav
           className={cn(
             "shrink-0 transition-[height] duration-300 ease-in-out",
-            topbarHidden ? "h-0" : "h-24",
+            topbarHidden ? "h-0" : "h-20",
           )}
         >
           <div
             className={cn(
               "transition-transform duration-300 md:px-6",
-              topbarHidden ? "-translate-y-11/12" : "translate-y-0",
+              topbarHidden ? "-translate-y-full" : "translate-y-0",
             )}
             onDoubleClick={() => setSetting("topbarHidden", !topbarHidden)}
           >
@@ -92,7 +92,7 @@ export default function NestDashboardPage() {
           </div>
         </nav>
 
-        <div className="mt-6 flex flex-1 overflow-hidden">
+        <div className="mt-1 flex flex-1 overflow-hidden sm:mt-6">
           {isSidebarOpen && (
             <div
               className="fixed inset-0 z-30 bg-black/30 md:hidden"
