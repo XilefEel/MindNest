@@ -13,6 +13,7 @@ import {
   useStoredBackgroundId,
 } from "@/stores/useNestStore";
 import { useSettingsStore } from "@/stores/useSettingsStore";
+import shortcutConfig, { ShortcutId } from "@/lib/utils/shortcuts";
 
 export function useKeyboardShortcuts({
   nestId,
@@ -43,76 +44,56 @@ export function useKeyboardShortcuts({
   const cycleTheme = useThemeToggle();
 
   useEffect(() => {
+    const shortcutHandlers: Record<ShortcutId, () => void> = {
+      toggleTopbar: () => setSetting("topbarHidden", !topbarHidden),
+
+      toggleSidebar: () => {
+        const isMobile = window.innerWidth < 768;
+        isMobile
+          ? setIsSidebarOpen(!isSidebarOpen)
+          : setSetting("sidebarHidden", !sidebarHidden);
+      },
+
+      hideCards: () => setIsCardHidden(!isCardHidden),
+
+      newNestling: () =>
+        isNestlingOpen ? closeNestlingModal() : openNestlingModal(nestId),
+
+      newFolder: () =>
+        isFolderOpen ? closeFolderModal() : openFolderModal(nestId),
+
+      openSearch: () => setIsSearchOpen(!isSearchOpen),
+
+      openSettings: () => setIsSettingsOpen(!isSettingsOpen),
+
+      openBackgroundSettings: () =>
+        setIsSettingsOpen(!isSettingsOpen, "nest", "background"),
+
+      openMusicSettings: () =>
+        setIsSettingsOpen(!isSettingsOpen, "nest", "music"),
+
+      playPause: () => setAudioIsPaused(!audioIsPaused),
+
+      cycleTheme: () => cycleTheme(),
+
+      toggleBackground: () =>
+        activeBackgroundId
+          ? clearActiveBackgroundId()
+          : setActiveBackgroundId(storedBackgroundId),
+    };
+
     const handleKeyPress = (e: KeyboardEvent) => {
       if (!e.ctrlKey && !e.metaKey) return;
 
-      switch (e.key.toLowerCase()) {
-        case "t":
-          e.preventDefault();
-          setSetting("topbarHidden", !topbarHidden);
-          break;
+      const match = shortcutConfig.find(({ keys }) => {
+        const needsShift = keys.length === 3;
+        const key = keys[keys.length - 1].toLowerCase();
+        return key === e.key.toLowerCase() && needsShift === e.shiftKey;
+      });
 
-        case "e": {
-          e.preventDefault();
-          const isMobile = window.innerWidth < 768;
-          if (isMobile) {
-            setIsSidebarOpen(!isSidebarOpen);
-          } else {
-            setSetting("sidebarHidden", !sidebarHidden);
-          }
-          break;
-        }
-
-        case "h":
-          e.preventDefault();
-          setIsCardHidden(!isCardHidden);
-          break;
-
-        case "n":
-          if (e.shiftKey) {
-            e.preventDefault();
-            isFolderOpen ? closeFolderModal() : openFolderModal(nestId);
-          } else {
-            e.preventDefault();
-            isNestlingOpen ? closeNestlingModal() : openNestlingModal(nestId);
-          }
-          break;
-
-        case "k":
-          e.preventDefault();
-          setIsSearchOpen(!isSearchOpen);
-          break;
-
-        case ",":
-          e.preventDefault();
-          setIsSettingsOpen(!isSettingsOpen);
-          break;
-
-        case "b":
-          e.preventDefault();
-          if (e.shiftKey) {
-            activeBackgroundId
-              ? clearActiveBackgroundId()
-              : setActiveBackgroundId(storedBackgroundId);
-          } else {
-            setIsSettingsOpen(!isSettingsOpen, "nest", "background");
-          }
-          break;
-
-        case "m":
-          e.preventDefault();
-          setIsSettingsOpen(!isSettingsOpen, "nest", "music");
-          break;
-
-        case "p":
-          e.preventDefault();
-          setAudioIsPaused(!audioIsPaused);
-          break;
-
-        case "d":
-          e.preventDefault();
-          cycleTheme();
-          break;
+      if (match) {
+        e.preventDefault();
+        shortcutHandlers[match.id]();
       }
     };
 

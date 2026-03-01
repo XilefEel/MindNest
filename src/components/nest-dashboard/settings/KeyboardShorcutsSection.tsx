@@ -1,96 +1,9 @@
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
-import {
-  Eye,
-  FilePlus,
-  FolderPlus,
-  Image,
-  Music,
-  Palette,
-  PanelLeft,
-  PanelTop,
-  Play,
-  Search,
-  Settings,
-} from "lucide-react";
+import shortcuts from "@/lib/utils/shortcuts";
 
 export default function KeyboardShortcutsSection() {
   const activeBackgroundId = useActiveBackgroundId();
-
-  const shortcuts = [
-    {
-      keys: ["Ctrl", "T"],
-      description: "Toggle topbar",
-      category: "Navigation",
-      Icon: PanelTop,
-    },
-    {
-      keys: ["Ctrl", "E"],
-      description: "Toggle sidebar",
-      category: "Navigation",
-      Icon: PanelLeft,
-    },
-    {
-      keys: ["Ctrl", "H"],
-      description: "Hide/show cards",
-      category: "Navigation",
-      Icon: Eye,
-    },
-    {
-      keys: ["Ctrl", "N"],
-      description: "Create new nestling",
-      category: "Actions",
-      Icon: FilePlus,
-    },
-    {
-      keys: ["Ctrl", "Shift", "N"],
-      description: "Create new folder",
-      category: "Actions",
-      Icon: FolderPlus,
-    },
-    {
-      keys: ["Ctrl", "K"],
-      description: "Open search",
-      category: "Actions",
-      Icon: Search,
-    },
-    {
-      keys: ["Ctrl", ","],
-      description: "Open settings",
-      category: "Actions",
-      Icon: Settings,
-    },
-    {
-      keys: ["Ctrl", "B"],
-      description: "Open background settings",
-      category: "Actions",
-      Icon: Image,
-    },
-    {
-      keys: ["Ctrl", "M"],
-      description: "Open music settings",
-      category: "Actions",
-      Icon: Music,
-    },
-    {
-      keys: ["Ctrl", "P"],
-      description: "Play/pause background music",
-      category: "Actions",
-      Icon: Play,
-    },
-    {
-      keys: ["Ctrl", "D"],
-      description: "Cycle theme",
-      category: "Appearance",
-      Icon: Palette,
-    },
-    {
-      keys: ["Ctrl", "Shift", "B"],
-      description: "Toggle background",
-      category: "Appearance",
-      Icon: Image,
-    },
-  ];
 
   const categories = Array.from(new Set(shortcuts.map((s) => s.category)));
 
