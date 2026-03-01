@@ -11,6 +11,7 @@ import { BackgroundMusic } from "@/lib/types/background-music";
 import {
   saveLastBackgroundImage,
   clearLastBackgroundImage,
+  saveStoredBackgroundImage,
 } from "@/lib/storage/background-image";
 import {
   saveLastBackgroundMusic,
@@ -49,6 +50,7 @@ type NestState = {
 
   // Background Images
   setActiveBackgroundId: (backgroundId: number | null) => Promise<void>;
+  setStoredBackgroundId: (backgroundId: number | null) => void;
   clearActiveBackgroundId: () => void;
   selectBackground: (nestId: number) => Promise<boolean>;
   getBackgrounds: (nestId: number) => Promise<void>;
@@ -140,6 +142,8 @@ export const useNestStore = create<NestState>((set, get) => ({
   setActiveBackgroundId: async (backgroundId) => {
     if (backgroundId) {
       await saveLastBackgroundImage(get().activeNestId!, backgroundId);
+      await saveStoredBackgroundImage(get().activeNestId!, backgroundId);
+
       set({
         activeBackgroundId: backgroundId,
         storedBackgroundId: backgroundId,
@@ -147,6 +151,10 @@ export const useNestStore = create<NestState>((set, get) => ({
     } else {
       set({ activeBackgroundId: null });
     }
+  },
+
+  setStoredBackgroundId: (backgroundId) => {
+    set({ storedBackgroundId: backgroundId });
   },
 
   clearActiveBackgroundId: async () => {
@@ -328,6 +336,7 @@ export const useNestActions = () =>
       refreshNest: state.refreshNest,
 
       setActiveBackgroundId: state.setActiveBackgroundId,
+      setStoredBackgroundId: state.setStoredBackgroundId,
       clearActiveBackgroundId: state.clearActiveBackgroundId,
       selectBackground: state.selectBackground,
       getBackgrounds: state.getBackgrounds,

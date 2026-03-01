@@ -1,5 +1,8 @@
 import { getNestFromId } from "@/lib/api/nest";
-import { getLastBackgroundImage } from "@/lib/storage/background-image";
+import {
+  getLastBackgroundImage,
+  getStoredBackgroundImage,
+} from "@/lib/storage/background-image";
 import { getLastBackgroundMusic } from "@/lib/storage/background-music";
 import { saveLastNestId } from "@/lib/storage/nest";
 import { getLastNestling } from "@/lib/storage/nestling";
@@ -34,6 +37,7 @@ export default function useLoadNest({
   const {
     setActiveNestId,
     setActiveBackgroundId,
+    setStoredBackgroundId,
     setActiveMusicId,
     getBackgrounds,
     getMusic,
@@ -52,19 +56,24 @@ export default function useLoadNest({
         setActiveNestId(lastNest.id);
         await saveLastNestId(lastNest.id);
 
-        const [lastNestlingId, lastBackgroundImage, lastBackgroundMusicId] =
-          await Promise.all([
-            getLastNestling(lastNest.id),
-            getLastBackgroundImage(lastNest.id),
-            getLastBackgroundMusic(lastNest.id),
+        const [
+          lastNestlingId,
+          lastBackgroundImage,
+          lastBackgroundMusicId,
+          storedBackgroundImage,
+        ] = await Promise.all([
+          getLastNestling(lastNest.id),
+          getLastBackgroundImage(lastNest.id),
+          getLastBackgroundMusic(lastNest.id),
+          getStoredBackgroundImage(lastNest.id),
 
-            loadSettings(),
-            fetchSidebar(lastNest.id),
-            getBackgrounds(lastNest.id),
-            getMusic(lastNest.id),
-            getTags(lastNest.id),
-            getAllNestlingTags(lastNest.id),
-          ]);
+          loadSettings(),
+          fetchSidebar(lastNest.id),
+          getBackgrounds(lastNest.id),
+          getMusic(lastNest.id),
+          getTags(lastNest.id),
+          getAllNestlingTags(lastNest.id),
+        ]);
 
         const lastNestling = useNestlingStore
           .getState()
@@ -90,6 +99,9 @@ export default function useLoadNest({
 
         if (lastBackgroundImage != null)
           setActiveBackgroundId(lastBackgroundImage);
+
+        if (storedBackgroundImage != null)
+          setStoredBackgroundId(storedBackgroundImage);
 
         if (lastBackgroundMusicId != null)
           setActiveMusicId(lastBackgroundMusicId);
