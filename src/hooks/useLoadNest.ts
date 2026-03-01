@@ -3,7 +3,10 @@ import {
   getLastBackgroundImage,
   getStoredBackgroundImage,
 } from "@/lib/storage/background-image";
-import { getLastBackgroundMusic } from "@/lib/storage/background-music";
+import {
+  getLastBackgroundMusic,
+  getLastMusicVolume,
+} from "@/lib/storage/background-music";
 import { saveLastNestId } from "@/lib/storage/nest";
 import { getLastNestling } from "@/lib/storage/nestling";
 import { Nest } from "@/lib/types/nest";
@@ -39,6 +42,7 @@ export default function useLoadNest({
     setActiveBackgroundId,
     setStoredBackgroundId,
     setActiveMusicId,
+    setMusicVolume,
     getBackgrounds,
     getMusic,
   } = useNestActions();
@@ -59,13 +63,15 @@ export default function useLoadNest({
         const [
           lastNestlingId,
           lastBackgroundImage,
-          lastBackgroundMusicId,
           storedBackgroundImage,
+          lastBackgroundMusicId,
+          lastMusicVolume,
         ] = await Promise.all([
           getLastNestling(lastNest.id),
           getLastBackgroundImage(lastNest.id),
-          getLastBackgroundMusic(lastNest.id),
           getStoredBackgroundImage(lastNest.id),
+          getLastBackgroundMusic(lastNest.id),
+          getLastMusicVolume(lastNest.id),
 
           loadSettings(),
           fetchSidebar(lastNest.id),
@@ -105,6 +111,10 @@ export default function useLoadNest({
 
         if (lastBackgroundMusicId != null)
           setActiveMusicId(lastBackgroundMusicId);
+
+        if (lastMusicVolume != null) {
+          setMusicVolume(lastMusicVolume);
+        }
       } catch (error) {
         toast.error("Failed to restore.");
       } finally {

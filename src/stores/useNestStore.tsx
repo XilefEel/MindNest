@@ -16,6 +16,7 @@ import {
 import {
   saveLastBackgroundMusic,
   clearLastBackgroundMusic,
+  saveLastMusicVolume,
 } from "@/lib/storage/background-music";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { parseDragData } from "@/lib/utils/general";
@@ -219,7 +220,10 @@ export const useNestStore = create<NestState>((set, get) => ({
 
   setAudioIsPaused: (paused: boolean) => set({ audioIsPaused: paused }),
 
-  setMusicVolume: (volume: number) => set({ musicVolume: volume }),
+  setMusicVolume: (volume: number) => {
+    saveLastMusicVolume(get().activeNestId!, volume);
+    set({ musicVolume: volume });
+  },
 
   setActiveMusicId: async (musicId) => {
     if (musicId) {
