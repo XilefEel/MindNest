@@ -5,6 +5,7 @@ import {
   FilePlus,
   FolderPlus,
   Image,
+  Music,
   Palette,
   PanelLeft,
   PanelTop,
@@ -24,7 +25,7 @@ export default function KeyboardShortcutsSection() {
       Icon: PanelTop,
     },
     {
-      keys: ["Ctrl", "S"],
+      keys: ["Ctrl", "E"],
       description: "Toggle sidebar",
       category: "Navigation",
       Icon: PanelLeft,
@@ -42,7 +43,7 @@ export default function KeyboardShortcutsSection() {
       Icon: FilePlus,
     },
     {
-      keys: ["Ctrl", "F"],
+      keys: ["Ctrl", "Shift", "N"],
       description: "Create new folder",
       category: "Actions",
       Icon: FolderPlus,
@@ -54,13 +55,25 @@ export default function KeyboardShortcutsSection() {
       Icon: Search,
     },
     {
-      keys: ["Ctrl", "I"],
+      keys: ["Ctrl", ","],
       description: "Open settings",
       category: "Actions",
       Icon: Settings,
     },
     {
+      keys: ["Ctrl", "B"],
+      description: "Open background settings",
+      category: "Actions",
+      Icon: Image,
+    },
+    {
       keys: ["Ctrl", "M"],
+      description: "Open music settings",
+      category: "Actions",
+      Icon: Music,
+    },
+    {
+      keys: ["Ctrl", "P"],
       description: "Play/pause background music",
       category: "Actions",
       Icon: Play,
@@ -72,7 +85,7 @@ export default function KeyboardShortcutsSection() {
       Icon: Palette,
     },
     {
-      keys: ["Ctrl", "B"],
+      keys: ["Ctrl", "Shift", "B"],
       description: "Toggle background",
       category: "Appearance",
       Icon: Image,

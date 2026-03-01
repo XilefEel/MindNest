@@ -46,13 +46,13 @@ export function useKeyboardShortcuts({
     const handleKeyPress = (e: KeyboardEvent) => {
       if (!e.ctrlKey && !e.metaKey) return;
 
-      switch (e.key) {
+      switch (e.key.toLowerCase()) {
         case "t":
           e.preventDefault();
           setSetting("topbarHidden", !topbarHidden);
           break;
 
-        case "s": {
+        case "e": {
           e.preventDefault();
           const isMobile = window.innerWidth < 768;
           if (isMobile) {
@@ -69,13 +69,13 @@ export function useKeyboardShortcuts({
           break;
 
         case "n":
-          e.preventDefault();
-          isNestlingOpen ? closeNestlingModal() : openNestlingModal(nestId);
-          break;
-
-        case "f":
-          e.preventDefault();
-          isFolderOpen ? closeFolderModal() : openFolderModal(nestId);
+          if (e.shiftKey) {
+            e.preventDefault();
+            isFolderOpen ? closeFolderModal() : openFolderModal(nestId);
+          } else {
+            e.preventDefault();
+            isNestlingOpen ? closeNestlingModal() : openNestlingModal(nestId);
+          }
           break;
 
         case "k":
@@ -83,26 +83,35 @@ export function useKeyboardShortcuts({
           setIsSearchOpen(!isSearchOpen);
           break;
 
-        case "i":
+        case ",":
           e.preventDefault();
           setIsSettingsOpen(!isSettingsOpen);
+          break;
+
+        case "b":
+          e.preventDefault();
+          if (e.shiftKey) {
+            activeBackgroundId
+              ? clearActiveBackgroundId()
+              : setActiveBackgroundId(storedBackgroundId);
+          } else {
+            setIsSettingsOpen(!isSettingsOpen, "nest", "background");
+          }
+          break;
+
+        case "m":
+          e.preventDefault();
+          setIsSettingsOpen(!isSettingsOpen, "nest", "music");
+          break;
+
+        case "p":
+          e.preventDefault();
+          setAudioIsPaused(!audioIsPaused);
           break;
 
         case "d":
           e.preventDefault();
           cycleTheme();
-          break;
-
-        case "b":
-          e.preventDefault();
-          activeBackgroundId
-            ? clearActiveBackgroundId()
-            : setActiveBackgroundId(storedBackgroundId);
-          break;
-
-        case "m":
-          e.preventDefault();
-          setAudioIsPaused(!audioIsPaused);
           break;
       }
     };
