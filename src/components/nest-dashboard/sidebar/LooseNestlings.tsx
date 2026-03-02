@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils/general";
 import { useDroppable } from "@dnd-kit/core";
 import NestlingItem from "./NestlingItem";
 import { Nestling } from "@/lib/types/nestling";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export default function LooseNestlings({
   looseNestlings,
@@ -10,6 +11,8 @@ export default function LooseNestlings({
   looseNestlings: Nestling[];
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
+  const activeBackgroundId = useActiveBackgroundId();
+
   const { setNodeRef, isOver } = useDroppable({
     id: "loose-null",
   });
@@ -18,8 +21,13 @@ export default function LooseNestlings({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex flex-1 flex-col gap-1 rounded py-1 font-medium",
-        isOver && "bg-teal-100 dark:bg-teal-400",
+        "flex flex-1 flex-col gap-1 rounded pt-1 font-medium",
+        isOver &&
+          cn(
+            activeBackgroundId
+              ? "bg-teal-200/50 dark:bg-teal-300/50"
+              : "bg-gray-100/80 dark:bg-gray-700/80",
+          ),
       )}
     >
       {looseNestlings.map((nestling) => (

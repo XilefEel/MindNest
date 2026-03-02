@@ -1,6 +1,6 @@
 import { useState } from "react";
 import NestlingItem from "./NestlingItem";
-import { Pin } from "lucide-react";
+import { ChevronLeft, Pin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
@@ -33,6 +33,14 @@ export default function PinnedNestlings({
             <Pin className="size-4" />
           </div>
           <span>Pinned</span>
+          <div className="ml-auto">
+            <ChevronLeft
+              className={cn(
+                "size-4 transition-transform",
+                isPinnedOpen ? "-rotate-90" : "",
+              )}
+            />
+          </div>
         </div>
 
         <AnimatePresence initial={false}>
@@ -44,7 +52,7 @@ export default function PinnedNestlings({
               exit={{ height: 0 }}
               transition={{ duration: 0.2 }}
               style={{ overflow: "hidden" }}
-              className="ml-6"
+              className="ml-6 flex flex-col gap-1"
             >
               {pinnedNestlings.map((nestling) => (
                 <NestlingItem
