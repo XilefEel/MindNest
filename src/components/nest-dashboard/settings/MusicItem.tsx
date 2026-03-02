@@ -131,8 +131,8 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
             "group rounded-md p-2 transition-colors",
             isActive
               ? activeBackgroundId
-                ? "bg-purple-100/80 dark:bg-purple-900/40"
-                : "bg-purple-100 dark:bg-purple-900/40"
+                ? "bg-teal-200/50 dark:bg-teal-900/50"
+                : "bg-teal-100 dark:bg-teal-900/50"
               : activeBackgroundId
                 ? "hover:bg-white/30 dark:hover:bg-black/30"
                 : "hover:bg-gray-100 dark:hover:bg-gray-700",
@@ -145,7 +145,7 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
           >
             <button
               onClick={handlePlayMusic}
-              className="flex size-11 items-center justify-center rounded-md bg-purple-500 text-white transition hover:bg-purple-600"
+              className="flex size-11 items-center justify-center rounded-md bg-teal-500 text-white transition hover:bg-teal-600"
             >
               {isPlaying ? <Pause size={18} /> : <Play size={18} />}
             </button>
@@ -157,10 +157,10 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
                 <div
                   className={cn(
                     "truncate rounded text-sm font-medium text-gray-900 transition-all duration-200 dark:text-gray-100",
-                    isActive && "text-purple-600 dark:text-purple-400",
+                    isActive && "text-teal-600 dark:text-teal-400",
                     isEditing &&
                       cn(
-                        "px-2 py-0.5 shadow ring-2 ring-purple-500",
+                        "px-2 py-0.5 shadow ring-2 ring-teal-500",
                         activeBackgroundId
                           ? "bg-white/10 backdrop-blur-sm dark:bg-black/10"
                           : "bg-white dark:bg-gray-800",
@@ -201,7 +201,7 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
               </span>
               <div className="h-1 flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
                 <div
-                  className="h-full rounded-full bg-purple-500 transition-all duration-100 dark:bg-purple-400"
+                  className="h-full rounded-full bg-teal-500 transition-all duration-100 dark:bg-teal-400"
                   style={{ width: `${progress}%` }}
                 />
               </div>

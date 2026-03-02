@@ -6,6 +6,7 @@ import {
   useAudioIsPaused,
   useMusicVolume,
 } from "@/stores/useNestStore";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { useEffect, useRef } from "react";
 
@@ -14,12 +15,15 @@ export default function BackgroundMusicPlayer() {
   const music = useMusic();
   const audioIsPaused = useAudioIsPaused();
   const volume = useMusicVolume();
+
   const {
     setAudioCurrentTime,
     setAudioIsPlaying,
     setAudioIsPaused,
     setActiveMusicId,
   } = useNestActions();
+  const { musicLooped } = useSettingsStore();
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const activeMusic = music.find((m) => m.id === activeMusicId);
@@ -37,6 +41,7 @@ export default function BackgroundMusicPlayer() {
     }
 
     const audio = audioRef.current;
+    audio.loop = musicLooped;
 
     const handleTimeUpdate = () => {
       setAudioCurrentTime(audio.currentTime);
@@ -54,6 +59,8 @@ export default function BackgroundMusicPlayer() {
     const handleEnded = () => {
       setAudioCurrentTime(0);
       setAudioIsPlaying(false);
+
+      if (musicLooped) return;
 
       if (activeMusic && music.length > 0) {
         const sortedMusic = [...music].sort(
@@ -108,6 +115,7 @@ export default function BackgroundMusicPlayer() {
     music,
     activeMusic,
     audioIsPaused,
+    musicLooped,
     setAudioCurrentTime,
     setAudioIsPlaying,
     setAudioIsPaused,

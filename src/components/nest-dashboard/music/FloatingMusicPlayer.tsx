@@ -42,7 +42,7 @@ export default function FloatingMusicPlayer() {
       )}
     >
       <div className="flex items-center gap-3">
-        <div className="flex size-12 items-center justify-center rounded-lg bg-purple-500 text-white">
+        <div className="flex size-12 items-center justify-center rounded-lg bg-teal-500 text-white">
           <Music size={20} />
         </div>
 
@@ -63,14 +63,14 @@ export default function FloatingMusicPlayer() {
           onDoubleClick={(e) => {
             e.stopPropagation();
           }}
-          className="flex size-9 shrink-0 items-center justify-center rounded-full bg-purple-500 text-white transition hover:bg-purple-600"
+          className="flex size-9 shrink-0 items-center justify-center rounded-full bg-teal-500 text-white transition hover:bg-teal-600"
         >
           {audioIsPaused ? <Play size={16} /> : <Pause size={16} />}
         </button>
 
         <button
           onClick={handleClose}
-          className="flex items-center justify-center text-gray-400 transition hover:text-gray-600 dark:hover:text-gray-300"
+          className="text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         >
           <X size={16} />
         </button>
@@ -78,7 +78,7 @@ export default function FloatingMusicPlayer() {
 
       <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-600">
         <div
-          className="h-full rounded-full bg-purple-500 transition-all duration-100 dark:bg-purple-400"
+          className="h-full rounded-full bg-teal-500 transition-all duration-100 dark:bg-teal-400"
           style={{ width: `${progress}%` }}
         />
       </div>

@@ -4,12 +4,14 @@ export type Settings = {
   sidebarHidden: boolean;
   topbarHidden: boolean;
   nestlingTitleHidden: boolean;
+  musicLooped: boolean;
 };
 
 export const DEFAULT_UI_SETTINGS: Settings = {
   sidebarHidden: false,
   topbarHidden: false,
   nestlingTitleHidden: false,
+  musicLooped: false,
 };
 
 const KEY = "uiSettings";

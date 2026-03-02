@@ -20,8 +20,9 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { AnimatePresence } from "framer-motion";
-import { Volume2, VolumeX } from "lucide-react";
+import { Repeat, Volume2, VolumeX } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 
 export default function MusicSection() {
   const activeNestId = useActiveNestId();
@@ -32,6 +33,8 @@ export default function MusicSection() {
     useNestActions();
 
   const musicIds = music.map((m) => m.id);
+
+  const { musicLooped, setSetting } = useSettingsStore();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -53,8 +56,8 @@ export default function MusicSection() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-1">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1">
         <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
           Music
         </h2>
@@ -115,7 +118,7 @@ export default function MusicSection() {
         </span>
       </div>
 
-      <div className="flex items-center justify-between pt-2">
+      <div className="flex items-center justify-between">
         <div className="flex flex-col">
           <p className="text-sm text-gray-800 dark:text-gray-300">
             Choose a music track
@@ -127,9 +130,32 @@ export default function MusicSection() {
 
         <button
           onClick={handleUploadMusic}
-          className="rounded-lg bg-purple-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-purple-600"
+          className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-600"
         >
           Upload
+        </button>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="flex flex-col">
+          <p className="text-sm text-gray-800 dark:text-gray-300">
+            Loop current track
+          </p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            When enabled, the current track will repeat indefinitely
+          </p>
+        </div>
+
+        <button
+          onClick={() => setSetting("musicLooped", !musicLooped)}
+          className={cn(
+            "rounded-lg p-2 shadow-sm transition hover:brightness-95 active:scale-95 dark:hover:brightness-110",
+            musicLooped
+              ? "bg-teal-200 text-teal-700 dark:bg-teal-600 dark:text-teal-100"
+              : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
+          )}
+        >
+          <Repeat size={16} />
         </button>
       </div>
     </div>
