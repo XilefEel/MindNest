@@ -30,6 +30,7 @@ type NestlingState = {
   setSubFolderOpen: (parentId: number, isOpen: boolean) => void;
   toggleFolder: (folderId: number) => void;
   toggleAllFolders: (toggle: boolean) => void;
+  moveFolder: (folderId: number, newParentId: number | null) => Promise<void>;
 
   addNestling: (nestling: NewNestling) => Promise<void>;
   duplicateNestling: (nestlingId: number) => Promise<void>;
@@ -123,6 +124,21 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     }));
   },
 
+  moveFolder: withStoreErrorHandler(set, async (folderId, newParentId) => {
+    if (folderId === newParentId) return;
+
+    const folderMap = new Map(get().folders.map((f) => [f.id, f.parentId]));
+    let ancestorId: number | null = newParentId;
+
+    while (ancestorId !== null) {
+      if (ancestorId === folderId) return;
+      ancestorId = folderMap.get(ancestorId) ?? null;
+    }
+
+    const folder = get().folders.find((f) => f.id === folderId)!;
+    await get().updateFolder(folderId, newParentId, folder.name);
+  }),
+
   addNestling: withStoreErrorHandler(set, async (nestling: NewNestling) => {
     const newNestling = await nestlingApi.createNestling(nestling);
     await saveRecentNestling(newNestling.nestId, newNestling.id);
@@ -209,7 +225,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     await folderApi.updateFolder(id, parentId, name);
     set((state) => ({
       folders: state.folders
-        .map((f) => (f.id === id ? { ...f, name } : f))
+        .map((f) => (f.id === id ? { ...f, parentId, name } : f))
         .sort((a, b) => a.name.localeCompare(b.name)),
     }));
   }),
@@ -263,8 +279,8 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
         if (folderId === newParentId) return;
 
         const folderMap = new Map(get().folders.map((f) => [f.id, f.parentId]));
-
         let ancestorId: number | null = newParentId;
+
         while (ancestorId !== null) {
           if (ancestorId === folderId) return;
           ancestorId = folderMap.get(ancestorId) ?? null;
@@ -369,6 +385,7 @@ export const useNestlingActions = () =>
       setSubFolderOpen: state.setSubFolderOpen,
       toggleFolder: state.toggleFolder,
       toggleAllFolders: state.toggleAllFolders,
+      moveFolder: state.moveFolder,
 
       addNestling: state.addNestling,
       duplicateNestling: state.duplicateNestling,
