@@ -19,10 +19,8 @@ import {
   useNestlingModal,
 } from "@/stores/useModalStore";
 import ContextMenuSeperator from "./ContextMenuSeparator";
-import * as ContextMenu from "@radix-ui/react-context-menu";
-import { cn } from "@/lib/utils/general";
-import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { toast } from "@/lib/utils/toast";
+import ContextSubMenu from "./ContextSubMenu";
 
 export default function FolderContextMenu({
   folderId,
@@ -34,7 +32,6 @@ export default function FolderContextMenu({
   children: React.ReactNode;
 }) {
   const activeNestId = useActiveNestId();
-  const activeBackgroundId = useActiveBackgroundId();
   const folders = useFolders();
 
   const { duplicateFolder, setSubFolderOpen, moveFolder } =
@@ -79,45 +76,36 @@ export default function FolderContextMenu({
             text="Collapse All Subfolder"
           />
 
-          <ContextMenu.Sub>
-            <ContextMenu.SubTrigger
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-              className={cn(
-                "mx-1 flex items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
-                activeBackgroundId &&
-                  "hover:bg-white/30 dark:hover:bg-black/30",
-              )}
-            >
-              <FolderInput className="h-4 w-4" />
-              <span>Move to Folder</span>
-            </ContextMenu.SubTrigger>
-
-            <ContextMenu.Portal>
-              <ContextMenu.SubContent
-                className={cn(
-                  "animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg select-none dark:border-gray-700 dark:bg-gray-800",
-                  activeBackgroundId &&
-                    "border-0 bg-white/30 backdrop-blur-sm hover:bg-white/30 dark:bg-black/30 dark:hover:bg-black/30",
+          <ContextSubMenu
+            trigger={
+              <>
+                <FolderInput className="h-4 w-4" />
+                <span>Move to Folder</span>
+              </>
+            }
+            content={
+              <>
+                {folders.filter((f) => f.id !== folderId).length === 0 ? (
+                  <p className="px-3 py-2 text-center text-sm text-gray-500 dark:text-gray-400">
+                    No other folders available.
+                  </p>
+                ) : (
+                  folders
+                    .filter((f) => f.id !== folderId)
+                    .map((f) => (
+                      <ContextMenuItem
+                        key={f.id}
+                        action={() => handleMoveToFolder(f.id)}
+                        Icon={Folder}
+                        text={f.name}
+                      >
+                        {f.name}
+                      </ContextMenuItem>
+                    ))
                 )}
-              >
-                {folders
-                  .filter((f) => f.id !== folderId)
-                  .map((f) => (
-                    <ContextMenuItem
-                      key={f.id}
-                      action={() => handleMoveToFolder(f.id)}
-                      Icon={Folder}
-                      text={f.name}
-                    >
-                      {f.name}
-                    </ContextMenuItem>
-                  ))}
-              </ContextMenu.SubContent>
-            </ContextMenu.Portal>
-          </ContextMenu.Sub>
+              </>
+            }
+          />
 
           <ContextMenuSeperator />
 

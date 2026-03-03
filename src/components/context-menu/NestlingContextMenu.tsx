@@ -17,9 +17,7 @@ import {
 import { toast } from "@/lib/utils/toast";
 import { useDeleteModal } from "@/stores/useModalStore";
 import ContextMenuSeperator from "./ContextMenuSeparator";
-import { cn } from "@/lib/utils/general";
-import * as ContextMenu from "@radix-ui/react-context-menu";
-import { useActiveBackgroundId } from "@/stores/useNestStore";
+import ContextSubMenu from "./ContextSubMenu";
 
 export default function NestlingContextMenu({
   nestlingId,
@@ -39,8 +37,6 @@ export default function NestlingContextMenu({
 
   const { duplicateNestling, updateNestling } = useNestlingActions();
   const { setDeleteTarget } = useDeleteModal();
-
-  const activeBackgroundId = useActiveBackgroundId();
 
   const nestling = nestlings.find((n) => n.id === nestlingId);
   if (!nestling) return null;
@@ -81,30 +77,15 @@ export default function NestlingContextMenu({
             action={handlePinNestling}
           />
 
-          <ContextMenu.Sub>
-            <ContextMenu.SubTrigger
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-              className={cn(
-                "mx-1 flex items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
-                activeBackgroundId &&
-                  "hover:bg-white/30 dark:hover:bg-black/30",
-              )}
-            >
-              <FolderInput className="h-4 w-4" />
-              <span>Move to Folder</span>
-            </ContextMenu.SubTrigger>
-
-            <ContextMenu.Portal>
-              <ContextMenu.SubContent
-                className={cn(
-                  "animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg select-none dark:border-gray-700 dark:bg-gray-800",
-                  activeBackgroundId &&
-                    "border-0 bg-white/30 backdrop-blur-sm hover:bg-white/30 dark:bg-black/30 dark:hover:bg-black/30",
-                )}
-              >
+          <ContextSubMenu
+            trigger={
+              <>
+                <FolderInput className="h-4 w-4" />
+                <span>Move to Folder</span>
+              </>
+            }
+            content={
+              <>
                 {otherFolders.length === 0 ? (
                   <p className="px-3 py-2 text-center text-sm text-gray-500 dark:text-gray-400">
                     No other folders available.
@@ -119,9 +100,9 @@ export default function NestlingContextMenu({
                     />
                   ))
                 )}
-              </ContextMenu.SubContent>
-            </ContextMenu.Portal>
-          </ContextMenu.Sub>
+              </>
+            }
+          />
 
           <ContextMenuSeperator />
 
