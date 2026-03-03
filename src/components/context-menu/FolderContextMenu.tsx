@@ -1,4 +1,12 @@
-import { Edit3, Trash2, FolderPlus, Copy, FilePlus } from "lucide-react";
+import {
+  Edit3,
+  Trash2,
+  FolderPlus,
+  Copy,
+  FilePlus,
+  Maximize2,
+  Minimize2,
+} from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { useActiveNestId } from "@/stores/useNestStore";
@@ -20,7 +28,7 @@ export default function FolderContextMenu({
   children: React.ReactNode;
 }) {
   const activeNestId = useActiveNestId();
-  const { duplicateFolder } = useNestlingActions();
+  const { duplicateFolder, setSubFolderOpen } = useNestlingActions();
   const { setDeleteTarget } = useDeleteModal();
   const { openNestlingModal } = useNestlingModal();
   const { openFolderModal } = useFolderModal();
@@ -40,6 +48,19 @@ export default function FolderContextMenu({
             Icon={Copy}
             text="Duplicate Folder"
           />
+
+          <ContextMenuItem
+            action={() => setSubFolderOpen(folderId, true)}
+            Icon={Maximize2}
+            text="Expand All Subfolder"
+          />
+
+          <ContextMenuItem
+            action={() => setSubFolderOpen(folderId, false)}
+            Icon={Minimize2}
+            text="Collapse All Subfolder"
+          />
+
           <ContextMenuSeperator />
 
           <ContextMenuItem
@@ -59,7 +80,7 @@ export default function FolderContextMenu({
               setTimeout(() => openFolderModal(activeNestId!, folderId), 0);
             }}
             Icon={FolderPlus}
-            text="New Folder"
+            text="New Subfolder"
           />
 
           <ContextMenuSeperator />

@@ -25,7 +25,9 @@ type NestlingState = {
 
   setActiveNestlingId: (nestlingId: number | null) => void;
   setActiveFolderId: (folder: number | null) => void;
+
   setFolderOpen: (folderIds: number, isOpen: boolean) => void;
+  setSubFolderOpen: (parentId: number, isOpen: boolean) => void;
   toggleFolder: (folderId: number) => void;
   toggleAllFolders: (toggle: boolean) => void;
 
@@ -83,6 +85,43 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
         [folderId]: isOpen,
       },
     })),
+
+  setSubFolderOpen: (parentId: number, isOpen: boolean) => {
+    const getDecendantFolderIds = (id: number): number[] => {
+      const childFolders = get().folders.filter((f) => f.parentId === id);
+      return childFolders.flatMap((f) => [
+        f.id,
+        ...getDecendantFolderIds(f.id),
+      ]);
+    };
+
+    const descendantFolderIds = [parentId, ...getDecendantFolderIds(parentId)];
+
+    set((state) => ({
+      openFolders: {
+        ...state.openFolders,
+        ...Object.fromEntries(descendantFolderIds.map((id) => [id, isOpen])),
+      },
+    }));
+  },
+
+  toggleFolder: (folderId) => {
+    set((state) => ({
+      openFolders: {
+        ...state.openFolders,
+        [folderId]: !state.openFolders[folderId],
+      },
+    }));
+  },
+
+  toggleAllFolders: (toggle: boolean) => {
+    set((state) => ({
+      openFolders: {
+        ...state.openFolders,
+        ...Object.fromEntries(state.folders.map((f) => [f.id, toggle])),
+      },
+    }));
+  },
 
   addNestling: withStoreErrorHandler(set, async (nestling: NewNestling) => {
     const newNestling = await nestlingApi.createNestling(nestling);
@@ -195,24 +234,6 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
       ),
     });
   }),
-
-  toggleFolder: (folderId) => {
-    set((state) => ({
-      openFolders: {
-        ...state.openFolders,
-        [folderId]: !state.openFolders[folderId],
-      },
-    }));
-  },
-
-  toggleAllFolders: (toggle: boolean) => {
-    set((state) => ({
-      openFolders: {
-        ...state.openFolders,
-        ...Object.fromEntries(state.folders.map((f) => [f.id, toggle])),
-      },
-    }));
-  },
 
   handleDragStart: (event) => {
     set({ activeDraggingNestlingId: event.active.id as number });
@@ -343,7 +364,9 @@ export const useNestlingActions = () =>
     useShallow((state) => ({
       setActiveNestlingId: state.setActiveNestlingId,
       setActiveFolderId: state.setActiveFolderId,
+
       setFolderOpen: state.setFolderOpen,
+      setSubFolderOpen: state.setSubFolderOpen,
       toggleFolder: state.toggleFolder,
       toggleAllFolders: state.toggleAllFolders,
 
