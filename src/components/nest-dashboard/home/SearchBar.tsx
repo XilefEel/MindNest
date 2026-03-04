@@ -1,37 +1,19 @@
 import { Input } from "@/components/ui/input";
 import { saveLastNestling } from "@/lib/storage/nestling";
 import { cn } from "@/lib/utils/general";
-import {
-  useNestlingActions,
-  useNestlings,
-  useNestlingTagsMap,
-} from "@/stores/useNestlingStore";
+import { useNestlingActions } from "@/stores/useNestlingStore";
 import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 import { Search } from "lucide-react";
-import { useState } from "react";
 import SearchItem from "./SearchItem";
+import { useNestlingSearch } from "@/hooks/useNestlingSearch.ts";
 
 export default function SearchBar() {
   const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
-  const nestlings = useNestlings();
-  const nestlingTagsMap = useNestlingTagsMap();
   const { setActiveNestlingId } = useNestlingActions();
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const isTagSearch = searchQuery.startsWith("#") && searchQuery.length > 1;
-  const query = (
-    isTagSearch ? searchQuery.slice(1) : searchQuery
-  ).toLowerCase();
-
-  const filteredNestlings = nestlings.filter((nestling) => {
-    if (isTagSearch) {
-      const nestlingTags = nestlingTagsMap[nestling.id] || [];
-      return nestlingTags.some((tag) => tag.name.toLowerCase().includes(query));
-    } else {
-      return nestling.title.toLowerCase().includes(query);
-    }
-  });
+  const { searchQuery, setSearchQuery, filteredNestlings } =
+    useNestlingSearch();
 
   const handleClick = (nestlingId: number) => {
     setActiveNestlingId(nestlingId);
@@ -60,6 +42,11 @@ export default function SearchBar() {
                   "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
               )}
             />
+            {!searchQuery && (
+              <span className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-xs text-gray-400">
+                type # to filter by tags
+              </span>
+            )}
           </div>
 
           {searchQuery && (

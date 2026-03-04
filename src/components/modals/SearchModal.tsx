@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   CommandDialog,
   CommandInput,
@@ -10,39 +9,21 @@ import {
 } from "../ui/command";
 import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
-import {
-  useNestlingActions,
-  useNestlings,
-  useNestlingTagsMap,
-} from "@/stores/useNestlingStore";
+import { useNestlingActions } from "@/stores/useNestlingStore";
 import { saveLastNestling } from "@/lib/storage/nestling";
 import { useSearchModal } from "@/stores/useModalStore";
 import SearchItem from "./SearchItem";
+import { useNestlingSearch } from "@/hooks/useNestlingSearch.ts";
 
 export default function SearchModal() {
   const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
-  const nestlings = useNestlings();
   const { setActiveNestlingId } = useNestlingActions();
-  const nestlingTagsMap = useNestlingTagsMap();
 
   const { isSearchOpen, setIsSearchOpen } = useSearchModal();
 
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const isTagSearch = searchQuery.startsWith("#") && searchQuery.length > 1;
-  const query = (
-    isTagSearch ? searchQuery.slice(1) : searchQuery
-  ).toLowerCase();
-
-  const filteredNestlings = nestlings.filter((nestling) => {
-    if (isTagSearch) {
-      const nestlingTags = nestlingTagsMap[nestling.id] || [];
-      return nestlingTags.some((tag) => tag.name.toLowerCase().includes(query));
-    } else {
-      return nestling.title.toLowerCase().includes(query);
-    }
-  });
+  const { searchQuery, setSearchQuery, filteredNestlings } =
+    useNestlingSearch();
 
   const handleSelectNestling = (nestlingId: number) => {
     setActiveNestlingId(nestlingId);
@@ -60,11 +41,18 @@ export default function SearchModal() {
         activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/30",
       )}
     >
-      <CommandInput
-        placeholder="Search your nestlings..."
-        value={searchQuery}
-        onValueChange={(value) => setSearchQuery(value)}
-      />
+      <div className="relative">
+        <CommandInput
+          placeholder="Search your nestlings..."
+          value={searchQuery}
+          onValueChange={(value) => setSearchQuery(value)}
+        />
+        {!searchQuery && (
+          <span className="pointer-events-none absolute top-1/2 right-10 -translate-y-1/2 text-xs text-gray-400">
+            type # to filter by tags
+          </span>
+        )}
+      </div>
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
 
@@ -77,9 +65,11 @@ export default function SearchModal() {
               .map((nestling) => (
                 <CommandItem
                   key={nestling.id}
+                  value={String(nestling.id)}
                   onSelect={() => handleSelectNestling(nestling.id)}
                   className={cn(
                     "flex flex-row items-center justify-between p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
+                    "data-[selected=true]:bg-gray-100 dark:data-[selected=true]:bg-gray-700",
                     activeBackgroundId &&
                       "hover:bg-white/30 hover:dark:bg-black/30",
                   )}
@@ -101,9 +91,11 @@ export default function SearchModal() {
                 .map((nestling) => (
                   <CommandItem
                     key={nestling.id}
+                    value={String(nestling.id)}
                     onSelect={() => handleSelectNestling(nestling.id)}
                     className={cn(
                       "flex flex-row items-center justify-between p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
+                      "data-[selected=true]:bg-gray-100 dark:data-[selected=true]:bg-gray-700",
                       activeBackgroundId &&
                         "hover:bg-white/30 hover:dark:bg-black/30",
                     )}
