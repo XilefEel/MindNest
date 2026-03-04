@@ -10,6 +10,7 @@ import { useShallow } from "zustand/react/shallow";
 import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 import { saveRecentNestling, saveLastNestling } from "@/lib/storage/nestling";
 import { NewTag, Tag } from "@/lib/types/tag";
+import { isCircularReference } from "@/lib/utils/folders.ts";
 
 type NestlingState = {
   nestlings: Nestling[];
@@ -26,12 +27,6 @@ type NestlingState = {
   setActiveNestlingId: (nestlingId: number | null) => void;
   setActiveFolderId: (folder: number | null) => void;
 
-  setFolderOpen: (folderIds: number, isOpen: boolean) => void;
-  setSubFolderOpen: (parentId: number, isOpen: boolean) => void;
-  toggleFolder: (folderId: number) => void;
-  toggleAllFolders: (toggle: boolean) => void;
-  moveFolder: (folderId: number, newParentId: number | null) => Promise<void>;
-
   addNestling: (nestling: NewNestling) => Promise<void>;
   duplicateNestling: (nestlingId: number) => Promise<void>;
   updateNestling: (id: number, updates: Partial<Nestling>) => Promise<void>;
@@ -40,14 +35,16 @@ type NestlingState = {
 
   addFolder: (folder: NewFolder) => Promise<void>;
   duplicateFolder: (folderId: number) => Promise<void>;
-  updateFolder: (
-    id: number,
-    parentId: number | null,
-    name: string,
-  ) => Promise<void>;
+  updateFolder: (id: number, updates: Partial<Folder>) => Promise<void>;
   deleteFolder: (folderId: number) => Promise<void>;
 
   fetchSidebar: (nestId: number) => Promise<void>;
+
+  setFolderOpen: (folderIds: number, isOpen: boolean) => void;
+  setSubFolderOpen: (parentId: number, isOpen: boolean) => void;
+  toggleFolder: (folderId: number) => void;
+  toggleAllFolders: (toggle: boolean) => void;
+  moveFolder: (folderId: number, newParentId: number | null) => Promise<void>;
 
   handleDragStart: (event: DragStartEvent) => void;
   handleDragEnd: (event: DragEndEvent, nestId: number) => Promise<void>;
@@ -78,66 +75,6 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   setActiveNestlingId: (nestlingId) => set({ activeNestlingId: nestlingId }),
 
   setActiveFolderId: (folderId) => set({ activeFolderId: folderId }),
-
-  setFolderOpen: (folderId: number, isOpen: boolean) =>
-    set((state) => ({
-      openFolders: {
-        ...state.openFolders,
-        [folderId]: isOpen,
-      },
-    })),
-
-  setSubFolderOpen: (parentId: number, isOpen: boolean) => {
-    const getDecendantFolderIds = (id: number): number[] => {
-      const childFolders = get().folders.filter((f) => f.parentId === id);
-      return childFolders.flatMap((f) => [
-        f.id,
-        ...getDecendantFolderIds(f.id),
-      ]);
-    };
-
-    const descendantFolderIds = [parentId, ...getDecendantFolderIds(parentId)];
-
-    set((state) => ({
-      openFolders: {
-        ...state.openFolders,
-        ...Object.fromEntries(descendantFolderIds.map((id) => [id, isOpen])),
-      },
-    }));
-  },
-
-  toggleFolder: (folderId) => {
-    set((state) => ({
-      openFolders: {
-        ...state.openFolders,
-        [folderId]: !state.openFolders[folderId],
-      },
-    }));
-  },
-
-  toggleAllFolders: (toggle: boolean) => {
-    set((state) => ({
-      openFolders: {
-        ...state.openFolders,
-        ...Object.fromEntries(state.folders.map((f) => [f.id, toggle])),
-      },
-    }));
-  },
-
-  moveFolder: withStoreErrorHandler(set, async (folderId, newParentId) => {
-    if (folderId === newParentId) return;
-
-    const folderMap = new Map(get().folders.map((f) => [f.id, f.parentId]));
-    let ancestorId: number | null = newParentId;
-
-    while (ancestorId !== null) {
-      if (ancestorId === folderId) return;
-      ancestorId = folderMap.get(ancestorId) ?? null;
-    }
-
-    const folder = get().folders.find((f) => f.id === folderId)!;
-    await get().updateFolder(folderId, newParentId, folder.name);
-  }),
 
   addNestling: withStoreErrorHandler(set, async (nestling: NewNestling) => {
     const newNestling = await nestlingApi.createNestling(nestling);
@@ -221,11 +158,20 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     }));
   }),
 
-  updateFolder: withStoreErrorHandler(set, async (id, parentId, name) => {
-    await folderApi.updateFolder(id, parentId, name);
+  updateFolder: withStoreErrorHandler(set, async (id, updates) => {
+    const current = get().folders.find((f) => f.id === id);
+    if (!current) throw new Error("Folder not found");
+
+    const updated = {
+      ...mergeWithCurrent(current, updates),
+      updatedAt: new Date().toISOString(),
+    };
+
+    await folderApi.updateFolder(id, updated.parentId, updated.name);
+
     set((state) => ({
       folders: state.folders
-        .map((f) => (f.id === id ? { ...f, parentId, name } : f))
+        .map((f) => (f.id === id ? updated : f))
         .sort((a, b) => a.name.localeCompare(b.name)),
     }));
   }),
@@ -249,6 +195,56 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
         a.title.localeCompare(b.title),
       ),
     });
+  }),
+
+  setFolderOpen: (folderId: number, isOpen: boolean) =>
+    set((state) => ({
+      openFolders: {
+        ...state.openFolders,
+        [folderId]: isOpen,
+      },
+    })),
+
+  setSubFolderOpen: (parentId: number, isOpen: boolean) => {
+    const getDescendantFolderIds = (id: number): number[] => {
+      const childFolders = get().folders.filter((f) => f.parentId === id);
+      return childFolders.flatMap((f) => [
+        f.id,
+        ...getDescendantFolderIds(f.id),
+      ]);
+    };
+
+    const descendantFolderIds = [parentId, ...getDescendantFolderIds(parentId)];
+
+    set((state) => ({
+      openFolders: {
+        ...state.openFolders,
+        ...Object.fromEntries(descendantFolderIds.map((id) => [id, isOpen])),
+      },
+    }));
+  },
+
+  toggleFolder: (folderId) => {
+    set((state) => ({
+      openFolders: {
+        ...state.openFolders,
+        [folderId]: !state.openFolders[folderId],
+      },
+    }));
+  },
+
+  toggleAllFolders: (toggle: boolean) => {
+    set((state) => ({
+      openFolders: {
+        ...state.openFolders,
+        ...Object.fromEntries(state.folders.map((f) => [f.id, toggle])),
+      },
+    }));
+  },
+
+  moveFolder: withStoreErrorHandler(set, async (folderId, newParentId) => {
+    if (isCircularReference(folderId, newParentId, get().folders)) return;
+    await get().updateFolder(folderId, { parentId: newParentId });
   }),
 
   handleDragStart: (event) => {
@@ -276,25 +272,9 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
         const folderId = Number(activeIdStr);
         const newParentId = overType === "folder" ? Number(overIdStr) : null;
 
-        if (folderId === newParentId) return;
+        if (isCircularReference(folderId, newParentId, get().folders)) return;
 
-        const folderMap = new Map(get().folders.map((f) => [f.id, f.parentId]));
-        let ancestorId: number | null = newParentId;
-
-        while (ancestorId !== null) {
-          if (ancestorId === folderId) return;
-          ancestorId = folderMap.get(ancestorId) ?? null;
-        }
-
-        await folderApi.updateFolder(folderId, newParentId);
-
-        set((state) => ({
-          folders: state.folders
-            .map((f) =>
-              f.id === folderId ? { ...f, parentId: newParentId } : f,
-            )
-            .sort((a, b) => a.name.localeCompare(b.name)),
-        }));
+        await get().updateFolder(folderId, { parentId: newParentId });
       }
     } catch (error) {
       throw error;
@@ -381,12 +361,6 @@ export const useNestlingActions = () =>
       setActiveNestlingId: state.setActiveNestlingId,
       setActiveFolderId: state.setActiveFolderId,
 
-      setFolderOpen: state.setFolderOpen,
-      setSubFolderOpen: state.setSubFolderOpen,
-      toggleFolder: state.toggleFolder,
-      toggleAllFolders: state.toggleAllFolders,
-      moveFolder: state.moveFolder,
-
       addNestling: state.addNestling,
       duplicateNestling: state.duplicateNestling,
       updateNestling: state.updateNestling,
@@ -399,6 +373,13 @@ export const useNestlingActions = () =>
       deleteFolder: state.deleteFolder,
 
       fetchSidebar: state.fetchSidebar,
+
+      setFolderOpen: state.setFolderOpen,
+      setSubFolderOpen: state.setSubFolderOpen,
+      toggleFolder: state.toggleFolder,
+      toggleAllFolders: state.toggleAllFolders,
+      moveFolder: state.moveFolder,
+
       handleDragStart: state.handleDragStart,
       handleDragEnd: state.handleDragEnd,
 

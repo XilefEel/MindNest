@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { toast } from "@/lib/utils/toast";
 import {
+  useActiveFolderId,
   useNestlingActions,
-  useNestlingStore,
 } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
@@ -20,7 +20,7 @@ export default function NestlingModal() {
     closeNestlingModal,
   } = useNestlingModal();
 
-  const activeFolderId = useNestlingStore((state) => state.activeFolderId);
+  const activeFolderId = useActiveFolderId();
   const { addNestling } = useNestlingActions();
   const activeBackgroundId = useActiveBackgroundId();
 

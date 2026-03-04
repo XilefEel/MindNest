@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { toast } from "@/lib/utils/toast";
 import {
+  useActiveFolderId,
   useNestlingActions,
-  useNestlingStore,
 } from "@/stores/useNestlingStore";
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 import { useFolderModal } from "@/stores/useModalStore";
 
 export default function FolderModal() {
-  const activeFolderId = useNestlingStore((state) => state.activeFolderId);
+  const activeFolderId = useActiveFolderId();
   const { addFolder } = useNestlingActions();
 
   const [title, setTitle] = useState("");
@@ -36,7 +36,7 @@ export default function FolderModal() {
       });
       toast.success(`Folder "${title}" created successfully!`);
 
-      handleCloseModal();
+      await handleCloseModal();
     } catch (error) {
       toast.error("Failed to create folder.");
     } finally {

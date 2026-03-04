@@ -1,9 +1,6 @@
 import { Folder } from "../types/folder";
 
-export function findFolderPath(
-  folderId: number | null,
-  folders: Folder[],
-): string | null {
+export const findFolderPath = (folderId: number | null, folders: Folder[]) => {
   if (folderId === null) return null;
 
   const folderPath: string[] = [];
@@ -22,4 +19,20 @@ export function findFolderPath(
   }
 
   return folderPath.join("/");
-}
+};
+
+export const isCircularReference = (
+  folderId: number,
+  newParentId: number | null,
+  folders: Folder[],
+): boolean => {
+  const folderMap = new Map(folders.map((f) => [f.id, f.parentId]));
+  let ancestorId: number | null = newParentId;
+
+  while (ancestorId !== null) {
+    if (ancestorId === folderId) return true;
+    ancestorId = folderMap.get(ancestorId) ?? null;
+  }
+
+  return false;
+};
