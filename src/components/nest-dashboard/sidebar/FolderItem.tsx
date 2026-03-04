@@ -76,8 +76,10 @@ export default function FolderItem({
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
+      setTimeout(() => {
+        inputRef.current?.focus();
+        inputRef.current?.select();
+      }, 1);
     }
   }, [isEditing]);
 
@@ -112,11 +114,17 @@ export default function FolderItem({
               className={cn(
                 "min-w-0 flex-1 rounded transition-all",
                 isEditing &&
-                  "bg-white px-2 py-0.5 shadow-md ring-2 ring-teal-500 dark:bg-gray-800",
+                  cn(
+                    "bg-teal-50 px-2 py-0.5 shadow-md ring-2 ring-teal-500",
+                    activeBackgroundId
+                      ? "bg-white/10 backdrop-blur-sm dark:bg-black/10"
+                      : "bg-white px-2 py-0.5 shadow-md ring-2 ring-teal-500 dark:bg-gray-800",
+                  ),
               )}
             >
               <input
                 ref={inputRef}
+                id="text"
                 className={cn(
                   "w-full truncate bg-transparent focus:outline-none",
                   !isEditing && "pointer-events-none",
@@ -126,6 +134,7 @@ export default function FolderItem({
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
                 readOnly={!isEditing}
+                autoComplete="off"
               />
             </div>
           </div>

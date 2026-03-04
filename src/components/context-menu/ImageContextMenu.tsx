@@ -7,6 +7,7 @@ import {
   Download,
   Trash2,
   FolderInput,
+  ChevronRight,
 } from "lucide-react";
 import { toast } from "@/lib/utils/toast";
 import ContextMenuItem from "./ContextMenuItem";
@@ -86,6 +87,7 @@ export default function ImageContextMenu({
               <>
                 <FolderInput className="h-4 w-4" />
                 <span>Move to Album</span>
+                <ChevronRight className="ml-auto" size={16} />
               </>
             }
             content={

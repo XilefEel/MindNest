@@ -68,10 +68,10 @@ export default function SearchModal() {
                   value={String(nestling.id)}
                   onSelect={() => handleSelectNestling(nestling.id)}
                   className={cn(
-                    "flex flex-row items-center justify-between p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
+                    "flex flex-row items-center justify-between p-2 px-4 transition-colors",
                     "data-[selected=true]:bg-gray-100 dark:data-[selected=true]:bg-gray-700",
                     activeBackgroundId &&
-                      "hover:bg-white/30 hover:dark:bg-black/30",
+                      "data-[selected=true]:bg-white/30 dark:data-[selected=true]:bg-black/30",
                   )}
                 >
                   <SearchItem nestling={nestling} />
@@ -94,10 +94,10 @@ export default function SearchModal() {
                     value={String(nestling.id)}
                     onSelect={() => handleSelectNestling(nestling.id)}
                     className={cn(
-                      "flex flex-row items-center justify-between p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
+                      "flex flex-row items-center justify-between p-2 px-4 transition-colors",
                       "data-[selected=true]:bg-gray-100 dark:data-[selected=true]:bg-gray-700",
                       activeBackgroundId &&
-                        "hover:bg-white/30 hover:dark:bg-black/30",
+                        "data-[selected=true]:bg-white/30 dark:data-[selected=true]:bg-black/30",
                     )}
                   >
                     <SearchItem nestling={nestling} />

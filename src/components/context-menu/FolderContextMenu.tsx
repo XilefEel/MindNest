@@ -8,6 +8,7 @@ import {
   Minimize2,
   Folder,
   FolderInput,
+  ChevronRight,
 } from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
@@ -81,6 +82,7 @@ export default function FolderContextMenu({
               <>
                 <FolderInput className="h-4 w-4" />
                 <span>Move to Folder</span>
+                <ChevronRight className="ml-auto" size={16} />
               </>
             }
             content={

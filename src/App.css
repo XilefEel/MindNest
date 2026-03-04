@@ -129,3 +129,49 @@
   outline: 1px solid rgba(0, 0, 0, 0.25);
   border-radius: 0.125rem;
 }
+
+.epr_-8ygbw8 {
+  padding: 8px !important;
+}
+.epr_-quhs3c {
+  width: auto !important;
+}
+
+.epr_-rk4ix5 {
+  font-size: 14px !important;
+}
+
+.epr_rco1ad {
+  justify-content: space-between !important;
+}
+
+.epr_-ucs3ns {
+  font-weight: 600 !important;
+}
+
+.epr_6daqyu * {
+  font-family: "PlusJakartaSans", sans-serif !important;
+}
+
+.EmojiPickerReact {
+  --epr-highlight-color: theme("colors.teal.500") !important;
+  --epr-search-input-bg-color: theme("colors.white") !important;
+  --epr-search-border-color: theme("colors.teal.500") !important;
+  --epr-search-border-color-active: theme("colors.teal.500") !important;
+  --epr-category-icon-active-color: theme("colors.teal.500") !important;
+  --epr-bg-color: theme("colors.white") !important;
+  --epr-focus-bg-color: theme("colors.teal.50") !important;
+  --epr-hover-bg-color: theme("colors.teal.50") !important;
+}
+
+.dark .EmojiPickerReact {
+  --epr-dark: theme("colors.gray.800") !important;
+  --epr-highlight-color: theme("colors.gray.200") !important;
+  --epr-search-input-bg-color: theme("colors.gray.800") !important;
+  --epr-search-border-color-active: theme("colors.teal.500") !important;
+  --epr-category-icon-active-color: theme("colors.teal.500") !important;
+  --epr-bg-color: theme("colors.gray.800") !important;
+  --epr-category-label-bg-color: theme("colors.gray.800") !important;
+  --epr-focus-bg-color: theme("colors.gray.900") !important;
+  --epr-hover-bg-color: theme("colors.gray.900") !important;
+}

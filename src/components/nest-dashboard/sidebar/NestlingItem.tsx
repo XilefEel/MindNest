@@ -12,9 +12,16 @@ import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
-import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import { saveLastNestling } from "@/lib/storage/nestling";
 import { toast } from "@/lib/utils/toast";
+import { useTheme } from "next-themes";
+
+const themeMap: Record<string, Theme> = {
+  light: Theme.LIGHT,
+  dark: Theme.DARK,
+  system: Theme.AUTO,
+};
 
 export default function NestlingItem({
   nestling,
@@ -30,6 +37,8 @@ export default function NestlingItem({
   const activeNestling = useActiveNestling();
   const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
+
+  const { theme } = useTheme();
 
   const [title, setTitle] = useState(nestling.title);
   const [isEditing, setIsEditing] = useState(false);
@@ -131,8 +140,10 @@ export default function NestlingItem({
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
+      setTimeout(() => {
+        inputRef.current?.focus();
+        inputRef.current?.select();
+      }, 1);
     }
   }, [isEditing]);
 
@@ -196,11 +207,13 @@ export default function NestlingItem({
             <div
               className={cn(
                 "min-w-0 flex-1 rounded transition-all",
-                isEditing
-                  ? activeBackgroundId
-                    ? "bg-white/10 px-2 py-0.5 shadow-md ring-2 ring-teal-500 backdrop-blur-sm dark:bg-black/10"
-                    : "bg-white px-2 py-0.5 shadow-md ring-2 ring-teal-500 dark:bg-gray-800"
-                  : "",
+                isEditing &&
+                  cn(
+                    "px-2 py-0.5 shadow-md ring-2 ring-teal-500",
+                    activeBackgroundId
+                      ? "bg-white/10 backdrop-blur-sm dark:bg-black/10"
+                      : "bg-white px-2 py-0.5 shadow-md ring-2 ring-teal-500 dark:bg-gray-800",
+                  ),
               )}
             >
               <input
@@ -215,6 +228,7 @@ export default function NestlingItem({
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
                 readOnly={!isEditing}
+                autoComplete="off"
               />
             </div>
           </div>
@@ -243,11 +257,18 @@ export default function NestlingItem({
               }}
               onClick={(e) => e.stopPropagation()}
             >
-              <EmojiPicker onEmojiClick={handleEmojiClick} lazyLoadEmojis />
+              <EmojiPicker
+                onEmojiClick={handleEmojiClick}
+                theme={themeMap[theme ?? "system"]}
+                height={400}
+                previewConfig={{ showPreview: false }}
+                skinTonesDisabled
+                lazyLoadEmojis
+              />
               {nestling.icon && (
                 <button
                   onClick={handleClearEmoji}
-                  className="absolute right-4 bottom-4 z-50 rounded-lg bg-red-500 px-3 py-1 text-sm font-medium text-white transition duration-100 hover:bg-red-600"
+                  className="absolute top-4 right-4 z-50 rounded-lg bg-red-500 px-3 py-1 text-sm text-white shadow-sm transition hover:bg-red-600"
                 >
                   Clear
                 </button>
