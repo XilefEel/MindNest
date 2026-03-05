@@ -250,12 +250,16 @@ export default function NestlingItem({
           createPortal(
             <div
               ref={pickerRef}
-              className="fixed z-50"
+              className="fixed z-50 cursor-default select-none"
               style={{
                 top: `${pickerPosition.top}px`,
                 left: `${pickerPosition.left}px`,
               }}
               onClick={(e) => e.stopPropagation()}
+              onContextMenu={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
             >
               <EmojiPicker
                 onEmojiClick={handleEmojiClick}

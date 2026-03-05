@@ -113,7 +113,7 @@ export default function NoteEditor() {
     const noteContent = JSON.parse(activeNestling.content);
     editor.commands.setContent(noteContent);
     setContent(noteContent);
-  }, [editor, activeNestling.content]);
+  }, [editor]);
 
   return (
     <div className="flex h-full w-full flex-col gap-3">

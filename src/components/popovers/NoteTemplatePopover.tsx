@@ -5,8 +5,10 @@ import { FilePen, Trash2, Check } from "lucide-react";
 import { useNoteActions, useTemplates } from "@/stores/useNoteStore.tsx";
 import { useActiveNestling } from "@/stores/useNestlingStore.tsx";
 import { cn } from "@/lib/utils/general";
-import { useActiveNestId } from "@/stores/useNestStore";
+import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 import { toast } from "@/lib/utils/toast";
+import { useCurrentEditor } from "@tiptap/react";
+import { NoteTemplate } from "@/lib/types/note";
 
 export default function NoteTemplatePopover() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,9 +20,14 @@ export default function NoteTemplatePopover() {
   const activeNestling = useActiveNestling();
   if (!activeNestling || !activeNestId) return;
 
+  const activeBackgroundId = useActiveBackgroundId();
+
   const { getTemplates, addTemplate, useTemplate, deleteTemplate } =
     useNoteActions();
   const noteTemplates = useTemplates();
+
+  const { editor } = useCurrentEditor();
+  if (!editor) return;
 
   const handleSaveAsTemplate = async () => {
     const name = templateName.trim() || `Template ${noteTemplates.length + 1}`;
@@ -34,6 +41,15 @@ export default function NoteTemplatePopover() {
       setTemplateName("");
     } catch (error) {
       toast.error("Failed to save template.");
+    }
+  };
+
+  const handleUseTemplate = async (template: NoteTemplate) => {
+    try {
+      await useTemplate(activeNestling.id, template);
+      editor.commands.setContent(JSON.parse(template.content));
+    } catch (error) {
+      toast.error("Failed to use template.");
     }
   };
 
@@ -69,12 +85,16 @@ export default function NoteTemplatePopover() {
       content={
         <>
           {noteTemplates.length > 0 ? (
-            <div className="space-y-0.5">
+            <div className="flex flex-col gap-0.5">
               {noteTemplates.map((template) => (
                 <div
                   key={template.id}
-                  onClick={() => useTemplate(activeNestling.id, template)}
-                  className="group flex cursor-pointer items-center justify-between rounded-md px-2 py-1.5 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700/50"
+                  onClick={() => handleUseTemplate(template)}
+                  className={cn(
+                    "group flex items-center justify-between rounded-md px-2 py-1.5 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700/50",
+                    activeBackgroundId &&
+                      "hover:bg-white/30 hover:dark:bg-black/30",
+                  )}
                 >
                   <span className="truncate text-sm text-gray-700 dark:text-gray-200">
                     {template.name}
@@ -84,7 +104,7 @@ export default function NoteTemplatePopover() {
                       e.stopPropagation();
                       deleteTemplate(template.id);
                     }}
-                    className="rounded p-0.5 text-gray-600 opacity-0 transition-opacity group-hover:opacity-100 hover:text-red-500 dark:text-gray-400"
+                    className="rounded p-0.5 text-gray-600 opacity-0 transition-opacity group-hover:opacity-100 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -97,7 +117,12 @@ export default function NoteTemplatePopover() {
             </div>
           )}
 
-          <div className="mt-2 flex flex-col gap-2 border-t border-gray-200 pt-2 dark:border-gray-700">
+          <div
+            className={cn(
+              "mt-2 flex flex-col gap-2 border-t border-gray-200 pt-2 dark:border-gray-700",
+              activeBackgroundId && "border-black/30 dark:border-white/30",
+            )}
+          >
             <label className="text-xs text-gray-600 dark:text-gray-400">
               Save as template
             </label>
@@ -114,6 +139,8 @@ export default function NoteTemplatePopover() {
                   "text-gray-800 dark:text-gray-100",
                   "border-gray-200 focus:border-teal-500 dark:border-gray-600 dark:focus:border-teal-400",
                   "focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400",
+                  activeBackgroundId &&
+                    "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
                 )}
               />
               <button

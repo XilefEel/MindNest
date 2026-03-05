@@ -1,14 +1,14 @@
-// app/(auth)/landing/page.tsx or wherever your landing lives
-import Heading from "@/components/welcome/Heading";
-import Heroes from "@/components/welcome/Heroes";
-import Footer from "@/components/welcome/Footer";
+// // app/(auth)/landing/page.tsx or wherever your landing lives
+// import Heading from "@/components/welcome/Heading";
+// import Heroes from "@/components/welcome/Heroes";
+// import Footer from "@/components/welcome/Footer";
 
-export default function WelcomePage() {
-  return (
-    <div className="flex min-h-screen flex-col py-6">
-      <Heading />
-      <Heroes />
-      <Footer />
-    </div>
-  );
-}
+// export default function WelcomePage() {
+//   return (
+//     <div className="flex min-h-screen flex-col py-6">
+//       <Heading />
+//       <Heroes />
+//       <Footer />
+//     </div>
+//   );
+// }

@@ -158,7 +158,7 @@
   --epr-search-input-bg-color: theme("colors.white") !important;
   --epr-search-border-color: theme("colors.teal.500") !important;
   --epr-search-border-color-active: theme("colors.teal.500") !important;
-  --epr-category-icon-active-color: theme("colors.teal.500") !important;
+  --epr-category-icon-active-color: theme("colors.white") !important;
   --epr-bg-color: theme("colors.white") !important;
   --epr-focus-bg-color: theme("colors.teal.50") !important;
   --epr-hover-bg-color: theme("colors.teal.50") !important;
@@ -169,7 +169,7 @@
   --epr-highlight-color: theme("colors.gray.200") !important;
   --epr-search-input-bg-color: theme("colors.gray.800") !important;
   --epr-search-border-color-active: theme("colors.teal.500") !important;
-  --epr-category-icon-active-color: theme("colors.teal.500") !important;
+  --epr-category-icon-active-color: theme("colors.gray.800") !important;
   --epr-bg-color: theme("colors.gray.800") !important;
   --epr-category-label-bg-color: theme("colors.gray.800") !important;
   --epr-focus-bg-color: theme("colors.gray.900") !important;

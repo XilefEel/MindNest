@@ -21,11 +21,13 @@ export default function ToolBarItem({
         onClick={onFormat}
         aria-label={label}
         className={cn(
-          "rounded p-1 transition-all duration-200 hover:text-teal-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus-visible:ring-teal-300",
+          "rounded p-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
+          isActive
+            ? "bg-teal-100 text-teal-600 dark:bg-teal-900 dark:text-teal-300"
+            : "hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-white",
           activeBackgroundId &&
+            !isActive &&
             "hover:bg-white/30 hover:text-black dark:hover:bg-black/30",
-          isActive &&
-            "bg-teal-100 text-teal-600 dark:bg-teal-900 dark:text-teal-300",
         )}
       >
         <Icon className="size-4" />
