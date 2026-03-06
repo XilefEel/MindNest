@@ -19,12 +19,13 @@ export default function NestPreview() {
   }, [getNests, userId]);
 
   return (
-    <div className="flex flex-col gap-5 overflow-y-auto rounded-lg border-l-4 border-teal-500 bg-white p-6 dark:bg-gray-800">
+    <div className="flex flex-col gap-5 overflow-y-auto rounded-lg border-l-4 border-teal-500 bg-white p-6 dark:bg-gray-800/50">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 shadow-lg">
             <Home className="text-white" size={20} />
           </div>
+
           <div>
             <h2 className="text-2xl font-bold">Your Nests</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -32,10 +33,12 @@ export default function NestPreview() {
             </p>
           </div>
         </div>
+
         <AddNestModal userId={user.id}>
-          <div className="flex items-center rounded-lg bg-teal-500 p-2 px-3 text-sm font-semibold text-white transition hover:bg-teal-700">
-            <Plus className="mr-1 size-4" /> Create Nest
-          </div>
+          <button className="flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600">
+            <Plus size={16} className="flex-shrink-0" />
+            <span>Create Nest</span>
+          </button>
         </AddNestModal>
       </div>
 

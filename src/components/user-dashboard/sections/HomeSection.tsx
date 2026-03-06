@@ -39,13 +39,13 @@ export default function HomeSection() {
   const greeting = getGreeting(time.getHours());
 
   return (
-    <section className="flex flex-col gap-5 overflow-y-auto pt-6">
+    <section className="flex flex-col gap-5 overflow-y-auto md:pt-6">
       <div className="items-center justify-between px-6 md:flex">
         <h1 className="text-4xl font-bold">
           {greeting}, {user?.username}
         </h1>
         <div className="mt-2 md:mt-0 md:text-right">
-          <div className="text-2xl font-bold text-gray-700 dark:text-gray-200">
+          <div className="text-2xl font-bold text-gray-700 tabular-nums dark:text-gray-200">
             {currentTime}
           </div>
           <div className="text-lg text-gray-500 dark:text-gray-400">

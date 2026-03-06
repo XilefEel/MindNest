@@ -3,7 +3,7 @@ import DiscoverCard from "../DiscoverCard";
 
 export default function DiscoverPreview() {
   return (
-    <div className="flex flex-col gap-2 rounded-lg border-l-4 border-blue-500 bg-white p-6 shadow dark:bg-gray-800">
+    <div className="flex flex-col gap-2 rounded-lg border-l-4 border-blue-500 bg-white p-6 shadow dark:bg-gray-800/50">
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg">
           <Globe className="text-white" size={20} />

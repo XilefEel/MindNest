@@ -14,7 +14,9 @@ export default function DashboardPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  const handleToggleActive = (section: any) => {
+  const handleToggleActive = (
+    section: "home" | "nests" | "shared" | "explore",
+  ) => {
     setActiveSection(section);
     setIsSidebarOpen(false);
   };
@@ -28,7 +30,10 @@ export default function DashboardPage() {
   }, [isSidebarOpen]);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-white">
+    <div
+      onContextMenu={(e) => e.preventDefault()}
+      className="flex h-screen overflow-hidden bg-gray-50 text-gray-800 select-none dark:bg-gray-900 dark:text-white"
+    >
       {isSidebarOpen && (
         <div
           className="fixed inset-0 z-30 bg-black/30 md:hidden"
@@ -37,20 +42,20 @@ export default function DashboardPage() {
       )}
       <aside
         className={cn(
-          "shrink-0 transition-all duration-300 ease-in-out",
-          // Mobile
+          "shrink-0 transition-[width] duration-300 ease-in-out",
           "w-0 md:w-64",
-          // Desktop - show icon width when collapsed
-          isSidebarCollapsed ? "md:w-20" : "md:w-64",
+          isSidebarCollapsed ? "md:w-[76px]" : "md:w-64",
         )}
       >
-        <aside
+        <div
           onDoubleClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           className={cn(
-            "z-40 flex h-screen flex-col bg-white shadow-lg dark:bg-gray-800 dark:text-white",
-            "fixed top-0 left-0 shadow-xl transition-all duration-300 ease-in-out",
+            "z-50 flex h-screen flex-col text-gray-900 dark:text-gray-100",
+            "bg-white dark:bg-gray-800/50",
+            "border border-gray-200 dark:border-gray-700",
+            "fixed top-0 left-0 transition-[width] duration-300 ease-in-out",
             "w-64",
-            isSidebarCollapsed ? "md:w-20" : "md:w-64",
+            isSidebarCollapsed ? "md:w-[76px]" : "md:w-64",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full",
             "md:relative md:flex md:translate-x-0",
           )}
@@ -60,19 +65,20 @@ export default function DashboardPage() {
             setActiveSection={handleToggleActive}
             isCollapsed={isSidebarCollapsed}
           />
-        </aside>
+        </div>
       </aside>
 
       <div className="flex flex-1 flex-col">
-        <header className="bg-white p-4 md:hidden dark:bg-gray-950">
+        <header className="p-4 md:hidden">
           <button
-            className="rounded-md bg-white p-2 transition-colors duration-200 hover:bg-gray-100 dark:text-black"
+            className="rounded-md bg-white p-2 transition-colors hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           >
             <Menu />
           </button>
         </header>
-        <main className="flex-1 overflow-y-auto p-6 transition-opacity duration-200">
+
+        <main className="flex-1 overflow-y-auto px-6">
           {activeSection && activeSection === "home" ? (
             <HomeSection />
           ) : activeSection === "nests" ? (

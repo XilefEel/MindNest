@@ -14,22 +14,23 @@ export default function NestCard({ nest }: { nest: Nest }) {
   };
 
   return (
-    <div className="group relative overflow-hidden rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl dark:bg-gray-800">
+    <div className="group relative overflow-hidden rounded-2xl bg-white p-6 shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow-md dark:bg-gray-800">
       <div
         onClick={() => handleNavigate(nest.id)}
         className="flex items-center"
       >
-        <div className="flex w-full flex-col space-y-2">
+        <div className="flex w-full flex-col gap-2">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
               {nest.title}
             </h3>
+
             <EditNestModal nest={nest}>
               <div
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
-                className="flex size-4 items-center rounded-lg hover:text-teal-500 dark:text-white"
+                className="flex items-center rounded-lg transition-colors hover:text-teal-500 dark:text-white dark:hover:text-teal-400"
               >
                 <EllipsisVertical className="size-4" />
               </div>

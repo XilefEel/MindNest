@@ -35,63 +35,67 @@ export default function Sidebar({
     <aside className="flex h-screen flex-col p-5">
       <div
         className={cn(
-          "mb-6 overflow-hidden text-3xl font-bold whitespace-nowrap transition-all duration-300",
+          "mb-6 overflow-hidden text-2xl font-bold whitespace-nowrap transition-all duration-300",
           isCollapsed && "text-center",
         )}
       >
         {isCollapsed ? "🧠" : "🧠 MindNest"}
       </div>
 
-      <nav className="space-y-2">
+      <nav className="flex flex-col gap-2">
         <SidebarItem
-          icon={<Home />}
+          Icon={Home}
           label="Dashboard"
           active={activeSection === "home"}
-          onClick={() => setActiveSection("home")}
+          handleClick={() => setActiveSection("home")}
           isCollapsed={isCollapsed}
         />
+
         <SidebarItem
-          icon={<BookOpen />}
+          Icon={BookOpen}
           label="My Nests"
           active={activeSection === "nests"}
-          onClick={() => setActiveSection("nests")}
+          handleClick={() => setActiveSection("nests")}
           isCollapsed={isCollapsed}
         />
+
         <SidebarItem
-          icon={<Clock />}
+          Icon={Clock}
           label="Shared"
           active={activeSection === "shared"}
-          onClick={() => setActiveSection("shared")}
+          handleClick={() => setActiveSection("shared")}
           isCollapsed={isCollapsed}
         />
+
         <SidebarItem
-          icon={<Search />}
+          Icon={Search}
           label="Discover Nests"
           active={activeSection === "explore"}
-          onClick={() => setActiveSection("explore")}
+          handleClick={() => setActiveSection("explore")}
           isCollapsed={isCollapsed}
         />
       </nav>
-      <div className="mt-auto border-t border-gray-200 pt-6">
+
+      <div className="mt-auto flex flex-col gap-2 border-t border-gray-200 pt-6">
         <SidebarItem
-          icon={<CircleUserRound />}
+          Icon={CircleUserRound}
           label="Profile"
           active={activeSection === "profile"}
-          onClick={() => {}}
+          handleClick={() => {}}
           isCollapsed={isCollapsed}
         />
 
         <SidebarItem
-          icon={<Settings />}
+          Icon={Settings}
           label="Settings"
           isCollapsed={isCollapsed}
-          onClick={() => {}}
+          handleClick={() => {}}
         />
 
         <SidebarItem
-          icon={<LogOut />}
+          Icon={LogOut}
           label="Log Out"
-          onClick={handleLogOut}
+          handleClick={handleLogOut}
           isCollapsed={isCollapsed}
         />
       </div>
