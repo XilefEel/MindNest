@@ -11,6 +11,7 @@ import SidebarItem from "./SidebarItem";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils/general";
+import { useSettingsModal } from "@/stores/useModalStore";
 
 export default function Sidebar({
   activeSection,
@@ -23,6 +24,8 @@ export default function Sidebar({
 }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const { setIsSettingsOpen } = useSettingsModal();
+
   const handleLogOut = async () => {
     try {
       await logout();
@@ -89,7 +92,7 @@ export default function Sidebar({
           Icon={Settings}
           label="Settings"
           isCollapsed={isCollapsed}
-          handleClick={() => {}}
+          handleClick={() => setIsSettingsOpen(true)}
         />
 
         <SidebarItem

@@ -6,6 +6,7 @@ import ExploreSection from "@/components/user-dashboard/sections/DiscoverSection
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils/general";
+import GlobalModals from "@/components/modals/GlobalModals";
 
 export default function DashboardPage() {
   const [activeSection, setActiveSection] = useState<
@@ -51,9 +52,9 @@ export default function DashboardPage() {
           onDoubleClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           className={cn(
             "z-50 flex h-screen flex-col text-gray-900 dark:text-gray-100",
-            "bg-white dark:bg-gray-800/50",
+            "bg-white dark:bg-gray-800 md:dark:bg-gray-800/50",
             "border border-gray-200 dark:border-gray-700",
-            "fixed top-0 left-0 transition-[width] duration-300 ease-in-out",
+            "fixed top-0 left-0 transition-transform duration-300 ease-in-out",
             "w-64",
             isSidebarCollapsed ? "md:w-[76px]" : "md:w-64",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full",
@@ -90,6 +91,8 @@ export default function DashboardPage() {
           ) : null}
         </main>
       </div>
+
+      <GlobalModals />
     </div>
   );
 }

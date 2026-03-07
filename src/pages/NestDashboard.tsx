@@ -156,6 +156,7 @@ export default function NestDashboardPage() {
       </div>
 
       <FloatingMusicPlayer />
+
       <GlobalModals />
     </div>
   );
