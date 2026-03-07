@@ -113,7 +113,7 @@ export default function Topbar({
             "rounded-lg bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
-        <p className="hidden text-3xl sm:block">🪺</p>
+        <p className="hidden text-3xl sm:block">🪹</p>
         <div
           className={cn(
             "rounded transition-all duration-200",

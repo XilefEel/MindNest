@@ -185,8 +185,8 @@ export default function NestlingItem({
                 ? "bg-white/50 font-semibold dark:bg-black/50"
                 : "hover:bg-white/20 dark:hover:bg-black/20"
               : nestling.id === activeNestling?.id
-                ? "bg-teal-100 font-semibold dark:bg-teal-400"
-                : "hover:bg-gray-100 dark:hover:bg-gray-700",
+                ? "bg-teal-50 font-semibold text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
+                : "hover:bg-gray-50 dark:hover:bg-gray-700/50",
           )}
           onClick={() => handleSelect()}
           style={style}

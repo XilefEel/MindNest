@@ -26,7 +26,7 @@ export default function NestCard({ nest }: { nest: Nest }) {
         <EditNestModal nest={nest}>
           <div
             onClick={(e) => e.stopPropagation()}
-            className="rounded-lg p-0.5 text-gray-300 transition-colors hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-300"
+            className="rounded-lg p-0.5 text-gray-400 transition-colors hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-300"
           >
             <EllipsisVertical size={14} />
           </div>
