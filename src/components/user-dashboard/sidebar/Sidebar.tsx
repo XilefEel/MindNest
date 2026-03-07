@@ -1,11 +1,11 @@
 import {
-  Home,
   BookOpen,
-  Clock,
-  Search,
   Settings,
   LogOut,
   CircleUserRound,
+  LayoutDashboard,
+  Share2,
+  Compass,
 } from "lucide-react";
 import SidebarItem from "./SidebarItem";
 import { useNavigate } from "react-router-dom";
@@ -34,20 +34,27 @@ export default function Sidebar({
       throw new Error(err.message || "Logout failed");
     }
   };
+
   return (
-    <aside className="flex h-screen flex-col p-5">
+    <aside
+      className={cn(
+        "flex h-screen flex-col px-4 py-6",
+        "bg-white dark:bg-gray-800 md:dark:bg-gray-800/50",
+        "border-r border-gray-100 dark:border-gray-700",
+      )}
+    >
       <div
         className={cn(
-          "mb-6 overflow-hidden text-2xl font-bold whitespace-nowrap transition-all duration-300",
-          isCollapsed && "text-center",
+          "mb-5 px-2 text-2xl font-bold whitespace-nowrap transition-all duration-300",
+          isCollapsed && "px-0 text-center",
         )}
       >
         {isCollapsed ? "🧠" : "🧠 MindNest"}
       </div>
 
-      <nav className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-1.5">
         <SidebarItem
-          Icon={Home}
+          Icon={LayoutDashboard}
           label="Dashboard"
           active={activeSection === "home"}
           handleClick={() => setActiveSection("home")}
@@ -63,7 +70,7 @@ export default function Sidebar({
         />
 
         <SidebarItem
-          Icon={Clock}
+          Icon={Share2}
           label="Shared"
           active={activeSection === "shared"}
           handleClick={() => setActiveSection("shared")}
@@ -71,7 +78,7 @@ export default function Sidebar({
         />
 
         <SidebarItem
-          Icon={Search}
+          Icon={Compass}
           label="Discover Nests"
           active={activeSection === "explore"}
           handleClick={() => setActiveSection("explore")}
@@ -79,7 +86,7 @@ export default function Sidebar({
         />
       </nav>
 
-      <div className="mt-auto flex flex-col gap-2 border-t border-gray-200 pt-6">
+      <div className="mt-auto flex flex-col gap-1.5 border-t border-gray-300 pt-4 dark:border-gray-600">
         <SidebarItem
           Icon={CircleUserRound}
           label="Profile"

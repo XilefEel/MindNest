@@ -1,24 +1,29 @@
 import { Users } from "lucide-react";
-import { SharedCard } from "../SharedCard";
+import { SharedCard } from "../cards/SharedCard";
 
 export default function SharedPreview() {
   return (
-    <div className="flex flex-col gap-2 rounded-lg border-l-4 border-purple-500 bg-white p-6 shadow dark:bg-gray-800/50">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg">
-          <Users className="text-white" size={20} />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold">Shared with You</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Collaborative nests from your team
-          </p>
+    <div className="flex flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-6 dark:border-gray-700 dark:bg-gray-800/50">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-purple-500">
+            <Users className="text-white" size={18} />
+          </div>
+          <div>
+            <h2 className="text-base font-bold text-gray-800 dark:text-gray-100">
+              Shared with You
+            </h2>
+            <p className="text-xs text-gray-400 dark:text-gray-500">
+              Nests shared by others
+            </p>
+          </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <SharedCard />
-        <SharedCard />
-        <SharedCard />
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        {Array.from({ length: 2 }).map((_, idx) => (
+          <SharedCard key={idx} />
+        ))}
       </div>
     </div>
   );

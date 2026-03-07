@@ -51,11 +51,7 @@ export default function DashboardPage() {
         <div
           onDoubleClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           className={cn(
-            "z-50 flex h-screen flex-col text-gray-900 dark:text-gray-100",
-            "bg-white dark:bg-gray-800 md:dark:bg-gray-800/50",
-            "border border-gray-200 dark:border-gray-700",
-            "fixed top-0 left-0 transition-transform duration-300 ease-in-out",
-            "w-64",
+            "fixed top-0 left-0 z-50 flex w-64 flex-col transition-transform duration-300 ease-in-out md:transition-[width]",
             isSidebarCollapsed ? "md:w-[76px]" : "md:w-64",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full",
             "md:relative md:flex md:translate-x-0",

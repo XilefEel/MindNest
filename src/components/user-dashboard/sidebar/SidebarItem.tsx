@@ -17,23 +17,18 @@ export default function SidebarItem({
   return (
     <div
       onClick={handleClick}
-      onDoubleClick={(e) => {
-        e.stopPropagation();
-      }}
+      onDoubleClick={(e) => e.stopPropagation()}
       className={cn(
-        "flex w-full items-center gap-3 rounded-lg p-2 text-sm font-medium transition-colors",
-        "text-gray-800 dark:text-gray-200",
-        "hover:bg-gray-50 dark:hover:bg-gray-700",
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-        active &&
-          "bg-teal-100 font-bold text-teal-800 hover:bg-teal-100 hover:text-teal-800 dark:bg-teal-500 hover:dark:bg-teal-500",
+        "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+        active
+          ? "bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
+          : "text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700/50",
       )}
     >
-      <Icon className="size-5 shrink-0" />
-
+      <Icon size={16} className="shrink-0" />
       <span
         className={cn(
-          "overflow-hidden whitespace-nowrap transition-colors",
+          "overflow-hidden whitespace-nowrap transition-all duration-300",
           isCollapsed ? "w-0 opacity-0" : "w-auto opacity-100",
         )}
       >

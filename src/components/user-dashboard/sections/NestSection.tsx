@@ -1,5 +1,5 @@
 import { Nest } from "@/lib/types/nest";
-import NestCard from "../NestCard";
+import NestCard from "../cards/NestCard";
 import { useNestActions, useNests } from "@/stores/useNestStore";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
