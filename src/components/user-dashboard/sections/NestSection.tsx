@@ -63,7 +63,7 @@ export default function NestSection() {
             "shadow-sm hover:shadow focus:shadow-md",
             "text-gray-900 placeholder-gray-500 dark:text-gray-100 dark:placeholder-gray-400",
             "focus:ring-teal-500 dark:focus:ring-teal-400",
-            "border-gray-300 focus:border-teal-50 dark:border-gray-600 dark:focus:border-teal-400",
+            "border-gray-100 focus:border-teal-50 dark:border-gray-700 dark:focus:border-teal-400",
           )}
         />
       </div>
