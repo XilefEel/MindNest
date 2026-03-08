@@ -1,7 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { Nest } from "@/lib/types/nest";
-import { useActiveBackgroundId, useBackgrounds } from "@/stores/useNestStore";
+import {
+  useActiveBackgroundId,
+  useBackgroundBrightness,
+  useBackgrounds,
+} from "@/stores/useNestStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { cn } from "@/lib/utils/general";
 import { useActiveNestling } from "@/stores/useNestlingStore";
@@ -34,6 +38,7 @@ export default function NestDashboardPage() {
   const activeNestling = useActiveNestling();
   const backgrounds = useBackgrounds();
   const activeBackgroundId = useActiveBackgroundId();
+  const brightness = useBackgroundBrightness();
 
   const activeBackgroundImage = backgrounds.find(
     (bg) => bg.id === activeBackgroundId,
@@ -57,18 +62,23 @@ export default function NestDashboardPage() {
 
   return (
     <div
-      style={{
-        backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : "none",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        scrollbarGutter: "stable",
-      }}
-      className="flex h-screen flex-col bg-gray-50 pb-3 select-none md:pb-6 dark:bg-gray-900"
+      style={{ scrollbarGutter: "stable" }}
+      className="relative flex h-screen flex-col bg-gray-50 pb-3 select-none md:pb-6 dark:bg-gray-900"
       onContextMenu={(e) => e.preventDefault()}
     >
       <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: `brightness(${brightness})`,
+        }}
+      />
+
+      <div
         className={cn(
-          "flex h-full flex-col",
+          "relative z-10 flex h-full flex-col",
           isCardHidden ? "pointer-events-none opacity-0" : "opacity-100",
         )}
       >

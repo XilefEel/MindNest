@@ -69,7 +69,7 @@ export default function Sidebar({
         className={cn(
           "flex h-full flex-col overflow-x-hidden overflow-y-auto rounded-tr-2xl rounded-br-2xl border border-gray-200 bg-white p-5 text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 md:dark:bg-gray-800/50",
           activeBackgroundId &&
-            "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
+            "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30 md:dark:bg-black/30",
         )}
       >
         <ToolBar nestId={nestId} />

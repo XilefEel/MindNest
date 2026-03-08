@@ -12,6 +12,7 @@ import {
   saveLastBackgroundImage,
   clearLastBackgroundImage,
   saveStoredBackgroundImage,
+  saveLastBackgroundImageBrightness,
 } from "@/lib/storage/background-image";
 import {
   saveLastBackgroundMusic,
@@ -28,10 +29,12 @@ type NestState = {
   music: BackgroundMusic[];
 
   activeNestId: number | null;
+
   activeBackgroundId: number | null;
   storedBackgroundId: number | null;
-  activeMusicId: number | null;
+  backgroundBrightness: number;
 
+  activeMusicId: number | null;
   audioCurrentTime: number;
   audioIsPlaying: boolean;
   audioIsPaused: boolean;
@@ -53,9 +56,11 @@ type NestState = {
   setActiveBackgroundId: (backgroundId: number | null) => Promise<void>;
   setStoredBackgroundId: (backgroundId: number | null) => void;
   clearActiveBackgroundId: () => void;
+
   selectBackground: (nestId: number) => Promise<boolean>;
   getBackgrounds: (nestId: number) => Promise<void>;
   deleteBackground: (id: number) => Promise<void>;
+  setBackgroundBrightness: (brightness: number) => void;
 
   // Background Music
   setAudioCurrentTime: (time: number) => void;
@@ -80,19 +85,18 @@ export const useNestStore = create<NestState>((set, get) => ({
   music: [],
 
   activeNestId: null,
+
   activeBackgroundId: null,
   storedBackgroundId: null,
+  backgroundBrightness: 1,
+
   activeMusicId: null,
-
-  musicVolume: 0.5,
-
   audioCurrentTime: 0,
   audioIsPlaying: false,
   audioIsPaused: false,
+  musicVolume: 0.5,
 
   activeDraggingId: null,
-
-  isTitleCollapsed: false,
 
   loading: false,
 
@@ -213,6 +217,11 @@ export const useNestStore = create<NestState>((set, get) => ({
       }),
     }));
   }),
+
+  setBackgroundBrightness: (brightness: number) => {
+    set({ backgroundBrightness: brightness });
+    saveLastBackgroundImageBrightness(get().activeNestId!, brightness);
+  },
 
   setAudioCurrentTime: (time: number) => set({ audioCurrentTime: time }),
 
@@ -342,9 +351,11 @@ export const useNestActions = () =>
       setActiveBackgroundId: state.setActiveBackgroundId,
       setStoredBackgroundId: state.setStoredBackgroundId,
       clearActiveBackgroundId: state.clearActiveBackgroundId,
+
       selectBackground: state.selectBackground,
       getBackgrounds: state.getBackgrounds,
       deleteBackground: state.deleteBackground,
+      setBackgroundBrightness: state.setBackgroundBrightness,
 
       setAudioCurrentTime: state.setAudioCurrentTime,
       setAudioIsPlaying: state.setAudioIsPlaying,
@@ -375,6 +386,9 @@ export const useActiveBackgroundId = () =>
 
 export const useStoredBackgroundId = () =>
   useNestStore((state) => state.storedBackgroundId);
+
+export const useBackgroundBrightness = () =>
+  useNestStore((state) => state.backgroundBrightness);
 
 export const useMusic = () => useNestStore((state) => state.music);
 

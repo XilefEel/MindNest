@@ -2,12 +2,14 @@ import { cn } from "@/lib/utils/general";
 import {
   useActiveBackgroundId,
   useActiveNestId,
+  useBackgroundBrightness,
   useBackgrounds,
   useNestActions,
 } from "@/stores/useNestStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { Trash2 } from "lucide-react";
+import { Sun, SunDim, SunMedium, Trash2 } from "lucide-react";
 import { toast } from "@/lib/utils/toast";
+import { Slider } from "@/components/ui/slider";
 
 export default function BackgroundSection() {
   const activeNestId = useActiveNestId();
@@ -18,7 +20,10 @@ export default function BackgroundSection() {
     clearActiveBackgroundId,
     selectBackground,
     deleteBackground,
+    setBackgroundBrightness,
   } = useNestActions();
+
+  const brightness = useBackgroundBrightness();
 
   const handleUploadBackground = async () => {
     try {
@@ -52,8 +57,8 @@ export default function BackgroundSection() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-1">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1">
         <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
           Background
         </h2>
@@ -103,6 +108,31 @@ export default function BackgroundSection() {
             </div>
           ))
         )}
+      </div>
+
+      <div
+        className={cn(
+          "flex items-center gap-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-700/30",
+          activeBackgroundId && "bg-white/30 dark:bg-black/30",
+        )}
+      >
+        {brightness > 1.33 ? (
+          <Sun className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+        ) : brightness > 0.67 ? (
+          <SunMedium className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+        ) : (
+          <SunDim className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+        )}
+        <Slider
+          value={[brightness * 100]}
+          onValueChange={(value) => setBackgroundBrightness(value[0] / 100)}
+          max={200}
+          step={1}
+          className="flex-1"
+        />
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          {Math.round(brightness * 100)}%
+        </span>
       </div>
 
       <div className="flex items-center justify-between pt-2">

@@ -2,6 +2,7 @@ import { getNestFromId } from "@/lib/api/nest";
 import {
   getLastBackgroundImage,
   getStoredBackgroundImage,
+  getLastBackgroundImageBrightness,
 } from "@/lib/storage/background-image";
 import {
   getLastBackgroundMusic,
@@ -42,6 +43,7 @@ export default function useLoadNest({
     setActiveBackgroundId,
     setStoredBackgroundId,
     setActiveMusicId,
+    setBackgroundBrightness,
     setMusicVolume,
     getBackgrounds,
     getMusic,
@@ -65,12 +67,14 @@ export default function useLoadNest({
           lastBackgroundImage,
           storedBackgroundImage,
           lastBackgroundMusicId,
+          lastBackgroundImageBrightness,
           lastMusicVolume,
         ] = await Promise.all([
           getLastNestling(lastNest.id),
           getLastBackgroundImage(lastNest.id),
           getStoredBackgroundImage(lastNest.id),
           getLastBackgroundMusic(lastNest.id),
+          getLastBackgroundImageBrightness(lastNest.id),
           getLastMusicVolume(lastNest.id),
 
           loadSettings(),
@@ -108,6 +112,10 @@ export default function useLoadNest({
 
         if (storedBackgroundImage != null)
           setStoredBackgroundId(storedBackgroundImage);
+
+        if (lastBackgroundImageBrightness != null) {
+          setBackgroundBrightness(lastBackgroundImageBrightness);
+        }
 
         if (lastBackgroundMusicId != null)
           setActiveMusicId(lastBackgroundMusicId);
