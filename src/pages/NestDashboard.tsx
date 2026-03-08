@@ -61,6 +61,7 @@ export default function NestDashboardPage() {
         backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : "none",
         backgroundSize: "cover",
         backgroundPosition: "center",
+        scrollbarGutter: "stable",
       }}
       className="flex h-screen flex-col bg-gray-50 pb-3 select-none md:pb-6 dark:bg-gray-900"
       onContextMenu={(e) => e.preventDefault()}

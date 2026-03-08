@@ -6,7 +6,7 @@ import {
   useNestlingActions,
   useNestlingTags,
 } from "@/stores/useNestlingStore";
-import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import { ChevronDown, Dot, Folder, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { NestlingTag } from "./NestlingTag";
@@ -17,6 +17,13 @@ import { toast } from "sonner";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import BasePopover from "../popovers/BasePopover";
 import { useSettingsStore } from "@/stores/useSettingsStore";
+import { useTheme } from "next-themes";
+
+const themeMap: Record<string, Theme> = {
+  light: Theme.LIGHT,
+  dark: Theme.DARK,
+  system: Theme.AUTO,
+};
 
 export default function NestlingTitle({
   title,
@@ -39,6 +46,7 @@ export default function NestlingTitle({
 
   const pickerRef = useRef<HTMLDivElement>(null);
   const Icon = getNestlingIcon(nestling.nestlingType);
+  const { theme } = useTheme();
 
   const handleEmojiClick = async (emojiData: EmojiClickData) => {
     try {
@@ -110,14 +118,23 @@ export default function NestlingTitle({
           </button>
 
           {showPicker && (
-            <div className="absolute top-12 left-0 z-50">
-              <EmojiPicker onEmojiClick={handleEmojiClick} lazyLoadEmojis />
-              <div
-                onClick={handleClearEmoji}
-                className="absolute right-4 bottom-4 z-50 rounded-lg bg-red-500 px-3 py-1 text-white transition-all duration-150 hover:scale-105 hover:bg-red-700"
-              >
-                Clear
-              </div>
+            <div className="absolute top-10 left-0 z-50">
+              <EmojiPicker
+                onEmojiClick={handleEmojiClick}
+                theme={themeMap[theme ?? "system"]}
+                height={400}
+                previewConfig={{ showPreview: false }}
+                skinTonesDisabled
+                lazyLoadEmojis
+              />
+              {nestling.icon && (
+                <button
+                  onClick={handleClearEmoji}
+                  className="absolute top-4 right-4 z-50 rounded-lg bg-red-500 px-3 py-1 text-sm text-white shadow-sm transition hover:bg-red-600"
+                >
+                  Clear
+                </button>
+              )}
             </div>
           )}
         </div>

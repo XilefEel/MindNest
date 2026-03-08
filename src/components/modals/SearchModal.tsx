@@ -14,6 +14,7 @@ import { saveLastNestling } from "@/lib/storage/nestling";
 import { useSearchModal } from "@/stores/useModalStore";
 import SearchItem from "./SearchItem";
 import { useNestlingSearch } from "@/hooks/useNestlingSearch.ts";
+import { FileText, Pin } from "lucide-react";
 
 export default function SearchModal() {
   const activeNestId = useActiveNestId();
@@ -37,7 +38,7 @@ export default function SearchModal() {
       open={isSearchOpen}
       onOpenChange={setIsSearchOpen}
       className={cn(
-        "rounded-lg border-0 bg-white p-0 shadow-md md:min-w-[600px] dark:bg-gray-800",
+        "rounded-lg border-0 bg-white p-0 shadow-md select-none md:min-w-[600px] dark:bg-gray-800",
         activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/30",
       )}
     >
@@ -58,7 +59,14 @@ export default function SearchModal() {
 
         {filteredNestlings.length > 0 && (
           <CommandGroup
-            heading={<span className="text-base">📌 Pinned Nestlings</span>}
+            heading={
+              <div className="flex flex-row items-center gap-2">
+                <div className="rounded-lg bg-linear-to-r from-pink-400 to-pink-500 p-1.5 text-white">
+                  <Pin size={14} />
+                </div>
+                <p className="text-sm">Pinned Nestlings</p>
+              </div>
+            }
           >
             {filteredNestlings
               .filter((nestling) => nestling.isPinned)
@@ -83,7 +91,14 @@ export default function SearchModal() {
 
         {filteredNestlings.length > 0 && (
           <CommandGroup
-            heading={<span className="text-base">🪺 Nestlings</span>}
+            heading={
+              <div className="flex flex-row items-center gap-2">
+                <div className="rounded-lg bg-linear-to-r from-teal-400 to-teal-500 p-1.5 text-white">
+                  <FileText size={14} />
+                </div>
+                <p className="text-sm">Nestlings</p>
+              </div>
+            }
           >
             {filteredNestlings.length > 0 &&
               filteredNestlings
