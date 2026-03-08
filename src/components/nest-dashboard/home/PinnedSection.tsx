@@ -20,9 +20,9 @@ export default function PinnedSection() {
     <div className="space-y-4">
       <div className="flex items-center gap-3">
         <div className="rounded-lg bg-gradient-to-br from-pink-400 to-pink-500 p-2 shadow-md">
-          <Pin className="h-5 w-5 text-white" />
+          <Pin className="size-4 text-white" />
         </div>
-        <h2 className="text-xl font-bold md:text-2xl">Pinned Nestlings</h2>
+        <h2 className="text-lg font-bold md:text-xl">Pinned Nestlings</h2>
       </div>
 
       <div className="space-y-3">

@@ -26,24 +26,24 @@ export default function SearchBar() {
       <div className="relative">
         <section className="relative">
           <div className="relative">
-            <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+            <Search className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-gray-400" />
             <Input
               placeholder="Search your nestlings..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={cn(
-                "h-10 rounded-xl border pl-12 text-base transition-shadow",
+                "h-10 rounded-xl border pl-10 text-xs transition-shadow md:text-sm",
                 "bg-white dark:bg-gray-800",
                 "shadow-sm hover:shadow focus:shadow-md",
                 "text-gray-900 placeholder-gray-500 dark:text-gray-100 dark:placeholder-gray-400",
                 "focus:ring-teal-500 dark:focus:ring-teal-400",
-                "border-gray-300 focus:border-teal-50 dark:border-gray-600 dark:focus:border-teal-400",
+                "border-gray-100 focus:border-teal-50 dark:border-gray-700 dark:focus:border-teal-400",
                 activeBackgroundId &&
                   "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
               )}
             />
             {!searchQuery && (
-              <span className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-xs text-gray-400">
+              <span className="pointer-events-none absolute top-1/2 right-3.5 hidden -translate-y-1/2 text-xs text-gray-400 md:block">
                 type # to filter by tags
               </span>
             )}

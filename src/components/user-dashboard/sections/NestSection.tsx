@@ -53,7 +53,6 @@ export default function NestSection() {
         />
 
         <Input
-          type="text"
           placeholder="Search nests..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}

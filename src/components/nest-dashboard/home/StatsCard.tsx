@@ -2,18 +2,44 @@ import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useState, ReactNode } from "react";
 import BasePopover from "@/components/popovers/BasePopover";
+import { LucideIcon } from "lucide-react";
+
+const colorMap = {
+  teal: {
+    icon: "bg-teal-50 text-teal-500 dark:bg-teal-500/10 dark:text-teal-400",
+    border: "hover:border-teal-500 dark:hover:border-teal-400",
+    number: "group-hover:text-teal-500 dark:group-hover:text-teal-400",
+  },
+  purple: {
+    icon: "bg-purple-50 text-purple-500 dark:bg-purple-500/10 dark:text-purple-400",
+    border: "hover:border-purple-500 dark:hover:border-purple-400",
+    number: "group-hover:text-purple-500 dark:group-hover:text-purple-400",
+  },
+  amber: {
+    icon: "bg-amber-50 text-amber-500 dark:bg-amber-500/10 dark:text-amber-400",
+    border: "hover:border-amber-500 dark:hover:border-amber-400",
+    number: "group-hover:text-amber-500 dark:group-hover:text-amber-400",
+  },
+  rose: {
+    icon: "bg-rose-50 text-rose-500 dark:bg-rose-500/10 dark:text-rose-400",
+    border: "hover:border-rose-500 dark:hover:border-rose-400",
+    number: "group-hover:text-rose-500 dark:group-hover:text-rose-400",
+  },
+};
 
 export default function StatCard({
   label,
   value,
-  icon,
+  Icon,
+  color = "teal",
   type,
   onClick,
   popoverContent,
 }: {
   label: string;
   value: number;
-  icon: string;
+  Icon: LucideIcon;
+  color?: keyof typeof colorMap;
   type?: "popover" | "clickable";
   onClick?: () => void;
   popoverContent?: ReactNode;
@@ -21,22 +47,37 @@ export default function StatCard({
   const activeBackgroundId = useActiveBackgroundId();
   const [popoverOpen, setPopoverOpen] = useState(false);
 
+  const { icon, border, number } = colorMap[color];
+
   const cardContent = (
     <div
       className={cn(
-        "flex flex-col items-center justify-center rounded-2xl shadow-sm",
-        "group rounded-xl border border-b-4 p-4 hover:shadow-md",
+        "group flex flex-col items-center justify-center gap-1 rounded-2xl border p-4 shadow-sm hover:shadow-md",
         "bg-white dark:bg-gray-800",
-        "border-gray-200 border-b-orange-500 hover:border-orange-500 dark:border-gray-800 dark:border-b-orange-500 dark:hover:border-orange-500",
+        "border-gray-100 dark:border-gray-700",
+        "transition-[scale] hover:scale-[1.02]",
+        border,
         activeBackgroundId &&
-          "border-t-0 border-r-0 border-l-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+          "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
       )}
     >
-      <div className="mb-3 text-4xl">{icon}</div>
-      <div className="text-2xl font-bold text-gray-900 dark:text-white">
+      <div
+        className={cn(
+          "flex items-center justify-center rounded-xl bg-teal-50 p-2.5",
+          icon,
+        )}
+      >
+        <Icon size={28} />
+      </div>
+      <div
+        className={cn(
+          "text-2xl font-bold text-gray-900 transition-colors dark:text-white",
+          number,
+        )}
+      >
         {value}
       </div>
-      <span className="text-sm text-gray-600 dark:text-gray-400">{label}</span>
+      <span className="text-xs text-gray-500 dark:text-gray-400">{label}</span>
     </div>
   );
 

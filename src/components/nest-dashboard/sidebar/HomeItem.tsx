@@ -19,8 +19,8 @@ export default function HomeItem({
             ? "bg-white/50 font-semibold dark:bg-black/50"
             : "hover:bg-white/20 dark:hover:bg-black/20"
           : activeNestlingId === null
-            ? "bg-teal-100 font-semibold dark:bg-teal-400"
-            : "hover:bg-gray-100 dark:hover:bg-gray-700",
+            ? "bg-teal-50 font-semibold text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
+            : "hover:bg-gray-50 dark:hover:bg-gray-700/50",
       )}
       onClick={handleHomeClick}
       onDoubleClick={(e) => e.stopPropagation()}

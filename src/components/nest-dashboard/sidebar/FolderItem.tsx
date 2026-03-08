@@ -99,7 +99,7 @@ export default function FolderItem({
             "flex items-center justify-between gap-1 rounded px-2 py-1 transition-[background] hover:bg-teal-50 dark:hover:bg-gray-700",
             activeBackgroundId
               ? "hover:bg-white/20 dark:hover:bg-black/20"
-              : "hover:bg-gray-100 dark:hover:bg-gray-700",
+              : "hover:bg-gray-50 dark:hover:bg-gray-700/50",
           )}
         >
           <div className="flex min-w-0 flex-1 items-center gap-1.5">
