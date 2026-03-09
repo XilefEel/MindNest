@@ -42,7 +42,7 @@ export default function FolderTree({
         <div
           ref={setNodeRef}
           className={cn(
-            "flex flex-col rounded pt-1 font-medium",
+            "flex flex-col rounded pt-0.5",
             isOver &&
               cn(
                 activeBackgroundId
@@ -75,7 +75,7 @@ export default function FolderTree({
                     setIsSidebarOpen={setIsSidebarOpen}
                   />
                 ))}
-                <div className="flex flex-col gap-1 pt-1">
+                <div className="flex flex-col gap-0.5 pt-0.5">
                   {childNestlings.map((nestling) => (
                     <NestlingItem
                       key={nestling.id}

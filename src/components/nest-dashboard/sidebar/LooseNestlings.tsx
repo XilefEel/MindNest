@@ -21,7 +21,7 @@ export default function LooseNestlings({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex flex-1 flex-col gap-1 rounded pt-1 font-medium",
+        "flex flex-1 flex-col gap-0.5 rounded pt-0.5",
         isOver &&
           cn(
             activeBackgroundId

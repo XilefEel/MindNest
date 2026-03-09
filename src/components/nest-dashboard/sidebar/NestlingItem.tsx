@@ -179,7 +179,7 @@ export default function NestlingItem({
       >
         <div
           className={cn(
-            "flex w-full max-w-full items-center justify-between gap-1 truncate rounded px-2 py-1 font-medium transition-[background]",
+            "flex h-8 w-full max-w-full items-center justify-between gap-1 truncate rounded px-2 py-1 transition-[background]",
             activeBackgroundId
               ? nestling.id === activeNestling?.id
                 ? "bg-white/50 font-semibold dark:bg-black/50"

@@ -18,25 +18,25 @@ export default function PinnedNestlings({
 
   return (
     <motion.div layout="position">
-      <div className="my-2 flex flex-col gap-1">
+      <div className="my-1 flex flex-col gap-0.5">
         <div
           onClick={() => setIsPinnedOpen((prev) => !prev)}
           onDoubleClick={(e) => {
             e.stopPropagation();
           }}
           className={cn(
-            "flex items-center gap-2 rounded px-2 py-1 font-medium transition-[background] hover:bg-gray-50 dark:hover:bg-gray-700/50",
+            "flex items-center gap-2 rounded px-2 py-1 transition-[background] hover:bg-gray-50 dark:hover:bg-gray-700/50",
             activeBackgroundId && "hover:bg-white/20 dark:hover:bg-black/20",
           )}
         >
           <div className="rounded-lg bg-linear-to-r from-pink-400 to-pink-500 p-1.5 text-white">
-            <Pin className="size-4" />
+            <Pin className="size-4 flex-shrink-0" />
           </div>
           <span>Pinned</span>
           <div className="ml-auto">
             <ChevronLeft
               className={cn(
-                "size-4 transition-transform",
+                "size-4 flex-shrink-0 transition-transform",
                 isPinnedOpen ? "-rotate-90" : "",
               )}
             />
@@ -52,7 +52,7 @@ export default function PinnedNestlings({
               exit={{ height: 0 }}
               transition={{ duration: 0.2 }}
               style={{ overflow: "hidden" }}
-              className="ml-6 flex flex-col gap-1"
+              className="ml-6 flex flex-col gap-0.5"
             >
               {pinnedNestlings.map((nestling) => (
                 <NestlingItem

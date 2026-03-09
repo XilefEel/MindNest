@@ -37,7 +37,7 @@ export default function SearchItem({
           )}
         </div>
 
-        <span>{nestling.title}</span>
+        <span className="text-sm">{nestling.title}</span>
       </div>
 
       <div className="flex flex-1 items-center gap-1 text-gray-500 dark:text-gray-400">
@@ -52,8 +52,10 @@ export default function SearchItem({
       </div>
 
       <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-        <Folder className="h-4 w-6" />
-        <span>{findFolderPath(nestling.folderId, folders) || "No Folder"}</span>
+        <Folder className="h-3.5 w-5" />
+        <span className="text-xs">
+          {findFolderPath(nestling.folderId, folders) || "No Folder"}
+        </span>
       </div>
     </div>
   );

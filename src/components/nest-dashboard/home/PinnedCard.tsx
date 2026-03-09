@@ -47,8 +47,8 @@ export default function PinnedCard({
             </div>
             <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
               <div className="flex items-center gap-1">
-                <Folder className="h-4 w-6" />
-                <span>
+                <Folder className="h-3.5 w-6" />
+                <span className="text-xs">
                   {findFolderPath(nestling.folderId, folders) || "No Folder"}
                 </span>
               </div>

@@ -138,7 +138,7 @@ export default function NestDashboardPage() {
 
           <main
             className={cn(
-              "relative mx-3 flex-1 px-5 pt-3 md:mx-8",
+              "relative mx-3 flex-1 px-5 py-3 md:mx-8",
               activeNestling?.nestlingType === "note"
                 ? "overflow-hidden"
                 : "overflow-y-auto",

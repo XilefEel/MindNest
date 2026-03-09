@@ -85,7 +85,7 @@ export default function ImageContextMenu({
           <ContextSubMenu
             trigger={
               <>
-                <FolderInput className="h-4 w-4" />
+                <FolderInput className="size-4 flex-shrink-0" />
                 <span>Move to Album</span>
                 <ChevronRight className="ml-auto" size={16} />
               </>

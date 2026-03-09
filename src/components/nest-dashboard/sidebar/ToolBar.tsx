@@ -15,22 +15,22 @@ export default function ToolBar({ nestId }: { nestId: number }) {
     {
       label: "New Note",
       onClick: () => openNestlingModal(nestId),
-      icon: <FilePlus className="size-4" />,
+      Icon: FilePlus,
     },
     {
       label: "New Folder",
       onClick: () => openFolderModal(nestId),
-      icon: <FolderPlus className="size-4" />,
+      Icon: FolderPlus,
     },
     {
       label: "Collapse All",
       onClick: () => toggleAllFolders(false),
-      icon: <Minimize2 className="size-4" />,
+      Icon: Minimize2,
     },
     {
       label: "Expand All",
       onClick: () => toggleAllFolders(true),
-      icon: <Maximize2 className="size-4" />,
+      Icon: Maximize2,
     },
   ];
 
@@ -48,7 +48,7 @@ export default function ToolBar({ nestId }: { nestId: number }) {
               activeBackgroundId && "hover:bg-white/20 dark:hover:bg-black/20",
             )}
           >
-            {btn.icon}
+            <btn.Icon className="size-4 flex-shrink-0" />
           </button>
         </BaseToolTip>
       ))}

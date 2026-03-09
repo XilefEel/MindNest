@@ -13,7 +13,7 @@ export default function HomeItem({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 rounded px-2 py-1 font-medium transition-[background]",
+        "flex items-center gap-2 rounded px-2 py-1 transition-[background]",
         activeBackgroundId
           ? activeNestlingId === null
             ? "bg-white/50 font-semibold dark:bg-black/50"
@@ -26,7 +26,7 @@ export default function HomeItem({
       onDoubleClick={(e) => e.stopPropagation()}
     >
       <div className="rounded-lg bg-linear-to-r from-teal-500 to-teal-600 p-1.5 text-white">
-        <Home className="size-4" />
+        <Home className="size-4 flex-shrink-0" />
       </div>
       <span>Home</span>
     </div>

@@ -29,7 +29,7 @@ export default function ContextMenuItem({
       onClick={(e) => e.stopPropagation()}
       onDoubleClick={(e) => e.stopPropagation()}
     >
-      <Icon className="h-4 w-4" />
+      <Icon className="size-4 flex-shrink-0" />
       {text ? <span>{text}</span> : children}
     </ContextMenu.Item>
   );
