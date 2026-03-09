@@ -3,14 +3,47 @@ import Toggle from "./Toggle.tsx";
 import { useSettingsStore } from "@/stores/useSettingsStore.tsx";
 
 export default function GeneralSettings() {
-  const { topbarHidden, sidebarHidden, nestlingTitleHidden, setSetting } =
-    useSettingsStore();
+  const {
+    topbarHidden,
+    sidebarHidden,
+    nestlingTitleHidden,
+    largeSidebarText,
+    setSetting,
+  } = useSettingsStore();
 
   const handleReset = () => {
     setSetting("topbarHidden", false);
     setSetting("sidebarHidden", false);
     setSetting("nestlingTitleHidden", false);
+    setSetting("largeSidebarText", false);
   };
+
+  const settings = [
+    {
+      text: "Hide Nest Topbar",
+      description: "Hide the topbar across all nests",
+      value: topbarHidden,
+      onChange: () => setSetting("topbarHidden", !topbarHidden),
+    },
+    {
+      text: "Hide Nest Sidebar",
+      description: "Hide the sidebar across all nests",
+      value: sidebarHidden,
+      onChange: () => setSetting("sidebarHidden", !sidebarHidden),
+    },
+    {
+      text: "Compact Nestling Title",
+      description: "Hides folder path and tags to save space",
+      value: nestlingTitleHidden,
+      onChange: () => setSetting("nestlingTitleHidden", !nestlingTitleHidden),
+    },
+    {
+      text: "Large Nest Sidebar Text",
+      description: "Use larger text in the sidebar for better readability",
+      value: largeSidebarText,
+      onChange: () => setSetting("largeSidebarText", !largeSidebarText),
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-5">
@@ -26,52 +59,19 @@ export default function GeneralSettings() {
         <ThemeToggle />
       </div>
 
-      <div className="flex items-center justify-between">
-        <div>
-          <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
-            Hide Nest Topbar
-          </label>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            Hide the topbar across all nests
-          </p>
+      {settings.map((setting) => (
+        <div className="flex items-center justify-between">
+          <div>
+            <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              {setting.text}
+            </label>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {setting.description}
+            </p>
+          </div>
+          <Toggle checked={setting.value} onChange={setting.onChange} />
         </div>
-        <Toggle
-          checked={topbarHidden}
-          onChange={() => setSetting("topbarHidden", !topbarHidden)}
-        />
-      </div>
-
-      <div className="flex items-center justify-between">
-        <div>
-          <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
-            Hide Nest Sidebar
-          </label>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            Hide the sidebar across all nests
-          </p>
-        </div>
-        <Toggle
-          checked={sidebarHidden}
-          onChange={() => setSetting("sidebarHidden", !sidebarHidden)}
-        />
-      </div>
-
-      <div className="flex items-center justify-between">
-        <div>
-          <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
-            Compact Nestling Title
-          </label>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            Hides folder path and tags to save space
-          </p>
-        </div>
-        <Toggle
-          checked={nestlingTitleHidden}
-          onChange={() =>
-            setSetting("nestlingTitleHidden", !nestlingTitleHidden)
-          }
-        />
-      </div>
+      ))}
 
       <div className="flex items-center justify-between">
         <div>

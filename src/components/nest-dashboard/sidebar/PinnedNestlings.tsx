@@ -4,6 +4,7 @@ import { ChevronLeft, Pin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 
 export default function PinnedNestlings({
   pinnedNestlings,
@@ -13,12 +14,18 @@ export default function PinnedNestlings({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
+  const { largeSidebarText } = useSettingsStore();
 
   const [isPinnedOpen, setIsPinnedOpen] = useState(true);
 
   return (
     <motion.div layout="position">
-      <div className="my-1 flex flex-col gap-0.5">
+      <div
+        className={cn(
+          "my-1 flex flex-col gap-0.5",
+          largeSidebarText && "my-2 gap-1",
+        )}
+      >
         <div
           onClick={() => setIsPinnedOpen((prev) => !prev)}
           onDoubleClick={(e) => {
@@ -52,7 +59,10 @@ export default function PinnedNestlings({
               exit={{ height: 0 }}
               transition={{ duration: 0.2 }}
               style={{ overflow: "hidden" }}
-              className="ml-6 flex flex-col gap-0.5"
+              className={cn(
+                "ml-6 flex flex-col gap-0.5",
+                largeSidebarText && "gap-1",
+              )}
             >
               {pinnedNestlings.map((nestling) => (
                 <NestlingItem

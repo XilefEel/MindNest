@@ -16,6 +16,7 @@ import PinnedNestlings from "./PinnedNestlings";
 import HomeItem from "./HomeItem";
 import { AnimatePresence } from "framer-motion";
 import { clearLastNestling } from "@/lib/storage/nestling";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 
 export default function Sidebar({
   nestId,
@@ -32,6 +33,7 @@ export default function Sidebar({
 
   const activeNestlingId = useActiveNestlingId();
   const activeBackgroundId = useActiveBackgroundId();
+  const { largeSidebarText } = useSettingsStore();
 
   const folderGroups = useMemo(() => {
     return folders
@@ -73,6 +75,7 @@ export default function Sidebar({
           "text-sm font-medium text-gray-900 dark:text-gray-100",
           activeBackgroundId &&
             "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30 md:dark:bg-black/30",
+          largeSidebarText && "text-base",
         )}
       >
         <ToolBar nestId={nestId} />

@@ -12,6 +12,7 @@ import {
 import FolderItem from "./FolderItem";
 import { motion, AnimatePresence } from "framer-motion";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 
 export default function FolderTree({
   folder,
@@ -26,6 +27,7 @@ export default function FolderTree({
   const openFolders = useNestlingStore((state) => state.openFolders);
 
   const activeBackgroundId = useActiveBackgroundId();
+  const { largeSidebarText } = useSettingsStore();
 
   const isFolderOpen = openFolders[folder.id] || false;
 
@@ -43,6 +45,7 @@ export default function FolderTree({
           ref={setNodeRef}
           className={cn(
             "flex flex-col rounded pt-0.5",
+            largeSidebarText && "pt-1",
             isOver &&
               cn(
                 activeBackgroundId
@@ -75,7 +78,12 @@ export default function FolderTree({
                     setIsSidebarOpen={setIsSidebarOpen}
                   />
                 ))}
-                <div className="flex flex-col gap-0.5 pt-0.5">
+                <div
+                  className={cn(
+                    "flex flex-col gap-0.5 pt-0.5",
+                    largeSidebarText && "gap-1 pt-1",
+                  )}
+                >
                   {childNestlings.map((nestling) => (
                     <NestlingItem
                       key={nestling.id}

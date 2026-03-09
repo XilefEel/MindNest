@@ -4,6 +4,7 @@ export type Settings = {
   sidebarHidden: boolean;
   topbarHidden: boolean;
   nestlingTitleHidden: boolean;
+  largeSidebarText: boolean;
   musicLooped: boolean;
 };
 
@@ -11,6 +12,7 @@ export const DEFAULT_UI_SETTINGS: Settings = {
   sidebarHidden: false,
   topbarHidden: false,
   nestlingTitleHidden: false,
+  largeSidebarText: false,
   musicLooped: false,
 };
 
