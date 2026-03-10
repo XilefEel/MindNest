@@ -61,8 +61,8 @@ pub fn update_planner_event_in_db(
     date: String,
     title: String,
     description: Option<String>,
-    start_time: i64,
-    duration: i64,
+    start_time: f32,
+    duration: f32,
     color: Option<String>,
 ) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();

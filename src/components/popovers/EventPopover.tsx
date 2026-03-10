@@ -6,6 +6,7 @@ import { format, parseISO } from "date-fns";
 import { toast } from "@/lib/utils/toast";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { formatDuration, formatTime } from "@/lib/utils/date";
 
 export default function EventPopover({
   event,
@@ -130,7 +131,7 @@ export default function EventPopover({
         </div>
       </div>
 
-      <div className="space-y-2 text-sm tracking-wide">
+      <div className="flex flex-col gap-2 text-sm tracking-wide">
         <div className="flex items-center gap-3 text-gray-600 dark:text-gray-200">
           <Calendar size={16} className="text-gray-400 dark:text-gray-300" />
           <span>{format(parseISO(event.date), "EEE, MMM d yyyy")}</span>
@@ -138,14 +139,15 @@ export default function EventPopover({
 
         <div className="flex items-center gap-3 text-gray-600 dark:text-gray-200">
           <Clock size={16} className="text-gray-400 dark:text-gray-300" />
-          <span>{format(new Date(0, 0, 0, event.startTime, 0), "h:mm a")}</span>
+          <span>
+            {formatTime(event.startTime)} –{" "}
+            {formatTime(event.startTime + event.duration)}
+          </span>
         </div>
 
         <div className="flex items-center gap-3 text-gray-600 dark:text-gray-200">
           <Timer size={16} className="text-gray-400 dark:text-gray-300" />
-          <span>
-            {event.duration} {event.duration === 1 ? "hr" : "hrs"}
-          </span>
+          <span>{formatDuration(event.duration)}</span>
         </div>
       </div>
 

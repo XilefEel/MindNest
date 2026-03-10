@@ -7,8 +7,8 @@ pub struct NewPlannerEvent {
     pub date: String,
     pub title: String,
     pub description: Option<String>,
-    pub start_time: i64,
-    pub duration: i64,
+    pub start_time: f32,
+    pub duration: f32,
     pub color: Option<String>,
 }
 
@@ -20,8 +20,8 @@ pub struct PlannerEvent {
     pub date: String,
     pub title: String,
     pub description: Option<String>,
-    pub start_time: i64,
-    pub duration: i64,
+    pub start_time: f32,
+    pub duration: f32,
     pub color: String,
     pub created_at: String,
     pub updated_at: String,

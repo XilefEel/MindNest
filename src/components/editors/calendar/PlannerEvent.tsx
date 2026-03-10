@@ -1,7 +1,7 @@
 import { Rnd } from "react-rnd";
 import { PlannerEventType } from "@/lib/types/calendar";
 import { addDays, format, startOfWeek } from "date-fns";
-import { getDayFromDate } from "@/lib/utils/date";
+import { formatTime, getDayFromDate } from "@/lib/utils/date";
 import PlannerEventContextMenu from "@/components/context-menu/PlannerEventContextMenu";
 import { usePlannerActions } from "@/stores/usePlannerStore";
 import {
@@ -26,6 +26,8 @@ export default function PlannerEvent({
   const { updateEvent } = usePlannerActions();
   const activeBackgroundId = useActiveBackgroundId();
 
+  const snapUnit = gridHeight / 4;
+
   const onDragStop = (d: any) => {
     const currentDay = getDayFromDate(event.date);
     const absoluteX = currentDay * colWidth + d.x;
@@ -33,9 +35,10 @@ export default function PlannerEvent({
 
     const newDay = Math.max(0, Math.min(6, Math.round(absoluteX / colWidth)));
 
-    const calculatedHour = Math.round(absoluteY / gridHeight);
+    const snappedY = Math.round(absoluteY / snapUnit) * snapUnit;
+    const calculatedTime = snappedY / gridHeight;
 
-    const newHour = Math.min(Math.max(0, calculatedHour), 24 - event.duration);
+    const newHour = Math.min(Math.max(0, calculatedTime), 24 - event.duration);
 
     const weekStart = startOfWeek(new Date(event.date));
     const newDate = format(addDays(weekStart, newDay), "yyyy-MM-dd");
@@ -48,29 +51,30 @@ export default function PlannerEvent({
 
   const onResizeStop = (dir: any, ref: any, delta: any) => {
     if (dir === "top") {
-      const heightChange = Math.round(delta.height / gridHeight);
-      const newStartTime = event.startTime - heightChange;
-      const newDuration = event.duration + heightChange;
+      const heightChange = Math.round(delta.height / snapUnit) * snapUnit;
+      const newStartTime = event.startTime - heightChange / gridHeight;
+      const newDuration = event.duration + heightChange / gridHeight;
 
       const finalStartTime = Math.max(0, newStartTime);
 
       const finalDuration =
         newStartTime < 0
           ? event.startTime + event.duration
-          : Math.max(1, newDuration);
+          : Math.max(0.25, newDuration);
 
       updateEvent(event.id, {
         startTime: finalStartTime,
         duration: finalDuration,
       });
     } else {
-      const newDuration = Math.round(ref.offsetHeight / gridHeight);
+      const snappedHeight = Math.round(ref.offsetHeight / snapUnit) * snapUnit;
+      const newDuration = snappedHeight / gridHeight;
       const maxDuration = 24 - event.startTime;
 
       const finalDuration = Math.min(newDuration, maxDuration);
 
       updateEvent(event.id, {
-        duration: Math.max(1, finalDuration),
+        duration: Math.max(0.25, finalDuration),
       });
     }
   };
@@ -99,6 +103,8 @@ export default function PlannerEvent({
             x: 0,
             y: event.startTime * gridHeight,
           }}
+          dragGrid={[colWidth, snapUnit]}
+          resizeGrid={[1, snapUnit]}
           enableResizing={{
             top: true,
             right: false,
@@ -112,8 +118,8 @@ export default function PlannerEvent({
           onDragStop={(_, d) => onDragStop(d)}
           onResizeStop={(_, dir, ref, delta) => onResizeStop(dir, ref, delta)}
           className={cn(
-            "absolute z-10 rounded-lg px-3 text-sm tracking-wide text-white shadow-lg",
-            event.duration > 1 && "py-2",
+            "absolute z-10 rounded-lg px-2 text-sm tracking-wide text-white shadow-lg",
+            event.duration > 1 && "py-1",
           )}
           style={{
             backgroundColor: event.color,
@@ -122,12 +128,10 @@ export default function PlannerEvent({
           onClick={() => setIsOpen(true)}
         >
           <h3 className="truncate font-semibold">{event.title}</h3>
-          <p className="text-xs text-gray-100">
-            {format(new Date(0, 0, 0, event.startTime, 0), "h a")} -{" "}
-            {format(
-              new Date(0, 0, 0, event.startTime + event.duration, 0),
-              "h a",
-            )}
+          <p className="text-xs leading-tight text-gray-100">
+            {event.duration < 1
+              ? formatTime(event.startTime)
+              : `${formatTime(event.startTime)} – ${formatTime(event.startTime + event.duration)}`}
           </p>
         </Rnd>
       </PlannerEventContextMenu>
