@@ -37,8 +37,8 @@ use handler::journal::{
 
 use handler::gallery::{
     add_image, create_album, delete_album, delete_image, download_all_images, download_image,
-    duplicate_image, get_albums, get_images, import_image, import_image_data, update_album,
-    update_image,
+    duplicate_image, get_albums, get_images, import_image_from_data, import_image_from_path,
+    update_album, update_image,
 };
 
 use handler::mindmap::{
@@ -151,8 +151,8 @@ pub fn run() {
             delete_journal_template,
             // Gallery
             add_image,
-            import_image,
-            import_image_data,
+            import_image_from_path,
+            import_image_from_data,
             download_image,
             download_all_images,
             duplicate_image,

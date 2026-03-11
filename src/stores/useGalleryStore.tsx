@@ -37,7 +37,7 @@ type GalleryState = {
   removeImage: (id: number) => Promise<void>;
 
   downloadImage: (id: number) => Promise<void>;
-  downloadAll: (id: number) => Promise<void>;
+  downloadAll: (nestlingId: number) => Promise<void>;
 
   // albums: GalleryAlbum[];
   // activeDraggingImageId: string | null;
@@ -102,7 +102,6 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     async ({
       nestlingId,
       file,
-      albumId,
     }: {
       nestlingId: number;
       file: {
@@ -110,17 +109,13 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
         name?: string;
         data?: Uint8Array;
       };
-      albumId?: number | null;
     }) => {
-      let newImage: GalleryImage;
-
-      newImage = file.path
-        ? await galleryApi.importImage(nestlingId, file.path, albumId)
-        : await galleryApi.importImageData(
+      let newImage: GalleryImage = file.path
+        ? await galleryApi.importImageFromPath(nestlingId, file.path)
+        : await galleryApi.importImageFromData(
             nestlingId,
             file.name!,
             Array.from(file.data!),
-            albumId,
           );
 
       set((state) => ({
@@ -187,6 +182,19 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     await galleryApi.downloadImage(id, filePath);
   }),
 
+  downloadAll: withStoreErrorHandler(set, async (nestlingId: number) => {
+    const filePath = await save({
+      title: "Save Gallery",
+      defaultPath: `Gallery_${nestlingId}.zip`,
+      filters: [{ name: "Zip Files", extensions: ["zip"] }],
+    });
+
+    if (!filePath) throw new Error("Download canceled");
+
+    await galleryApi.downloadAllImages(nestlingId, filePath);
+    set({ loading: false });
+  }),
+
   // albums: [],
   // activeDraggingImageId: null,
 
@@ -202,19 +210,6 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   //   }));
   //   await updateNestlingTimestamp(newAlbum.nestlingId);
   // }),
-
-  downloadAll: withStoreErrorHandler(set, async (id: number) => {
-    const filePath = await save({
-      title: "Save Album",
-      defaultPath: `Album_${id}.zip`,
-      filters: [{ name: "Zip Files", extensions: ["zip"] }],
-    });
-
-    if (!filePath) throw new Error("Download canceled");
-
-    await galleryApi.downloadAllImages(id, filePath);
-    set({ loading: false });
-  }),
 
   // updateAlbum: withStoreErrorHandler(set, async (id, updates) => {
   //   const current = get().albums.find((album) => album.id === id);

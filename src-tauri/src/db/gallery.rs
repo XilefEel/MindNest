@@ -95,7 +95,7 @@ fn copy_image_to_app_dir(app_handle: &tauri::AppHandle, file_path: String) -> Db
     Ok(destination_str)
 }
 
-pub fn import_image_into_app(
+pub fn import_image_from_path_into_app(
     app_handle: tauri::AppHandle,
     db: &AppDb,
     nestling_id: i64,
@@ -104,12 +104,15 @@ pub fn import_image_into_app(
 ) -> DbResult<GalleryImage> {
     let new_path = copy_image_to_app_dir(&app_handle, file_path.clone())?;
     let (width, height) = get_image_dimensions(&new_path)?;
+    let title = Path::new(&file_path)
+        .file_stem()
+        .map(|s| s.to_string_lossy().to_string());
 
     let new_image = NewGalleryImage {
         album_id: album_id,
         nestling_id,
         file_path: new_path,
-        title: None,
+        title: title,
         description: None,
         is_favorite: false,
         width: width,
@@ -120,7 +123,7 @@ pub fn import_image_into_app(
     Ok(saved_image)
 }
 
-pub fn import_image_data_into_app(
+pub fn import_image_from_data_into_app(
     app_handle: tauri::AppHandle,
     db: &AppDb,
     nestling_id: i64,
@@ -155,7 +158,7 @@ pub fn import_image_data_into_app(
         album_id,
         nestling_id,
         file_path: destination_str,
-        title,
+        title: Some(title.unwrap_or(file_name)),
         description,
         is_favorite: is_favorite.unwrap_or(false),
         width,
@@ -188,7 +191,7 @@ pub fn duplicate_image_from_image(
         .to_string_lossy()
         .to_string();
 
-    let duplicated_image = import_image_data_into_app(
+    let duplicated_image = import_image_from_data_into_app(
         app_handle,
         &db,
         original_image.nestling_id,

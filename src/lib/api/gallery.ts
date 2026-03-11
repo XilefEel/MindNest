@@ -1,35 +1,30 @@
 import { invoke } from "@tauri-apps/api/core";
 import { GalleryImage } from "../types/gallery";
 
-export async function importImage(
+export async function importImageFromPath(
   nestlingId: number,
   filePath: string,
-  albumId?: number | null,
 ) {
-  return await invoke<GalleryImage>("import_image", {
+  return await invoke<GalleryImage>("import_image_from_path", {
     nestlingId,
-    albumId,
+    albumId: null,
     filePath,
   });
 }
 
-export async function importImageData(
+export async function importImageFromData(
   nestlingId: number,
   fileName: string,
   fileData: number[],
-  albumId?: number | null,
-  title?: string | null,
-  description?: string | null,
-  isFavorite?: boolean,
 ) {
-  return await invoke<GalleryImage>("import_image_data", {
+  return await invoke<GalleryImage>("import_image_from_data", {
     nestlingId,
-    albumId,
+    albumId: null,
     fileName,
     fileData,
-    title,
-    description,
-    isFavorite,
+    title: null,
+    description: null,
+    isFavorite: false,
   });
 }
 
@@ -71,8 +66,8 @@ export async function downloadImage(id: number, savePath: string) {
   await invoke<void>("download_image", { id, savePath });
 }
 
-export async function downloadAllImages(id: number, savePath: string) {
-  await invoke<void>("download_all_images", { id, savePath });
+export async function downloadAllImages(nestlingId: number, savePath: string) {
+  await invoke<void>("download_all_images", { nestlingId, savePath });
 }
 
 // export async function createAlbum(data: NewGalleryAlbum) {

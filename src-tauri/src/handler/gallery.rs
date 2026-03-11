@@ -1,8 +1,8 @@
 use crate::db::gallery::{
     add_album_to_db, add_image_into_db, delete_album_from_db, delete_image_from_app,
     download_all_image_into_user, download_image_into_user, duplicate_image_from_image,
-    get_albums_from_db, get_images_from_db, import_image_data_into_app, import_image_into_app,
-    update_album_in_db, update_image_in_db,
+    get_albums_from_db, get_images_from_db, import_image_from_data_into_app,
+    import_image_from_path_into_app, update_album_in_db, update_image_in_db,
 };
 use crate::models::gallery::{GalleryAlbum, GalleryImage, NewGalleryAlbum, NewGalleryImage};
 use crate::utils::db::AppDb;
@@ -14,18 +14,18 @@ pub fn add_image(db: tauri::State<AppDb>, data: NewGalleryImage) -> DbResult<Gal
 }
 
 #[tauri::command]
-pub fn import_image(
+pub fn import_image_from_path(
     app_handle: tauri::AppHandle,
     db: tauri::State<AppDb>,
     nestling_id: i64,
     album_id: Option<i64>,
     file_path: String,
 ) -> DbResult<GalleryImage> {
-    import_image_into_app(app_handle, &db, nestling_id, album_id, file_path)
+    import_image_from_path_into_app(app_handle, &db, nestling_id, album_id, file_path)
 }
 
 #[tauri::command]
-pub fn import_image_data(
+pub fn import_image_from_data(
     app_handle: tauri::AppHandle,
     db: tauri::State<AppDb>,
     nestling_id: i64,
@@ -36,7 +36,7 @@ pub fn import_image_data(
     description: Option<String>,
     is_favorite: Option<bool>,
 ) -> DbResult<GalleryImage> {
-    import_image_data_into_app(
+    import_image_from_data_into_app(
         app_handle,
         &db,
         nestling_id,
@@ -81,8 +81,12 @@ pub fn download_image(db: tauri::State<AppDb>, id: i64, save_path: String) -> Db
 }
 
 #[tauri::command]
-pub fn download_all_images(db: tauri::State<AppDb>, id: i64, save_path: String) -> DbResult<()> {
-    download_all_image_into_user(&db, id, save_path)
+pub fn download_all_images(
+    db: tauri::State<AppDb>,
+    nestling_id: i64,
+    save_path: String,
+) -> DbResult<()> {
+    download_all_image_into_user(&db, nestling_id, save_path)
 }
 
 #[tauri::command]
