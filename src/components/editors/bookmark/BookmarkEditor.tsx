@@ -115,13 +115,16 @@ export default function BookmarkEditor() {
         )}
       >
         {bookmarks.length === 0 && (
-          <div className="py-12 text-center text-gray-400">
-            No bookmarks yet. Add one above!
+          <div className="flex flex-col py-24 text-center text-gray-500 dark:text-gray-400">
+            <p className="text-base font-medium">No bookmarks yet.</p>
+            <p className="text-sm">
+              Click the upload button, or drag and drop a URL here.
+            </p>
           </div>
         )}
 
         {filteredBookmarks.length === 0 && searchQuery && (
-          <div className="py-12 text-center text-gray-400">
+          <div className="py-24 text-center text-gray-400">
             No bookmarks found for "{searchQuery}"
           </div>
         )}

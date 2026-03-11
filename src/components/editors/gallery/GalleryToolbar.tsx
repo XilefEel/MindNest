@@ -1,11 +1,11 @@
 import BaseToolTip from "@/components/BaseToolTip";
 import { cn } from "@/lib/utils/general";
+import { toast } from "@/lib/utils/toast";
 import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
 import { useActiveNestling } from "@/stores/useNestlingStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { Download, Loader, Upload } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import LayoutToggle from "./LayoutToggle";
 
 export default function GalleryToolbar({
@@ -24,6 +24,17 @@ export default function GalleryToolbar({
 
   const [isUploading, setIsUploading] = useState(false);
 
+  const handleDownloadAll = async () => {
+    try {
+      const selected = await downloadAll(activeNestling.id!);
+      if (selected) {
+        toast.success("Gallery downloaded successfully!");
+      }
+    } catch (error) {
+      toast.error("Failed to download gallery.");
+    }
+  };
+
   const handleSelectImage = async () => {
     try {
       setIsUploading(true);
@@ -41,7 +52,7 @@ export default function GalleryToolbar({
     <>
       <BaseToolTip label="Download All">
         <button
-          onClick={() => downloadAll(activeNestling.id!)}
+          onClick={handleDownloadAll}
           disabled={images.length === 0}
           className={cn(
             "ml-auto rounded p-2 transition-colors",

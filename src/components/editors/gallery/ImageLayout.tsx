@@ -1,18 +1,18 @@
-import { useMemo, useRef, useState } from "react";
-import { convertFileSrc } from "@tauri-apps/api/core";
-import { RowsPhotoAlbum, ColumnsPhotoAlbum } from "react-photo-album";
-import { Lightbox } from "yet-another-react-lightbox";
-import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
-import { Upload } from "lucide-react";
+import { Photo } from "@/lib/types/gallery";
 import { cn } from "@/lib/utils/general";
-import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
-import "react-photo-album/rows.css";
+import { toast } from "@/lib/utils/toast";
+import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
+import { useActiveNestling } from "@/stores/useNestlingStore";
+import { convertFileSrc } from "@tauri-apps/api/core";
+import { Upload } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { ColumnsPhotoAlbum, RowsPhotoAlbum } from "react-photo-album";
 import "react-photo-album/columns.css";
+import "react-photo-album/rows.css";
+import { Lightbox } from "yet-another-react-lightbox";
+import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import "yet-another-react-lightbox/styles.css";
 import ImageCard from "./ImageCard";
-import { Photo } from "@/lib/types/gallery";
-import { toast } from "@/lib/utils/toast";
-import { useActiveNestling } from "@/stores/useNestlingStore";
 
 export default function ImageLayout({
   layoutMode,
@@ -23,7 +23,7 @@ export default function ImageLayout({
   if (!activeNestling) return;
 
   const images = useImages();
-  const { updateImage, uploadImage, removeImage } = useGalleryActions();
+  const { uploadImage } = useGalleryActions();
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -33,39 +33,22 @@ export default function ImageLayout({
 
   const PhotoLayout = layoutMode === "row" ? RowsPhotoAlbum : ColumnsPhotoAlbum;
 
-  const photos: Photo[] = useMemo(() => {
-    return images.map((img) => ({
-      id: img.id,
-      albumId: img.albumId,
-      src: convertFileSrc(img.filePath),
-      title: img.title ?? "Untitled",
-      description: img.description ?? "No Description",
-      isFavorite: img.isFavorite!,
-      width: img.width,
-      height: img.height,
-      createdAt: img.createdAt,
-      updatedAt: img.updatedAt,
-    }));
-  }, [images]);
-
-  const handleDeleteImage = async (id: number) => {
-    try {
-      await removeImage(id);
-      toast.success("Image deleted successfully!");
-    } catch (error) {
-      toast.error("Failed to delete image.");
-    }
-  };
-
-  const handleAddToFavorites = async (id: number) => {
-    try {
-      const image = images.find((img) => img.id === id)!;
-      const newFavoriteState = !image.isFavorite;
-      await updateImage(image.id, { isFavorite: newFavoriteState });
-    } catch (error) {
-      toast.error("Failed to add image to favorites.");
-    }
-  };
+  const photos: Photo[] = useMemo(
+    () =>
+      images.map((img) => ({
+        id: img.id,
+        albumId: img.albumId,
+        src: convertFileSrc(img.filePath),
+        title: img.title ?? "Untitled",
+        description: img.description ?? "No Description",
+        isFavorite: img.isFavorite!,
+        width: img.width,
+        height: img.height,
+        createdAt: img.createdAt,
+        updatedAt: img.updatedAt,
+      })),
+    [images],
+  );
 
   const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -119,17 +102,16 @@ export default function ImageLayout({
       onDragOver={handleDropOver}
       onDragLeave={handleDropLeave}
       className={cn(
-        "inset-0 rounded-md p-1 pb-2 transition-colors",
-        isDragOver &&
-          "border-2 border-dashed border-teal-400 bg-teal-100/80 dark:bg-teal-900/80",
+        "inset-0 rounded-lg p-1 pb-2",
+        isDragOver && "outline-teal-500 outline-dashed",
       )}
     >
       {photos.length === 0 && !isUploading ? (
-        <div className="flex h-96 flex-col items-center justify-center text-gray-500">
+        <div className="flex flex-col items-center justify-center py-24 text-gray-500 dark:text-gray-400">
           <Upload className="mb-4 size-16" />
-          <p className="text-lg font-medium">No images yet</p>
+          <p className="text-base font-medium">No images yet.</p>
           <p className="text-sm">
-            Drag & drop images here or click "Add Images"
+            Click the upload button, or drag and drop an image here.
           </p>
         </div>
       ) : (
@@ -139,13 +121,7 @@ export default function ImageLayout({
           onClick={({ index: current }) => setIndex(current)}
           render={{
             image: (imageProps, { photo }) => (
-              <ImageCard
-                key={photo.id}
-                imageProps={imageProps}
-                photo={photo}
-                handleDeleteImage={handleDeleteImage}
-                handleAddToFavorites={handleAddToFavorites}
-              />
+              <ImageCard key={photo.id} imageProps={imageProps} photo={photo} />
             ),
           }}
         />

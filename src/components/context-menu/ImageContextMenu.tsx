@@ -1,9 +1,9 @@
-import { useGalleryActions } from "@/stores/useGalleryStore";
-import { Edit3, Copy, Star, Download, Trash2 } from "lucide-react";
 import { toast } from "@/lib/utils/toast";
-import ContextMenuItem from "./ContextMenuItem";
-import BaseContextMenu from "./BaseContextMenu";
+import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
 import { useImageModal } from "@/stores/useModalStore";
+import { Copy, Download, Edit3, Star, StarOff, Trash2 } from "lucide-react";
+import BaseContextMenu from "./BaseContextMenu";
+import ContextMenuItem from "./ContextMenuItem";
 import ContextMenuSeparator from "./ContextMenuSeparator";
 
 export default function ImageContextMenu({
@@ -21,10 +21,18 @@ export default function ImageContextMenu({
   const { duplicateImage, downloadImage } = useGalleryActions();
   const { openImageModal } = useImageModal();
 
+  const images = useImages();
+  const image = images.find((i) => i.id === imageId);
+  if (!image) return null;
+
+  const isFavorite = image.isFavorite;
+
   const handleDownloadImage = async (id: number) => {
     try {
-      await downloadImage(id);
-      toast.success("Image downloaded successfully!");
+      const success = await downloadImage(id);
+      if (success) {
+        toast.success("Image downloaded successfully!");
+      }
     } catch (error) {
       toast.error("Failed to download image.");
     }
@@ -68,8 +76,8 @@ export default function ImageContextMenu({
 
           <ContextMenuItem
             action={() => handleAddToFavorites(imageId)}
-            Icon={Star}
-            text="Add to Favorites"
+            Icon={isFavorite ? StarOff : Star}
+            text={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
           />
 
           {/*<ContextSubMenu

@@ -1,19 +1,39 @@
-import { Star, Trash2 } from "lucide-react";
 import ImageContextMenu from "@/components/context-menu/ImageContextMenu";
-import { cn } from "@/lib/utils/general";
 import { Photo } from "@/lib/types/gallery";
+import { cn } from "@/lib/utils/general";
+import { toast } from "@/lib/utils/toast";
+import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
+import { Star, Trash2 } from "lucide-react";
 
 export default function ImageCard({
   imageProps,
   photo,
-  handleDeleteImage,
-  handleAddToFavorites,
 }: {
   imageProps: React.ImgHTMLAttributes<HTMLImageElement>;
   photo: Photo;
-  handleDeleteImage: (id: number) => Promise<void>;
-  handleAddToFavorites: (id: number) => Promise<void>;
 }) {
+  const images = useImages();
+  const { updateImage, removeImage } = useGalleryActions();
+
+  const handleDeleteImage = async (id: number) => {
+    try {
+      await removeImage(id);
+      toast.success("Image deleted successfully!");
+    } catch (error) {
+      toast.error("Failed to delete image.");
+    }
+  };
+
+  const handleAddToFavorites = async (id: number) => {
+    try {
+      const image = images.find((img) => img.id === id)!;
+      const newFavoriteState = !image.isFavorite;
+      await updateImage(image.id, { isFavorite: newFavoriteState });
+    } catch (error) {
+      toast.error("Failed to add image to favorites.");
+    }
+  };
+
   // const { attributes, listeners, setNodeRef, transform, isDragging } =
   //   useDraggable({
   //     id: photo.id.toString(),

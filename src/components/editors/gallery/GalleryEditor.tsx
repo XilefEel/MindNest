@@ -105,7 +105,7 @@ export default function GalleryEditor() {
 
       <div className="flex flex-col">
         <div className="mb-1 flex flex-row items-center gap-1">
-          <h2 className="flex items-center gap-2 font-semibold">
+          <h2 className="flex items-center gap-2 font-semibold text-gray-800 dark:text-gray-200">
             <Image size={20} />
             Your Images ({images.length})
           </h2>

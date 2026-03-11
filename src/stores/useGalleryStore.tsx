@@ -36,8 +36,8 @@ type GalleryState = {
   updateImage: (id: number, updates: Partial<GalleryImage>) => Promise<void>;
   removeImage: (id: number) => Promise<void>;
 
-  downloadImage: (id: number) => Promise<void>;
-  downloadAll: (nestlingId: number) => Promise<void>;
+  downloadImage: (id: number) => Promise<boolean>;
+  downloadAll: (nestlingId: number) => Promise<boolean>;
 
   // albums: GalleryAlbum[];
   // activeDraggingImageId: string | null;
@@ -72,6 +72,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     set,
     async (nestlingId: number, albumId?: number | null) => {
       const selected = await open({
+        title: "Upload Image",
         multiple: true,
         filters: [
           {
@@ -168,7 +169,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   downloadImage: withStoreErrorHandler(set, async (id: number) => {
     const filePath = await save({
       title: "Save Image",
-      defaultPath: "image.png",
+      defaultPath: `image_${id}.png`,
       filters: [
         {
           name: "Image Files",
@@ -178,8 +179,10 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       ],
     });
 
-    if (!filePath) throw new Error("Download canceled");
+    if (!filePath) return false;
     await galleryApi.downloadImage(id, filePath);
+
+    return true;
   }),
 
   downloadAll: withStoreErrorHandler(set, async (nestlingId: number) => {
@@ -189,10 +192,11 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       filters: [{ name: "Zip Files", extensions: ["zip"] }],
     });
 
-    if (!filePath) throw new Error("Download canceled");
+    if (!filePath) return false;
 
     await galleryApi.downloadAllImages(nestlingId, filePath);
-    set({ loading: false });
+
+    return true;
   }),
 
   // albums: [],
