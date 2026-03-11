@@ -10,15 +10,13 @@ import "react-photo-album/rows.css";
 import "react-photo-album/columns.css";
 import "yet-another-react-lightbox/styles.css";
 import ImageCard from "./ImageCard";
-import { GalleryAlbum, Photo } from "@/lib/types/gallery";
+import { Photo } from "@/lib/types/gallery";
 import { toast } from "@/lib/utils/toast";
 import { useActiveNestling } from "@/stores/useNestlingStore";
 
 export default function ImageLayout({
-  album,
   layoutMode,
 }: {
-  album?: GalleryAlbum;
   layoutMode: "row" | "column";
 }) {
   const activeNestling = useActiveNestling();
@@ -36,11 +34,7 @@ export default function ImageLayout({
   const PhotoLayout = layoutMode === "row" ? RowsPhotoAlbum : ColumnsPhotoAlbum;
 
   const photos: Photo[] = useMemo(() => {
-    const filtered = album
-      ? images.filter((img) => img.albumId == album.id)
-      : images;
-
-    return filtered.map((img) => ({
+    return images.map((img) => ({
       id: img.id,
       albumId: img.albumId,
       src: convertFileSrc(img.filePath),
@@ -52,7 +46,7 @@ export default function ImageLayout({
       createdAt: img.createdAt,
       updatedAt: img.updatedAt,
     }));
-  }, [images, album]);
+  }, [images]);
 
   const handleDeleteImage = async (id: number) => {
     try {
@@ -68,12 +62,6 @@ export default function ImageLayout({
       const image = images.find((img) => img.id === id)!;
       const newFavoriteState = !image.isFavorite;
       await updateImage(image.id, { isFavorite: newFavoriteState });
-
-      if (newFavoriteState) {
-        toast.success("Image added to favorites!");
-      } else {
-        toast.success("Image removed from favorites!");
-      }
     } catch (error) {
       toast.error("Failed to add image to favorites.");
     }
@@ -131,9 +119,9 @@ export default function ImageLayout({
       onDragOver={handleDropOver}
       onDragLeave={handleDropLeave}
       className={cn(
-        "pt-2 pb-8",
+        "inset-0 rounded-md p-1 pb-2 transition-colors",
         isDragOver &&
-          "inset-0 border-2 border-dashed border-teal-400 bg-teal-100/80 dark:bg-teal-900/80",
+          "border-2 border-dashed border-teal-400 bg-teal-100/80 dark:bg-teal-900/80",
       )}
     >
       {photos.length === 0 && !isUploading ? (

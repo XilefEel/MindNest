@@ -1,20 +1,10 @@
-import { useAlbums, useGalleryActions } from "@/stores/useGalleryStore";
-import {
-  Edit3,
-  Copy,
-  Star,
-  Folder,
-  Download,
-  Trash2,
-  FolderInput,
-  ChevronRight,
-} from "lucide-react";
+import { useGalleryActions } from "@/stores/useGalleryStore";
+import { Edit3, Copy, Star, Download, Trash2 } from "lucide-react";
 import { toast } from "@/lib/utils/toast";
 import ContextMenuItem from "./ContextMenuItem";
 import BaseContextMenu from "./BaseContextMenu";
 import { useImageModal } from "@/stores/useModalStore";
 import ContextMenuSeparator from "./ContextMenuSeparator";
-import ContextSubMenu from "./ContextSubMenu";
 
 export default function ImageContextMenu({
   imageId,
@@ -27,8 +17,8 @@ export default function ImageContextMenu({
   handleDeleteImage: (id: number) => Promise<void>;
   handleAddToFavorites: (id: number) => Promise<void>;
 }) {
-  const albums = useAlbums();
-  const { duplicateImage, updateImage, downloadImage } = useGalleryActions();
+  // const albums = useAlbums();
+  const { duplicateImage, downloadImage } = useGalleryActions();
   const { openImageModal } = useImageModal();
 
   const handleDownloadImage = async (id: number) => {
@@ -49,12 +39,12 @@ export default function ImageContextMenu({
     }
   };
 
-  const handleMoveImage = (id: number) => {
-    updateImage(imageId, { albumId: id });
-    toast.success(
-      `Image moved to album "${albums.find((a) => a.id === id)?.name}"!`,
-    );
-  };
+  // const handleMoveImage = (id: number) => {
+  //   updateImage(imageId, { albumId: id });
+  //   toast.success(
+  //     `Image moved to album "${albums.find((a) => a.id === id)?.name}"!`,
+  //   );
+  // };
 
   return (
     <BaseContextMenu
@@ -82,7 +72,7 @@ export default function ImageContextMenu({
             text="Add to Favorites"
           />
 
-          <ContextSubMenu
+          {/*<ContextSubMenu
             trigger={
               <>
                 <FolderInput className="size-4 flex-shrink-0" />
@@ -110,7 +100,7 @@ export default function ImageContextMenu({
                 )}
               </>
             }
-          />
+          />*/}
 
           <ContextMenuItem
             action={() => handleDownloadImage(imageId)}

@@ -1,11 +1,6 @@
 import { create } from "zustand";
-import {
-  GalleryImage,
-  GalleryAlbum,
-  NewGalleryAlbum,
-} from "@/lib/types/gallery";
+import { GalleryImage } from "@/lib/types/gallery";
 import * as galleryApi from "@/lib/api/gallery";
-import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import {
   mergeWithCurrent,
@@ -17,8 +12,6 @@ import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 
 type GalleryState = {
   images: GalleryImage[];
-  albums: GalleryAlbum[];
-  activeDraggingImageId: string | null;
   loading: boolean;
 
   getImages: (nestlingId: number) => Promise<void>;
@@ -44,29 +37,28 @@ type GalleryState = {
   removeImage: (id: number) => Promise<void>;
   downloadImage: (id: number) => Promise<void>;
 
-  getAlbums: (nestlingId: number) => Promise<void>;
-  addAlbum: ({
-    nestlingId,
-    name,
-    description,
-  }: {
-    nestlingId: number;
-    name: string;
-    description: string | null;
-  }) => Promise<void>;
-  downloadAlbum: (id: number) => Promise<void>;
-  updateAlbum: (id: number, updates: Partial<GalleryAlbum>) => Promise<void>;
-  deleteAlbum: (id: number) => Promise<void>;
+  // albums: GalleryAlbum[];
+  // activeDraggingImageId: string | null;
+  // getAlbums: (nestlingId: number) => Promise<void>;
+  // addAlbum: ({
+  //   nestlingId,
+  //   name,
+  //   description,
+  // }: {
+  //   nestlingId: number;
+  //   name: string;
+  //   description: string | null;
+  // }) => Promise<void>;
+  // downloadAlbum: (id: number) => Promise<void>;
+  // updateAlbum: (id: number, updates: Partial<GalleryAlbum>) => Promise<void>;
+  // deleteAlbum: (id: number) => Promise<void>;
 
-  handleDragStart: (event: DragStartEvent) => void;
-  handleDragEnd: (event: DragEndEvent) => Promise<void>;
+  // handleDragStart: (event: DragStartEvent) => void;
+  // handleDragEnd: (event: DragEndEvent) => Promise<void>;
 };
 
 export const useGalleryStore = create<GalleryState>((set, get) => ({
   images: [],
-  albums: [],
-  activeDraggingImageId: null,
-
   loading: false,
 
   getImages: withStoreErrorHandler(set, async (nestlingId: number) => {
@@ -193,85 +185,88 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     await galleryApi.downloadImage(id, filePath);
   }),
 
-  getAlbums: withStoreErrorHandler(set, async (nestlingId: number) => {
-    const albums = await galleryApi.getAlbums(nestlingId);
-    set({ albums });
-  }),
+  // albums: [],
+  // activeDraggingImageId: null,
 
-  addAlbum: withStoreErrorHandler(set, async (data: NewGalleryAlbum) => {
-    const newAlbum = await galleryApi.createAlbum(data);
-    set((state) => ({
-      albums: [newAlbum, ...state.albums],
-    }));
-    await updateNestlingTimestamp(newAlbum.nestlingId);
-  }),
+  // getAlbums: withStoreErrorHandler(set, async (nestlingId: number) => {
+  //   const albums = await galleryApi.getAlbums(nestlingId);
+  //   set({ albums });
+  // }),
 
-  downloadAlbum: withStoreErrorHandler(set, async (id: number) => {
-    const filePath = await save({
-      title: "Save Album",
-      defaultPath: `Album_${id}.zip`,
-      filters: [{ name: "Zip Files", extensions: ["zip"] }],
-    });
+  // addAlbum: withStoreErrorHandler(set, async (data: NewGalleryAlbum) => {
+  //   const newAlbum = await galleryApi.createAlbum(data);
+  //   set((state) => ({
+  //     albums: [newAlbum, ...state.albums],
+  //   }));
+  //   await updateNestlingTimestamp(newAlbum.nestlingId);
+  // }),
 
-    if (!filePath) throw new Error("Download canceled");
+  // downloadAlbum: withStoreErrorHandler(set, async (id: number) => {
+  //   const filePath = await save({
+  //     title: "Save Album",
+  //     defaultPath: `Album_${id}.zip`,
+  //     filters: [{ name: "Zip Files", extensions: ["zip"] }],
+  //   });
 
-    await galleryApi.downloadAlbum(id, filePath);
-    set({ loading: false });
-  }),
+  //   if (!filePath) throw new Error("Download canceled");
 
-  updateAlbum: withStoreErrorHandler(set, async (id, updates) => {
-    const current = get().albums.find((album) => album.id === id);
-    if (!current) throw new Error("Album not found");
+  //   await galleryApi.downloadAlbum(id, filePath);
+  //   set({ loading: false });
+  // }),
 
-    const updated = mergeWithCurrent(current, updates);
+  // updateAlbum: withStoreErrorHandler(set, async (id, updates) => {
+  //   const current = get().albums.find((album) => album.id === id);
+  //   if (!current) throw new Error("Album not found");
 
-    await galleryApi.updateAlbum({ ...updated, id });
-    set((state) => ({
-      albums: state.albums.map((album) => (album.id === id ? updated : album)),
-    }));
-    await updateNestlingTimestamp(updated.nestlingId);
-  }),
+  //   const updated = mergeWithCurrent(current, updates);
 
-  deleteAlbum: withStoreErrorHandler(set, async (id: number) => {
-    const nestlingId = get().albums.find((a) => a.id === id)?.nestlingId;
+  //   await galleryApi.updateAlbum({ ...updated, id });
+  //   set((state) => ({
+  //     albums: state.albums.map((album) => (album.id === id ? updated : album)),
+  //   }));
+  //   await updateNestlingTimestamp(updated.nestlingId);
+  // }),
 
-    await galleryApi.deleteAlbum(id);
-    set((state) => ({
-      albums: state.albums.filter((album) => album.id !== id),
-    }));
+  // deleteAlbum: withStoreErrorHandler(set, async (id: number) => {
+  //   const nestlingId = get().albums.find((a) => a.id === id)?.nestlingId;
 
-    if (nestlingId) {
-      await updateNestlingTimestamp(nestlingId);
-    }
-  }),
+  //   await galleryApi.deleteAlbum(id);
+  //   set((state) => ({
+  //     albums: state.albums.filter((album) => album.id !== id),
+  //   }));
 
-  handleDragStart: (event: DragStartEvent) => {
-    set({ activeDraggingImageId: event.active.id as string });
-  },
+  //   if (nestlingId) {
+  //     await updateNestlingTimestamp(nestlingId);
+  //   }
+  // }),
 
-  handleDragEnd: async (event: DragEndEvent) => {
-    const { active, over } = event;
-    set({ activeDraggingImageId: null });
-    if (!over || active.id === over.id) return;
+  // handleDragStart: (event: DragStartEvent) => {
+  //   set({ activeDraggingImageId: event.active.id as string });
+  // },
 
-    const activeImage = active.data.current;
-    const overAlbum = over.data.current;
+  // handleDragEnd: async (event: DragEndEvent) => {
+  //   const { active, over } = event;
+  //   set({ activeDraggingImageId: null });
+  //   if (!over || active.id === over.id) return;
 
-    if (activeImage?.type === "image" && overAlbum?.type === "album") {
-      const imageId = parseInt(active.id as string, 10);
-      const albumId = parseInt(over.id as string, 10);
+  //   const activeImage = active.data.current;
+  //   const overAlbum = over.data.current;
 
-      try {
-        await get().updateImage(imageId, { albumId });
-      } catch (error) {
-        throw error;
-      }
-    }
-  },
+  //   if (activeImage?.type === "image" && overAlbum?.type === "album") {
+  //     const imageId = parseInt(active.id as string, 10);
+  //     const albumId = parseInt(over.id as string, 10);
+
+  //     try {
+  //       await get().updateImage(imageId, { albumId });
+  //     } catch (error) {
+  //       throw error;
+  //     }
+  //   }
+  // },
 }));
 
 export const useImages = () => useGalleryStore((state) => state.images);
-export const useAlbums = () => useGalleryStore((state) => state.albums);
+// export const useAlbums = () => useGalleryStore((state) => state.albums);
 
 export const useGalleryActions = () =>
   useGalleryStore(
@@ -284,13 +279,13 @@ export const useGalleryActions = () =>
       removeImage: state.removeImage,
       downloadImage: state.downloadImage,
 
-      getAlbums: state.getAlbums,
-      addAlbum: state.addAlbum,
-      downloadAlbum: state.downloadAlbum,
-      updateAlbum: state.updateAlbum,
-      deleteAlbum: state.deleteAlbum,
+      // getAlbums: state.getAlbums,
+      // addAlbum: state.addAlbum,
+      // downloadAlbum: state.downloadAlbum,
+      // updateAlbum: state.updateAlbum,
+      // deleteAlbum: state.deleteAlbum,
 
-      handleDragStart: state.handleDragStart,
-      handleDragEnd: state.handleDragEnd,
+      // handleDragStart: state.handleDragStart,
+      // handleDragEnd: state.handleDragEnd,
     })),
   );

@@ -1,61 +1,39 @@
-import { useEffect, useMemo, useState } from "react";
-import { useAlbums, useGalleryActions } from "@/stores/useGalleryStore";
-import { ArrowLeft, Loader, Plus, Upload } from "lucide-react";
-import { AnimatePresence } from "framer-motion";
-import NestlingTitle from "../NestlingTitle";
 import useAutoSave from "@/hooks/useAutoSave";
-import "react-photo-album/rows.css";
-import "yet-another-react-lightbox/styles.css";
-import MainView from "./MainView";
-import AlbumView from "./AlbumView";
-import { cn } from "@/lib/utils/general";
 import { toast } from "@/lib/utils/toast";
+import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
 import {
   useActiveNestling,
   useNestlingActions,
 } from "@/stores/useNestlingStore";
-import { useAlbumModal } from "@/stores/useModalStore";
+import { Image, Loader, Upload } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import "react-photo-album/rows.css";
+import "yet-another-react-lightbox/styles.css";
+import NestlingTitle from "../NestlingTitle";
+import ImageLayout from "./ImageLayout";
+import LayoutToggle from "./LayoutToggle";
 
 export default function GalleryEditor() {
   const activeNestling = useActiveNestling();
   if (!activeNestling) return;
 
-  const albums = useAlbums();
-  const { getImages, getAlbums, selectImages } = useGalleryActions();
+  const images = useImages();
+  const { getImages } = useGalleryActions();
+  const { updateNestling } = useNestlingActions();
+  const { selectImages } = useGalleryActions();
 
   const [title, setTitle] = useState(activeNestling.title);
-  const [albumId, setAlbumId] = useState<number | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [currentView, setCurrentView] = useState<"main" | "album">("main");
-
-  const { updateNestling } = useNestlingActions();
-  const { openAlbumModal } = useAlbumModal();
-
   const nestlingData = useMemo(() => ({ title }), [title]);
   useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
-  const currentAlbum = albums.find((album) => album.id === albumId) ?? null;
-
-  const direction = currentView === "album" ? 1 : -1;
-  const viewVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? "150%" : "-150%",
-    }),
-    center: { x: 0 },
-    exit: (direction: number) => ({
-      x: direction > 0 ? "-150%" : "150%",
-    }),
-  };
+  const [layoutMode, setLayoutMode] = useState<"row" | "column">("row");
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleSelectImage = async () => {
     try {
       setIsUploading(true);
-      const selected = await selectImages(activeNestling.id, albumId);
-      if (selected) {
-        toast.success("Image uploaded successfully!");
-      } else {
-        toast.error("No image selected.");
-      }
+      await selectImages(activeNestling.id!);
+      toast.success("Image uploaded successfully!");
       setIsUploading(false);
     } catch (error) {
       toast.error("Failed to upload image.");
@@ -68,32 +46,106 @@ export default function GalleryEditor() {
 
   useEffect(() => {
     getImages(activeNestling.id);
-    getAlbums(activeNestling.id);
-  }, [getImages, getAlbums, activeNestling.id]);
+  }, [getImages, activeNestling.id]);
+
+  // const [albumId, setAlbumId] = useState<number | null>(null);
+  // const [isUploading, setIsUploading] = useState(false);
+  // const [currentView, setCurrentView] = useState<"main" | "album">("main");
+
+  // const currentAlbum = albums.find((album) => album.id === albumId) ?? null;
+
+  // const direction = currentView === "album" ? 1 : -1;
+  // const viewVariants = {
+  //   enter: (direction: number) => ({
+  //     x: direction > 0 ? "150%" : "-150%",
+  //   }),
+  //   center: { x: 0 },
+  //   exit: (direction: number) => ({
+  //     x: direction > 0 ? "-150%" : "150%",
+  //   }),
+  // };
+
+  // const handleSelectImage = async () => {
+  //   try {
+  //     setIsUploading(true);
+  //     const selected = await selectImages(activeNestling.id, albumId);
+  //     if (selected) {
+  //       toast.success("Image uploaded successfully!");
+  //     } else {
+  //       toast.error("No image selected.");
+  //     }
+  //     setIsUploading(false);
+  //   } catch (error) {
+  //     toast.error("Failed to upload image.");
+  //   }
+  // };
+
+  // const activeDraggingImageId = useGalleryStore(
+  //   (state) => state.activeDraggingImageId,
+  // );
+
+  // const sensors = useSensors(
+  //   useSensor(PointerSensor, {
+  //     activationConstraint: {
+  //       distance: 8,
+  //     },
+  //   }),
+  // );
+
+  // const onDragStart = (event: DragStartEvent) => {
+  //   handleDragStart(event);
+  // };
+
+  // const onDragEnd = (event: DragEndEvent) => {
+  //   try {
+  //     handleDragEnd(event);
+  //     toast.success("Image moved successfully!");
+  //   } catch (error) {
+  //     toast.error("Failed to move image.");
+  //   }
+  // };
+
+  // const draggingImage = activeDraggingImageId
+  //   ? images.find((img) => img.id === parseInt(activeDraggingImageId))
+  //   : null;
 
   return (
-    <div className="relative space-y-4">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-4">
-          {currentView === "album" && (
-            <button
-              onClick={() => {
-                setCurrentView("main");
-                setAlbumId(null);
-              }}
-              className="text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-            >
-              <ArrowLeft size={20} />
-            </button>
-          )}
-          <NestlingTitle
-            title={title}
-            setTitle={setTitle}
-            nestling={activeNestling}
-          />
+    <div className="flex flex-col gap-2">
+      <NestlingTitle
+        title={title}
+        setTitle={setTitle}
+        nestling={activeNestling}
+      />
+
+      <div className="flex flex-col">
+        <div className="mb-1 flex flex-row items-center gap-2">
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
+            <Image size={20} />
+            Your Images ({images.length})
+          </h2>
+
+          <button
+            onClick={handleSelectImage}
+            disabled={isUploading}
+            className="ml-auto flex items-center gap-2 rounded-lg bg-blue-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-blue-600"
+          >
+            {isUploading ? (
+              <Loader size={16} className="flex-shrink-0 animate-spin" />
+            ) : (
+              <Upload size={16} className="flex-shrink-0" />
+            )}
+            <span className="hidden md:block">
+              {isUploading ? "Uploading..." : "Add Images"}
+            </span>
+          </button>
+
+          <LayoutToggle layoutMode={layoutMode} setLayoutMode={setLayoutMode} />
         </div>
 
-        <div className="flex gap-3">
+        <ImageLayout layoutMode={layoutMode} />
+      </div>
+
+      {/*<div className="flex gap-3">
           <button
             onClick={handleSelectImage}
             disabled={isUploading}
@@ -119,28 +171,7 @@ export default function GalleryEditor() {
             <Plus size={16} className="flex-shrink-0" />
             <span className="hidden md:block">Add Album</span>
           </button>
-        </div>
-      </div>
-
-      <div className="relative">
-        <AnimatePresence mode="sync" initial={false} custom={direction}>
-          {currentView === "main" ? (
-            <MainView
-              variants={viewVariants}
-              direction={direction}
-              setCurrentView={setCurrentView}
-              setAlbumId={setAlbumId}
-            />
-          ) : (
-            <AlbumView
-              key="album"
-              album={currentAlbum}
-              variants={viewVariants}
-              direction={direction}
-            />
-          )}
-        </AnimatePresence>
-      </div>
+        </div>*/}
     </div>
   );
 }

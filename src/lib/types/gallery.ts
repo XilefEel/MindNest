@@ -1,13 +1,13 @@
 import { WithBase } from "./base";
 import { Photo as ReactPhotoAlbumPhoto } from "react-photo-album";
 
-export type NewGalleryAlbum = {
-  nestlingId: number;
-  name: string;
-  description: string | null;
-};
+// export type NewGalleryAlbum = {
+//   nestlingId: number;
+//   name: string;
+//   description: string | null;
+// };
 
-export type GalleryAlbum = WithBase<NewGalleryAlbum>;
+// export type GalleryAlbum = WithBase<NewGalleryAlbum>;
 
 export type NewGalleryImage = {
   albumId: number | null;

@@ -1,6 +1,4 @@
 import { Star, Trash2 } from "lucide-react";
-import { useDraggable } from "@dnd-kit/core";
-import { CSS } from "@dnd-kit/utilities";
 import ImageContextMenu from "@/components/context-menu/ImageContextMenu";
 import { cn } from "@/lib/utils/general";
 import { Photo } from "@/lib/types/gallery";
@@ -16,19 +14,19 @@ export default function ImageCard({
   handleDeleteImage: (id: number) => Promise<void>;
   handleAddToFavorites: (id: number) => Promise<void>;
 }) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: photo.id.toString(),
-      data: {
-        type: "image",
-        image: photo,
-      },
-    });
+  // const { attributes, listeners, setNodeRef, transform, isDragging } =
+  //   useDraggable({
+  //     id: photo.id.toString(),
+  //     data: {
+  //       type: "image",
+  //       image: photo,
+  //     },
+  //   });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    opacity: isDragging ? 0 : 1,
-  };
+  // const style = {
+  //   transform: CSS.Transform.toString(transform),
+  //   opacity: isDragging ? 0 : 1,
+  // };
 
   return (
     <ImageContextMenu
@@ -37,11 +35,11 @@ export default function ImageCard({
       handleAddToFavorites={handleAddToFavorites}
     >
       <div
-        ref={setNodeRef}
-        {...listeners}
-        {...attributes}
-        style={style}
-        className="group relative cursor-grab overflow-hidden rounded-xl shadow-md hover:shadow-lg active:cursor-grabbing"
+        // ref={setNodeRef}
+        // {...listeners}
+        // {...attributes}
+        // style={style}
+        className="group relative cursor-default overflow-hidden rounded-xl shadow-md hover:shadow-lg"
       >
         <img
           {...imageProps}
