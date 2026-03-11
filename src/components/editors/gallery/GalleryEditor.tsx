@@ -1,17 +1,16 @@
 import useAutoSave from "@/hooks/useAutoSave";
-import { toast } from "@/lib/utils/toast";
 import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
 import {
   useActiveNestling,
   useNestlingActions,
 } from "@/stores/useNestlingStore";
-import { Image, Loader, Upload } from "lucide-react";
+import { Image } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import "react-photo-album/rows.css";
 import "yet-another-react-lightbox/styles.css";
 import NestlingTitle from "../NestlingTitle";
+import GalleryToolbar from "./GalleryToolbar";
 import ImageLayout from "./ImageLayout";
-import LayoutToggle from "./LayoutToggle";
 
 export default function GalleryEditor() {
   const activeNestling = useActiveNestling();
@@ -20,25 +19,12 @@ export default function GalleryEditor() {
   const images = useImages();
   const { getImages } = useGalleryActions();
   const { updateNestling } = useNestlingActions();
-  const { selectImages } = useGalleryActions();
 
   const [title, setTitle] = useState(activeNestling.title);
   const nestlingData = useMemo(() => ({ title }), [title]);
   useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
   const [layoutMode, setLayoutMode] = useState<"row" | "column">("row");
-  const [isUploading, setIsUploading] = useState(false);
-
-  const handleSelectImage = async () => {
-    try {
-      setIsUploading(true);
-      await selectImages(activeNestling.id!);
-      toast.success("Image uploaded successfully!");
-      setIsUploading(false);
-    } catch (error) {
-      toast.error("Failed to upload image.");
-    }
-  };
 
   useEffect(() => {
     setTitle(activeNestling.title);
@@ -110,7 +96,7 @@ export default function GalleryEditor() {
   //   : null;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
       <NestlingTitle
         title={title}
         setTitle={setTitle}
@@ -118,28 +104,16 @@ export default function GalleryEditor() {
       />
 
       <div className="flex flex-col">
-        <div className="mb-1 flex flex-row items-center gap-2">
-          <h2 className="flex items-center gap-2 text-lg font-semibold">
+        <div className="mb-1 flex flex-row items-center gap-1">
+          <h2 className="flex items-center gap-2 font-semibold">
             <Image size={20} />
             Your Images ({images.length})
           </h2>
 
-          <button
-            onClick={handleSelectImage}
-            disabled={isUploading}
-            className="ml-auto flex items-center gap-2 rounded-lg bg-blue-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-blue-600"
-          >
-            {isUploading ? (
-              <Loader size={16} className="flex-shrink-0 animate-spin" />
-            ) : (
-              <Upload size={16} className="flex-shrink-0" />
-            )}
-            <span className="hidden md:block">
-              {isUploading ? "Uploading..." : "Add Images"}
-            </span>
-          </button>
-
-          <LayoutToggle layoutMode={layoutMode} setLayoutMode={setLayoutMode} />
+          <GalleryToolbar
+            layoutMode={layoutMode}
+            setLayoutMode={setLayoutMode}
+          />
         </div>
 
         <ImageLayout layoutMode={layoutMode} />

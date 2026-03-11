@@ -88,7 +88,7 @@ export default function BookmarkToolbar({
             onClick={handleOpenAll}
             disabled={bookmarks.length === 0}
             className={cn(
-              "rounded p-2 transition-all duration-200",
+              "rounded p-2 transition-colors",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
               "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
               "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
@@ -105,7 +105,7 @@ export default function BookmarkToolbar({
             onClick={() => exportBookmarksToJson(bookmarks, title)}
             disabled={bookmarks.length === 0}
             className={cn(
-              "rounded p-2 transition-all duration-200",
+              "rounded p-2 transition-colors",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
               "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
               "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",

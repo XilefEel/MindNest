@@ -41,10 +41,6 @@ export async function getImages(nestlingId: number) {
   return await invoke<GalleryImage[]>("get_images", { nestlingId });
 }
 
-export async function downloadImage(id: number, savePath: string) {
-  await invoke<void>("download_image", { id, savePath });
-}
-
 export async function updateImage({
   id,
   albumId,
@@ -71,6 +67,14 @@ export async function removeImage(id: number) {
   await invoke<void>("delete_image", { id });
 }
 
+export async function downloadImage(id: number, savePath: string) {
+  await invoke<void>("download_image", { id, savePath });
+}
+
+export async function downloadAllImages(id: number, savePath: string) {
+  await invoke<void>("download_all_images", { id, savePath });
+}
+
 // export async function createAlbum(data: NewGalleryAlbum) {
 //   return await invoke<GalleryAlbum>("create_album", { data });
 // }
@@ -93,8 +97,4 @@ export async function removeImage(id: number) {
 
 // export async function deleteAlbum(id: number) {
 //   await invoke<void>("delete_album", { id });
-// }
-
-// export async function downloadAlbum(id: number, savePath: string) {
-//   await invoke<void>("download_album", { id, savePath });
 // }

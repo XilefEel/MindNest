@@ -35,7 +35,9 @@ type GalleryState = {
   duplicateImage: (id: number) => Promise<GalleryImage>;
   updateImage: (id: number, updates: Partial<GalleryImage>) => Promise<void>;
   removeImage: (id: number) => Promise<void>;
+
   downloadImage: (id: number) => Promise<void>;
+  downloadAll: (id: number) => Promise<void>;
 
   // albums: GalleryAlbum[];
   // activeDraggingImageId: string | null;
@@ -49,7 +51,7 @@ type GalleryState = {
   //   name: string;
   //   description: string | null;
   // }) => Promise<void>;
-  // downloadAlbum: (id: number) => Promise<void>;
+
   // updateAlbum: (id: number, updates: Partial<GalleryAlbum>) => Promise<void>;
   // deleteAlbum: (id: number) => Promise<void>;
 
@@ -201,18 +203,18 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   //   await updateNestlingTimestamp(newAlbum.nestlingId);
   // }),
 
-  // downloadAlbum: withStoreErrorHandler(set, async (id: number) => {
-  //   const filePath = await save({
-  //     title: "Save Album",
-  //     defaultPath: `Album_${id}.zip`,
-  //     filters: [{ name: "Zip Files", extensions: ["zip"] }],
-  //   });
+  downloadAll: withStoreErrorHandler(set, async (id: number) => {
+    const filePath = await save({
+      title: "Save Album",
+      defaultPath: `Album_${id}.zip`,
+      filters: [{ name: "Zip Files", extensions: ["zip"] }],
+    });
 
-  //   if (!filePath) throw new Error("Download canceled");
+    if (!filePath) throw new Error("Download canceled");
 
-  //   await galleryApi.downloadAlbum(id, filePath);
-  //   set({ loading: false });
-  // }),
+    await galleryApi.downloadAllImages(id, filePath);
+    set({ loading: false });
+  }),
 
   // updateAlbum: withStoreErrorHandler(set, async (id, updates) => {
   //   const current = get().albums.find((album) => album.id === id);
@@ -277,7 +279,9 @@ export const useGalleryActions = () =>
       duplicateImage: state.duplicateImage,
       updateImage: state.updateImage,
       removeImage: state.removeImage,
+
       downloadImage: state.downloadImage,
+      downloadAll: state.downloadAll,
 
       // getAlbums: state.getAlbums,
       // addAlbum: state.addAlbum,

@@ -1,6 +1,6 @@
 use crate::db::gallery::{
     add_album_to_db, add_image_into_db, delete_album_from_db, delete_image_from_app,
-    download_album_into_user, download_image_into_user, duplicate_image_from_image,
+    download_all_image_into_user, download_image_into_user, duplicate_image_from_image,
     get_albums_from_db, get_images_from_db, import_image_data_into_app, import_image_into_app,
     update_album_in_db, update_image_in_db,
 };
@@ -81,8 +81,8 @@ pub fn download_image(db: tauri::State<AppDb>, id: i64, save_path: String) -> Db
 }
 
 #[tauri::command]
-pub fn download_album(db: tauri::State<AppDb>, id: i64, save_path: String) -> DbResult<()> {
-    download_album_into_user(&db, id, save_path)
+pub fn download_all_images(db: tauri::State<AppDb>, id: i64, save_path: String) -> DbResult<()> {
+    download_all_image_into_user(&db, id, save_path)
 }
 
 #[tauri::command]

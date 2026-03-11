@@ -266,37 +266,37 @@ fn get_image_by_id(db: &AppDb, id: i64) -> DbResult<GalleryImage> {
     Ok(image)
 }
 
-fn get_images_by_album_id(db: &AppDb, album_id: i64) -> DbResult<Vec<GalleryImage>> {
-    let connection = db.connection.lock().unwrap();
-    let mut statement = connection
-        .prepare("
-            SELECT id, album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
-            FROM gallery_images
-            WHERE album_id = ?1
-            ORDER BY is_favorite DESC, created_at DESC"
-        )?;
+// fn get_images_by_album_id(db: &AppDb, album_id: i64) -> DbResult<Vec<GalleryImage>> {
+//     let connection = db.connection.lock().unwrap();
+//     let mut statement = connection
+//         .prepare("
+//             SELECT id, album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
+//             FROM gallery_images
+//             WHERE album_id = ?1
+//             ORDER BY is_favorite DESC, created_at DESC"
+//         )?;
 
-    let images = statement
-        .query_map(params![album_id], |row| {
-            Ok(GalleryImage {
-                id: row.get(0)?,
-                album_id: row.get(1)?,
-                nestling_id: row.get(2)?,
-                file_path: row.get(3)?,
-                title: row.get(4)?,
-                description: row.get(5)?,
-                is_favorite: row.get(6)?,
-                width: row.get(7)?,
-                height: row.get(8)?,
-                created_at: row.get(9)?,
-                updated_at: row.get(10)?,
-            })
-        })
-        .log_err("get_images_by_album_id")?
-        .collect::<Result<Vec<_>, _>>()?;
+//     let images = statement
+//         .query_map(params![album_id], |row| {
+//             Ok(GalleryImage {
+//                 id: row.get(0)?,
+//                 album_id: row.get(1)?,
+//                 nestling_id: row.get(2)?,
+//                 file_path: row.get(3)?,
+//                 title: row.get(4)?,
+//                 description: row.get(5)?,
+//                 is_favorite: row.get(6)?,
+//                 width: row.get(7)?,
+//                 height: row.get(8)?,
+//                 created_at: row.get(9)?,
+//                 updated_at: row.get(10)?,
+//             })
+//         })
+//         .log_err("get_images_by_album_id")?
+//         .collect::<Result<Vec<_>, _>>()?;
 
-    Ok(images)
-}
+//     Ok(images)
+// }
 
 pub fn download_image_into_user(db: &AppDb, image_id: i64, save_path: String) -> DbResult<()> {
     let image = get_image_by_id(&db, image_id)?;
@@ -306,8 +306,13 @@ pub fn download_image_into_user(db: &AppDb, image_id: i64, save_path: String) ->
     Ok(())
 }
 
-pub fn download_album_into_user(db: &AppDb, album_id: i64, save_path: String) -> DbResult<()> {
-    let images = get_images_by_album_id(&db, album_id)?;
+pub fn download_all_image_into_user(
+    db: &AppDb,
+    nestling_id: i64,
+    save_path: String,
+) -> DbResult<()> {
+    let images = get_images_from_db(&db, nestling_id)?;
+
     if images.is_empty() {
         return Err(DbError::ValidationError(
             "No images found in this album".to_string(),
@@ -315,7 +320,8 @@ pub fn download_album_into_user(db: &AppDb, album_id: i64, save_path: String) ->
     }
 
     let file = fs::File::create(&save_path)
-        .log_err("download_album_into_user: failed to create zip file")?;
+        .log_err("download_all_image_into_user: failed to create zip file")?;
+
     let mut zip = ZipWriter::new(file);
 
     for image in images {
@@ -338,17 +344,17 @@ pub fn download_album_into_user(db: &AppDb, album_id: i64, save_path: String) ->
         };
 
         zip.start_file(&filename, zip::write::FileOptions::<()>::default())
-            .log_err("download_album_into_user: failed to start zip file")?;
+            .log_err("download_all_image_into_user: failed to start zip file")?;
 
         let image_data = fs::read(&image.file_path)
-            .log_err("download_album_into_user: failed to read image data")?;
+            .log_err("download_all_image_into_user: failed to read image data")?;
 
         zip.write_all(&image_data)
-            .log_err("download_album_into_user: failed to write image data to zip")?;
+            .log_err("download_all_image_into_user: failed to write image data to zip")?;
     }
 
     zip.finish()
-        .log_err("download_album_into_user: failed to finish zip file")?;
+        .log_err("download_all_image_into_user: failed to finish zip file")?;
 
     Ok(())
 }

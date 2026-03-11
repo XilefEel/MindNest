@@ -36,7 +36,7 @@ use handler::journal::{
 };
 
 use handler::gallery::{
-    add_image, create_album, delete_album, delete_image, download_album, download_image,
+    add_image, create_album, delete_album, delete_image, download_all_images, download_image,
     duplicate_image, get_albums, get_images, import_image, import_image_data, update_album,
     update_image,
 };
@@ -154,7 +154,7 @@ pub fn run() {
             import_image,
             import_image_data,
             download_image,
-            download_album,
+            download_all_images,
             duplicate_image,
             get_images,
             update_image,
