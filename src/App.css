@@ -175,3 +175,7 @@
   --epr-focus-bg-color: theme("colors.gray.900") !important;
   --epr-hover-bg-color: theme("colors.gray.900") !important;
 }
+
+.yarl__button {
+  cursor: default !important;
+}

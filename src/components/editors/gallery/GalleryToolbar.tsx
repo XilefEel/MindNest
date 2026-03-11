@@ -1,10 +1,10 @@
 import BaseToolTip from "@/components/BaseToolTip";
-import { cn } from "@/lib/utils/general";
+import { cn, openAppFolder } from "@/lib/utils/general";
 import { toast } from "@/lib/utils/toast";
 import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
 import { useActiveNestling } from "@/stores/useNestlingStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
-import { Download, Loader, Upload } from "lucide-react";
+import { Download, FolderOpen, Loader, Upload } from "lucide-react";
 import { useState } from "react";
 import LayoutToggle from "./LayoutToggle";
 
@@ -50,12 +50,30 @@ export default function GalleryToolbar({
 
   return (
     <>
+      <BaseToolTip label="Open Gallery Folder">
+        <button
+          onClick={() =>
+            openAppFolder({ location: "roaming", subfolder: "gallery" })
+          }
+          className={cn(
+            "ml-auto rounded p-2 transition-colors",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
+            "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
+            "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
+            activeBackgroundId &&
+              "hover:bg-white/30 hover:text-black dark:hover:bg-black/30",
+          )}
+        >
+          <FolderOpen className="size-4 flex-shrink-0" />
+        </button>
+      </BaseToolTip>
+
       <BaseToolTip label="Download All">
         <button
           onClick={handleDownloadAll}
           disabled={images.length === 0}
           className={cn(
-            "ml-auto rounded p-2 transition-colors",
+            "rounded p-2 transition-colors",
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
             "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
             "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",

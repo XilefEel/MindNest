@@ -59,7 +59,7 @@ export default function ImageCard({
         // {...listeners}
         // {...attributes}
         // style={style}
-        className="group relative cursor-default overflow-hidden rounded-xl shadow-md hover:shadow-lg"
+        className="group relative cursor-default overflow-hidden rounded-lg shadow-sm hover:shadow-md"
       >
         <img
           {...imageProps}

@@ -1,3 +1,5 @@
+import { appDataDir, appLocalDataDir, join } from "@tauri-apps/api/path";
+import { openPath } from "@tauri-apps/plugin-opener";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { BackgroundMusic } from "../types/background-music";
@@ -93,3 +95,25 @@ export const sortByFavorite = <
 
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
+
+type RoamingFolder = "backgrounds" | "music" | "gallery";
+type LocalFolder = "logs";
+
+type OpenFolderOptions =
+  | { location?: "roaming"; subfolder?: RoamingFolder }
+  | { location: "local"; subfolder?: LocalFolder };
+
+export const openAppFolder = async (
+  options: OpenFolderOptions = { location: "roaming" },
+): Promise<void> => {
+  const base =
+    options.location === "local" ? await appLocalDataDir() : await appDataDir();
+
+  const targetPath = options.subfolder
+    ? await join(base, options.subfolder)
+    : base;
+
+  console.log("local dir:", base);
+
+  await openPath(targetPath);
+};

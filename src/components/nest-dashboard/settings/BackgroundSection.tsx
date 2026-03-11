@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils/general";
+import { cn, openAppFolder } from "@/lib/utils/general";
 import {
   useActiveBackgroundId,
   useActiveNestId,
@@ -7,9 +7,10 @@ import {
   useNestActions,
 } from "@/stores/useNestStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { Sun, SunDim, SunMedium, Trash2 } from "lucide-react";
+import { FolderOpen, Sun, SunDim, SunMedium, Trash2 } from "lucide-react";
 import { toast } from "@/lib/utils/toast";
 import { Slider } from "@/components/ui/slider";
+import BaseToolTip from "@/components/BaseToolTip";
 
 export default function BackgroundSection() {
   const activeNestId = useActiveNestId();
@@ -58,13 +59,33 @@ export default function BackgroundSection() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-1">
-        <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
-          Background
-        </h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Customize your nest background
-        </p>
+      <div className="flex items-center justify-between">
+        <div className="flex flex-col">
+          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+            Background
+          </h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Customize your nest background
+          </p>
+        </div>
+
+        <BaseToolTip label="Open Backgrounds Folder">
+          <button
+            onClick={() =>
+              openAppFolder({ location: "roaming", subfolder: "backgrounds" })
+            }
+            className={cn(
+              "ml-auto rounded p-2 transition-colors",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
+              "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
+              "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
+              activeBackgroundId &&
+                "hover:bg-white/30 hover:text-black dark:hover:bg-black/30",
+            )}
+          >
+            <FolderOpen className="size-4 flex-shrink-0" />
+          </button>
+        </BaseToolTip>
       </div>
 
       <div className="grid max-h-72 grid-cols-2 gap-3 overflow-y-auto p-1 md:grid-cols-3">

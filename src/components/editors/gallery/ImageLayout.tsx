@@ -102,7 +102,7 @@ export default function ImageLayout({
       onDragOver={handleDropOver}
       onDragLeave={handleDropLeave}
       className={cn(
-        "inset-0 rounded-lg p-1 pb-2",
+        "inset-0 rounded-lg p-1",
         isDragOver && "outline-teal-500 outline-dashed",
       )}
     >

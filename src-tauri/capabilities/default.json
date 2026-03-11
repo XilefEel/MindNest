@@ -2,13 +2,20 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Capability for the main window",
-  "windows": [
-    "main"
-  ],
+  "windows": ["main"],
   "permissions": [
     "core:default",
     "core:event:default",
     "opener:default",
+    {
+      "identifier": "opener:allow-open-path",
+      "allow": [
+        { "path": "$APPDATA/backgrounds" },
+        { "path": "$APPDATA/gallery" },
+        { "path": "$APPDATA/music" },
+        { "path": "$APPLOCALDATA/logs" }
+      ]
+    },
     "core:event:allow-listen",
     "core:window:default",
     "core:window:allow-close",
