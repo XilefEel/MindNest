@@ -196,6 +196,8 @@ CREATE TABLE IF NOT EXISTS mindmap_edges (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     source_id INTEGER NOT NULL,
     target_id INTEGER NOT NULL,
+    source_handle TEXT NOT NULL,
+    target_handle TEXT NOT NULL,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
     FOREIGN KEY (source_id) REFERENCES mindmap_nodes(id) ON DELETE CASCADE,

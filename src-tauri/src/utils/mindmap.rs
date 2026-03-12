@@ -46,6 +46,8 @@ impl From<MindmapEdgeDB> for MindmapEdge {
             id: db.id.to_string(),
             source: db.source_id.to_string(),
             target: db.target_id.to_string(),
+            source_handle: db.source_handle,
+            target_handle: db.target_handle,
             created_at: db.created_at,
             updated_at: db.updated_at,
         }
@@ -57,6 +59,8 @@ impl From<NewMindmapEdge> for NewMindmapEdgeDB {
         NewMindmapEdgeDB {
             source_id: edge.source.parse().unwrap_or(0),
             target_id: edge.target.parse().unwrap_or(0),
+            source_handle: edge.source_handle,
+            target_handle: edge.target_handle,
         }
     }
 }

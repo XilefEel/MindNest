@@ -1,23 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  ReactFlow,
-  applyNodeChanges,
-  applyEdgeChanges,
-  addEdge as reactFlowAddEdge,
-  NodeChange,
-  EdgeChange,
-  Background,
-  Connection,
-  OnConnectEnd,
-  useReactFlow,
-  ReactFlowProvider,
-  getIncomers,
-  getOutgoers,
-  getConnectedEdges,
-} from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
-import CustomNode from "./CustomNode";
-import { MindmapNode, MindmapEdge } from "@/lib/types/mindmap";
+import useAutoSave from "@/hooks/useAutoSave";
+import { MindmapEdge, MindmapNode } from "@/lib/types/mindmap";
+import { COLORS } from "@/lib/utils/constants";
+import { getRandomElement } from "@/lib/utils/general";
+import { toast } from "@/lib/utils/toast";
 import {
   useMindmapActions,
   useMindmapEdges,
@@ -27,12 +12,27 @@ import {
   useActiveNestling,
   useNestlingActions,
 } from "@/stores/useNestlingStore";
-import { toast } from "@/lib/utils/toast";
-import Toolbar from "./Toolbar";
-import { getRandomElement } from "@/lib/utils/general";
-import { COLORS } from "@/lib/utils/constants";
-import useAutoSave from "@/hooks/useAutoSave";
+import {
+  Background,
+  Connection,
+  EdgeChange,
+  NodeChange,
+  OnConnectEnd,
+  ReactFlow,
+  ReactFlowProvider,
+  applyEdgeChanges,
+  applyNodeChanges,
+  getConnectedEdges,
+  getIncomers,
+  getOutgoers,
+  addEdge as reactFlowAddEdge,
+  useReactFlow,
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import NestlingTitle from "../NestlingTitle";
+import CustomNode from "./CustomNode";
+import Toolbar from "./Toolbar";
 
 const nodeTypes = {
   custom: CustomNode,
@@ -50,15 +50,14 @@ function MindmapEditorContent() {
     deleteEdge,
     deleteNode,
   } = useMindmapActions();
-  const nodes = useMindmapNodes();
-  const edges = useMindmapEdges();
-
-  const { screenToFlowPosition } = useReactFlow();
-
   const activeNestling = useActiveNestling();
   if (!activeNestling) return;
 
+  const nodes = useMindmapNodes();
+  const edges = useMindmapEdges();
+  const { screenToFlowPosition } = useReactFlow();
   const { updateNestling } = useNestlingActions();
+
   const [title, setTitle] = useState(activeNestling.title);
 
   const nestlingData = useMemo(() => ({ title }), [title]);
@@ -149,6 +148,8 @@ function MindmapEditorContent() {
             createEdge({
               source: edge.source,
               target: edge.target,
+              sourceHandle: "bottom-source",
+              targetHandle: "top-target",
             }),
           ),
         );
@@ -180,6 +181,8 @@ function MindmapEditorContent() {
         await createEdge({
           source: params.source,
           target: params.target,
+          sourceHandle: params.sourceHandle ?? "bottom-source",
+          targetHandle: params.targetHandle ?? "top-target",
         });
       } catch (error) {
         setEdges(edges);
@@ -216,6 +219,8 @@ function MindmapEditorContent() {
           await createEdge({
             source: connectionState.fromNode.id,
             target: newNode.id,
+            sourceHandle: connectionState.fromHandle?.id ?? "bottom-source",
+            targetHandle: "top-target",
           });
         }
       }
@@ -255,9 +260,9 @@ function MindmapEditorContent() {
 
     try {
       await Promise.all(nodes.map((node) => deleteNode(node.id)));
-      toast.success("All nodes deleted");
+      toast.success("All nodes deleted.");
     } catch (error) {
-      toast.error("Failed to delete all.");
+      toast.error("Failed to delete all nodes.");
     }
   };
 

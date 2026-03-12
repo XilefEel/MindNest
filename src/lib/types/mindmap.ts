@@ -17,6 +17,8 @@ export type MindmapNode = Omit<WithBase<NewMindmapNode>, "id"> & { id: string };
 export type NewMindmapEdge = {
   source: string;
   target: string;
+  sourceHandle: string;
+  targetHandle: string;
 };
 
 export type MindmapEdge = Omit<WithBase<NewMindmapEdge>, "id"> & { id: string };

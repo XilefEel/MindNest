@@ -137,22 +137,30 @@ pub fn insert_edge_into_db(db: &AppDb, data: NewMindmapEdgeDB) -> DbResult<Mindm
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare(
-        "
-            INSERT INTO mindmap_edges (source_id, target_id, created_at, updated_at)
-            VALUES (?1, ?2, ?3, ?4)
-            RETURNING id, source_id, target_id, created_at, updated_at",
+        "INSERT INTO mindmap_edges (source_id, target_id, source_handle, target_handle, created_at, updated_at)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+         RETURNING id, source_id, target_id, source_handle, target_handle, created_at, updated_at",
     )?;
 
     let edge = statement
         .query_row(
-            params![data.source_id, data.target_id, created_at, created_at],
+            params![
+                data.source_id,
+                data.target_id,
+                data.source_handle,
+                data.target_handle,
+                created_at,
+                created_at
+            ],
             |row| {
                 Ok(MindmapEdgeDB {
                     id: row.get(0)?,
                     source_id: row.get(1)?,
                     target_id: row.get(2)?,
-                    created_at: row.get(3)?,
-                    updated_at: row.get(4)?,
+                    source_handle: row.get(3)?,
+                    target_handle: row.get(4)?,
+                    created_at: row.get(5)?,
+                    updated_at: row.get(6)?,
                 })
             },
         )
@@ -165,12 +173,11 @@ pub fn get_edges_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Mindm
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
-        "
-            SELECT id, source_id, target_id, created_at, updated_at
-            FROM mindmap_edges
-            WHERE source_id IN (
-                SELECT id FROM mindmap_nodes WHERE nestling_id = ?1
-            )",
+        "SELECT id, source_id, target_id, source_handle, target_handle, created_at, updated_at
+         FROM mindmap_edges
+         WHERE source_id IN (
+             SELECT id FROM mindmap_nodes WHERE nestling_id = ?1
+         )",
     )?;
 
     let edges = statement
@@ -179,8 +186,10 @@ pub fn get_edges_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Mindm
                 id: row.get(0)?,
                 source_id: row.get(1)?,
                 target_id: row.get(2)?,
-                created_at: row.get(3)?,
-                updated_at: row.get(4)?,
+                source_handle: row.get(3)?,
+                target_handle: row.get(4)?,
+                created_at: row.get(5)?,
+                updated_at: row.get(6)?,
             })
         })
         .log_err("get_edges_by_nestling")?

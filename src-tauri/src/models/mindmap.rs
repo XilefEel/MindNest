@@ -77,6 +77,8 @@ pub struct NewMindmapNodeDB {
 pub struct NewMindmapEdge {
     pub source: String,
     pub target: String,
+    pub source_handle: String,
+    pub target_handle: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -85,6 +87,8 @@ pub struct MindmapEdge {
     pub id: String,
     pub source: String,
     pub target: String,
+    pub source_handle: String,
+    pub target_handle: String,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -95,6 +99,8 @@ pub struct MindmapEdgeDB {
     pub id: i64,
     pub source_id: i64,
     pub target_id: i64,
+    pub source_handle: String,
+    pub target_handle: String,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -104,4 +110,6 @@ pub struct MindmapEdgeDB {
 pub struct NewMindmapEdgeDB {
     pub source_id: i64,
     pub target_id: i64,
+    pub source_handle: String,
+    pub target_handle: String,
 }
