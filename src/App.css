@@ -125,6 +125,22 @@
   }
 }
 
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #14b8a6 !important;
+}
+
+.dark .react-flow__edge.selected .react-flow__edge-path {
+  stroke: #2dd4bf !important;
+}
+
+.react-flow {
+  --xy-edge-stroke-selected-default: #14b8a6 !important;
+}
+
+.dark .react-flow {
+  --xy-edge-stroke-selected-default: #2dd4bf !important;
+}
+
 [data-resize-state="true"] [data-resize-wrapper] {
   outline: 1px solid rgba(0, 0, 0, 0.25);
   border-radius: 0.125rem;

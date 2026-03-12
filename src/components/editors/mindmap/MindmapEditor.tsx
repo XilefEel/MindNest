@@ -289,7 +289,14 @@ function MindmapEditorContent() {
           onConnectEnd={onConnectEnd}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
-          defaultEdgeOptions={{ markerEnd: { type: "arrowclosed" } }}
+          defaultEdgeOptions={{
+            markerEnd: {
+              type: "arrowclosed",
+              width: 16,
+              height: 16,
+            },
+            style: { strokeWidth: 1.25 },
+          }}
           fitView
         >
           <Background />

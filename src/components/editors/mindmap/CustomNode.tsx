@@ -75,12 +75,12 @@ export default function CustomNode({
 
         <input
           id="text"
-          className="w-full text-center text-sm focus:outline-none"
-          style={{ backgroundColor: "transparent" }}
+          className="w-full bg-transparent text-center text-sm focus:outline-none"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
+          autoComplete="off"
         />
       </div>
     </MindmapContextMenu>
