@@ -64,6 +64,8 @@ export default function MindmapContextMenu({
       await createEdge({
         source: currentNode.id,
         target: newNode.id,
+        sourceHandle: "bottom-source",
+        targetHandle: "top-target",
       });
     } catch (error) {
       toast.error("Failed to add node.");
@@ -90,6 +92,8 @@ export default function MindmapContextMenu({
       await createEdge({
         source: newParentNode.id,
         target: node.id,
+        sourceHandle: "bottom-source",
+        targetHandle: "top-target",
       });
     } catch (error) {}
   };
