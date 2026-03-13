@@ -2,6 +2,7 @@ import useAutoSave from "@/hooks/useAutoSave";
 import { MindmapEdge, MindmapNode } from "@/lib/types/mindmap";
 import { COLORS } from "@/lib/utils/constants";
 import { getRandomElement } from "@/lib/utils/general";
+import { getBestHandles } from "@/lib/utils/mindmap";
 import { toast } from "@/lib/utils/toast";
 import {
   useMindmapActions,
@@ -47,6 +48,7 @@ function MindmapEditorContent() {
     updateNode,
     createEdge,
     getEdges,
+    updateEdge,
     deleteEdge,
     deleteNode,
   } = useMindmapActions();
@@ -69,15 +71,50 @@ function MindmapEditorContent() {
       setNodes(updatedNodes);
 
       changes.forEach((change) => {
-        if (
-          change.type === "position" &&
-          change.dragging === false &&
-          change.position
-        ) {
-          const node = nodes.find((n) => n.id === change.id);
-          if (node) {
-            updateNode(node.id, {
-              position: change.position,
+        if (change.type === "position" && change.position) {
+          const movedNode = nodes.find((n) => n.id === change.id);
+          if (!movedNode) return;
+
+          const connectedEdges = getConnectedEdges([movedNode], edges);
+          if (connectedEdges.length === 0) return;
+
+          const updatedEdges = edges.map((edge) => {
+            if (!connectedEdges.some((e) => e.id === edge.id)) return edge;
+
+            const source = nodes.find((n) => n.id === edge.source);
+            const target = nodes.find((n) => n.id === edge.target);
+            if (!source || !target) return edge;
+
+            const sourceWithNewPos =
+              source.id === movedNode.id
+                ? { ...source, position: change.position! }
+                : source;
+
+            const targetWithNewPos =
+              target.id === movedNode.id
+                ? { ...target, position: change.position! }
+                : target;
+
+            return {
+              ...edge,
+              ...getBestHandles(
+                sourceWithNewPos.position,
+                targetWithNewPos.position,
+              ),
+            };
+          });
+
+          setEdges(updatedEdges);
+
+          if (change.dragging === false) {
+            updateNode(movedNode.id, { position: change.position! });
+
+            connectedEdges.forEach((ce) => {
+              const updated = updatedEdges.find((e) => e.id === ce.id)!;
+              updateEdge(updated.id, {
+                sourceHandle: updated.sourceHandle,
+                targetHandle: updated.targetHandle,
+              });
             });
           }
         }
@@ -97,7 +134,7 @@ function MindmapEditorContent() {
         if (change.type === "remove") deleteNode(change.id);
       });
     },
-    [nodes, updateNode, setNodes, deleteNode],
+    [nodes, updateNode, setNodes, deleteNode, edges, setEdges],
   );
 
   const onNodeDelete = useCallback(

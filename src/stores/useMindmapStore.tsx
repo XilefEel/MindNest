@@ -26,6 +26,10 @@ type MindmapStore = {
 
   createEdge: (edge: NewMindmapEdge) => Promise<MindmapEdge>;
   getEdges: (nestlingId: number) => Promise<void>;
+  updateEdge: (
+    id: string,
+    updates: { sourceHandle: string; targetHandle: string },
+  ) => Promise<void>;
   deleteEdge: (id: string) => Promise<void>;
 };
 
@@ -103,6 +107,21 @@ export const useMindmapStore = create<MindmapStore>((set, get) => ({
     set({ edges });
   }),
 
+  updateEdge: withStoreErrorHandler(
+    set,
+    async (id, updates: { sourceHandle: string; targetHandle: string }) => {
+      set((state) => ({
+        edges: state.edges.map((e) => (e.id === id ? { ...e, ...updates } : e)),
+      }));
+
+      await mindmapApi.updateEdge(
+        id,
+        updates.sourceHandle,
+        updates.targetHandle,
+      );
+    },
+  ),
+
   deleteEdge: withStoreErrorHandler(set, async (id) => {
     await mindmapApi.deleteEdge(id);
     set((state) => ({
@@ -128,6 +147,7 @@ export const useMindmapActions = () =>
 
       createEdge: state.createEdge,
       getEdges: state.getEdges,
+      updateEdge: state.updateEdge,
       deleteEdge: state.deleteEdge,
     })),
   );

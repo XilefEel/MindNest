@@ -198,6 +198,27 @@ pub fn get_edges_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Mindm
     Ok(edges.into_iter().map(|edge| edge.into()).collect())
 }
 
+pub fn update_edge_in_db(
+    db: &AppDb,
+    id: i64,
+    source_handle: String,
+    target_handle: String,
+) -> DbResult<()> {
+    let connection = db.connection.lock().unwrap();
+    let updated_at = Utc::now().to_rfc3339();
+
+    connection
+        .execute(
+            "UPDATE mindmap_edges
+             SET source_handle = ?1, target_handle = ?2, updated_at = ?3
+             WHERE id = ?4",
+            params![source_handle, target_handle, updated_at, id],
+        )
+        .log_err("update_edge_in_db")?;
+
+    Ok(())
+}
+
 pub fn delete_edge_from_db(db: &AppDb, id: i64) -> DbResult<()> {
     let connection = db.connection.lock().unwrap();
 

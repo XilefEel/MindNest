@@ -42,7 +42,8 @@ use handler::gallery::{
 };
 
 use handler::mindmap::{
-    create_edge, create_node, delete_edge, delete_node, get_edges, get_nodes, update_node,
+    create_edge, create_node, delete_edge, delete_node, get_edges, get_nodes, update_edge,
+    update_node,
 };
 
 use handler::bookmark::{
@@ -175,6 +176,7 @@ pub fn run() {
             delete_node,
             create_edge,
             get_edges,
+            update_edge,
             delete_edge,
             // Background Music
             add_music,

@@ -50,6 +50,18 @@ export async function getEdges(nestlingId: number) {
   return invoke<MindmapEdge[]>("get_edges", { nestlingId });
 }
 
+export async function updateEdge(
+  id: string,
+  sourceHandle: string,
+  targetHandle: string,
+) {
+  return invoke("update_edge", {
+    id: parseInt(id),
+    sourceHandle,
+    targetHandle,
+  });
+}
+
 export async function deleteEdge(id: string): Promise<void> {
   return invoke("delete_edge", { id: parseInt(id) });
 }
