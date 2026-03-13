@@ -253,11 +253,16 @@ function MindmapEditorContent() {
         });
 
         if (connectionState.fromNode) {
+          const handles = getBestHandles(
+            connectionState.fromNode.position,
+            position,
+          );
+
           await createEdge({
             source: connectionState.fromNode.id,
             target: newNode.id,
-            sourceHandle: connectionState.fromHandle?.id ?? "bottom-source",
-            targetHandle: "top-target",
+            sourceHandle: handles.sourceHandle,
+            targetHandle: handles.targetHandle,
           });
         }
       }
