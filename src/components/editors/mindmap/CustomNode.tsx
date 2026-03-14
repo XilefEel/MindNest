@@ -24,10 +24,14 @@ export default function CustomNode({
   const { updateNode } = useMindmapActions();
   const { setNodes } = useReactFlow();
 
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    resetHeight();
+  }, []);
+
   const currentNode = nodes.find((n) => n.id === id);
   if (!currentNode) return;
-
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const resetHeight = () => {
     setTimeout(() => {
@@ -58,10 +62,6 @@ export default function CustomNode({
       resetHeight();
     }
   };
-
-  useEffect(() => {
-    resetHeight();
-  }, []);
 
   return (
     <MindmapContextMenu node={currentNode}>

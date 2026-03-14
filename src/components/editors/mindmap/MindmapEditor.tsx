@@ -131,7 +131,9 @@ function MindmapEditorContent() {
             });
           }
         }
-        if (change.type === "remove") deleteNode(change.id);
+        if (change.type === "remove") {
+          deleteNode(change.id);
+        }
       });
     },
     [nodes, updateNode, setNodes, deleteNode, edges, setEdges],
