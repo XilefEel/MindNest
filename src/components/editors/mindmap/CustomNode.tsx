@@ -1,7 +1,7 @@
 import MindmapContextMenu from "@/components/context-menu/MindmapContextMenu";
 import { useMindmapActions, useMindmapNodes } from "@/stores/useMindmapStore";
-import { Handle, NodeResizer, Position } from "@xyflow/react";
-import { useState } from "react";
+import { Handle, NodeResizer, Position, useReactFlow } from "@xyflow/react";
+import { useState, useRef, useEffect } from "react";
 
 const HANDLE_POSITIONS = [
   { position: Position.Top, posId: "top" },
@@ -22,8 +22,22 @@ export default function CustomNode({
   const [label, setLabel] = useState(data.label);
   const nodes = useMindmapNodes();
   const { updateNode } = useMindmapActions();
+  const { setNodes } = useReactFlow();
+
   const currentNode = nodes.find((n) => n.id === id);
   if (!currentNode) return;
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const resetHeight = () => {
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.style.height = "auto";
+        textareaRef.current.style.height =
+          textareaRef.current.scrollHeight + "px";
+      }
+    }, 0);
+  };
 
   const handleBlur = async () => {
     if (label !== data.label) {
@@ -31,20 +45,28 @@ export default function CustomNode({
         data: { ...currentNode.data, label },
       });
     }
+
+    resetHeight();
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") e.currentTarget.blur();
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Escape") {
-      setLabel(data.label);
       e.currentTarget.blur();
+      setLabel(data.label);
+      setNodes((nodes) => nodes.map((n) => ({ ...n, selected: false })));
+
+      resetHeight();
     }
   };
+
+  useEffect(() => {
+    resetHeight();
+  }, []);
 
   return (
     <MindmapContextMenu node={currentNode}>
       <div
-        className="h-full rounded border border-gray-200 p-3"
+        className="flex h-full w-full items-center justify-center rounded border border-gray-200 p-3"
         style={{ backgroundColor: data.color }}
       >
         <NodeResizer
@@ -73,14 +95,18 @@ export default function CustomNode({
           </>
         ))}
 
-        <input
-          id="text"
-          className="w-full bg-transparent text-center text-sm focus:outline-none"
-          value={label}
-          onChange={(e) => setLabel(e.target.value)}
+        <textarea
+          ref={textareaRef}
+          className="w-full resize-none bg-transparent text-center text-sm focus:outline-none"
+          rows={1}
+          onChange={(e) => {
+            setLabel(e.target.value);
+            e.target.style.height = "auto";
+            e.target.style.height = e.target.scrollHeight + "px";
+          }}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
-          autoComplete="off"
+          value={label}
         />
       </div>
     </MindmapContextMenu>
