@@ -1,15 +1,9 @@
+use crate::fs::io::delete_file;
 use crate::models::gallery::{GalleryAlbum, GalleryImage, NewGalleryAlbum, NewGalleryImage};
 use crate::utils::db::AppDb;
-use crate::utils::errors::{DbError, DbResult, LogError};
+use crate::utils::errors::{DbResult, LogError};
+use chrono::Utc;
 use rusqlite::params;
-
-use chrono::{Local, Utc};
-use imagesize::size;
-use std::fs;
-use std::io::Write;
-use std::path::Path;
-use tauri::Manager;
-use zip::ZipWriter;
 
 pub fn add_image_into_db(db: &AppDb, data: NewGalleryImage) -> DbResult<GalleryImage> {
     let connection = db.connection.lock().unwrap();
@@ -56,156 +50,6 @@ pub fn add_image_into_db(db: &AppDb, data: NewGalleryImage) -> DbResult<GalleryI
     Ok(image)
 }
 
-fn get_image_dimensions(path: &str) -> DbResult<(i64, i64)> {
-    let dim = size(path).log_err("get_image_dimensions")?;
-    Ok((dim.width as i64, dim.height as i64))
-}
-
-fn copy_image_to_app_dir(app_handle: &tauri::AppHandle, file_path: String) -> DbResult<String> {
-    if !Path::new(&file_path).exists() {
-        return Err(DbError::ValidationError("File does not exist".to_string()));
-    }
-
-    let app_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| DbError::ValidationError(e.to_string()))?;
-
-    let images_dir = app_dir.join("gallery");
-
-    fs::create_dir_all(&images_dir)
-        .log_err("copy_image_to_app_dir: failed to create images directory")?;
-
-    let filename = Path::new(&file_path)
-        .file_name()
-        .ok_or_else(|| DbError::ValidationError("Could not get filename".to_string()))?
-        .to_string_lossy();
-
-    let timestamp = Local::now().timestamp_millis();
-    let new_filename = format!("{}_{}", timestamp, filename);
-
-    let destination = images_dir.join(&new_filename);
-    let destination_str = destination.to_string_lossy().to_string();
-
-    fs::copy(&file_path, &destination).log_err(&format!(
-        "copy_background_to_app_dir: failed to copy {} to {}",
-        file_path, destination_str
-    ))?;
-
-    Ok(destination_str)
-}
-
-pub fn import_image_from_path_into_app(
-    app_handle: tauri::AppHandle,
-    db: &AppDb,
-    nestling_id: i64,
-    album_id: Option<i64>,
-    file_path: String,
-) -> DbResult<GalleryImage> {
-    let new_path = copy_image_to_app_dir(&app_handle, file_path.clone())?;
-    let (width, height) = get_image_dimensions(&new_path)?;
-    let title = Path::new(&file_path)
-        .file_stem()
-        .map(|s| s.to_string_lossy().to_string());
-
-    let new_image = NewGalleryImage {
-        album_id: album_id,
-        nestling_id,
-        file_path: new_path,
-        title: title,
-        description: None,
-        is_favorite: false,
-        width: width,
-        height: height,
-    };
-
-    let saved_image = add_image_into_db(&db, new_image)?;
-    Ok(saved_image)
-}
-
-pub fn import_image_from_data_into_app(
-    app_handle: tauri::AppHandle,
-    db: &AppDb,
-    nestling_id: i64,
-    album_id: Option<i64>,
-    file_name: String,
-    file_data: Vec<u8>,
-    title: Option<String>,
-    description: Option<String>,
-    is_favorite: Option<bool>,
-) -> DbResult<GalleryImage> {
-    let app_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| DbError::ValidationError(e.to_string()))?;
-
-    let images_dir = app_dir.join("gallery");
-
-    fs::create_dir_all(&images_dir)
-        .log_err("import_image_data_into_app: failed to create images directory")?;
-
-    let timestamp = Local::now().timestamp_millis();
-    let new_filename = format!("{}_{}", timestamp, file_name);
-    let destination = images_dir.join(&new_filename);
-
-    fs::write(&destination, file_data)
-        .log_err("import_image_data_into_app: failed to write image data")?;
-
-    let destination_str = destination.to_string_lossy().to_string();
-    let (width, height) = get_image_dimensions(&destination_str)?;
-
-    let new_image = NewGalleryImage {
-        album_id,
-        nestling_id,
-        file_path: destination_str,
-        title: Some(title.unwrap_or(file_name)),
-        description,
-        is_favorite: is_favorite.unwrap_or(false),
-        width,
-        height,
-    };
-
-    let saved_image = add_image_into_db(&db, new_image)?;
-    Ok(saved_image)
-}
-
-pub fn duplicate_image_from_image(
-    db: &AppDb,
-    app_handle: tauri::AppHandle,
-    original_image_id: i64,
-) -> DbResult<GalleryImage> {
-    let original_image = get_image_by_id(&db, original_image_id)?;
-
-    if !Path::new(&original_image.file_path).exists() {
-        return Err(DbError::ValidationError(
-            "Original image file no longer exists".to_string(),
-        ));
-    }
-
-    let image_data = fs::read(&original_image.file_path)
-        .log_err("duplicate_image_from_image: failed to read image data")?;
-
-    let original_filename = Path::new(&original_image.file_path)
-        .file_name()
-        .ok_or_else(|| DbError::ValidationError("Could not get filename".to_string()))?
-        .to_string_lossy()
-        .to_string();
-
-    let duplicated_image = import_image_from_data_into_app(
-        app_handle,
-        &db,
-        original_image.nestling_id,
-        original_image.album_id,
-        original_filename,
-        image_data,
-        original_image.title.clone(),
-        original_image.description.clone(),
-        Some(original_image.is_favorite),
-    )?;
-
-    Ok(duplicated_image)
-}
-
 pub fn get_images_from_db(db: &AppDb, nestling_id: i64) -> DbResult<Vec<GalleryImage>> {
     let connection = db.connection.lock().unwrap();
     let mut statement = connection
@@ -238,7 +82,7 @@ pub fn get_images_from_db(db: &AppDb, nestling_id: i64) -> DbResult<Vec<GalleryI
     Ok(images)
 }
 
-fn get_image_by_id(db: &AppDb, id: i64) -> DbResult<GalleryImage> {
+pub fn get_image_by_id(db: &AppDb, id: i64) -> DbResult<GalleryImage> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
@@ -267,6 +111,43 @@ fn get_image_by_id(db: &AppDb, id: i64) -> DbResult<GalleryImage> {
         .log_err("get_image_by_id")?;
 
     Ok(image)
+}
+
+pub fn update_image_in_db(
+    db: &AppDb,
+    id: i64,
+    album_id: Option<i64>,
+    title: Option<String>,
+    description: Option<String>,
+    is_favorite: bool,
+) -> DbResult<()> {
+    let connection = db.connection.lock().unwrap();
+    let updated_at = Utc::now().to_rfc3339();
+
+    connection
+        .execute(
+            "
+            UPDATE gallery_images
+            SET album_id = ?1, title = ?2, description = ?3, is_favorite = ?4, updated_at = ?5
+            WHERE id = ?6",
+            params![album_id, title, description, is_favorite, updated_at, id],
+        )
+        .log_err("update_image_in_db")?;
+
+    Ok(())
+}
+
+pub fn delete_image_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+    let image = get_image_by_id(&db, id)?;
+
+    delete_file(&image.file_path);
+
+    let connection = db.connection.lock().unwrap();
+    connection
+        .execute("DELETE FROM gallery_images WHERE id = ?1", params![id])
+        .log_err("delete_gallery_image_from_db")?;
+
+    Ok(())
 }
 
 // fn get_images_by_album_id(db: &AppDb, album_id: i64) -> DbResult<Vec<GalleryImage>> {
@@ -300,111 +181,6 @@ fn get_image_by_id(db: &AppDb, id: i64) -> DbResult<GalleryImage> {
 
 //     Ok(images)
 // }
-
-pub fn download_image_into_user(db: &AppDb, image_id: i64, save_path: String) -> DbResult<()> {
-    let image = get_image_by_id(&db, image_id)?;
-    fs::copy(&image.file_path, &save_path)
-        .log_err("download_image_into_user: failed to copy image")?;
-
-    Ok(())
-}
-
-pub fn download_all_image_into_user(
-    db: &AppDb,
-    nestling_id: i64,
-    save_path: String,
-) -> DbResult<()> {
-    let images = get_images_from_db(&db, nestling_id)?;
-
-    if images.is_empty() {
-        return Err(DbError::ValidationError(
-            "No images found in this album".to_string(),
-        ));
-    }
-
-    let file = fs::File::create(&save_path)
-        .log_err("download_all_image_into_user: failed to create zip file")?;
-
-    let mut zip = ZipWriter::new(file);
-
-    for image in images {
-        if !Path::new(&image.file_path).exists() {
-            continue;
-        }
-
-        let filename = if let Some(title) = &image.title {
-            let ext = Path::new(&image.file_path)
-                .extension()
-                .map(|e| format!(".{}", e.to_string_lossy()))
-                .unwrap_or_default();
-            format!("{}{}", title, ext)
-        } else {
-            Path::new(&image.file_path)
-                .file_name()
-                .unwrap()
-                .to_string_lossy()
-                .to_string()
-        };
-
-        zip.start_file(&filename, zip::write::FileOptions::<()>::default())
-            .log_err("download_all_image_into_user: failed to start zip file")?;
-
-        let image_data = fs::read(&image.file_path)
-            .log_err("download_all_image_into_user: failed to read image data")?;
-
-        zip.write_all(&image_data)
-            .log_err("download_all_image_into_user: failed to write image data to zip")?;
-    }
-
-    zip.finish()
-        .log_err("download_all_image_into_user: failed to finish zip file")?;
-
-    Ok(())
-}
-
-pub fn update_image_in_db(
-    db: &AppDb,
-    id: i64,
-    album_id: Option<i64>,
-    title: Option<String>,
-    description: Option<String>,
-    is_favorite: bool,
-) -> DbResult<()> {
-    let connection = db.connection.lock().unwrap();
-    let updated_at = Utc::now().to_rfc3339();
-
-    connection
-        .execute(
-            "
-            UPDATE gallery_images
-            SET album_id = ?1, title = ?2, description = ?3, is_favorite = ?4, updated_at = ?5
-            WHERE id = ?6",
-            params![album_id, title, description, is_favorite, updated_at, id],
-        )
-        .log_err("update_image_in_db")?;
-
-    Ok(())
-}
-
-fn delete_gallery_image_from_db(db: &AppDb, id: i64) -> DbResult<()> {
-    let connection = db.connection.lock().unwrap();
-    connection
-        .execute("DELETE FROM gallery_images WHERE id = ?1", params![id])
-        .log_err("delete_gallery_image_from_db")?;
-
-    Ok(())
-}
-
-pub fn delete_image_from_app(db: &AppDb, id: i64) -> DbResult<()> {
-    let image = get_image_by_id(&db, id)?;
-
-    if let Err(e) = fs::remove_file(&image.file_path) {
-        log::warn!("delete_image_from_app: failed to remove file: {}", e);
-    }
-
-    delete_gallery_image_from_db(&db, id)?;
-    Ok(())
-}
 
 pub fn add_album_to_db(db: &AppDb, data: NewGalleryAlbum) -> DbResult<GalleryAlbum> {
     let connection = db.connection.lock().unwrap();

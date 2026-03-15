@@ -131,8 +131,8 @@ pub fn update_board_card_in_db(
     connection
         .execute(
             "
-            UPDATE board_cards 
-            SET title = ?1, description = ?2, order_index = ?3, column_id = ?4, updated_at = ?5 
+            UPDATE board_cards
+            SET title = ?1, description = ?2, order_index = ?3, column_id = ?4, updated_at = ?5
             WHERE id = ?6",
             params![title, description, order_index, column_id, updated_at, id],
         )

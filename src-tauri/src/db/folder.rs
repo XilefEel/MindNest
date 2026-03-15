@@ -48,9 +48,9 @@ pub fn get_folders_by_nest(db: &AppDb, nest_id: i64) -> DbResult<Vec<Folder>> {
 
     let mut statement = connection.prepare(
         "
-            SELECT id, nest_id, parent_id, name, created_at, updated_at 
-            FROM folders 
-            WHERE nest_id = ?1 
+            SELECT id, nest_id, parent_id, name, created_at, updated_at
+            FROM folders
+            WHERE nest_id = ?1
             ORDER BY updated_at DESC",
     )?;
 

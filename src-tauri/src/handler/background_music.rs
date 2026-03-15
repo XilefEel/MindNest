@@ -1,15 +1,11 @@
 use crate::db::background_music::{
-    add_music_into_db, delete_music_from_db, get_music_from_db, import_music_into_app,
-    update_music_in_db,
+    add_music_into_db, delete_music_from_db, get_music_by_id, get_music_from_db, update_music_in_db,
 };
+use crate::fs::background_music::extract_metadata;
+use crate::fs::io::{copy_to_app_dir, delete_file};
 use crate::models::background_music::{BackgroundMusic, NewBackgroundMusic};
 use crate::utils::db::AppDb;
 use crate::utils::errors::DbResult;
-
-#[tauri::command]
-pub fn add_music(db: tauri::State<AppDb>, data: NewBackgroundMusic) -> DbResult<BackgroundMusic> {
-    add_music_into_db(&db, data)
-}
 
 #[tauri::command]
 pub fn import_music(
@@ -19,7 +15,18 @@ pub fn import_music(
     file_path: String,
     order_index: i64,
 ) -> DbResult<BackgroundMusic> {
-    import_music_into_app(app_handle, &db, nest_id, file_path, order_index)
+    let new_path = copy_to_app_dir(&app_handle, &file_path, "music")?;
+    let (title, duration_seconds) = extract_metadata(&file_path)?;
+
+    let new_music = NewBackgroundMusic {
+        nest_id,
+        title,
+        file_path: new_path,
+        duration_seconds,
+        order_index,
+    };
+
+    add_music_into_db(&db, new_music)
 }
 
 #[tauri::command]
@@ -39,5 +46,7 @@ pub fn update_music(
 
 #[tauri::command]
 pub fn delete_music(db: tauri::State<AppDb>, id: i64) -> DbResult<()> {
+    let music = get_music_by_id(&db, id)?;
+    delete_file(&music.file_path);
     delete_music_from_db(&db, id)
 }

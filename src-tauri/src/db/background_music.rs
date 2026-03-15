@@ -1,15 +1,8 @@
 use crate::models::background_music::{BackgroundMusic, NewBackgroundMusic};
 use crate::utils::db::AppDb;
-use crate::utils::errors::{DbError, DbResult, LogError};
-
-use chrono::{Local, Utc};
-use lofty::file::{AudioFile, TaggedFileExt};
-use lofty::probe::Probe;
-use lofty::tag::Accessor;
+use crate::utils::errors::{DbResult, LogError};
+use chrono::Utc;
 use rusqlite::params;
-use std::fs;
-use std::path::Path;
-use tauri::Manager;
 
 pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> DbResult<BackgroundMusic> {
     let connection = db.connection.lock().unwrap();
@@ -51,82 +44,14 @@ pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> DbResult<Backg
     Ok(music)
 }
 
-fn extract_music_metadata(file_path: &str) -> DbResult<(String, i64)> {
-    let tagged_file = Probe::open(file_path)?
-        .read()
-        .log_err("extract_music_metadata")?;
-
-    let title = tagged_file
-        .primary_tag()
-        .or_else(|| tagged_file.first_tag())
-        .and_then(|tag| tag.title().map(|t| t.to_string()))
-        .unwrap_or_else(|| "Unknown".to_string());
-
-    let duration = tagged_file.properties().duration().as_secs() as i64;
-
-    Ok((title, duration))
-}
-
-fn copy_music_to_app_dir(app_handle: &tauri::AppHandle, file_path: String) -> DbResult<String> {
-    if !Path::new(&file_path).exists() {
-        return Err(DbError::ValidationError("File does not exist".to_string()));
-    }
-
-    let app_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| DbError::ValidationError(e.to_string()))?;
-
-    let music_dir = app_dir.join("music");
-
-    fs::create_dir_all(&music_dir).log_err("copy_music_to_app_dir: failed to create music dir")?;
-
-    let filename = Path::new(&file_path)
-        .file_name()
-        .ok_or_else(|| DbError::ValidationError("Could not get filename".to_string()))?;
-
-    let timestamp = Local::now().timestamp_millis();
-    let new_filename = format!("{}_{}", timestamp, filename.to_string_lossy());
-
-    let destination = music_dir.join(&new_filename);
-    let destination_str = destination.to_string_lossy().to_string();
-
-    fs::copy(file_path, &destination).log_err("copy_music_to_app_dir: failed to copy file")?;
-
-    Ok(destination_str)
-}
-
-pub fn import_music_into_app(
-    app_handle: tauri::AppHandle,
-    db: &AppDb,
-    nest_id: i64,
-    file_path: String,
-    order_index: i64,
-) -> DbResult<BackgroundMusic> {
-    let (title, duration_seconds) = extract_music_metadata(&file_path)?;
-    let new_path = copy_music_to_app_dir(&app_handle, file_path)?;
-
-    let new_music = NewBackgroundMusic {
-        nest_id,
-        title,
-        file_path: new_path,
-        duration_seconds,
-        order_index,
-    };
-
-    let saved_music = add_music_into_db(&db, new_music)?;
-
-    Ok(saved_music)
-}
-
 pub fn get_music_from_db(db: &AppDb, nest_id: i64) -> DbResult<Vec<BackgroundMusic>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
         .prepare("
             SELECT id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at
-            FROM background_music 
-            WHERE nest_id = ?1 
+            FROM background_music
+            WHERE nest_id = ?1
             ORDER BY order_index ASC"
         )?;
 
@@ -149,13 +74,13 @@ pub fn get_music_from_db(db: &AppDb, nest_id: i64) -> DbResult<Vec<BackgroundMus
     Ok(music)
 }
 
-fn get_music_by_id(db: &AppDb, id: i64) -> DbResult<BackgroundMusic> {
+pub fn get_music_by_id(db: &AppDb, id: i64) -> DbResult<BackgroundMusic> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
         .prepare("
             SELECT id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at
-            FROM background_music 
+            FROM background_music
             WHERE id = ?1"
         )?;
 
@@ -184,7 +109,7 @@ pub fn update_music_in_db(db: &AppDb, id: i64, title: String, order_index: i64) 
     connection
         .execute(
             "
-            UPDATE background_music 
+            UPDATE background_music
             SET title = ?1, order_index = ?2, updated_at = ?3
             WHERE id = ?4",
             params![title, order_index, updated_at, id],
@@ -195,10 +120,6 @@ pub fn update_music_in_db(db: &AppDb, id: i64, title: String, order_index: i64) 
 }
 
 pub fn delete_music_from_db(db: &AppDb, id: i64) -> DbResult<()> {
-    let music = get_music_by_id(&db, id)?;
-
-    let _ = fs::remove_file(&music.file_path);
-
     let connection = db.connection.lock().unwrap();
 
     connection

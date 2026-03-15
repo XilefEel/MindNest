@@ -1,4 +1,5 @@
 mod db;
+mod fs;
 mod handler;
 mod models;
 mod utils;
@@ -12,11 +13,9 @@ use handler::nestling::{
 
 use handler::folder::{create_folder, delete_folder, get_folders, update_folder};
 
-use handler::background_image::{
-    add_background, delete_background, get_backgrounds, import_background,
-};
+use handler::background_image::{delete_background, get_backgrounds, import_background};
 
-use handler::background_music::{add_music, delete_music, get_music, import_music, update_music};
+use handler::background_music::{delete_music, get_music, import_music, update_music};
 
 use handler::user::{login_user, signup_user};
 
@@ -36,9 +35,9 @@ use handler::journal::{
 };
 
 use handler::gallery::{
-    add_image, create_album, delete_album, delete_image, download_all_images, download_image,
-    duplicate_image, get_albums, get_images, import_image_from_data, import_image_from_path,
-    update_album, update_image,
+    create_album, delete_album, delete_image, download_all_images, download_image, duplicate_image,
+    get_albums, get_images, import_image_from_data, import_image_from_path, update_album,
+    update_image,
 };
 
 use handler::mindmap::{
@@ -151,7 +150,6 @@ pub fn run() {
             update_journal_template,
             delete_journal_template,
             // Gallery
-            add_image,
             import_image_from_path,
             import_image_from_data,
             download_image,
@@ -166,7 +164,6 @@ pub fn run() {
             delete_album,
             // Background Images
             import_background,
-            add_background,
             get_backgrounds,
             delete_background,
             // Mindmap
@@ -179,7 +176,6 @@ pub fn run() {
             update_edge,
             delete_edge,
             // Background Music
-            add_music,
             import_music,
             get_music,
             update_music,

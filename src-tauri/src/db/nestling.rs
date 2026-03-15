@@ -55,9 +55,9 @@ pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> DbResult<Vec<Nestling>
 
     let mut statement = connection
         .prepare("
-            SELECT id, nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at 
-            FROM nestlings 
-            WHERE nest_id = ?1 
+            SELECT id, nest_id, folder_id, type, icon, is_pinned, title, content, created_at, updated_at
+            FROM nestlings
+            WHERE nest_id = ?1
             ORDER BY updated_at DESC"
         )?;
 

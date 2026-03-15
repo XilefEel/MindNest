@@ -1,17 +1,16 @@
 use crate::db::gallery::{
-    add_album_to_db, add_image_into_db, delete_album_from_db, delete_image_from_app,
-    download_all_image_into_user, download_image_into_user, duplicate_image_from_image,
-    get_albums_from_db, get_images_from_db, import_image_from_data_into_app,
-    import_image_from_path_into_app, update_album_in_db, update_image_in_db,
+    add_album_to_db, add_image_into_db, delete_album_from_db, delete_image_from_db,
+    get_albums_from_db, get_image_by_id, get_images_from_db, update_album_in_db,
+    update_image_in_db,
 };
-use crate::models::gallery::{GalleryAlbum, GalleryImage, NewGalleryAlbum, NewGalleryImage};
+use crate::fs::gallery::{copy_to_user_dir, export_images_as_zip, write_image_data};
+use crate::fs::io::{copy_to_app_dir, delete_file, get_dimensions};
+use crate::models::gallery::NewGalleryImage;
+use crate::models::gallery::{GalleryAlbum, GalleryImage, NewGalleryAlbum};
 use crate::utils::db::AppDb;
-use crate::utils::errors::DbResult;
-
-#[tauri::command]
-pub fn add_image(db: tauri::State<AppDb>, data: NewGalleryImage) -> DbResult<GalleryImage> {
-    add_image_into_db(&db, data)
-}
+use crate::utils::errors::{DbResult, LogError};
+use std::fs;
+use std::path::Path;
 
 #[tauri::command]
 pub fn import_image_from_path(
@@ -21,7 +20,26 @@ pub fn import_image_from_path(
     album_id: Option<i64>,
     file_path: String,
 ) -> DbResult<GalleryImage> {
-    import_image_from_path_into_app(app_handle, &db, nestling_id, album_id, file_path)
+    let title = Path::new(&file_path)
+        .file_stem()
+        .map(|s| s.to_string_lossy().to_string());
+
+    let new_path = copy_to_app_dir(&app_handle, &file_path, "gallery")?;
+    let (width, height) = get_dimensions(&new_path)?;
+
+    add_image_into_db(
+        &db,
+        NewGalleryImage {
+            album_id,
+            nestling_id,
+            file_path: new_path,
+            title,
+            description: None,
+            is_favorite: false,
+            width,
+            height,
+        },
+    )
 }
 
 #[tauri::command]
@@ -36,16 +54,21 @@ pub fn import_image_from_data(
     description: Option<String>,
     is_favorite: Option<bool>,
 ) -> DbResult<GalleryImage> {
-    import_image_from_data_into_app(
-        app_handle,
+    let new_path = write_image_data(&app_handle, &file_name, file_data)?;
+    let (width, height) = get_dimensions(&new_path)?;
+
+    add_image_into_db(
         &db,
-        nestling_id,
-        album_id,
-        file_name,
-        file_data,
-        title,
-        description,
-        is_favorite,
+        NewGalleryImage {
+            album_id,
+            nestling_id,
+            file_path: new_path,
+            title: Some(title.unwrap_or(file_name)),
+            description,
+            is_favorite: is_favorite.unwrap_or(false),
+            width,
+            height,
+        },
     )
 }
 
@@ -55,7 +78,32 @@ pub fn duplicate_image(
     db: tauri::State<AppDb>,
     original_image_id: i64,
 ) -> DbResult<GalleryImage> {
-    duplicate_image_from_image(&db, app_handle, original_image_id)
+    let original = get_image_by_id(&db, original_image_id)?;
+    let image_data =
+        fs::read(&original.file_path).log_err("duplicate_image: failed to read image data")?;
+
+    let file_name = Path::new(&original.file_path)
+        .file_name()
+        .unwrap()
+        .to_string_lossy()
+        .to_string();
+
+    let new_path = write_image_data(&app_handle, &file_name, image_data)?;
+    let (width, height) = get_dimensions(&new_path)?;
+
+    add_image_into_db(
+        &db,
+        NewGalleryImage {
+            album_id: original.album_id,
+            nestling_id: original.nestling_id,
+            file_path: new_path,
+            title: original.title,
+            description: original.description,
+            is_favorite: original.is_favorite,
+            width,
+            height,
+        },
+    )
 }
 
 #[tauri::command]
@@ -76,8 +124,16 @@ pub fn update_image(
 }
 
 #[tauri::command]
+pub fn delete_image(db: tauri::State<AppDb>, id: i64) -> DbResult<()> {
+    let image = get_image_by_id(&db, id)?;
+    delete_file(&image.file_path);
+    delete_image_from_db(&db, id)
+}
+
+#[tauri::command]
 pub fn download_image(db: tauri::State<AppDb>, id: i64, save_path: String) -> DbResult<()> {
-    download_image_into_user(&db, id, save_path)
+    let image = get_image_by_id(&db, id)?;
+    copy_to_user_dir(&image.file_path, &save_path)
 }
 
 #[tauri::command]
@@ -86,12 +142,8 @@ pub fn download_all_images(
     nestling_id: i64,
     save_path: String,
 ) -> DbResult<()> {
-    download_all_image_into_user(&db, nestling_id, save_path)
-}
-
-#[tauri::command]
-pub fn delete_image(db: tauri::State<AppDb>, id: i64) -> DbResult<()> {
-    delete_image_from_app(&db, id)
+    let images = get_images_from_db(&db, nestling_id)?;
+    export_images_as_zip(images, &save_path)
 }
 
 #[tauri::command]

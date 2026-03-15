@@ -34,7 +34,7 @@ pub fn authenticate_user(db: &AppDb, data: LoginData) -> DbResult<User> {
 
     let mut statement = connection.prepare(
         "
-            SELECT id, username, email, password 
+            SELECT id, username, email, password
             FROM users
             WHERE email = ?1",
     )?;
