@@ -2,13 +2,13 @@ use crate::{
     models::nest::{Nest, NewNest},
     utils::{
         db::AppDb,
-        errors::{DbResult, LogError},
+        errors::{AppResult, LogError},
     },
 };
 use chrono::Utc;
 use rusqlite::params;
 
-pub fn create_nest_in_db(db: &AppDb, data: NewNest) -> DbResult<Nest> {
+pub fn create_nest_in_db(db: &AppDb, data: NewNest) -> AppResult<Nest> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
@@ -29,7 +29,7 @@ pub fn create_nest_in_db(db: &AppDb, data: NewNest) -> DbResult<Nest> {
     Ok(nest)
 }
 
-pub fn get_nests_by_user(db: &AppDb, user_id: i64) -> DbResult<Vec<Nest>> {
+pub fn get_nests_by_user(db: &AppDb, user_id: i64) -> AppResult<Vec<Nest>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
@@ -48,7 +48,7 @@ pub fn get_nests_by_user(db: &AppDb, user_id: i64) -> DbResult<Vec<Nest>> {
     Ok(nests)
 }
 
-pub fn get_nest_data(db: &AppDb, nest_id: i64) -> DbResult<Nest> {
+pub fn get_nest_data(db: &AppDb, nest_id: i64) -> AppResult<Nest> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
@@ -65,7 +65,7 @@ pub fn get_nest_data(db: &AppDb, nest_id: i64) -> DbResult<Nest> {
     Ok(nest)
 }
 
-pub fn update_nest_title(db: &AppDb, nest_id: i64, new_title: String) -> DbResult<()> {
+pub fn update_nest_title(db: &AppDb, nest_id: i64, new_title: String) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -80,7 +80,7 @@ pub fn update_nest_title(db: &AppDb, nest_id: i64, new_title: String) -> DbResul
     Ok(())
 }
 
-pub fn delete_nest_from_db(db: &AppDb, nest_id: i64) -> DbResult<()> {
+pub fn delete_nest_from_db(db: &AppDb, nest_id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
 
     connection

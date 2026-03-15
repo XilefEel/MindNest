@@ -1,11 +1,11 @@
 // use crate::models::journal::{JournalEntry, JournalTemplate, NewJournalEntry, NewJournalTemplate};
 // use crate::utils::db::AppDb;
-// use crate::utils::errors::DbResult;
+// use crate::utils::errors::AppResult;
 // use rusqlite::params;
 
 // use chrono::Utc;
 
-// pub fn insert_journal_entry_into_db(db: &AppDb, data: NewJournalEntry) -> DbResult<JournalEntry> {
+// pub fn insert_journal_entry_into_db(db: &AppDb, data: NewJournalEntry) -> AppResult<JournalEntry> {
 //     let connection = db.connection.lock().unwrap();
 //     let created_at = Utc::now().to_rfc3339();
 
@@ -44,7 +44,7 @@
 // pub fn get_journal_entries_by_nestling(
 //     db: &AppDb,
 //     nestling_id: i64,
-// ) -> DbResult<Vec<JournalEntry>> {
+// ) -> AppResult<Vec<JournalEntry>> {
 //     let connection = db.connection.lock().unwrap();
 
 //     let mut statement = connection.prepare(
@@ -78,7 +78,7 @@
 //     title: String,
 //     content: String,
 //     entry_date: String,
-// ) -> DbResult<()> {
+// ) -> AppResult<()> {
 //     let connection = db.connection.lock().unwrap();
 //     let updated_at = Utc::now().to_rfc3339();
 
@@ -93,7 +93,7 @@
 //     Ok(())
 // }
 
-// pub fn delete_journal_entry_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+// pub fn delete_journal_entry_from_db(db: &AppDb, id: i64) -> AppResult<()> {
 //     let connection = db.connection.lock().unwrap();
 //     connection.execute("DELETE FROM journal_entries WHERE id = ?1", params![id])?;
 
@@ -103,7 +103,7 @@
 // pub fn insert_journal_template_into_db(
 //     db: &AppDb,
 //     data: NewJournalTemplate,
-// ) -> DbResult<JournalTemplate> {
+// ) -> AppResult<JournalTemplate> {
 //     let connection = db.connection.lock().unwrap();
 //     let timestamp = Utc::now().to_rfc3339();
 
@@ -140,7 +140,7 @@
 // pub fn get_journal_templates_by_nestling(
 //     db: &AppDb,
 //     nestling_id: i64,
-// ) -> DbResult<Vec<JournalTemplate>> {
+// ) -> AppResult<Vec<JournalTemplate>> {
 //     let connection = db.connection.lock().unwrap();
 
 //     let mut statement = connection.prepare(
@@ -171,7 +171,7 @@
 //     id: i64,
 //     name: String,
 //     content: String,
-// ) -> DbResult<()> {
+// ) -> AppResult<()> {
 //     let connection = db.connection.lock().unwrap();
 //     let updated_at = Utc::now().to_rfc3339();
 
@@ -186,7 +186,7 @@
 //     Ok(())
 // }
 
-// pub fn delete_journal_template_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+// pub fn delete_journal_template_from_db(db: &AppDb, id: i64) -> AppResult<()> {
 //     let connection = db.connection.lock().unwrap();
 //     connection.execute("DELETE FROM journal_templates WHERE id = ?1", params![id])?;
 

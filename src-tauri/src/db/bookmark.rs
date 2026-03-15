@@ -2,7 +2,7 @@ use crate::{
     models::bookmark::{Bookmark, BookmarkMetadata, NewBookmark},
     utils::{
         db::AppDb,
-        errors::{DbError, DbResult, LogError},
+        errors::{AppError, AppResult, LogError},
     },
 };
 use chrono::Utc;
@@ -11,7 +11,7 @@ use rusqlite::params;
 use reqwest::Client;
 use scraper::{Html, Selector};
 
-async fn fetch_metadata(url: &str) -> DbResult<BookmarkMetadata> {
+async fn fetch_metadata(url: &str) -> AppResult<BookmarkMetadata> {
     let client = Client::builder()
         .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
         .timeout(std::time::Duration::from_secs(10))
@@ -29,7 +29,9 @@ async fn fetch_metadata(url: &str) -> DbResult<BookmarkMetadata> {
             url,
             response.status()
         );
-        return Err(DbError::HttpError(response.error_for_status().unwrap_err()));
+        return Err(AppError::HttpError(
+            response.error_for_status().unwrap_err(),
+        ));
     }
 
     let html = response
@@ -79,7 +81,7 @@ fn extract_title(document: &Html) -> Option<String> {
         .map(|element| element.text().collect::<String>().trim().to_string())
 }
 
-fn insert_bookmark_into_db(db: &AppDb, data: NewBookmark) -> DbResult<Bookmark> {
+fn insert_bookmark_into_db(db: &AppDb, data: NewBookmark) -> AppResult<Bookmark> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
@@ -113,7 +115,7 @@ pub async fn create_new_bookmark_in_db(
     db: &AppDb,
     nestling_id: i64,
     url: String,
-) -> DbResult<Bookmark> {
+) -> AppResult<Bookmark> {
     let metadata = fetch_metadata(&url).await?;
 
     let new_bookmark = NewBookmark {
@@ -130,7 +132,7 @@ pub async fn create_new_bookmark_in_db(
     Ok(bookmark)
 }
 
-pub fn toggle_bookmark_favorite_in_db(db: &AppDb, id: i64) -> DbResult<()> {
+pub fn toggle_bookmark_favorite_in_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -144,7 +146,7 @@ pub fn toggle_bookmark_favorite_in_db(db: &AppDb, id: i64) -> DbResult<()> {
     Ok(())
 }
 
-pub fn get_bookmarks_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Bookmark>> {
+pub fn get_bookmarks_by_nestling(db: &AppDb, nestling_id: i64) -> AppResult<Vec<Bookmark>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
@@ -163,7 +165,7 @@ pub fn get_bookmarks_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<B
     Ok(bookmarks)
 }
 
-pub fn delete_bookmark_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+pub fn delete_bookmark_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
 
     connection

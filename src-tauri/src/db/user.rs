@@ -2,10 +2,10 @@ use crate::models::user::{LoginData, SignupData, User};
 
 use crate::utils::auth::{hash_password, verify_password};
 use crate::utils::db::AppDb;
-use crate::utils::errors::{DbError, DbResult, LogError};
+use crate::utils::errors::{AppError, AppResult, LogError};
 use rusqlite::params;
 
-pub fn create_user(db: &AppDb, data: SignupData) -> DbResult<()> {
+pub fn create_user(db: &AppDb, data: SignupData) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
     let mut statement = connection.prepare("SELECT COUNT(*) FROM users WHERE email = ?1")?;
 
@@ -14,10 +14,12 @@ pub fn create_user(db: &AppDb, data: SignupData) -> DbResult<()> {
         .log_err("create_user: failed to check if email exists")?;
 
     if count > 0 {
-        return Err(DbError::ValidationError("Email already exists".to_string()));
+        return Err(AppError::ValidationError(
+            "Email already exists".to_string(),
+        ));
     }
 
-    let hashed = hash_password(&data.password).map_err(|e| DbError::AuthError(e.to_string()))?;
+    let hashed = hash_password(&data.password).map_err(|e| AppError::AuthError(e.to_string()))?;
 
     connection
         .execute(
@@ -29,7 +31,7 @@ pub fn create_user(db: &AppDb, data: SignupData) -> DbResult<()> {
     Ok(())
 }
 
-pub fn authenticate_user(db: &AppDb, data: LoginData) -> DbResult<User> {
+pub fn authenticate_user(db: &AppDb, data: LoginData) -> AppResult<User> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
@@ -46,7 +48,7 @@ pub fn authenticate_user(db: &AppDb, data: LoginData) -> DbResult<User> {
         .log_err("authenticate_user")?;
 
     let is_valid = verify_password(&hashed_password, &data.password)
-        .map_err(|e| DbError::AuthError(e.to_string()))?;
+        .map_err(|e| AppError::AuthError(e.to_string()))?;
 
     if is_valid {
         Ok(User {
@@ -55,6 +57,6 @@ pub fn authenticate_user(db: &AppDb, data: LoginData) -> DbResult<User> {
             email,
         })
     } else {
-        Err(DbError::AuthError("Invalid email or password".to_string()))
+        Err(AppError::AuthError("Invalid email or password".to_string()))
     }
 }

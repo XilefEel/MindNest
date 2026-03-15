@@ -1,4 +1,4 @@
-use crate::utils::errors::{DbError, DbResult, LogError};
+use crate::utils::errors::{AppError, AppResult, LogError};
 use crate::{
     models::tag::{NewTag, Tag},
     utils::db::AppDb,
@@ -7,7 +7,7 @@ use chrono::Utc;
 use rusqlite::params;
 use std::collections::HashMap;
 
-pub fn insert_tag_into_db(db: &AppDb, data: NewTag) -> DbResult<Tag> {
+pub fn insert_tag_into_db(db: &AppDb, data: NewTag) -> AppResult<Tag> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
@@ -28,7 +28,7 @@ pub fn insert_tag_into_db(db: &AppDb, data: NewTag) -> DbResult<Tag> {
     Ok(tag)
 }
 
-pub fn get_tags_by_nest(db: &AppDb, nest_id: i64) -> DbResult<Vec<Tag>> {
+pub fn get_tags_by_nest(db: &AppDb, nest_id: i64) -> AppResult<Vec<Tag>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
@@ -52,7 +52,7 @@ pub fn update_tag_in_db(
     id: i64,
     name: Option<String>,
     color: Option<String>,
-) -> DbResult<()> {
+) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -69,7 +69,7 @@ pub fn update_tag_in_db(
     Ok(())
 }
 
-pub fn delete_tag_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+pub fn delete_tag_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
 
     let rows_affected = connection
@@ -77,13 +77,13 @@ pub fn delete_tag_from_db(db: &AppDb, id: i64) -> DbResult<()> {
         .log_err("delete_tag_from_db")?;
 
     if rows_affected == 0 {
-        return Err(DbError::NotFound);
+        return Err(AppError::NotFound);
     }
 
     Ok(())
 }
 
-pub fn add_tag_to_nestling(db: &AppDb, nestling_id: i64, tag_id: i64) -> DbResult<()> {
+pub fn add_tag_to_nestling(db: &AppDb, nestling_id: i64, tag_id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
@@ -102,7 +102,7 @@ pub fn add_tag_to_nestling(db: &AppDb, nestling_id: i64, tag_id: i64) -> DbResul
 pub fn get_all_nestling_tags_for_nest(
     db: &AppDb,
     nest_id: i64,
-) -> DbResult<HashMap<i64, Vec<Tag>>> {
+) -> AppResult<HashMap<i64, Vec<Tag>>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
@@ -141,7 +141,7 @@ pub fn get_all_nestling_tags_for_nest(
     Ok(nestling_tags_map)
 }
 
-pub fn remove_tag_from_nestling(db: &AppDb, nestling_id: i64, tag_id: i64) -> DbResult<()> {
+pub fn remove_tag_from_nestling(db: &AppDb, nestling_id: i64, tag_id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
 
     let rows_affected = connection
@@ -152,7 +152,7 @@ pub fn remove_tag_from_nestling(db: &AppDb, nestling_id: i64, tag_id: i64) -> Db
         .log_err("remove_tag_from_nestling")?;
 
     if rows_affected == 0 {
-        return Err(DbError::NotFound);
+        return Err(AppError::NotFound);
     }
 
     Ok(())

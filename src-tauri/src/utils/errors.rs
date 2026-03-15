@@ -1,7 +1,7 @@
 use thiserror::Error;
 
 #[derive(Error, Debug)]
-pub enum DbError {
+pub enum AppError {
     #[error("Validation error: {0}")]
     ValidationError(String),
 
@@ -33,7 +33,7 @@ pub enum DbError {
     InvalidUrl(#[from] url::ParseError),
 }
 
-impl serde::Serialize for DbError {
+impl serde::Serialize for AppError {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -42,7 +42,7 @@ impl serde::Serialize for DbError {
     }
 }
 
-pub type DbResult<T> = Result<T, DbError>;
+pub type AppResult<T> = Result<T, AppError>;
 
 pub trait LogError<T> {
     fn log_err(self, context: &str) -> Self;

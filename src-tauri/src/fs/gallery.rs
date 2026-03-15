@@ -1,5 +1,5 @@
 use crate::models::gallery::GalleryImage;
-use crate::utils::errors::{DbError, DbResult, LogError};
+use crate::utils::errors::{AppError, AppResult, LogError};
 use chrono::Local;
 use std::fs;
 use std::io::Write;
@@ -11,11 +11,11 @@ pub fn write_image_data(
     app_handle: &tauri::AppHandle,
     file_name: &str,
     file_data: Vec<u8>,
-) -> DbResult<String> {
+) -> AppResult<String> {
     let app_dir = app_handle
         .path()
         .app_data_dir()
-        .map_err(|e| DbError::ValidationError(e.to_string()))?;
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let images_dir = app_dir.join("gallery");
 
@@ -31,12 +31,12 @@ pub fn write_image_data(
     Ok(destination.to_string_lossy().to_string())
 }
 
-pub fn copy_to_user_dir(file_path: &str, save_path: &str) -> DbResult<()> {
+pub fn copy_to_user_dir(file_path: &str, save_path: &str) -> AppResult<()> {
     fs::copy(file_path, save_path).log_err("copy_to_user_dir: failed to copy image")?;
     Ok(())
 }
 
-pub fn export_images_as_zip(images: Vec<GalleryImage>, save_path: &str) -> DbResult<()> {
+pub fn export_images_as_zip(images: Vec<GalleryImage>, save_path: &str) -> AppResult<()> {
     let file =
         fs::File::create(save_path).log_err("export_images_as_zip: failed to create zip file")?;
 

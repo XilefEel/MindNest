@@ -1,10 +1,10 @@
 use crate::models::background_image::{BackgroundImage, NewBackgroundImage};
 use crate::utils::db::AppDb;
-use crate::utils::errors::{DbResult, LogError};
+use crate::utils::errors::{AppResult, LogError};
 use chrono::Utc;
 use rusqlite::params;
 
-pub fn add_background_into_db(db: &AppDb, data: NewBackgroundImage) -> DbResult<BackgroundImage> {
+pub fn add_background_into_db(db: &AppDb, data: NewBackgroundImage) -> AppResult<BackgroundImage> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
@@ -33,7 +33,7 @@ pub fn add_background_into_db(db: &AppDb, data: NewBackgroundImage) -> DbResult<
     Ok(image)
 }
 
-pub fn get_backgrounds_from_db(db: &AppDb, nest_id: i64) -> DbResult<Vec<BackgroundImage>> {
+pub fn get_backgrounds_from_db(db: &AppDb, nest_id: i64) -> AppResult<Vec<BackgroundImage>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
@@ -52,7 +52,7 @@ pub fn get_backgrounds_from_db(db: &AppDb, nest_id: i64) -> DbResult<Vec<Backgro
     Ok(images)
 }
 
-pub fn get_background_by_id(db: &AppDb, id: i64) -> DbResult<BackgroundImage> {
+pub fn get_background_by_id(db: &AppDb, id: i64) -> AppResult<BackgroundImage> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
@@ -69,7 +69,7 @@ pub fn get_background_by_id(db: &AppDb, id: i64) -> DbResult<BackgroundImage> {
     Ok(image)
 }
 
-pub fn delete_background_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+pub fn delete_background_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
 
     connection

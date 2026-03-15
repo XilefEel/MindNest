@@ -4,7 +4,7 @@ use crate::{
         update_template_in_db,
     },
     models::note::{NewNoteTemplate, NoteTemplate},
-    utils::{db::AppDb, errors::DbResult},
+    utils::{db::AppDb, errors::AppResult},
 };
 
 #[tauri::command]
@@ -13,7 +13,7 @@ pub fn edit_note(
     id: i64,
     title: Option<String>,
     content: Option<String>,
-) -> DbResult<()> {
+) -> AppResult<()> {
     update_note(&db, id, title, content)
 }
 
@@ -21,12 +21,12 @@ pub fn edit_note(
 pub fn create_note_template(
     db: tauri::State<AppDb>,
     data: NewNoteTemplate,
-) -> DbResult<NoteTemplate> {
+) -> AppResult<NoteTemplate> {
     insert_template_into_db(&db, data)
 }
 
 #[tauri::command]
-pub fn get_note_templates(db: tauri::State<AppDb>, nest_id: i64) -> DbResult<Vec<NoteTemplate>> {
+pub fn get_note_templates(db: tauri::State<AppDb>, nest_id: i64) -> AppResult<Vec<NoteTemplate>> {
     get_templates_by_nestling(&db, nest_id)
 }
 
@@ -36,11 +36,11 @@ pub fn update_note_template(
     id: i64,
     name: String,
     content: String,
-) -> DbResult<()> {
+) -> AppResult<()> {
     update_template_in_db(&db, id, name, content)
 }
 
 #[tauri::command]
-pub fn delete_note_template(db: tauri::State<AppDb>, id: i64) -> DbResult<()> {
+pub fn delete_note_template(db: tauri::State<AppDb>, id: i64) -> AppResult<()> {
     delete_template_from_db(&db, id)
 }

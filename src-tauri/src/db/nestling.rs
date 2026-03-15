@@ -1,4 +1,4 @@
-use crate::utils::errors::{DbError, DbResult, LogError};
+use crate::utils::errors::{AppError, AppResult, LogError};
 use crate::{
     models::nestling::{Nestling, NewNestling},
     utils::db::AppDb,
@@ -6,7 +6,7 @@ use crate::{
 use chrono::Utc;
 use rusqlite::params;
 
-pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> DbResult<Nestling> {
+pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> AppResult<Nestling> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
@@ -37,7 +37,7 @@ pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> DbResult<Nestli
     Ok(nestling)
 }
 
-pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> DbResult<Vec<Nestling>> {
+pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> AppResult<Vec<Nestling>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
@@ -69,7 +69,7 @@ pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> DbResult<Vec<Nestling>
     Ok(nestlings)
 }
 
-pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> DbResult<Nestling> {
+pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> AppResult<Nestling> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
@@ -94,7 +94,7 @@ pub fn update_nestling_in_db(
     is_pinned: Option<bool>,
     title: Option<String>,
     content: Option<String>,
-) -> DbResult<()> {
+) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -111,7 +111,7 @@ pub fn update_nestling_in_db(
     Ok(())
 }
 
-pub fn update_nestling_timestamp_in_db(db: &AppDb, id: i64) -> DbResult<()> {
+pub fn update_nestling_timestamp_in_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -126,7 +126,7 @@ pub fn update_nestling_timestamp_in_db(db: &AppDb, id: i64) -> DbResult<()> {
     Ok(())
 }
 
-pub fn delete_nestling_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+pub fn delete_nestling_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
 
     let rows_affected = connection
@@ -134,7 +134,7 @@ pub fn delete_nestling_from_db(db: &AppDb, id: i64) -> DbResult<()> {
         .log_err("delete_nestling_from_db")?;
 
     if rows_affected == 0 {
-        return Err(DbError::NotFound);
+        return Err(AppError::NotFound);
     }
 
     Ok(())

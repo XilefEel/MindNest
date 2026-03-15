@@ -2,11 +2,11 @@ use crate::models::mindmap::{
     MindmapEdge, MindmapEdgeDB, MindmapNode, MindmapNodeDB, NewMindmapEdgeDB, NewMindmapNodeDB,
 };
 use crate::utils::db::AppDb;
-use crate::utils::errors::{DbResult, LogError};
+use crate::utils::errors::{AppResult, LogError};
 use chrono::Utc;
 use rusqlite::params;
 
-pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> DbResult<MindmapNode> {
+pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> AppResult<MindmapNode> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
@@ -40,7 +40,7 @@ pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> DbResult<Mindm
     Ok(node.into())
 }
 
-pub fn get_nodes_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<MindmapNode>> {
+pub fn get_nodes_by_nestling(db: &AppDb, nestling_id: i64) -> AppResult<Vec<MindmapNode>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
@@ -68,7 +68,7 @@ pub fn update_node_in_db(
     label: String,
     color: String,
     node_type: String,
-) -> DbResult<()> {
+) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -94,7 +94,7 @@ pub fn update_node_in_db(
     Ok(())
 }
 
-pub fn delete_node_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+pub fn delete_node_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
 
     connection
@@ -104,7 +104,7 @@ pub fn delete_node_from_db(db: &AppDb, id: i64) -> DbResult<()> {
     Ok(())
 }
 
-pub fn insert_edge_into_db(db: &AppDb, data: NewMindmapEdgeDB) -> DbResult<MindmapEdge> {
+pub fn insert_edge_into_db(db: &AppDb, data: NewMindmapEdgeDB) -> AppResult<MindmapEdge> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
@@ -141,7 +141,7 @@ pub fn insert_edge_into_db(db: &AppDb, data: NewMindmapEdgeDB) -> DbResult<Mindm
     Ok(edge.into())
 }
 
-pub fn get_edges_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<MindmapEdge>> {
+pub fn get_edges_by_nestling(db: &AppDb, nestling_id: i64) -> AppResult<Vec<MindmapEdge>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
@@ -165,7 +165,7 @@ pub fn update_edge_in_db(
     id: i64,
     source_handle: String,
     target_handle: String,
-) -> DbResult<()> {
+) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -181,7 +181,7 @@ pub fn update_edge_in_db(
     Ok(())
 }
 
-pub fn delete_edge_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+pub fn delete_edge_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
 
     connection

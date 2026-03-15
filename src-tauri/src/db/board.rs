@@ -3,12 +3,12 @@ use crate::models::board::{
     BoardCard, BoardColumn, BoardColumnData, BoardData, NewBoardCard, NewBoardColumn,
 };
 use crate::utils::db::AppDb;
-use crate::utils::errors::{DbResult, LogError};
+use crate::utils::errors::{AppResult, LogError};
 use chrono::Utc;
 use rusqlite::params;
 use std::collections::HashMap;
 
-pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> DbResult<BoardColumn> {
+pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> AppResult<BoardColumn> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
@@ -42,7 +42,7 @@ pub fn update_board_column_in_db(
     title: String,
     order_index: i64,
     color: String,
-) -> DbResult<()> {
+) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -59,7 +59,7 @@ pub fn update_board_column_in_db(
     Ok(())
 }
 
-pub fn delete_board_column_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+pub fn delete_board_column_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
 
     connection
@@ -69,7 +69,7 @@ pub fn delete_board_column_from_db(db: &AppDb, id: i64) -> DbResult<()> {
     Ok(())
 }
 
-pub fn insert_board_card_into_db(db: &AppDb, data: NewBoardCard) -> DbResult<BoardCard> {
+pub fn insert_board_card_into_db(db: &AppDb, data: NewBoardCard) -> AppResult<BoardCard> {
     let connection = db.connection.lock().unwrap();
     let created_at = Utc::now().to_rfc3339();
 
@@ -104,7 +104,7 @@ pub fn update_board_card_in_db(
     description: Option<String>,
     order_index: i64,
     column_id: i64,
-) -> DbResult<()> {
+) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -121,7 +121,7 @@ pub fn update_board_card_in_db(
     Ok(())
 }
 
-pub fn delete_board_card_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+pub fn delete_board_card_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
 
     connection
@@ -131,7 +131,7 @@ pub fn delete_board_card_from_db(db: &AppDb, id: i64) -> DbResult<()> {
     Ok(())
 }
 
-fn get_board_columns_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<BoardColumn>> {
+fn get_board_columns_by_nestling(db: &AppDb, nestling_id: i64) -> AppResult<Vec<BoardColumn>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
@@ -150,7 +150,7 @@ fn get_board_columns_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<B
     Ok(columns)
 }
 
-fn get_all_cards_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<BoardCard>> {
+fn get_all_cards_by_nestling(db: &AppDb, nestling_id: i64) -> AppResult<Vec<BoardCard>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
@@ -171,7 +171,7 @@ fn get_all_cards_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Board
     Ok(cards)
 }
 
-pub fn get_board_data_from_db(db: &AppDb, nestling_id: i64) -> DbResult<BoardData> {
+pub fn get_board_data_from_db(db: &AppDb, nestling_id: i64) -> AppResult<BoardData> {
     let nestling = get_nestling_by_id(&db, nestling_id).map_err(|e| e.to_string());
     let columns = get_board_columns_by_nestling(&db, nestling_id)?;
     let all_cards = get_all_cards_by_nestling(&db, nestling_id)?;

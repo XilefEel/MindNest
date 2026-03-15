@@ -2,11 +2,11 @@ use rusqlite::params;
 
 use crate::models::folder::{Folder, NewFolder};
 use crate::utils::db::AppDb;
-use crate::utils::errors::{DbResult, LogError};
+use crate::utils::errors::{AppResult, LogError};
 
 use chrono::Utc;
 
-pub fn insert_folder_into_db(db: &AppDb, data: NewFolder) -> DbResult<Folder> {
+pub fn insert_folder_into_db(db: &AppDb, data: NewFolder) -> AppResult<Folder> {
     let connection = db.connection.lock().unwrap();
 
     let created_at = Utc::now().to_rfc3339();
@@ -34,7 +34,7 @@ pub fn insert_folder_into_db(db: &AppDb, data: NewFolder) -> DbResult<Folder> {
     Ok(folder)
 }
 
-pub fn get_folders_by_nest(db: &AppDb, nest_id: i64) -> DbResult<Vec<Folder>> {
+pub fn get_folders_by_nest(db: &AppDb, nest_id: i64) -> AppResult<Vec<Folder>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection.prepare(
@@ -58,7 +58,7 @@ pub fn update_folder_in_db(
     id: i64,
     parent_id: Option<i64>,
     name: Option<String>,
-) -> DbResult<()> {
+) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -75,7 +75,7 @@ pub fn update_folder_in_db(
     Ok(())
 }
 
-pub fn delete_folder_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+pub fn delete_folder_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
 
     connection

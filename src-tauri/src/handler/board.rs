@@ -5,10 +5,13 @@ use crate::db::board::{
 };
 use crate::models::board::{BoardCard, BoardColumn, BoardData, NewBoardCard, NewBoardColumn};
 use crate::utils::db::AppDb;
-use crate::utils::errors::DbResult;
+use crate::utils::errors::AppResult;
 
 #[tauri::command]
-pub fn create_board_column(db: tauri::State<AppDb>, data: NewBoardColumn) -> DbResult<BoardColumn> {
+pub fn create_board_column(
+    db: tauri::State<AppDb>,
+    data: NewBoardColumn,
+) -> AppResult<BoardColumn> {
     insert_board_column_into_db(&db, data)
 }
 
@@ -19,17 +22,17 @@ pub fn update_board_column(
     title: String,
     order_index: i64,
     color: String,
-) -> DbResult<()> {
+) -> AppResult<()> {
     update_board_column_in_db(&db, id, title, order_index, color)
 }
 
 #[tauri::command]
-pub fn delete_board_column(db: tauri::State<AppDb>, id: i64) -> DbResult<()> {
+pub fn delete_board_column(db: tauri::State<AppDb>, id: i64) -> AppResult<()> {
     delete_board_column_from_db(&db, id)
 }
 
 #[tauri::command]
-pub fn create_board_card(db: tauri::State<AppDb>, data: NewBoardCard) -> DbResult<BoardCard> {
+pub fn create_board_card(db: tauri::State<AppDb>, data: NewBoardCard) -> AppResult<BoardCard> {
     insert_board_card_into_db(&db, data)
 }
 
@@ -41,16 +44,16 @@ pub fn update_board_card(
     description: Option<String>,
     order_index: i64,
     column_id: i64,
-) -> DbResult<()> {
+) -> AppResult<()> {
     update_board_card_in_db(&db, id, title, description, order_index, column_id)
 }
 
 #[tauri::command]
-pub fn delete_board_card(db: tauri::State<AppDb>, id: i64) -> DbResult<()> {
+pub fn delete_board_card(db: tauri::State<AppDb>, id: i64) -> AppResult<()> {
     delete_board_card_from_db(&db, id)
 }
 
 #[tauri::command]
-pub fn get_board_data(db: tauri::State<AppDb>, nestling_id: i64) -> DbResult<BoardData> {
+pub fn get_board_data(db: tauri::State<AppDb>, nestling_id: i64) -> AppResult<BoardData> {
     get_board_data_from_db(&db, nestling_id)
 }

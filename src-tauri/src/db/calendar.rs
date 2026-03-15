@@ -2,14 +2,14 @@ use crate::{
     models::calendar::{NewPlannerEvent, PlannerEvent},
     utils::{
         db::AppDb,
-        errors::{DbResult, LogError},
+        errors::{AppResult, LogError},
     },
 };
 use rusqlite::params;
 
 use chrono::Utc;
 
-pub fn insert_planner_event_into_db(db: &AppDb, data: NewPlannerEvent) -> DbResult<PlannerEvent> {
+pub fn insert_planner_event_into_db(db: &AppDb, data: NewPlannerEvent) -> AppResult<PlannerEvent> {
     let connection = db.connection.lock().unwrap();
 
     let created_at = Utc::now().to_rfc3339();
@@ -47,7 +47,7 @@ pub fn get_planner_events_from_range(
     nestling_id: i64,
     start: String,
     end: String,
-) -> DbResult<Vec<PlannerEvent>> {
+) -> AppResult<Vec<PlannerEvent>> {
     let connection = db.connection.lock().unwrap();
 
     let mut statement = connection
@@ -78,7 +78,7 @@ pub fn update_planner_event_in_db(
     start_time: f32,
     duration: f32,
     color: Option<String>,
-) -> DbResult<()> {
+) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
     let updated_at = Utc::now().to_rfc3339();
 
@@ -93,7 +93,7 @@ pub fn update_planner_event_in_db(
     Ok(())
 }
 
-pub fn delete_planner_event_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+pub fn delete_planner_event_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.connection.lock().unwrap();
 
     connection
