@@ -5,7 +5,7 @@ use chrono::Utc;
 use rusqlite::params;
 
 pub fn add_background_into_db(db: &AppDb, data: NewBackgroundImage) -> AppResult<BackgroundImage> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
@@ -34,7 +34,7 @@ pub fn add_background_into_db(db: &AppDb, data: NewBackgroundImage) -> AppResult
 }
 
 pub fn get_backgrounds_from_db(db: &AppDb, nest_id: i64) -> AppResult<Vec<BackgroundImage>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection.prepare(
         "
@@ -53,7 +53,7 @@ pub fn get_backgrounds_from_db(db: &AppDb, nest_id: i64) -> AppResult<Vec<Backgr
 }
 
 pub fn get_background_by_id(db: &AppDb, id: i64) -> AppResult<BackgroundImage> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection.prepare(
         "
@@ -70,7 +70,7 @@ pub fn get_background_by_id(db: &AppDb, id: i64) -> AppResult<BackgroundImage> {
 }
 
 pub fn delete_background_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     connection
         .execute("DELETE FROM background_images WHERE id = ?1", params![id])

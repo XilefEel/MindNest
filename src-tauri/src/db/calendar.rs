@@ -10,7 +10,7 @@ use rusqlite::params;
 use chrono::Utc;
 
 pub fn insert_planner_event_into_db(db: &AppDb, data: NewPlannerEvent) -> AppResult<PlannerEvent> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let created_at = Utc::now().to_rfc3339();
 
@@ -48,7 +48,7 @@ pub fn get_planner_events_from_range(
     start: String,
     end: String,
 ) -> AppResult<Vec<PlannerEvent>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection
         .prepare("
@@ -79,7 +79,7 @@ pub fn update_planner_event_in_db(
     duration: f32,
     color: Option<String>,
 ) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -94,7 +94,7 @@ pub fn update_planner_event_in_db(
 }
 
 pub fn delete_planner_event_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     connection
         .execute("DELETE FROM planner_events WHERE id = ?1", params![id])

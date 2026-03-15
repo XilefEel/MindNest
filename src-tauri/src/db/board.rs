@@ -9,7 +9,7 @@ use rusqlite::params;
 use std::collections::HashMap;
 
 pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> AppResult<BoardColumn> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
@@ -43,7 +43,7 @@ pub fn update_board_column_in_db(
     order_index: i64,
     color: String,
 ) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -60,7 +60,7 @@ pub fn update_board_column_in_db(
 }
 
 pub fn delete_board_column_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     connection
         .execute("DELETE FROM board_columns WHERE id = ?1", params![id])
@@ -70,7 +70,7 @@ pub fn delete_board_column_from_db(db: &AppDb, id: i64) -> AppResult<()> {
 }
 
 pub fn insert_board_card_into_db(db: &AppDb, data: NewBoardCard) -> AppResult<BoardCard> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
@@ -105,7 +105,7 @@ pub fn update_board_card_in_db(
     order_index: i64,
     column_id: i64,
 ) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -122,7 +122,7 @@ pub fn update_board_card_in_db(
 }
 
 pub fn delete_board_card_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     connection
         .execute("DELETE FROM board_cards WHERE id = ?1", params![id])
@@ -132,7 +132,7 @@ pub fn delete_board_card_from_db(db: &AppDb, id: i64) -> AppResult<()> {
 }
 
 fn get_board_columns_by_nestling(db: &AppDb, nestling_id: i64) -> AppResult<Vec<BoardColumn>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection.prepare(
         "
@@ -151,7 +151,7 @@ fn get_board_columns_by_nestling(db: &AppDb, nestling_id: i64) -> AppResult<Vec<
 }
 
 fn get_all_cards_by_nestling(db: &AppDb, nestling_id: i64) -> AppResult<Vec<BoardCard>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection
         .prepare("

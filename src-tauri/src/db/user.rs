@@ -6,7 +6,7 @@ use crate::utils::errors::{AppError, AppResult, LogError};
 use rusqlite::params;
 
 pub fn create_user(db: &AppDb, data: SignupData) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let mut statement = connection.prepare("SELECT COUNT(*) FROM users WHERE email = ?1")?;
 
     let count: i64 = statement
@@ -32,7 +32,7 @@ pub fn create_user(db: &AppDb, data: SignupData) -> AppResult<()> {
 }
 
 pub fn authenticate_user(db: &AppDb, data: LoginData) -> AppResult<User> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection.prepare(
         "

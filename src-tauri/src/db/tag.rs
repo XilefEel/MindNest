@@ -8,7 +8,7 @@ use rusqlite::params;
 use std::collections::HashMap;
 
 pub fn insert_tag_into_db(db: &AppDb, data: NewTag) -> AppResult<Tag> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare(
@@ -29,7 +29,7 @@ pub fn insert_tag_into_db(db: &AppDb, data: NewTag) -> AppResult<Tag> {
 }
 
 pub fn get_tags_by_nest(db: &AppDb, nest_id: i64) -> AppResult<Vec<Tag>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection.prepare(
         "
@@ -53,7 +53,7 @@ pub fn update_tag_in_db(
     name: Option<String>,
     color: Option<String>,
 ) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -70,7 +70,7 @@ pub fn update_tag_in_db(
 }
 
 pub fn delete_tag_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let rows_affected = connection
         .execute("DELETE FROM tags WHERE id = ?1", params![id])
@@ -84,7 +84,7 @@ pub fn delete_tag_from_db(db: &AppDb, id: i64) -> AppResult<()> {
 }
 
 pub fn add_tag_to_nestling(db: &AppDb, nestling_id: i64, tag_id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     connection
@@ -103,7 +103,7 @@ pub fn get_all_nestling_tags_for_nest(
     db: &AppDb,
     nest_id: i64,
 ) -> AppResult<HashMap<i64, Vec<Tag>>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection.prepare(
         "
@@ -142,7 +142,7 @@ pub fn get_all_nestling_tags_for_nest(
 }
 
 pub fn remove_tag_from_nestling(db: &AppDb, nestling_id: i64, tag_id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let rows_affected = connection
         .execute(

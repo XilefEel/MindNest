@@ -7,7 +7,7 @@ use crate::utils::errors::{AppResult, LogError};
 use chrono::Utc;
 
 pub fn insert_folder_into_db(db: &AppDb, data: NewFolder) -> AppResult<Folder> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let created_at = Utc::now().to_rfc3339();
 
@@ -35,7 +35,7 @@ pub fn insert_folder_into_db(db: &AppDb, data: NewFolder) -> AppResult<Folder> {
 }
 
 pub fn get_folders_by_nest(db: &AppDb, nest_id: i64) -> AppResult<Vec<Folder>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection.prepare(
         "
@@ -59,7 +59,7 @@ pub fn update_folder_in_db(
     parent_id: Option<i64>,
     name: Option<String>,
 ) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -76,7 +76,7 @@ pub fn update_folder_in_db(
 }
 
 pub fn delete_folder_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     connection
         .execute("DELETE FROM folders WHERE id = ?1", params![id])

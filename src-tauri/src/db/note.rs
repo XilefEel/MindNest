@@ -13,7 +13,7 @@ pub fn update_note(
     title: Option<String>,
     content: Option<String>,
 ) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     let result = match (&title, &content) {
@@ -37,7 +37,7 @@ pub fn update_note(
 }
 
 pub fn insert_template_into_db(db: &AppDb, data: NewNoteTemplate) -> AppResult<NoteTemplate> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare(
@@ -64,7 +64,7 @@ pub fn insert_template_into_db(db: &AppDb, data: NewNoteTemplate) -> AppResult<N
 }
 
 pub fn get_templates_by_nestling(db: &AppDb, nest_id: i64) -> AppResult<Vec<NoteTemplate>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection.prepare(
         "
@@ -82,7 +82,7 @@ pub fn get_templates_by_nestling(db: &AppDb, nest_id: i64) -> AppResult<Vec<Note
 }
 
 pub fn update_template_in_db(db: &AppDb, id: i64, name: String, content: String) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -99,7 +99,7 @@ pub fn update_template_in_db(db: &AppDb, id: i64, name: String, content: String)
 }
 
 pub fn delete_template_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     connection
         .execute("DELETE FROM note_templates WHERE id = ?1", params![id])
         .log_err("delete_template_from_db")?;

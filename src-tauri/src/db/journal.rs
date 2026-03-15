@@ -6,7 +6,7 @@
 // use chrono::Utc;
 
 // pub fn insert_journal_entry_into_db(db: &AppDb, data: NewJournalEntry) -> AppResult<JournalEntry> {
-//     let connection = db.connection.lock().unwrap();
+//     let connection = db.conn()?;
 //     let created_at = Utc::now().to_rfc3339();
 
 //     let mut statement = connection
@@ -45,7 +45,7 @@
 //     db: &AppDb,
 //     nestling_id: i64,
 // ) -> AppResult<Vec<JournalEntry>> {
-//     let connection = db.connection.lock().unwrap();
+//     let connection = db.conn()?;
 
 //     let mut statement = connection.prepare(
 //         "
@@ -79,7 +79,7 @@
 //     content: String,
 //     entry_date: String,
 // ) -> AppResult<()> {
-//     let connection = db.connection.lock().unwrap();
+//     let connection = db.conn()?;
 //     let updated_at = Utc::now().to_rfc3339();
 
 //     connection.execute(
@@ -94,7 +94,7 @@
 // }
 
 // pub fn delete_journal_entry_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-//     let connection = db.connection.lock().unwrap();
+//     let connection = db.conn()?;
 //     connection.execute("DELETE FROM journal_entries WHERE id = ?1", params![id])?;
 
 //     Ok(())
@@ -104,7 +104,7 @@
 //     db: &AppDb,
 //     data: NewJournalTemplate,
 // ) -> AppResult<JournalTemplate> {
-//     let connection = db.connection.lock().unwrap();
+//     let connection = db.conn()?;
 //     let timestamp = Utc::now().to_rfc3339();
 
 //     let mut statement = connection.prepare(
@@ -141,7 +141,7 @@
 //     db: &AppDb,
 //     nestling_id: i64,
 // ) -> AppResult<Vec<JournalTemplate>> {
-//     let connection = db.connection.lock().unwrap();
+//     let connection = db.conn()?;
 
 //     let mut statement = connection.prepare(
 //         "
@@ -172,7 +172,7 @@
 //     name: String,
 //     content: String,
 // ) -> AppResult<()> {
-//     let connection = db.connection.lock().unwrap();
+//     let connection = db.conn()?;
 //     let updated_at = Utc::now().to_rfc3339();
 
 //     connection.execute(
@@ -187,7 +187,7 @@
 // }
 
 // pub fn delete_journal_template_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-//     let connection = db.connection.lock().unwrap();
+//     let connection = db.conn()?;
 //     connection.execute("DELETE FROM journal_templates WHERE id = ?1", params![id])?;
 
 //     Ok(())

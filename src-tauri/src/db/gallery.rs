@@ -6,7 +6,7 @@ use chrono::Utc;
 use rusqlite::params;
 
 pub fn add_image_into_db(db: &AppDb, data: NewGalleryImage) -> AppResult<GalleryImage> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
@@ -37,7 +37,7 @@ pub fn add_image_into_db(db: &AppDb, data: NewGalleryImage) -> AppResult<Gallery
 }
 
 pub fn get_images_from_db(db: &AppDb, nestling_id: i64) -> AppResult<Vec<GalleryImage>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let mut statement = connection
         .prepare("
             SELECT id, album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
@@ -55,7 +55,7 @@ pub fn get_images_from_db(db: &AppDb, nestling_id: i64) -> AppResult<Vec<Gallery
 }
 
 pub fn get_image_by_id(db: &AppDb, id: i64) -> AppResult<GalleryImage> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection
         .prepare("
@@ -79,7 +79,7 @@ pub fn update_image_in_db(
     description: Option<String>,
     is_favorite: bool,
 ) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -100,7 +100,7 @@ pub fn delete_image_from_db(db: &AppDb, id: i64) -> AppResult<()> {
 
     delete_file(&image.file_path);
 
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     connection
         .execute("DELETE FROM gallery_images WHERE id = ?1", params![id])
         .log_err("delete_gallery_image_from_db")?;
@@ -109,7 +109,7 @@ pub fn delete_image_from_db(db: &AppDb, id: i64) -> AppResult<()> {
 }
 
 // fn get_images_by_album_id(db: &AppDb, album_id: i64) -> AppResult<Vec<GalleryImage>> {
-//     let connection = db.connection.lock().unwrap();
+//     let connection = db.conn()?;
 //     let mut statement = connection
 //         .prepare("
 //             SELECT id, album_id, nestling_id, file_path, title, description, is_favorite, width, height, created_at, updated_at
@@ -141,7 +141,7 @@ pub fn delete_image_from_db(db: &AppDb, id: i64) -> AppResult<()> {
 // }
 
 // pub fn add_album_to_db(db: &AppDb, data: NewGalleryAlbum) -> AppResult<GalleryAlbum> {
-//     let connection = db.connection.lock().unwrap();
+//     let connection = db.conn()?;
 //     let created_at = Utc::now().to_rfc3339();
 
 //     let mut statement = connection.prepare(
@@ -176,7 +176,7 @@ pub fn delete_image_from_db(db: &AppDb, id: i64) -> AppResult<()> {
 // }
 
 // pub fn get_albums_from_db(db: &AppDb, nestling_id: i64) -> AppResult<Vec<GalleryAlbum>> {
-//     let connection = db.connection.lock().unwrap();
+//     let connection = db.conn()?;
 //     let mut statement = connection.prepare(
 //         "
 //             SELECT id, nestling_id, name, description, created_at, updated_at
@@ -208,7 +208,7 @@ pub fn delete_image_from_db(db: &AppDb, id: i64) -> AppResult<()> {
 //     name: Option<String>,
 //     description: Option<String>,
 // ) -> AppResult<()> {
-//     let connection = db.connection.lock().unwrap();
+//     let connection = db.conn()?;
 //     let updated_at = Utc::now().to_rfc3339();
 
 //     connection
@@ -225,7 +225,7 @@ pub fn delete_image_from_db(db: &AppDb, id: i64) -> AppResult<()> {
 // }
 
 // pub fn delete_album_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-//     let connection = db.connection.lock().unwrap();
+//     let connection = db.conn()?;
 //     connection
 //         .execute("DELETE FROM gallery_albums WHERE id = ?1", params![id])
 //         .log_err("delete_album_from_db")?;

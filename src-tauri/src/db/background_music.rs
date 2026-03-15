@@ -5,7 +5,7 @@ use chrono::Utc;
 use rusqlite::params;
 
 pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> AppResult<BackgroundMusic> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
@@ -34,7 +34,7 @@ pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> AppResult<Back
 }
 
 pub fn get_music_from_db(db: &AppDb, nest_id: i64) -> AppResult<Vec<BackgroundMusic>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection
         .prepare("
@@ -53,7 +53,7 @@ pub fn get_music_from_db(db: &AppDb, nest_id: i64) -> AppResult<Vec<BackgroundMu
 }
 
 pub fn get_music_by_id(db: &AppDb, id: i64) -> AppResult<BackgroundMusic> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection
         .prepare("
@@ -70,7 +70,7 @@ pub fn get_music_by_id(db: &AppDb, id: i64) -> AppResult<BackgroundMusic> {
 }
 
 pub fn update_music_in_db(db: &AppDb, id: i64, title: String, order_index: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -87,7 +87,7 @@ pub fn update_music_in_db(db: &AppDb, id: i64, title: String, order_index: i64) 
 }
 
 pub fn delete_music_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     connection
         .execute("DELETE FROM background_music WHERE id = ?1", params![id])

@@ -7,7 +7,7 @@ use chrono::Utc;
 use rusqlite::params;
 
 pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> AppResult<Nestling> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
@@ -38,7 +38,7 @@ pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> AppResult<Nestl
 }
 
 pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> AppResult<Vec<Nestling>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection
         .prepare("
@@ -70,7 +70,7 @@ pub fn get_nestlings_by_nest(db: &AppDb, nest_id: i64) -> AppResult<Vec<Nestling
 }
 
 pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> AppResult<Nestling> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection
         .prepare("
@@ -95,7 +95,7 @@ pub fn update_nestling_in_db(
     title: Option<String>,
     content: Option<String>,
 ) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -112,7 +112,7 @@ pub fn update_nestling_in_db(
 }
 
 pub fn update_nestling_timestamp_in_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -127,7 +127,7 @@ pub fn update_nestling_timestamp_in_db(db: &AppDb, id: i64) -> AppResult<()> {
 }
 
 pub fn delete_nestling_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let rows_affected = connection
         .execute("DELETE FROM nestlings WHERE id = ?1", params![id])

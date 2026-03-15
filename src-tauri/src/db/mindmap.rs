@@ -7,7 +7,7 @@ use chrono::Utc;
 use rusqlite::params;
 
 pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> AppResult<MindmapNode> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
@@ -41,7 +41,7 @@ pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> AppResult<Mind
 }
 
 pub fn get_nodes_by_nestling(db: &AppDb, nestling_id: i64) -> AppResult<Vec<MindmapNode>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection
         .prepare("
@@ -69,7 +69,7 @@ pub fn update_node_in_db(
     color: String,
     node_type: String,
 ) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -95,7 +95,7 @@ pub fn update_node_in_db(
 }
 
 pub fn delete_node_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     connection
         .execute("DELETE FROM mindmap_nodes WHERE id = ?1", params![id])
@@ -105,7 +105,7 @@ pub fn delete_node_from_db(db: &AppDb, id: i64) -> AppResult<()> {
 }
 
 pub fn insert_edge_into_db(db: &AppDb, data: NewMindmapEdgeDB) -> AppResult<MindmapEdge> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare(
@@ -142,7 +142,7 @@ pub fn insert_edge_into_db(db: &AppDb, data: NewMindmapEdgeDB) -> AppResult<Mind
 }
 
 pub fn get_edges_by_nestling(db: &AppDb, nestling_id: i64) -> AppResult<Vec<MindmapEdge>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection.prepare(
         "SELECT id, source_id, target_id, source_handle, target_handle, created_at, updated_at
@@ -166,7 +166,7 @@ pub fn update_edge_in_db(
     source_handle: String,
     target_handle: String,
 ) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -182,7 +182,7 @@ pub fn update_edge_in_db(
 }
 
 pub fn delete_edge_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     connection
         .execute("DELETE FROM mindmap_edges WHERE id = ?1", params![id])

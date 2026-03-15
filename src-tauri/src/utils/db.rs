@@ -1,3 +1,4 @@
+use crate::utils::errors::{AppError, AppResult};
 use rusqlite::Connection;
 use std::sync::Mutex;
 use tauri::Manager;
@@ -20,15 +21,19 @@ impl AppDb {
             connection: Mutex::new(connection),
         })
     }
+
+    pub fn conn(&self) -> AppResult<std::sync::MutexGuard<'_, rusqlite::Connection>> {
+        self.connection
+            .lock()
+            .map_err(|e| AppError::ValidationError(e.to_string()))
+    }
 }
 
-pub fn init_db(db: &AppDb) -> Result<(), String> {
-    let connection = db.connection.lock().unwrap();
+pub fn init_db(db: &AppDb) -> AppResult<()> {
+    let connection = db.conn()?;
 
     let schema = include_str!("schema.sql");
-    connection
-        .execute_batch(schema)
-        .map_err(|e| e.to_string())?;
+    connection.execute_batch(schema)?;
 
     Ok(())
 }

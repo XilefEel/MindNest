@@ -9,7 +9,7 @@ use chrono::Utc;
 use rusqlite::params;
 
 pub fn create_nest_in_db(db: &AppDb, data: NewNest) -> AppResult<Nest> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare(
@@ -30,7 +30,7 @@ pub fn create_nest_in_db(db: &AppDb, data: NewNest) -> AppResult<Nest> {
 }
 
 pub fn get_nests_by_user(db: &AppDb, user_id: i64) -> AppResult<Vec<Nest>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection.prepare(
         "
@@ -49,7 +49,7 @@ pub fn get_nests_by_user(db: &AppDb, user_id: i64) -> AppResult<Vec<Nest>> {
 }
 
 pub fn get_nest_data(db: &AppDb, nest_id: i64) -> AppResult<Nest> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection.prepare(
         "
@@ -66,7 +66,7 @@ pub fn get_nest_data(db: &AppDb, nest_id: i64) -> AppResult<Nest> {
 }
 
 pub fn update_nest_title(db: &AppDb, nest_id: i64, new_title: String) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -81,7 +81,7 @@ pub fn update_nest_title(db: &AppDb, nest_id: i64, new_title: String) -> AppResu
 }
 
 pub fn delete_nest_from_db(db: &AppDb, nest_id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     connection
         .execute("DELETE FROM nests WHERE id = ?1", params![nest_id])

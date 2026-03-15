@@ -82,7 +82,7 @@ fn extract_title(document: &Html) -> Option<String> {
 }
 
 fn insert_bookmark_into_db(db: &AppDb, data: NewBookmark) -> AppResult<Bookmark> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection
@@ -133,7 +133,7 @@ pub async fn create_new_bookmark_in_db(
 }
 
 pub fn toggle_bookmark_favorite_in_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
     connection
@@ -147,7 +147,7 @@ pub fn toggle_bookmark_favorite_in_db(db: &AppDb, id: i64) -> AppResult<()> {
 }
 
 pub fn get_bookmarks_by_nestling(db: &AppDb, nestling_id: i64) -> AppResult<Vec<Bookmark>> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     let mut statement = connection
         .prepare("
@@ -166,7 +166,7 @@ pub fn get_bookmarks_by_nestling(db: &AppDb, nestling_id: i64) -> AppResult<Vec<
 }
 
 pub fn delete_bookmark_from_db(db: &AppDb, id: i64) -> AppResult<()> {
-    let connection = db.connection.lock().unwrap();
+    let connection = db.conn()?;
 
     connection
         .execute("DELETE FROM bookmarks WHERE id = ?1", params![id])
