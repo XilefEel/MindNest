@@ -16,15 +16,23 @@ export default function NestSettings() {
     {
       id: "background",
       label: "Background",
-      icon: <ImageIcon className="size-5" />,
+      icon: <ImageIcon className="size-4 flex-shrink-0" />,
     },
-    { id: "music", label: "Music", icon: <Music className="size-5" /> },
+    {
+      id: "music",
+      label: "Music",
+      icon: <Music className="size-4 flex-shrink-0" />,
+    },
     {
       id: "shortcuts",
       label: "Shortcuts",
-      icon: <Keyboard className="size-5" />,
+      icon: <Keyboard className="size-4 flex-shrink-0" />,
     },
-    { id: "reset", label: "Reset", icon: <RotateCcw className="size-5" /> },
+    {
+      id: "reset",
+      label: "Reset",
+      icon: <RotateCcw className="size-4 flex-shrink-0" />,
+    },
   ];
 
   useEffect(() => {
@@ -46,17 +54,17 @@ export default function NestSettings() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              "w-full rounded-lg px-4 py-2 text-sm",
-              activeTab === tab.id
-                ? activeBackgroundId
-                  ? "bg-teal-500/20 font-medium text-teal-900 backdrop-blur-sm dark:bg-teal-400/20 dark:text-teal-100"
-                  : "bg-teal-100 font-medium text-teal-800 dark:bg-teal-900/50 dark:text-teal-300"
-                : activeBackgroundId
-                  ? "text-gray-900 hover:bg-white/40 dark:text-gray-100 dark:hover:bg-white/10"
-                  : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800",
+              "w-full rounded-lg px-4 py-2 text-sm transition-colors",
+              activeBackgroundId
+                ? activeTab === tab.id
+                  ? "bg-teal-100/40 font-medium text-teal-600 dark:bg-teal-400/10 dark:text-teal-400"
+                  : "hover:bg-white/20 dark:hover:bg-black/20"
+                : activeTab === tab.id
+                  ? "bg-teal-50 font-medium text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
+                  : "hover:bg-gray-50 dark:hover:bg-gray-700/50",
             )}
           >
-            <div className="flex flex-row items-center justify-start gap-3">
+            <div className="flex flex-row items-center justify-start gap-2">
               <div>{tab.icon}</div>
               <span>{tab.label}</span>
             </div>

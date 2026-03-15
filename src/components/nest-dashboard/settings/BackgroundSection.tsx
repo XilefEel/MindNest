@@ -77,7 +77,7 @@ export default function BackgroundSection() {
             className={cn(
               "ml-auto rounded p-2 transition-colors",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-              "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
+              "hover:bg-gray-50 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
               "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
               activeBackgroundId &&
                 "hover:bg-white/30 hover:text-black dark:hover:bg-black/30",
@@ -88,47 +88,52 @@ export default function BackgroundSection() {
         </BaseToolTip>
       </div>
 
-      <div className="grid max-h-72 grid-cols-2 gap-3 overflow-y-auto p-1 md:grid-cols-3">
-        {backgrounds.length === 0 ? (
-          <p className="col-span-full text-sm text-gray-500 dark:text-gray-400">
-            No images yet
-          </p>
-        ) : (
-          backgrounds.map((image) => (
-            <div
-              key={image.id}
-              onClick={() => handleSelectBackground(image.id)}
-              className={cn(
-                "group relative aspect-video overflow-hidden rounded-lg ring-2 transition-all duration-150",
-                activeBackgroundId === image.id
-                  ? "ring-teal-500 dark:ring-teal-400"
-                  : activeBackgroundId
-                    ? "ring-black/10 hover:ring-black/20 dark:ring-white/10 dark:hover:ring-white/20"
-                    : "ring-gray-200 hover:ring-gray-300 dark:ring-gray-700 dark:hover:ring-gray-600",
-              )}
-            >
-              <img
-                src={convertFileSrc(image.filePath)}
-                alt="Background"
-                className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                loading="lazy"
-              />
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteBackground(image.id);
-                }}
+      <div className="max-h-72 overflow-y-auto">
+        <div className="grid grid-cols-2 gap-3 p-1 md:grid-cols-3">
+          {backgrounds.length === 0 ? (
+            <p className="col-span-full text-sm text-gray-500 dark:text-gray-400">
+              No images yet
+            </p>
+          ) : (
+            backgrounds.map((image) => (
+              <div
+                key={image.id}
+                onClick={() => handleSelectBackground(image.id)}
                 className={cn(
-                  "absolute top-2 right-2 rounded-full p-1.5 opacity-0 shadow-md transition-all group-hover:opacity-100",
-                  "bg-white/80 hover:bg-red-50 dark:bg-gray-900/80 dark:hover:bg-red-950",
-                  "text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400",
+                  "group relative aspect-video overflow-hidden rounded-lg ring-2 transition-all",
+                  activeBackgroundId === image.id
+                    ? "ring-teal-500 dark:ring-teal-400"
+                    : activeBackgroundId
+                      ? "ring-black/10 hover:ring-black/20 dark:ring-white/10 dark:hover:ring-white/20"
+                      : "ring-gray-200 hover:ring-gray-300 dark:ring-gray-700 dark:hover:ring-gray-600",
                 )}
               >
-                <Trash2 size={14} />
-              </button>
-            </div>
-          ))
-        )}
+                <img
+                  src={convertFileSrc(image.filePath)}
+                  alt="Background"
+                  className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                  loading="lazy"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteBackground(image.id);
+                  }}
+                  className={cn(
+                    "absolute top-2 right-2 rounded-full p-1.5 opacity-0 shadow-md transition-all group-hover:opacity-100",
+                    "bg-white/80 hover:bg-red-50 dark:bg-gray-900/80 dark:hover:bg-red-950",
+                    "text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400",
+                  )}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       <div

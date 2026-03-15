@@ -182,10 +182,10 @@ export default function NestlingItem({
             "flex h-8 w-full max-w-full items-center justify-between gap-1 truncate rounded px-2 py-1 transition-[background]",
             activeBackgroundId
               ? nestling.id === activeNestling?.id
-                ? "bg-white/50 font-semibold dark:bg-black/50"
+                ? "bg-white/50 font-medium dark:bg-black/50"
                 : "hover:bg-white/20 dark:hover:bg-black/20"
               : nestling.id === activeNestling?.id
-                ? "bg-teal-50 font-semibold text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
+                ? "bg-teal-50 font-medium text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
                 : "hover:bg-gray-50 dark:hover:bg-gray-700/50",
           )}
           onClick={() => handleSelect()}

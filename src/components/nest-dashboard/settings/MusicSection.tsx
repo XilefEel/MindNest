@@ -20,7 +20,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { AnimatePresence } from "framer-motion";
-import { FolderOpen, Repeat, Volume2, VolumeX } from "lucide-react";
+import { FolderOpen, Repeat, Volume1, Volume2, VolumeX } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 import BaseToolTip from "@/components/BaseToolTip";
@@ -76,7 +76,7 @@ export default function MusicSection() {
             className={cn(
               "ml-auto rounded p-2 transition-colors",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-              "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
+              "hover:bg-gray-50 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
               "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
               activeBackgroundId &&
                 "hover:bg-white/30 hover:text-black dark:hover:bg-black/30",
@@ -106,7 +106,7 @@ export default function MusicSection() {
             <AnimatePresence mode="popLayout">
               {music.length === 0 ? (
                 <p className="p-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                  No music yet
+                  No music yet.
                 </p>
               ) : (
                 music.map((track) => <MusicItem key={track.id} track={track} />)
@@ -122,10 +122,12 @@ export default function MusicSection() {
           activeBackgroundId && "bg-white/30 dark:bg-black/30",
         )}
       >
-        {volume > 0 ? (
-          <Volume2 className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+        {volume > 0.5 ? (
+          <Volume2 className="size-4 flex-shrink-0 text-gray-600 dark:text-gray-400" />
+        ) : volume > 0 ? (
+          <Volume1 className="size-4 flex-shrink-0 text-gray-600 dark:text-gray-400" />
         ) : (
-          <VolumeX className="h-4 w-4 text-gray-300 dark:text-gray-500" />
+          <VolumeX className="size-4 flex-shrink-0 text-gray-400 dark:text-gray-500" />
         )}
         <Slider
           value={[volume * 100]}
@@ -170,10 +172,10 @@ export default function MusicSection() {
         <button
           onClick={() => setSetting("musicLooped", !musicLooped)}
           className={cn(
-            "rounded-lg p-2 shadow-sm transition hover:brightness-95 active:scale-95 dark:hover:brightness-110",
+            "rounded-lg p-2 shadow-sm transition hover:brightness-95 active:scale-95",
             musicLooped
-              ? "bg-teal-200 text-teal-700 dark:bg-teal-600 dark:text-teal-100"
-              : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
+              ? "bg-teal-100 text-teal-700 dark:bg-teal-500 dark:text-teal-100"
+              : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400",
           )}
         >
           <Repeat size={16} />
