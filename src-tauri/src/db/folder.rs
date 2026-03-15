@@ -27,16 +27,7 @@ pub fn insert_folder_into_db(db: &AppDb, data: NewFolder) -> DbResult<Folder> {
                 created_at,
                 created_at
             ],
-            |row| {
-                Ok(Folder {
-                    id: row.get(0)?,
-                    nest_id: row.get(1)?,
-                    parent_id: row.get(2)?,
-                    name: row.get(3)?,
-                    created_at: row.get(4)?,
-                    updated_at: row.get(5)?,
-                })
-            },
+            |row| Folder::try_from(row),
         )
         .log_err("insert_folder_into_db")?;
 
@@ -55,16 +46,7 @@ pub fn get_folders_by_nest(db: &AppDb, nest_id: i64) -> DbResult<Vec<Folder>> {
     )?;
 
     let folders = statement
-        .query_map([nest_id], |row| {
-            Ok(Folder {
-                id: row.get(0)?,
-                nest_id: row.get(1)?,
-                parent_id: row.get(2)?,
-                name: row.get(3)?,
-                created_at: row.get(4)?,
-                updated_at: row.get(5)?,
-            })
-        })
+        .query_map([nest_id], |row| Folder::try_from(row))
         .log_err("get_folders_by_nest")?
         .collect::<Result<Vec<_>, _>>()?;
 

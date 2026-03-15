@@ -2,7 +2,7 @@ use crate::db::background_music::{
     add_music_into_db, delete_music_from_db, get_music_by_id, get_music_from_db, update_music_in_db,
 };
 use crate::fs::background_music::extract_metadata;
-use crate::fs::io::{copy_to_app_dir, delete_file};
+use crate::fs::file::{copy_to_app_dir, delete_file};
 use crate::models::background_music::{BackgroundMusic, NewBackgroundMusic};
 use crate::utils::db::AppDb;
 use crate::utils::errors::DbResult;

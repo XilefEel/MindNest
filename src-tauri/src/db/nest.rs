@@ -22,15 +22,7 @@ pub fn create_nest_in_db(db: &AppDb, data: NewNest) -> DbResult<Nest> {
     let nest = statement
         .query_row(
             params![data.user_id, data.title, created_at, created_at],
-            |row| {
-                Ok(Nest {
-                    id: row.get(0)?,
-                    user_id: row.get(1)?,
-                    title: row.get(2)?,
-                    created_at: row.get(3)?,
-                    updated_at: row.get(4)?,
-                })
-            },
+            |row| Nest::try_from(row),
         )
         .log_err("create_nest_in_db")?;
 
@@ -49,15 +41,7 @@ pub fn get_nests_by_user(db: &AppDb, user_id: i64) -> DbResult<Vec<Nest>> {
     )?;
 
     let nests = statement
-        .query_map(params![user_id], |row| {
-            Ok(Nest {
-                id: row.get("id")?,
-                user_id: row.get("user_id")?,
-                title: row.get("title")?,
-                created_at: row.get("created_at")?,
-                updated_at: row.get("updated_at")?,
-            })
-        })
+        .query_map(params![user_id], |row| Nest::try_from(row))
         .log_err("get_nests_by_user")?
         .collect::<Result<Vec<_>, _>>()?;
 
@@ -75,15 +59,7 @@ pub fn get_nest_data(db: &AppDb, nest_id: i64) -> DbResult<Nest> {
     )?;
 
     let nest = statement
-        .query_row([nest_id], |row| {
-            Ok(Nest {
-                id: row.get(0)?,
-                user_id: row.get(1)?,
-                title: row.get(2)?,
-                created_at: row.get(3)?,
-                updated_at: row.get(4)?,
-            })
-        })
+        .query_row([nest_id], |row| Nest::try_from(row))
         .log_err("get_nest_data")?;
 
     Ok(nest)

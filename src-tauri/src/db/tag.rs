@@ -21,16 +21,7 @@ pub fn insert_tag_into_db(db: &AppDb, data: NewTag) -> DbResult<Tag> {
     let tag = statement
         .query_row(
             params![data.nest_id, data.name, data.color, created_at, created_at],
-            |row| {
-                Ok(Tag {
-                    id: row.get(0)?,
-                    nest_id: row.get(1)?,
-                    name: row.get(2)?,
-                    color: row.get(3)?,
-                    created_at: row.get(4)?,
-                    updated_at: row.get(5)?,
-                })
-            },
+            |row| Tag::try_from(row),
         )
         .log_err("insert_tag_into_db")?;
 
@@ -49,16 +40,7 @@ pub fn get_tags_by_nest(db: &AppDb, nest_id: i64) -> DbResult<Vec<Tag>> {
     )?;
 
     let tags = statement
-        .query_map([nest_id], |row| {
-            Ok(Tag {
-                id: row.get(0)?,
-                nest_id: row.get(1)?,
-                name: row.get(2)?,
-                color: row.get(3)?,
-                created_at: row.get(4)?,
-                updated_at: row.get(5)?,
-            })
-        })
+        .query_map([nest_id], |row| Tag::try_from(row))
         .log_err("get_tags_by_nest")?
         .collect::<Result<Vec<Tag>, _>>()?;
 

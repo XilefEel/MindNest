@@ -1,5 +1,5 @@
-use crate::fs::io::delete_file;
-use crate::models::gallery::{GalleryAlbum, GalleryImage, NewGalleryAlbum, NewGalleryImage};
+use crate::fs::file::delete_file;
+use crate::models::gallery::{GalleryImage, NewGalleryImage};
 use crate::utils::db::AppDb;
 use crate::utils::errors::{DbResult, LogError};
 use chrono::Utc;
@@ -29,21 +29,7 @@ pub fn add_image_into_db(db: &AppDb, data: NewGalleryImage) -> DbResult<GalleryI
                 created_at,
                 created_at
             ],
-            |row| {
-                Ok(GalleryImage {
-                    id: row.get(0)?,
-                    album_id: row.get(1)?,
-                    nestling_id: row.get(2)?,
-                    file_path: row.get(3)?,
-                    title: row.get(4)?,
-                    description: row.get(5)?,
-                    is_favorite: row.get(6)?,
-                    width: row.get(7)?,
-                    height: row.get(8)?,
-                    created_at: row.get(9)?,
-                    updated_at: row.get(10)?,
-                })
-            },
+            |row| GalleryImage::try_from(row),
         )
         .log_err("add_image_into_db")?;
 
@@ -61,21 +47,7 @@ pub fn get_images_from_db(db: &AppDb, nestling_id: i64) -> DbResult<Vec<GalleryI
         ")?;
 
     let images = statement
-        .query_map(params![nestling_id], |row| {
-            Ok(GalleryImage {
-                id: row.get(0)?,
-                album_id: row.get(1)?,
-                nestling_id: row.get(2)?,
-                file_path: row.get(3)?,
-                title: row.get(4)?,
-                description: row.get(5)?,
-                is_favorite: row.get(6)?,
-                width: row.get(7)?,
-                height: row.get(8)?,
-                created_at: row.get(9)?,
-                updated_at: row.get(10)?,
-            })
-        })
+        .query_map(params![nestling_id], |row| GalleryImage::try_from(row))
         .log_err("get_images_from_db")?
         .collect::<Result<Vec<_>, _>>()?;
 
@@ -93,21 +65,7 @@ pub fn get_image_by_id(db: &AppDb, id: i64) -> DbResult<GalleryImage> {
         )?;
 
     let image = statement
-        .query_row(params![id], |row| {
-            Ok(GalleryImage {
-                id: row.get(0)?,
-                album_id: row.get(1)?,
-                nestling_id: row.get(2)?,
-                file_path: row.get(3)?,
-                title: row.get(4)?,
-                description: row.get(5)?,
-                is_favorite: row.get(6)?,
-                width: row.get(7)?,
-                height: row.get(8)?,
-                created_at: row.get(9)?,
-                updated_at: row.get(10)?,
-            })
-        })
+        .query_row(params![id], |row| GalleryImage::try_from(row))
         .log_err("get_image_by_id")?;
 
     Ok(image)
@@ -182,95 +140,95 @@ pub fn delete_image_from_db(db: &AppDb, id: i64) -> DbResult<()> {
 //     Ok(images)
 // }
 
-pub fn add_album_to_db(db: &AppDb, data: NewGalleryAlbum) -> DbResult<GalleryAlbum> {
-    let connection = db.connection.lock().unwrap();
-    let created_at = Utc::now().to_rfc3339();
+// pub fn add_album_to_db(db: &AppDb, data: NewGalleryAlbum) -> DbResult<GalleryAlbum> {
+//     let connection = db.connection.lock().unwrap();
+//     let created_at = Utc::now().to_rfc3339();
 
-    let mut statement = connection.prepare(
-        "
-            INSERT INTO gallery_albums (nestling_id, name, description, created_at, updated_at)
-            VALUES (?1, ?2, ?3, ?4, ?5)
-            RETURNING id, nestling_id, name, description, created_at, updated_at",
-    )?;
+//     let mut statement = connection.prepare(
+//         "
+//             INSERT INTO gallery_albums (nestling_id, name, description, created_at, updated_at)
+//             VALUES (?1, ?2, ?3, ?4, ?5)
+//             RETURNING id, nestling_id, name, description, created_at, updated_at",
+//     )?;
 
-    let album = statement
-        .query_row(
-            params![
-                data.nestling_id,
-                data.name,
-                data.description,
-                created_at,
-                created_at
-            ],
-            |row| {
-                Ok(GalleryAlbum {
-                    id: row.get(0)?,
-                    nestling_id: row.get(1)?,
-                    name: row.get(2)?,
-                    description: row.get(3)?,
-                    created_at: row.get(4)?,
-                    updated_at: row.get(5)?,
-                })
-            },
-        )
-        .log_err("add_album_to_db")?;
-    Ok(album)
-}
+//     let album = statement
+//         .query_row(
+//             params![
+//                 data.nestling_id,
+//                 data.name,
+//                 data.description,
+//                 created_at,
+//                 created_at
+//             ],
+//             |row| {
+//                 Ok(GalleryAlbum {
+//                     id: row.get(0)?,
+//                     nestling_id: row.get(1)?,
+//                     name: row.get(2)?,
+//                     description: row.get(3)?,
+//                     created_at: row.get(4)?,
+//                     updated_at: row.get(5)?,
+//                 })
+//             },
+//         )
+//         .log_err("add_album_to_db")?;
+//     Ok(album)
+// }
 
-pub fn get_albums_from_db(db: &AppDb, nestling_id: i64) -> DbResult<Vec<GalleryAlbum>> {
-    let connection = db.connection.lock().unwrap();
-    let mut statement = connection.prepare(
-        "
-            SELECT id, nestling_id, name, description, created_at, updated_at
-            FROM gallery_albums
-            WHERE nestling_id = ?1
-            ORDER BY created_at DESC",
-    )?;
+// pub fn get_albums_from_db(db: &AppDb, nestling_id: i64) -> DbResult<Vec<GalleryAlbum>> {
+//     let connection = db.connection.lock().unwrap();
+//     let mut statement = connection.prepare(
+//         "
+//             SELECT id, nestling_id, name, description, created_at, updated_at
+//             FROM gallery_albums
+//             WHERE nestling_id = ?1
+//             ORDER BY created_at DESC",
+//     )?;
 
-    let albums = statement
-        .query_map(params![nestling_id], |row| {
-            Ok(GalleryAlbum {
-                id: row.get(0)?,
-                nestling_id: row.get(1)?,
-                name: row.get(2)?,
-                description: row.get(3)?,
-                created_at: row.get(4)?,
-                updated_at: row.get(5)?,
-            })
-        })
-        .log_err("get_albums_from_db")?
-        .collect::<Result<Vec<_>, _>>()?;
+//     let albums = statement
+//         .query_map(params![nestling_id], |row| {
+//             Ok(GalleryAlbum {
+//                 id: row.get(0)?,
+//                 nestling_id: row.get(1)?,
+//                 name: row.get(2)?,
+//                 description: row.get(3)?,
+//                 created_at: row.get(4)?,
+//                 updated_at: row.get(5)?,
+//             })
+//         })
+//         .log_err("get_albums_from_db")?
+//         .collect::<Result<Vec<_>, _>>()?;
 
-    Ok(albums)
-}
+//     Ok(albums)
+// }
 
-pub fn update_album_in_db(
-    db: &AppDb,
-    id: i64,
-    name: Option<String>,
-    description: Option<String>,
-) -> DbResult<()> {
-    let connection = db.connection.lock().unwrap();
-    let updated_at = Utc::now().to_rfc3339();
+// pub fn update_album_in_db(
+//     db: &AppDb,
+//     id: i64,
+//     name: Option<String>,
+//     description: Option<String>,
+// ) -> DbResult<()> {
+//     let connection = db.connection.lock().unwrap();
+//     let updated_at = Utc::now().to_rfc3339();
 
-    connection
-        .execute(
-            "
-            UPDATE gallery_albums
-            SET name = ?1, description = ?2, updated_at = ?3
-            WHERE id = ?4",
-            params![name, description, updated_at, id],
-        )
-        .log_err("update_album_in_db")?;
+//     connection
+//         .execute(
+//             "
+//             UPDATE gallery_albums
+//             SET name = ?1, description = ?2, updated_at = ?3
+//             WHERE id = ?4",
+//             params![name, description, updated_at, id],
+//         )
+//         .log_err("update_album_in_db")?;
 
-    Ok(())
-}
+//     Ok(())
+// }
 
-pub fn delete_album_from_db(db: &AppDb, id: i64) -> DbResult<()> {
-    let connection = db.connection.lock().unwrap();
-    connection
-        .execute("DELETE FROM gallery_albums WHERE id = ?1", params![id])
-        .log_err("delete_album_from_db")?;
+// pub fn delete_album_from_db(db: &AppDb, id: i64) -> DbResult<()> {
+//     let connection = db.connection.lock().unwrap();
+//     connection
+//         .execute("DELETE FROM gallery_albums WHERE id = ?1", params![id])
+//         .log_err("delete_album_from_db")?;
 
-    Ok(())
-}
+//     Ok(())
+// }

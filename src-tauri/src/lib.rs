@@ -29,15 +29,14 @@ use handler::board::{
 };
 use handler::calendar::{create_event, delete_event, get_events, update_event};
 
-use handler::journal::{
-    delete_journal_entry, delete_journal_template, get_journal_entries, get_journal_templates,
-    insert_journal_entry, insert_journal_template, update_journal_entry, update_journal_template,
-};
+// use handler::journal::{
+//     delete_journal_entry, delete_journal_template, get_journal_entries, get_journal_templates,
+//     insert_journal_entry, insert_journal_template, update_journal_entry, update_journal_template,
+// };
 
 use handler::gallery::{
-    create_album, delete_album, delete_image, download_all_images, download_image, duplicate_image,
-    get_albums, get_images, import_image_from_data, import_image_from_path, update_album,
-    update_image,
+    delete_image, download_all_images, download_image, duplicate_image, get_images,
+    import_image_from_data, import_image_from_path, update_image,
 };
 
 use handler::mindmap::{
@@ -140,15 +139,6 @@ pub fn run() {
             update_event,
             delete_event,
             get_events,
-            // Journal
-            insert_journal_entry,
-            get_journal_entries,
-            update_journal_entry,
-            delete_journal_entry,
-            insert_journal_template,
-            get_journal_templates,
-            update_journal_template,
-            delete_journal_template,
             // Gallery
             import_image_from_path,
             import_image_from_data,
@@ -158,10 +148,6 @@ pub fn run() {
             get_images,
             update_image,
             delete_image,
-            create_album,
-            get_albums,
-            update_album,
-            delete_album,
             // Background Images
             import_background,
             get_backgrounds,

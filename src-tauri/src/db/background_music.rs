@@ -26,18 +26,7 @@ pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> DbResult<Backg
                 created_at,
                 created_at
             ],
-            |row| {
-                Ok(BackgroundMusic {
-                    id: row.get(0)?,
-                    nest_id: row.get(1)?,
-                    title: row.get(2)?,
-                    file_path: row.get(3)?,
-                    duration_seconds: row.get(4)?,
-                    order_index: row.get(5)?,
-                    created_at: row.get(6)?,
-                    updated_at: row.get(7)?,
-                })
-            },
+            |row| BackgroundMusic::try_from(row),
         )
         .log_err("add_music_into_db")?;
 
@@ -56,18 +45,7 @@ pub fn get_music_from_db(db: &AppDb, nest_id: i64) -> DbResult<Vec<BackgroundMus
         )?;
 
     let music = statement
-        .query_map([nest_id], |row| {
-            Ok(BackgroundMusic {
-                id: row.get(0)?,
-                nest_id: row.get(1)?,
-                title: row.get(2)?,
-                file_path: row.get(3)?,
-                duration_seconds: row.get(4)?,
-                order_index: row.get(5)?,
-                created_at: row.get(6)?,
-                updated_at: row.get(7)?,
-            })
-        })
+        .query_map([nest_id], |row| BackgroundMusic::try_from(row))
         .log_err("get_music_from_db")?
         .collect::<Result<Vec<_>, _>>()?;
 
@@ -85,18 +63,7 @@ pub fn get_music_by_id(db: &AppDb, id: i64) -> DbResult<BackgroundMusic> {
         )?;
 
     let music = statement
-        .query_row([id], |row| {
-            Ok(BackgroundMusic {
-                id: row.get(0)?,
-                nest_id: row.get(1)?,
-                title: row.get(2)?,
-                file_path: row.get(3)?,
-                duration_seconds: row.get(4)?,
-                order_index: row.get(5)?,
-                created_at: row.get(6)?,
-                updated_at: row.get(7)?,
-            })
-        })
+        .query_row([id], |row| BackgroundMusic::try_from(row))
         .log_err("get_music_by_id")?;
 
     Ok(music)

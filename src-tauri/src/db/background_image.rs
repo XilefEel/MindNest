@@ -26,20 +26,9 @@ pub fn add_background_into_db(db: &AppDb, data: NewBackgroundImage) -> DbResult<
                 created_at,
                 created_at
             ],
-            |row| {
-                Ok(BackgroundImage {
-                    id: row.get(0)?,
-                    nest_id: row.get(1)?,
-                    file_path: row.get(2)?,
-                    is_selected: row.get(3)?,
-                    width: row.get(4)?,
-                    height: row.get(5)?,
-                    created_at: row.get(6)?,
-                    updated_at: row.get(7)?,
-                })
-            },
+            |row| BackgroundImage::try_from(row),
         )
-        .log_err("get_background_by_id")?;
+        .log_err("add_background_into_db")?;
 
     Ok(image)
 }
@@ -56,18 +45,7 @@ pub fn get_backgrounds_from_db(db: &AppDb, nest_id: i64) -> DbResult<Vec<Backgro
     )?;
 
     let images = statement
-        .query_map([nest_id], |row| {
-            Ok(BackgroundImage {
-                id: row.get(0)?,
-                nest_id: row.get(1)?,
-                file_path: row.get(2)?,
-                is_selected: row.get(3)?,
-                width: row.get(4)?,
-                height: row.get(5)?,
-                created_at: row.get(6)?,
-                updated_at: row.get(7)?,
-            })
-        })
+        .query_map([nest_id], |row| BackgroundImage::try_from(row))
         .log_err("get_backgrounds_from_db")?
         .collect::<Result<Vec<_>, _>>()?;
 
@@ -85,18 +63,7 @@ pub fn get_background_by_id(db: &AppDb, id: i64) -> DbResult<BackgroundImage> {
     )?;
 
     let image = statement
-        .query_row([id], |row| {
-            Ok(BackgroundImage {
-                id: row.get(0)?,
-                nest_id: row.get(1)?,
-                file_path: row.get(2)?,
-                is_selected: row.get(3)?,
-                width: row.get(4)?,
-                height: row.get(5)?,
-                created_at: row.get(6)?,
-                updated_at: row.get(7)?,
-            })
-        })
+        .query_row([id], |row| BackgroundImage::try_from(row))
         .log_err("get_background_by_id")?;
 
     Ok(image)

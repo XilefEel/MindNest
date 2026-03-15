@@ -56,16 +56,7 @@ pub fn insert_template_into_db(db: &AppDb, data: NewNoteTemplate) -> DbResult<No
                 created_at,
                 created_at
             ],
-            |row| {
-                Ok(NoteTemplate {
-                    id: row.get(0)?,
-                    nest_id: row.get(1)?,
-                    name: row.get(2)?,
-                    content: row.get(3)?,
-                    created_at: row.get(4)?,
-                    updated_at: row.get(5)?,
-                })
-            },
+            |row| NoteTemplate::try_from(row),
         )
         .log_err("insert_template_into_db")?;
 
@@ -83,16 +74,7 @@ pub fn get_templates_by_nestling(db: &AppDb, nest_id: i64) -> DbResult<Vec<NoteT
     )?;
 
     let note_templates = statement
-        .query_map(params![nest_id], |row| {
-            Ok(NoteTemplate {
-                id: row.get(0)?,
-                nest_id: row.get(1)?,
-                name: row.get(2)?,
-                content: row.get(3)?,
-                created_at: row.get(4)?,
-                updated_at: row.get(5)?,
-            })
-        })
+        .query_map(params![nest_id], |row| NoteTemplate::try_from(row))
         .log_err("get_templates_by_nestling")?
         .collect::<Result<Vec<_>, _>>()?;
 

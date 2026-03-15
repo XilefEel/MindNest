@@ -33,21 +33,7 @@ pub fn insert_node_into_db(db: &AppDb, data: NewMindmapNodeDB) -> DbResult<Mindm
                 created_at,
                 created_at
             ],
-            |row| {
-                Ok(MindmapNodeDB {
-                    id: row.get(0)?,
-                    nestling_id: row.get(1)?,
-                    position_x: row.get(2)?,
-                    position_y: row.get(3)?,
-                    height: row.get(4)?,
-                    width: row.get(5)?,
-                    label: row.get(6)?,
-                    color: row.get(7)?,
-                    node_type: row.get(8)?,
-                    created_at: row.get(9)?,
-                    updated_at: row.get(10)?,
-                })
-            },
+            |row| MindmapNodeDB::try_from(row),
         )
         .log_err("insert_node_into_db")?;
 
@@ -65,21 +51,7 @@ pub fn get_nodes_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Mindm
         )?;
 
     let nodes = statement
-        .query_map([nestling_id], |row| {
-            Ok(MindmapNodeDB {
-                id: row.get(0)?,
-                nestling_id: row.get(1)?,
-                position_x: row.get(2)?,
-                position_y: row.get(3)?,
-                height: row.get(4)?,
-                width: row.get(5)?,
-                label: row.get(6)?,
-                color: row.get(7)?,
-                node_type: row.get(8)?,
-                created_at: row.get(9)?,
-                updated_at: row.get(10)?,
-            })
-        })
+        .query_map([nestling_id], |row| MindmapNodeDB::try_from(row))
         .log_err("get_nodes_by_nestling")?
         .collect::<Result<Vec<_>, _>>()?;
 
@@ -181,17 +153,7 @@ pub fn get_edges_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Mindm
     )?;
 
     let edges = statement
-        .query_map([nestling_id], |row| {
-            Ok(MindmapEdgeDB {
-                id: row.get(0)?,
-                source_id: row.get(1)?,
-                target_id: row.get(2)?,
-                source_handle: row.get(3)?,
-                target_handle: row.get(4)?,
-                created_at: row.get(5)?,
-                updated_at: row.get(6)?,
-            })
-        })
+        .query_map([nestling_id], |row| MindmapEdgeDB::try_from(row))
         .log_err("get_edges_by_nestling")?
         .collect::<Result<Vec<_>, _>>()?;
 

@@ -35,24 +35,38 @@ pub fn insert_planner_event_into_db(db: &AppDb, data: NewPlannerEvent) -> DbResu
                 created_at,
                 created_at
             ],
-            |row| {
-                Ok(PlannerEvent {
-                    id: row.get(0)?,
-                    nestling_id: row.get(1)?,
-                    date: row.get(2)?,
-                    title: row.get(3)?,
-                    description: row.get(4)?,
-                    start_time: row.get(5)?,
-                    duration: row.get(6)?,
-                    color: row.get(7)?,
-                    created_at: row.get(8)?,
-                    updated_at: row.get(9)?,
-                })
-            },
+            |row| PlannerEvent::try_from(row),
         )
         .log_err("insert_planner_event_into_db")?;
 
     Ok(event)
+}
+
+pub fn get_planner_events_from_range(
+    db: &AppDb,
+    nestling_id: i64,
+    start: String,
+    end: String,
+) -> DbResult<Vec<PlannerEvent>> {
+    let connection = db.connection.lock().unwrap();
+
+    let mut statement = connection
+        .prepare("
+            SELECT id, nestling_id, date, title, description, start_time, duration, color, created_at, updated_at
+            FROM planner_events
+            WHERE nestling_id = ?1 AND date BETWEEN ?2 AND ?3
+            ORDER BY date, start_time"
+        )
+        ?;
+
+    let events = statement
+        .query_map(params![nestling_id, start, end], |row| {
+            PlannerEvent::try_from(row)
+        })
+        .log_err("get_planner_events_from_range")?
+        .collect::<Result<Vec<_>, _>>()?;
+
+    Ok(events)
 }
 
 pub fn update_planner_event_in_db(
@@ -87,42 +101,4 @@ pub fn delete_planner_event_from_db(db: &AppDb, id: i64) -> DbResult<()> {
         .log_err("delete_planner_event_from_db")?;
 
     Ok(())
-}
-
-pub fn get_planner_events_from_range(
-    db: &AppDb,
-    nestling_id: i64,
-    start: String,
-    end: String,
-) -> DbResult<Vec<PlannerEvent>> {
-    let connection = db.connection.lock().unwrap();
-
-    let mut statement = connection
-        .prepare("
-            SELECT id, nestling_id, date, title, description, start_time, duration, color, created_at, updated_at
-            FROM planner_events
-            WHERE nestling_id = ?1 AND date BETWEEN ?2 AND ?3
-            ORDER BY date, start_time"
-        )
-        ?;
-
-    let events = statement
-        .query_map(params![nestling_id, start, end], |row| {
-            Ok(PlannerEvent {
-                id: row.get(0)?,
-                nestling_id: row.get(1)?,
-                date: row.get(2)?,
-                title: row.get(3)?,
-                description: row.get(4)?,
-                start_time: row.get(5)?,
-                duration: row.get(6)?,
-                color: row.get(7)?,
-                created_at: row.get(8)?,
-                updated_at: row.get(9)?,
-            })
-        })
-        .log_err("get_planner_events_from_range")?
-        .collect::<Result<Vec<_>, _>>()?;
-
-    Ok(events)
 }

@@ -30,20 +30,7 @@ pub fn insert_nestling_into_db(db: &AppDb, data: NewNestling) -> DbResult<Nestli
                 created_at,
                 created_at
             ],
-            |row| {
-                Ok(Nestling {
-                    id: row.get(0)?,
-                    nest_id: row.get(1)?,
-                    folder_id: row.get(2)?,
-                    nestling_type: row.get(3)?,
-                    icon: row.get(4)?,
-                    is_pinned: row.get(5)?,
-                    title: row.get(6)?,
-                    content: row.get(7)?,
-                    created_at: row.get(8)?,
-                    updated_at: row.get(9)?,
-                })
-            },
+            |row| Nestling::try_from(row),
         )
         .log_err("insert_nestling_into_db")?;
 
@@ -93,20 +80,7 @@ pub fn get_nestling_by_id(db: &AppDb, nestling_id: i64) -> DbResult<Nestling> {
         )?;
 
     let result = statement
-        .query_row([nestling_id], |row| {
-            Ok(Nestling {
-                id: row.get(0)?,
-                nest_id: row.get(1)?,
-                folder_id: row.get(2)?,
-                nestling_type: row.get(3)?,
-                icon: row.get(4)?,
-                is_pinned: row.get(5)?,
-                title: row.get(6)?,
-                content: row.get(7)?,
-                created_at: row.get(8)?,
-                updated_at: row.get(9)?,
-            })
-        })
+        .query_row([nestling_id], |row| Nestling::try_from(row))
         .log_err("get_nestling_by_id")?;
 
     Ok(result)

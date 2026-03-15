@@ -2,7 +2,7 @@ use crate::db::background_image::{
     add_background_into_db, delete_background_from_db, get_background_by_id,
     get_backgrounds_from_db,
 };
-use crate::fs::io::{copy_to_app_dir, delete_file, get_dimensions};
+use crate::fs::file::{copy_to_app_dir, delete_file, get_dimensions};
 use crate::models::background_image::{BackgroundImage, NewBackgroundImage};
 use crate::utils::db::AppDb;
 use crate::utils::errors::DbResult;

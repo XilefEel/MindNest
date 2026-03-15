@@ -1,12 +1,11 @@
 use crate::db::gallery::{
-    add_album_to_db, add_image_into_db, delete_album_from_db, delete_image_from_db,
-    get_albums_from_db, get_image_by_id, get_images_from_db, update_album_in_db,
+    add_image_into_db, delete_image_from_db, get_image_by_id, get_images_from_db,
     update_image_in_db,
 };
+use crate::fs::file::{copy_to_app_dir, delete_file, get_dimensions};
 use crate::fs::gallery::{copy_to_user_dir, export_images_as_zip, write_image_data};
-use crate::fs::io::{copy_to_app_dir, delete_file, get_dimensions};
+use crate::models::gallery::GalleryImage;
 use crate::models::gallery::NewGalleryImage;
-use crate::models::gallery::{GalleryAlbum, GalleryImage, NewGalleryAlbum};
 use crate::utils::db::AppDb;
 use crate::utils::errors::{DbResult, LogError};
 use std::fs;
@@ -146,27 +145,27 @@ pub fn download_all_images(
     export_images_as_zip(images, &save_path)
 }
 
-#[tauri::command]
-pub fn create_album(db: tauri::State<AppDb>, data: NewGalleryAlbum) -> DbResult<GalleryAlbum> {
-    add_album_to_db(&db, data)
-}
+// #[tauri::command]
+// pub fn create_album(db: tauri::State<AppDb>, data: NewGalleryAlbum) -> DbResult<GalleryAlbum> {
+//     add_album_to_db(&db, data)
+// }
 
-#[tauri::command]
-pub fn get_albums(db: tauri::State<AppDb>, nestling_id: i64) -> DbResult<Vec<GalleryAlbum>> {
-    get_albums_from_db(&db, nestling_id)
-}
+// #[tauri::command]
+// pub fn get_albums(db: tauri::State<AppDb>, nestling_id: i64) -> DbResult<Vec<GalleryAlbum>> {
+//     get_albums_from_db(&db, nestling_id)
+// }
 
-#[tauri::command]
-pub fn update_album(
-    db: tauri::State<AppDb>,
-    id: i64,
-    name: Option<String>,
-    description: Option<String>,
-) -> DbResult<()> {
-    update_album_in_db(&db, id, name, description)
-}
+// #[tauri::command]
+// pub fn update_album(
+//     db: tauri::State<AppDb>,
+//     id: i64,
+//     name: Option<String>,
+//     description: Option<String>,
+// ) -> DbResult<()> {
+//     update_album_in_db(&db, id, name, description)
+// }
 
-#[tauri::command]
-pub fn delete_album(db: tauri::State<AppDb>, id: i64) -> DbResult<()> {
-    delete_album_from_db(&db, id)
-}
+// #[tauri::command]
+// pub fn delete_album(db: tauri::State<AppDb>, id: i64) -> DbResult<()> {
+//     delete_album_from_db(&db, id)
+// }

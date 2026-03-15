@@ -102,19 +102,7 @@ fn insert_bookmark_into_db(db: &AppDb, data: NewBookmark) -> DbResult<Bookmark> 
                 created_at,
                 created_at
             ],
-            |row| {
-                Ok(Bookmark {
-                    id: row.get(0)?,
-                    nestling_id: row.get(1)?,
-                    url: row.get(2)?,
-                    title: row.get(3)?,
-                    description: row.get(4)?,
-                    image_url: row.get(5)?,
-                    is_favorite: row.get(6)?,
-                    created_at: row.get(7)?,
-                    updated_at: row.get(8)?,
-                })
-            },
+            |row| Bookmark::try_from(row),
         )
         .log_err("insert_bookmark_into_db")?;
 
@@ -168,19 +156,7 @@ pub fn get_bookmarks_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<B
         )?;
 
     let bookmarks = statement
-        .query_map([nestling_id], |row| {
-            Ok(Bookmark {
-                id: row.get(0)?,
-                nestling_id: row.get(1)?,
-                url: row.get(2)?,
-                title: row.get(3)?,
-                description: row.get(4)?,
-                image_url: row.get(5)?,
-                is_favorite: row.get(6)?,
-                created_at: row.get(7)?,
-                updated_at: row.get(8)?,
-            })
-        })
+        .query_map([nestling_id], |row| Bookmark::try_from(row))
         .log_err("get_bookmarks_by_nestling")?
         .collect::<Result<Vec<Bookmark>, _>>()?;
 

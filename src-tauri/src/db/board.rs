@@ -29,17 +29,7 @@ pub fn insert_board_column_into_db(db: &AppDb, data: NewBoardColumn) -> DbResult
                 created_at,
                 created_at
             ],
-            |row| {
-                Ok(BoardColumn {
-                    id: row.get(0)?,
-                    nestling_id: row.get(1)?,
-                    title: row.get(2)?,
-                    order_index: row.get(3)?,
-                    color: row.get(4)?,
-                    created_at: row.get(5)?,
-                    updated_at: row.get(6)?,
-                })
-            },
+            |row| BoardColumn::try_from(row),
         )
         .log_err("insert_board_column_into_db")?;
 
@@ -100,17 +90,7 @@ pub fn insert_board_card_into_db(db: &AppDb, data: NewBoardCard) -> DbResult<Boa
                 created_at,
                 created_at
             ],
-            |row| {
-                Ok(BoardCard {
-                    id: row.get(0)?,
-                    column_id: row.get(1)?,
-                    title: row.get(2)?,
-                    description: row.get(3)?,
-                    order_index: row.get(4)?,
-                    created_at: row.get(5)?,
-                    updated_at: row.get(6)?,
-                })
-            },
+            |row| BoardCard::try_from(row),
         )
         .log_err("insert_board_card_into_db")?;
 
@@ -163,17 +143,7 @@ fn get_board_columns_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<B
     )?;
 
     let columns = statement
-        .query_map([nestling_id], |row| {
-            Ok(BoardColumn {
-                id: row.get(0)?,
-                nestling_id: row.get(1)?,
-                title: row.get(2)?,
-                order_index: row.get(3)?,
-                color: row.get(4)?,
-                created_at: row.get(5)?,
-                updated_at: row.get(6)?,
-            })
-        })
+        .query_map([nestling_id], |row| BoardColumn::try_from(row))
         .log_err("get_board_columns_by_nestling")?
         .collect::<Result<Vec<_>, _>>()?;
 
@@ -194,17 +164,7 @@ fn get_all_cards_by_nestling(db: &AppDb, nestling_id: i64) -> DbResult<Vec<Board
         ?;
 
     let cards = statement
-        .query_map([nestling_id], |row| {
-            Ok(BoardCard {
-                id: row.get(0)?,
-                column_id: row.get(1)?,
-                title: row.get(2)?,
-                description: row.get(3)?,
-                order_index: row.get(4)?,
-                created_at: row.get(5)?,
-                updated_at: row.get(6)?,
-            })
-        })
+        .query_map([nestling_id], |row| BoardCard::try_from(row))
         .log_err("get_all_cards_by_nestling")?
         .collect::<Result<Vec<_>, _>>()?;
 
