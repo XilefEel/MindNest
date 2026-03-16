@@ -8,8 +8,8 @@ export default function KeyboardShortcutsSection() {
   const categories = Array.from(new Set(shortcuts.map((s) => s.category)));
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-1">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-1">
         <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
           Keyboard Shortcuts
         </h2>
@@ -23,7 +23,7 @@ export default function KeyboardShortcutsSection() {
           <h2 className="text-xs font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-400">
             {category}
           </h2>
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             {shortcuts
               .filter((shortcut) => shortcut.category === category)
               .map((shortcut, index) => (

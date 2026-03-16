@@ -1,4 +1,3 @@
-import AlbumModal from "./AlbumModal";
 import DeleteModal from "./DeleteModal";
 import FolderModal from "./FolderModal";
 import NestlingModal from "./NestlingModal";
@@ -14,7 +13,6 @@ export default function GlobalModals() {
       <SearchModal />
       <SettingsModal />
       <DeleteModal />
-      <AlbumModal />
       <RenameImageModal />
     </>
   );

@@ -31,8 +31,6 @@ export default function BackgroundSection() {
       const selected = await selectBackground(activeNestId!);
       if (selected) {
         toast.success("Image uploaded successfully!");
-      } else {
-        toast.error("No image selected.");
       }
     } catch (error) {
       toast.error("Failed to upload image.");
@@ -41,8 +39,11 @@ export default function BackgroundSection() {
 
   const handleSelectBackground = async (id: number) => {
     try {
-      setActiveBackgroundId(id);
-      toast.success("Image selected successfully!");
+      if (activeBackgroundId === id) {
+        clearActiveBackgroundId();
+      } else {
+        setActiveBackgroundId(id);
+      }
     } catch (error) {
       toast.error("Failed to select image.");
     }
@@ -172,14 +173,6 @@ export default function BackgroundSection() {
         </div>
 
         <div className="flex gap-2">
-          <button
-            onClick={() => clearActiveBackgroundId()}
-            disabled={!activeBackgroundId}
-            className="rounded-lg bg-blue-500 px-4 py-1.5 text-sm text-white shadow transition-colors hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 disabled:dark:bg-blue-500"
-          >
-            Clear
-          </button>
-
           <button
             onClick={handleUploadBackground}
             className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-600"

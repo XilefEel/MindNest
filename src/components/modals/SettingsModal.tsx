@@ -45,7 +45,7 @@ export default function SettingsModal() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "w-full rounded-t-xl px-4 py-2 text-sm transition-colors",
+                    "w-full rounded-t-xl px-4 py-2 text-sm transition-[background]",
                     activeBackgroundId
                       ? activeTab === tab.id
                         ? "border-b-2 border-teal-600 bg-teal-100/40 font-medium text-teal-600 dark:bg-teal-400/10 dark:text-teal-400"
