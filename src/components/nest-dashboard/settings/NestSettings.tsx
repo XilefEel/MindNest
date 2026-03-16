@@ -3,7 +3,7 @@ import BackgroundSection from "./BackgroundSection";
 import MusicSection from "./MusicSection";
 import { cn } from "@/lib/utils/general";
 import { ImageIcon, Music, RotateCcw, Keyboard } from "lucide-react";
-import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { useActiveBackgroundId, useNestActions } from "@/stores/useNestStore";
 import KeyboardShortcutsSection from "./KeyboardShorcutsSection";
 import { useSettingsModal } from "@/stores/useModalStore";
 
@@ -11,29 +11,37 @@ export default function NestSettings() {
   const [activeTab, setActiveTab] = useState("background");
   const activeBackgroundId = useActiveBackgroundId();
   const { settingsSubTab } = useSettingsModal();
+  const { clearActiveBackgroundId, setBackgroundBrightness, setMusicVolume } =
+    useNestActions();
 
   const tabs = [
     {
       id: "background",
       label: "Background",
-      icon: <ImageIcon className="size-4 flex-shrink-0" />,
+      Icon: ImageIcon,
     },
     {
       id: "music",
       label: "Music",
-      icon: <Music className="size-4 flex-shrink-0" />,
+      Icon: Music,
     },
     {
       id: "shortcuts",
       label: "Shortcuts",
-      icon: <Keyboard className="size-4 flex-shrink-0" />,
+      Icon: Keyboard,
     },
     {
       id: "reset",
       label: "Reset",
-      icon: <RotateCcw className="size-4 flex-shrink-0" />,
+      Icon: RotateCcw,
     },
   ];
+
+  const handleReset = () => {
+    clearActiveBackgroundId();
+    setBackgroundBrightness(1);
+    setMusicVolume(0.5);
+  };
 
   useEffect(() => {
     if (settingsSubTab) {
@@ -65,7 +73,7 @@ export default function NestSettings() {
             )}
           >
             <div className="flex flex-row items-center justify-start gap-2">
-              <div>{tab.icon}</div>
+              <tab.Icon className="size-4 flex-shrink-0" />
               <span className="hidden md:block">{tab.label}</span>
             </div>
           </button>
@@ -85,7 +93,10 @@ export default function NestSettings() {
                 Restore all settings to defaults
               </p>
             </div>
-            <button className="rounded-lg bg-red-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-red-600">
+            <button
+              onClick={handleReset}
+              className="rounded-lg bg-red-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-red-600"
+            >
               Reset
             </button>
           </div>
