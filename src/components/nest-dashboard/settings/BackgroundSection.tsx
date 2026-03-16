@@ -89,7 +89,7 @@ export default function BackgroundSection() {
       </div>
 
       <div className="max-h-72 overflow-y-auto">
-        <div className="grid grid-cols-2 gap-3 p-1 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 p-1 sm:grid-cols-3">
           {backgrounds.length === 0 ? (
             <p className="col-span-full text-sm text-gray-500 dark:text-gray-400">
               No images yet

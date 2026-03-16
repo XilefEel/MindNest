@@ -107,29 +107,28 @@ export default function NestlingModal() {
                         isSelected
                           ? typeOption.color
                           : "bg-gray-100 dark:bg-gray-700",
-                        "text-white",
                       )}
                     >
                       <Icon
                         className={cn(
-                          isSelected
-                            ? "text-white"
-                            : "text-gray-800 dark:text-gray-300",
+                          "flex-shrink-0 text-white",
+                          !isSelected && "text-gray-600 dark:text-gray-300",
                         )}
                       />
                     </div>
+
                     <div className="flex-1 text-left">
                       <p
                         className={cn(
-                          "text-sm font-medium transition-colors",
-                          isSelected
-                            ? "text-teal-700 dark:text-teal-300"
-                            : "text-gray-800 dark:text-gray-300",
+                          "text-sm text-gray-800 dark:text-gray-300",
+                          isSelected &&
+                            "font-medium text-teal-600 dark:text-teal-300",
                         )}
                       >
                         {typeOption.label}
                       </p>
                     </div>
+
                     {isSelected && (
                       <div
                         className={cn(
@@ -149,7 +148,7 @@ export default function NestlingModal() {
         <button
           onClick={handleSaveNestling}
           disabled={isSaving || !title.trim()}
-          className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600 disabled:opacity-50 disabled:hover:bg-teal-500 disabled:dark:bg-teal-500"
+          className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm text-white shadow hover:bg-teal-600 disabled:opacity-50 disabled:hover:bg-teal-500 disabled:dark:bg-teal-500"
         >
           {isSaving ? "Creating..." : "Create"}
         </button>

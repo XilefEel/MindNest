@@ -45,7 +45,7 @@ export default function NestSettings() {
     <div className="flex h-full flex-row gap-5">
       <div
         className={cn(
-          "flex w-50 flex-col gap-1 border-r border-gray-200 pr-5 dark:border-gray-700",
+          "flex flex-col gap-1 border-r border-gray-200 pr-4 md:w-50 md:pr-5 dark:border-gray-700",
           activeBackgroundId && "border-black/30 dark:border-white/30",
         )}
       >
@@ -54,7 +54,7 @@ export default function NestSettings() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              "w-full rounded-lg px-4 py-2 text-sm transition-colors",
+              "w-full rounded-lg px-2 py-2 text-sm transition-colors md:px-4",
               activeBackgroundId
                 ? activeTab === tab.id
                   ? "bg-teal-100/40 font-medium text-teal-600 dark:bg-teal-400/10 dark:text-teal-400"
@@ -66,7 +66,7 @@ export default function NestSettings() {
           >
             <div className="flex flex-row items-center justify-start gap-2">
               <div>{tab.icon}</div>
-              <span>{tab.label}</span>
+              <span className="hidden md:block">{tab.label}</span>
             </div>
           </button>
         ))}

@@ -55,16 +55,16 @@ export default function BaseModal({
         onClick={(e) => e.stopPropagation()}
         onDoubleClick={(e) => e.stopPropagation()}
         className={cn(
-          "flex flex-col rounded-2xl border-0 bg-white p-6 select-none dark:bg-gray-800",
-          isLarge && "min-w-3xl",
+          "flex flex-col rounded-2xl border-0 bg-white p-3 select-none md:p-6 dark:bg-gray-800",
+          isLarge && "md:min-w-3xl",
           activeBackgroundId && "bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-gray-900 dark:text-gray-100">
+          <DialogTitle className="text-lg font-bold text-gray-900 md:text-xl dark:text-gray-100">
             {title}
           </DialogTitle>
-          <DialogDescription className="text-gray-600 dark:text-gray-400">
+          <DialogDescription className="text-xs text-gray-600 md:text-sm dark:text-gray-400">
             {description}
           </DialogDescription>
         </DialogHeader>
