@@ -69,7 +69,7 @@ export default function EventPopover({
   };
 
   return (
-    <div className="flex flex-col gap-3 pr-8">
+    <div className="flex flex-col gap-3 pr-8 select-none">
       <div className="flex flex-col gap-1">
         <div className="min-w-0 flex-1">
           {isEditingTitle ? (

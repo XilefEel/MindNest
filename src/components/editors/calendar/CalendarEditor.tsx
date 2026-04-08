@@ -19,7 +19,7 @@ export default function CalendarEditor() {
   const [title, setTitle] = useState(activeNestling.title);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const { getEvents, createEvent } = usePlannerActions();
+  const { getEvents, createEvent, clearEvents } = usePlannerActions();
   const events = useEvents();
   const { updateNestling } = useNestlingActions();
 
@@ -31,14 +31,19 @@ export default function CalendarEditor() {
     [selectedDate],
   );
 
+  const weekEvents = useMemo(
+    () => events.filter((e) => e.date >= start && e.date <= end),
+    [events, start, end],
+  );
+
   const duplicateWeek = () => {
     try {
-      if (events.length === 0) {
+      if (weekEvents.length === 0) {
         toast.error("No events to duplicate for this week.");
         return;
       }
 
-      events.forEach(async (event) => {
+      weekEvents.forEach(async (event) => {
         const newEvent = {
           ...event,
           date: addDaysToDate(event.date, 7),
@@ -52,6 +57,10 @@ export default function CalendarEditor() {
       toast.error("Error duplicating week.");
     }
   };
+
+  useEffect(() => {
+    clearEvents();
+  }, [activeNestling.id]);
 
   useEffect(() => {
     getEvents({
@@ -72,7 +81,7 @@ export default function CalendarEditor() {
 
         <button
           onClick={duplicateWeek}
-          disabled={events.length === 0}
+          disabled={weekEvents.length === 0}
           className="flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600 disabled:opacity-50 disabled:hover:bg-teal-500 disabled:dark:bg-teal-500"
         >
           <CalendarPlus className="h-4 w-4" />

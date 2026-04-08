@@ -1,4 +1,3 @@
-import { getDayFromDate } from "@/lib/utils/date";
 import { cn, getRandomElement } from "@/lib/utils/general";
 import { addDays, format, isSameDay, startOfWeek } from "date-fns";
 import { useEffect, useRef, useState } from "react";
@@ -35,9 +34,10 @@ export default function PlannerView({
     addDays(weekStart, i),
   );
 
-  const eventsByDay = weekDaysWithDates.map((_, dayIndex) =>
-    events.filter((event) => getDayFromDate(event.date) === dayIndex),
-  );
+  const eventsByDay = weekDaysWithDates.map((day) => {
+    const dayKey = format(day, "yyyy-MM-dd");
+    return events.filter((event) => event.date === dayKey);
+  });
 
   const currentHour = currentTime.getHours();
   const currentMinute = currentTime.getMinutes();
@@ -133,9 +133,9 @@ export default function PlannerView({
             </div>
             <div
               className={cn(
-                "mx-auto flex h-8 w-8 items-center justify-center text-2xl",
+                "mx-auto flex h-8 w-8 items-center justify-center p-5 text-2xl",
                 isSameDay(day, new Date()) &&
-                  "rounded-full bg-teal-500 p-5 text-white",
+                  "rounded-full bg-teal-500 text-white",
               )}
             >
               {format(day, "d")}

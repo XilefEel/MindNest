@@ -106,8 +106,8 @@ export default function NestlingTitle({
           <button
             onClick={() => setShowPicker(!showPicker)}
             className={cn(
-              "flex w-8 items-center justify-center text-3xl font-bold transition-opacity hover:opacity-70",
-              nestlingTitleHidden && "w-6 text-xl",
+              "flex w-8 items-center justify-center text-2xl font-bold transition-opacity hover:opacity-70",
+              nestlingTitleHidden && "w-6 text-lg",
             )}
           >
             {nestling.icon ? (
@@ -143,8 +143,8 @@ export default function NestlingTitle({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className={cn(
-            "w-full min-w-0 resize-none bg-transparent pl-2 text-3xl font-bold outline-none",
-            nestlingTitleHidden && "text-xl font-semibold",
+            "w-full min-w-0 resize-none bg-transparent pl-2 text-2xl font-bold outline-none",
+            nestlingTitleHidden && "text-lg font-semibold",
           )}
           placeholder="Title..."
         />

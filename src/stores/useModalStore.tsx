@@ -1,4 +1,4 @@
-import { GalleryAlbum } from "@/lib/types/gallery";
+// import { GalleryAlbum } from "@/lib/types/gallery";
 import { create } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
@@ -33,11 +33,11 @@ type ModalStore = {
     subTab?: string,
   ) => void;
 
-  isAlbumOpen: boolean;
-  albumNestlingId: number | null;
-  albumToEdit: GalleryAlbum | null;
-  openAlbumModal: (nestlingId: number, album?: GalleryAlbum) => void;
-  closeAlbumModal: () => void;
+  // isAlbumOpen: boolean;
+  // albumNestlingId: number | null;
+  // albumToEdit: GalleryAlbum | null;
+  // openAlbumModal: (nestlingId: number, album?: GalleryAlbum) => void;
+  // closeAlbumModal: () => void;
 
   isImageOpen: boolean;
   imageId: number | null;
@@ -97,23 +97,23 @@ export const useModalStore = create<ModalStore>((set) => ({
   setIsSettingsOpen: (isOpen, tab, subTab) =>
     set({ isSettingsOpen: isOpen, settingsTab: tab, settingsSubTab: subTab }),
 
-  isAlbumOpen: false,
-  albumNestlingId: null,
-  albumToEdit: null,
+  // isAlbumOpen: false,
+  // albumNestlingId: null,
+  // albumToEdit: null,
 
-  openAlbumModal: (nestlingId, album) =>
-    set({
-      isAlbumOpen: true,
-      albumNestlingId: nestlingId,
-      albumToEdit: album ?? null,
-    }),
+  // openAlbumModal: (nestlingId, album) =>
+  //   set({
+  //     isAlbumOpen: true,
+  //     albumNestlingId: nestlingId,
+  //     albumToEdit: album ?? null,
+  //   }),
 
-  closeAlbumModal: () =>
-    set({
-      isAlbumOpen: false,
-      albumNestlingId: null,
-      albumToEdit: null,
-    }),
+  // closeAlbumModal: () =>
+  //   set({
+  //     isAlbumOpen: false,
+  //     albumNestlingId: null,
+  //     albumToEdit: null,
+  //   }),
 
   isImageOpen: false,
   imageId: null,
@@ -182,16 +182,16 @@ export const useSettingsModal = () =>
     })),
   );
 
-export const useAlbumModal = () =>
-  useModalStore(
-    useShallow((state) => ({
-      isAlbumOpen: state.isAlbumOpen,
-      albumNestlingId: state.albumNestlingId,
-      albumToEdit: state.albumToEdit,
-      openAlbumModal: state.openAlbumModal,
-      closeAlbumModal: state.closeAlbumModal,
-    })),
-  );
+// export const useAlbumModal = () =>
+//   useModalStore(
+//     useShallow((state) => ({
+//       isAlbumOpen: state.isAlbumOpen,
+//       albumNestlingId: state.albumNestlingId,
+//       albumToEdit: state.albumToEdit,
+//       openAlbumModal: state.openAlbumModal,
+//       closeAlbumModal: state.closeAlbumModal,
+//     })),
+//   );
 
 export const useImageModal = () =>
   useModalStore(

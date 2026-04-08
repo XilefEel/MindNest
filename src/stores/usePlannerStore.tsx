@@ -27,11 +27,14 @@ type PlannerState = {
     updates: Partial<PlannerEventType>,
   ) => Promise<void>;
   deleteEvent: (id: number) => Promise<void>;
+  clearEvents: () => void;
 };
 
 export const usePlannerStore = create<PlannerState>((set, get) => ({
   events: [],
   loading: false,
+
+  clearEvents: () => set({ events: [] }),
 
   getEvents: withStoreErrorHandler(
     set,
@@ -49,7 +52,13 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
         start,
         end,
       });
-      set({ events });
+
+      set((state) => ({
+        events: [
+          ...state.events.filter((e) => e.date < start || e.date > end),
+          ...events,
+        ],
+      }));
     },
   ),
 
@@ -110,5 +119,6 @@ export const usePlannerActions = () =>
       getEvents: state.getEvents,
       updateEvent: state.updateEvent,
       deleteEvent: state.deleteEvent,
+      clearEvents: state.clearEvents,
     })),
   );

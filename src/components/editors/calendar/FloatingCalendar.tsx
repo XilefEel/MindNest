@@ -49,13 +49,6 @@ export default function FloatingCalendar({
     days.push(day);
   }
 
-  const isInCurrentWeek = (date: Date) => {
-    const today = new Date();
-    const weekStart = startOfWeek(today);
-    const weekEnd = endOfWeek(today);
-    return date >= weekStart && date <= weekEnd;
-  };
-
   const handleDateClick = async (date: Date) => {
     onDateSelect(date);
     setIsOpen(false);
@@ -143,9 +136,6 @@ export default function FloatingCalendar({
                       "hover:bg-gray-100 dark:hover:bg-gray-700",
                       activeBackgroundId &&
                         "hover:bg-white/30 dark:hover:bg-black/30",
-                      isInCurrentWeek(day) &&
-                        !isSameDay(day, new Date()) &&
-                        "bg-teal-100 text-teal-700 hover:bg-teal-200/70 dark:bg-teal-700/20 dark:text-teal-300 dark:hover:bg-teal-700/30",
                       isSameDay(day, new Date()) &&
                         "bg-teal-500 text-white hover:bg-teal-600 dark:bg-teal-400 dark:hover:bg-teal-500",
                       !isSameMonth(day, currentMonth) &&
@@ -155,6 +145,7 @@ export default function FloatingCalendar({
                   >
                     {format(day, "d")}
                   </button>
+
                   {monthEvents.has(format(day, "yyyy-MM-dd")) && (
                     <div className="absolute -bottom-0.5 h-1 w-1 rounded-full bg-teal-500" />
                   )}
