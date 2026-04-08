@@ -4,14 +4,26 @@ import { toast } from "@/lib/utils/toast";
 import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
 import { useActiveNestling } from "@/stores/useNestlingStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { Upload } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  LucideIcon,
+  PanelBottomClose,
+  PanelBottomOpen,
+  Upload,
+  XIcon,
+  ZoomIn,
+  ZoomOut,
+} from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { ColumnsPhotoAlbum, RowsPhotoAlbum } from "react-photo-album";
 import "react-photo-album/columns.css";
 import "react-photo-album/rows.css";
 import { Lightbox } from "yet-another-react-lightbox";
-import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
 import ImageCard from "./ImageCard";
 
 export default function ImageLayout({
@@ -94,6 +106,18 @@ export default function ImageLayout({
     }
   };
 
+  const LightboxIcon = ({
+    icon: Icon,
+    size = "size-6",
+  }: {
+    icon: LucideIcon;
+    size?: string;
+  }) => (
+    <Icon
+      className={cn(size, "text-gray-200 transition-colors hover:text-white")}
+    />
+  );
+
   return (
     <div
       ref={dropZoneRef}
@@ -129,12 +153,59 @@ export default function ImageLayout({
       <Lightbox
         index={index}
         slides={photos}
-        plugins={[Fullscreen]}
+        plugins={[Thumbnails, Zoom]}
+        controller={{
+          disableSwipeNavigation: true,
+        }}
+        carousel={{
+          preload: 7,
+          padding: 0,
+        }}
+        styles={{
+          thumbnailsContainer: { padding: 4 },
+          thumbnail: { cursor: "default" },
+        }}
+        labels={{
+          Previous: "",
+          Next: "",
+          Close: "",
+          Thumbnails: "",
+          "Hide thumbnails": "",
+          "Show thumbnails": "",
+          "Zoom in": "",
+          "Zoom out": "",
+        }}
+        thumbnails={{
+          showToggle: true,
+          width: 60,
+          border: 0,
+          gap: 8,
+        }}
+        zoom={{
+          maxZoomPixelRatio: 5,
+          zoomInMultiplier: 1.5,
+          minZoom: 0.5,
+          scrollToZoom: true,
+          doubleClickDelay: 250,
+          wheelZoomDistanceFactor: 400,
+        }}
+        animation={{
+          zoom: 200,
+          swipe: 0,
+        }}
         open={index >= 0}
         close={() => setIndex(-1)}
         render={{
+          iconPrev: () => <LightboxIcon icon={ChevronLeft} size="size-10" />,
+          iconNext: () => <LightboxIcon icon={ChevronRight} size="size-10" />,
+          iconClose: () => <LightboxIcon icon={XIcon} />,
+          iconThumbnailsVisible: () => <LightboxIcon icon={PanelBottomClose} />,
+          iconThumbnailsHidden: () => <LightboxIcon icon={PanelBottomOpen} />,
+          iconZoomIn: () => <LightboxIcon icon={ZoomIn} />,
+          iconZoomOut: () => <LightboxIcon icon={ZoomOut} />,
+
           slideFooter: ({ slide }: { slide: any }) => (
-            <div className="absolute inset-x-0 bottom-0 bg-black/50 p-3 text-center">
+            <div className="absolute inset-x-0 bottom-0 bg-black/50 p-1 text-center">
               <p className="text-sm font-semibold text-white">{slide.title}</p>
               <p className="text-xs text-white">{slide.description}</p>
             </div>
