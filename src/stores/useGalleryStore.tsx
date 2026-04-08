@@ -15,14 +15,10 @@ type GalleryState = {
   loading: boolean;
 
   getImages: (nestlingId: number) => Promise<void>;
-  selectImages: (
-    nestlingId: number,
-    albumId?: number | null,
-  ) => Promise<boolean>;
+  selectImages: (nestlingId: number) => Promise<boolean>;
   uploadImage: ({
     nestlingId,
     file,
-    albumId,
   }: {
     nestlingId: number;
     file: {
@@ -30,7 +26,6 @@ type GalleryState = {
       name?: string;
       data?: Uint8Array;
     };
-    albumId?: number | null;
   }) => Promise<void>;
   duplicateImage: (id: number) => Promise<GalleryImage>;
   updateImage: (id: number, updates: Partial<GalleryImage>) => Promise<void>;
@@ -38,25 +33,6 @@ type GalleryState = {
 
   downloadImage: (id: number) => Promise<boolean>;
   downloadAll: (nestlingId: number) => Promise<boolean>;
-
-  // albums: GalleryAlbum[];
-  // activeDraggingImageId: string | null;
-  // getAlbums: (nestlingId: number) => Promise<void>;
-  // addAlbum: ({
-  //   nestlingId,
-  //   name,
-  //   description,
-  // }: {
-  //   nestlingId: number;
-  //   name: string;
-  //   description: string | null;
-  // }) => Promise<void>;
-
-  // updateAlbum: (id: number, updates: Partial<GalleryAlbum>) => Promise<void>;
-  // deleteAlbum: (id: number) => Promise<void>;
-
-  // handleDragStart: (event: DragStartEvent) => void;
-  // handleDragEnd: (event: DragEndEvent) => Promise<void>;
 };
 
 export const useGalleryStore = create<GalleryState>((set, get) => ({
@@ -68,35 +44,31 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     set({ images });
   }),
 
-  selectImages: withStoreErrorHandler(
-    set,
-    async (nestlingId: number, albumId?: number | null) => {
-      const selected = await open({
-        title: "Upload Image",
-        multiple: true,
-        filters: [
-          {
-            name: "Image",
-            extensions: ["png", "jpeg", "jpg", "gif", "webp", "bmp"],
-          },
-        ],
+  selectImages: withStoreErrorHandler(set, async (nestlingId: number) => {
+    const selected = await open({
+      title: "Upload Image",
+      multiple: true,
+      filters: [
+        {
+          name: "Image",
+          extensions: ["png", "jpeg", "jpg", "gif", "webp", "bmp"],
+        },
+      ],
+    });
+
+    if (!selected) return false;
+
+    const files = Array.isArray(selected) ? selected : [selected];
+
+    for (const filePath of files) {
+      await get().uploadImage({
+        nestlingId,
+        file: { path: filePath },
       });
+    }
 
-      if (!selected) return false;
-
-      const files = Array.isArray(selected) ? selected : [selected];
-
-      for (const filePath of files) {
-        await get().uploadImage({
-          nestlingId,
-          file: { path: filePath },
-          albumId: albumId,
-        });
-      }
-
-      return true;
-    },
-  ),
+    return true;
+  }),
 
   uploadImage: withStoreErrorHandler(
     set,
@@ -198,76 +170,9 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
 
     return true;
   }),
-
-  // albums: [],
-  // activeDraggingImageId: null,
-
-  // getAlbums: withStoreErrorHandler(set, async (nestlingId: number) => {
-  //   const albums = await galleryApi.getAlbums(nestlingId);
-  //   set({ albums });
-  // }),
-
-  // addAlbum: withStoreErrorHandler(set, async (data: NewGalleryAlbum) => {
-  //   const newAlbum = await galleryApi.createAlbum(data);
-  //   set((state) => ({
-  //     albums: [newAlbum, ...state.albums],
-  //   }));
-  //   await updateNestlingTimestamp(newAlbum.nestlingId);
-  // }),
-
-  // updateAlbum: withStoreErrorHandler(set, async (id, updates) => {
-  //   const current = get().albums.find((album) => album.id === id);
-  //   if (!current) throw new Error("Album not found");
-
-  //   const updated = mergeWithCurrent(current, updates);
-
-  //   await galleryApi.updateAlbum({ ...updated, id });
-  //   set((state) => ({
-  //     albums: state.albums.map((album) => (album.id === id ? updated : album)),
-  //   }));
-  //   await updateNestlingTimestamp(updated.nestlingId);
-  // }),
-
-  // deleteAlbum: withStoreErrorHandler(set, async (id: number) => {
-  //   const nestlingId = get().albums.find((a) => a.id === id)?.nestlingId;
-
-  //   await galleryApi.deleteAlbum(id);
-  //   set((state) => ({
-  //     albums: state.albums.filter((album) => album.id !== id),
-  //   }));
-
-  //   if (nestlingId) {
-  //     await updateNestlingTimestamp(nestlingId);
-  //   }
-  // }),
-
-  // handleDragStart: (event: DragStartEvent) => {
-  //   set({ activeDraggingImageId: event.active.id as string });
-  // },
-
-  // handleDragEnd: async (event: DragEndEvent) => {
-  //   const { active, over } = event;
-  //   set({ activeDraggingImageId: null });
-  //   if (!over || active.id === over.id) return;
-
-  //   const activeImage = active.data.current;
-  //   const overAlbum = over.data.current;
-
-  //   if (activeImage?.type === "image" && overAlbum?.type === "album") {
-  //     const imageId = parseInt(active.id as string, 10);
-  //     const albumId = parseInt(over.id as string, 10);
-
-  //     try {
-  //       await get().updateImage(imageId, { albumId });
-  //     } catch (error) {
-  //       throw error;
-  //     }
-  //   }
-  // },
 }));
 
 export const useImages = () => useGalleryStore((state) => state.images);
-// export const useAlbums = () => useGalleryStore((state) => state.albums);
 
 export const useGalleryActions = () =>
   useGalleryStore(
@@ -281,14 +186,5 @@ export const useGalleryActions = () =>
 
       downloadImage: state.downloadImage,
       downloadAll: state.downloadAll,
-
-      // getAlbums: state.getAlbums,
-      // addAlbum: state.addAlbum,
-      // downloadAlbum: state.downloadAlbum,
-      // updateAlbum: state.updateAlbum,
-      // deleteAlbum: state.deleteAlbum,
-
-      // handleDragStart: state.handleDragStart,
-      // handleDragEnd: state.handleDragEnd,
     })),
   );

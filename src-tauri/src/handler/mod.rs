@@ -5,7 +5,6 @@ pub mod bookmark;
 pub mod calendar;
 pub mod folder;
 pub mod gallery;
-pub mod journal;
 pub mod mindmap;
 pub mod nest;
 pub mod nestling;

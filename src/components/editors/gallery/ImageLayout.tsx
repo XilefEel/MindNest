@@ -37,7 +37,6 @@ export default function ImageLayout({
     () =>
       images.map((img) => ({
         id: img.id,
-        albumId: img.albumId,
         src: convertFileSrc(img.filePath),
         title: img.title ?? "Untitled",
         description: img.description ?? "No Description",

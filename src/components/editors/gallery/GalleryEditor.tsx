@@ -34,67 +34,6 @@ export default function GalleryEditor() {
     getImages(activeNestling.id);
   }, [getImages, activeNestling.id]);
 
-  // const [albumId, setAlbumId] = useState<number | null>(null);
-  // const [isUploading, setIsUploading] = useState(false);
-  // const [currentView, setCurrentView] = useState<"main" | "album">("main");
-
-  // const currentAlbum = albums.find((album) => album.id === albumId) ?? null;
-
-  // const direction = currentView === "album" ? 1 : -1;
-  // const viewVariants = {
-  //   enter: (direction: number) => ({
-  //     x: direction > 0 ? "150%" : "-150%",
-  //   }),
-  //   center: { x: 0 },
-  //   exit: (direction: number) => ({
-  //     x: direction > 0 ? "-150%" : "150%",
-  //   }),
-  // };
-
-  // const handleSelectImage = async () => {
-  //   try {
-  //     setIsUploading(true);
-  //     const selected = await selectImages(activeNestling.id, albumId);
-  //     if (selected) {
-  //       toast.success("Image uploaded successfully!");
-  //     } else {
-  //       toast.error("No image selected.");
-  //     }
-  //     setIsUploading(false);
-  //   } catch (error) {
-  //     toast.error("Failed to upload image.");
-  //   }
-  // };
-
-  // const activeDraggingImageId = useGalleryStore(
-  //   (state) => state.activeDraggingImageId,
-  // );
-
-  // const sensors = useSensors(
-  //   useSensor(PointerSensor, {
-  //     activationConstraint: {
-  //       distance: 8,
-  //     },
-  //   }),
-  // );
-
-  // const onDragStart = (event: DragStartEvent) => {
-  //   handleDragStart(event);
-  // };
-
-  // const onDragEnd = (event: DragEndEvent) => {
-  //   try {
-  //     handleDragEnd(event);
-  //     toast.success("Image moved successfully!");
-  //   } catch (error) {
-  //     toast.error("Failed to move image.");
-  //   }
-  // };
-
-  // const draggingImage = activeDraggingImageId
-  //   ? images.find((img) => img.id === parseInt(activeDraggingImageId))
-  //   : null;
-
   return (
     <div className="flex flex-col gap-4">
       <NestlingTitle
@@ -118,34 +57,6 @@ export default function GalleryEditor() {
 
         <ImageLayout layoutMode={layoutMode} />
       </div>
-
-      {/*<div className="flex gap-3">
-          <button
-            onClick={handleSelectImage}
-            disabled={isUploading}
-            className="flex items-center gap-2 rounded-lg bg-blue-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-blue-600"
-          >
-            {isUploading ? (
-              <Loader size={16} className="flex-shrink-0 animate-spin" />
-            ) : (
-              <Upload size={16} className="flex-shrink-0" />
-            )}
-            <span className="hidden md:block">
-              {isUploading ? "Uploading..." : "Add Images"}
-            </span>
-          </button>
-
-          <button
-            onClick={() => openAlbumModal(activeNestling.id)}
-            className={cn(
-              "flex items-center gap-2 rounded-lg bg-teal-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600",
-              albumId !== null ? "hidden" : "",
-            )}
-          >
-            <Plus size={16} className="flex-shrink-0" />
-            <span className="hidden md:block">Add Album</span>
-          </button>
-        </div>*/}
     </div>
   );
 }

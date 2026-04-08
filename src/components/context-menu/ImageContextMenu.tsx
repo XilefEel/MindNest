@@ -17,7 +17,6 @@ export default function ImageContextMenu({
   handleDeleteImage: (id: number) => Promise<void>;
   handleAddToFavorites: (id: number) => Promise<void>;
 }) {
-  // const albums = useAlbums();
   const { duplicateImage, downloadImage } = useGalleryActions();
   const { openImageModal } = useImageModal();
 
@@ -47,13 +46,6 @@ export default function ImageContextMenu({
     }
   };
 
-  // const handleMoveImage = (id: number) => {
-  //   updateImage(imageId, { albumId: id });
-  //   toast.success(
-  //     `Image moved to album "${albums.find((a) => a.id === id)?.name}"!`,
-  //   );
-  // };
-
   return (
     <BaseContextMenu
       content={
@@ -79,36 +71,6 @@ export default function ImageContextMenu({
             Icon={isFavorite ? StarOff : Star}
             text={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
           />
-
-          {/*<ContextSubMenu
-            trigger={
-              <>
-                <FolderInput className="size-4 flex-shrink-0" />
-                <span>Move to Album</span>
-                <ChevronRight className="ml-auto" size={16} />
-              </>
-            }
-            content={
-              <>
-                {albums.length === 0 ? (
-                  <ContextMenuItem
-                    action={() => {}}
-                    Icon={Folder}
-                    text="No Albums"
-                  />
-                ) : (
-                  albums.map((album) => (
-                    <ContextMenuItem
-                      key={album.id}
-                      action={() => handleMoveImage(album.id)}
-                      Icon={Folder}
-                      text={album.name}
-                    />
-                  ))
-                )}
-              </>
-            }
-          />*/}
 
           <ContextMenuItem
             action={() => handleDownloadImage(imageId)}

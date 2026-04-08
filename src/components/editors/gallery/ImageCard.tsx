@@ -34,33 +34,13 @@ export default function ImageCard({
     }
   };
 
-  // const { attributes, listeners, setNodeRef, transform, isDragging } =
-  //   useDraggable({
-  //     id: photo.id.toString(),
-  //     data: {
-  //       type: "image",
-  //       image: photo,
-  //     },
-  //   });
-
-  // const style = {
-  //   transform: CSS.Transform.toString(transform),
-  //   opacity: isDragging ? 0 : 1,
-  // };
-
   return (
     <ImageContextMenu
       imageId={photo.id}
       handleDeleteImage={handleDeleteImage}
       handleAddToFavorites={handleAddToFavorites}
     >
-      <div
-        // ref={setNodeRef}
-        // {...listeners}
-        // {...attributes}
-        // style={style}
-        className="group relative cursor-default overflow-hidden rounded-lg shadow-sm hover:shadow-md"
-      >
+      <div className="group relative cursor-default overflow-hidden rounded-lg shadow-sm hover:shadow-md">
         <img
           {...imageProps}
           className="h-full w-full transition-transform duration-300 group-hover:scale-105"
