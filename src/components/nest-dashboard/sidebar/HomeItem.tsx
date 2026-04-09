@@ -13,7 +13,7 @@ export default function HomeItem({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 rounded px-2 py-1 transition-[background]",
+        "flex items-center gap-2 rounded px-2 py-1 transition-[background,scale] active:scale-[0.98]",
         activeBackgroundId
           ? activeNestlingId === null
             ? "bg-white/50 font-semibold dark:bg-black/50"

@@ -68,7 +68,7 @@ export default function MusicSection() {
           </p>
         </div>
 
-        <BaseToolTip label="Open Backgrounds Folder">
+        <BaseToolTip label="Open Music Folder">
           <button
             onClick={() =>
               openAppFolder({ location: "roaming", subfolder: "music" })

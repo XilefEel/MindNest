@@ -8,7 +8,6 @@ import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 import { useDraggable } from "@dnd-kit/core";
 import { GripVertical } from "lucide-react";
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
-import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
@@ -166,16 +165,10 @@ export default function NestlingItem({
       nestlingId={nestling.id}
       handleRename={() => setIsEditing(true)}
     >
-      <motion.div
+      <div
         key={nestling.id}
-        layout="position"
-        whileTap={{ scale: 0.98 }}
-        transition={{
-          type: "spring",
-          stiffness: 300,
-          damping: 30,
-        }}
         onDoubleClick={(e) => e.stopPropagation()}
+        className="transition-[scale] active:scale-[0.98]"
       >
         <div
           className={cn(
@@ -280,7 +273,7 @@ export default function NestlingItem({
             </div>,
             document.body,
           )}
-      </motion.div>
+      </div>
     </NestlingContextMenu>
   );
 }

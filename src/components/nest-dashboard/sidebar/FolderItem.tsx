@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils/general";
 import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, Folder as FolderIcon, GripVertical } from "lucide-react";
 import FolderContextMenu from "@/components/context-menu/FolderContextMenu";
-import { motion } from "framer-motion";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useState, useRef, useEffect } from "react";
 import { useNestlingActions } from "@/stores/useNestlingStore";
@@ -88,10 +87,10 @@ export default function FolderItem({
       folderId={folder.id}
       handleRename={() => setIsEditing(true)}
     >
-      <motion.div
-        whileTap={{ scale: 0.98 }}
+      <div
         onClick={handleClick}
         onDoubleClick={(e) => e.stopPropagation()}
+        className="transition-[scale] active:scale-[0.98]"
       >
         <div
           style={style}
@@ -149,7 +148,7 @@ export default function FolderItem({
             <GripVertical className="size-4 text-gray-500 dark:text-gray-200" />
           </div>
         </div>
-      </motion.div>
+      </div>
     </FolderContextMenu>
   );
 }
