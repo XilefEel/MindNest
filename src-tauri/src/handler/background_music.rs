@@ -5,18 +5,23 @@ use crate::fs::background_music::extract_metadata;
 use crate::fs::file::{copy_to_app_dir, delete_file};
 use crate::models::background_music::{BackgroundMusic, NewBackgroundMusic};
 use crate::utils::db::AppDb;
-use crate::utils::errors::AppResult;
+use crate::utils::errors::{AppError, AppResult};
 
 #[tauri::command]
-pub fn import_music(
-    db: tauri::State<AppDb>,
+pub async fn import_music(
+    db: tauri::State<'_, AppDb>,
     app_handle: tauri::AppHandle,
     nest_id: i64,
     file_path: String,
     order_index: i64,
 ) -> AppResult<BackgroundMusic> {
-    let new_path = copy_to_app_dir(&app_handle, &file_path, "music")?;
     let (title, duration_seconds) = extract_metadata(&file_path)?;
+
+    let new_path = tauri::async_runtime::spawn_blocking({
+        move || copy_to_app_dir(&app_handle, &file_path, "music")
+    })
+    .await
+    .map_err(|e| AppError::ValidationError(e.to_string()))??;
 
     let new_music = NewBackgroundMusic {
         nest_id,

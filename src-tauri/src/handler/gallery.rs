@@ -7,14 +7,14 @@ use crate::fs::gallery::{copy_to_user_dir, export_images_as_zip, write_image_dat
 use crate::models::gallery::GalleryImage;
 use crate::models::gallery::NewGalleryImage;
 use crate::utils::db::AppDb;
-use crate::utils::errors::{AppResult, LogError};
+use crate::utils::errors::{AppError, AppResult, LogError};
 use std::fs;
 use std::path::Path;
 
 #[tauri::command]
-pub fn import_image_from_path(
+pub async fn import_image_from_path(
     app_handle: tauri::AppHandle,
-    db: tauri::State<AppDb>,
+    db: tauri::State<'_, AppDb>,
     nestling_id: i64,
     file_path: String,
 ) -> AppResult<GalleryImage> {
@@ -22,7 +22,12 @@ pub fn import_image_from_path(
         .file_stem()
         .map(|s| s.to_string_lossy().to_string());
 
-    let new_path = copy_to_app_dir(&app_handle, &file_path, "gallery")?;
+    let new_path = tauri::async_runtime::spawn_blocking(move || {
+        copy_to_app_dir(&app_handle, &file_path, "gallery")
+    })
+    .await
+    .map_err(|e| AppError::ValidationError(e.to_string()))??;
+
     let (width, height) = get_dimensions(&new_path)?;
 
     add_image_into_db(
@@ -40,9 +45,9 @@ pub fn import_image_from_path(
 }
 
 #[tauri::command]
-pub fn import_image_from_data(
+pub async fn import_image_from_data(
     app_handle: tauri::AppHandle,
-    db: tauri::State<AppDb>,
+    db: tauri::State<'_, AppDb>,
     nestling_id: i64,
     file_name: String,
     file_data: Vec<u8>,
@@ -50,7 +55,13 @@ pub fn import_image_from_data(
     description: Option<String>,
     is_favorite: Option<bool>,
 ) -> AppResult<GalleryImage> {
-    let new_path = write_image_data(&app_handle, &file_name, file_data)?;
+    let new_path = tauri::async_runtime::spawn_blocking({
+        let file_name = file_name.clone();
+        move || write_image_data(&app_handle, &file_name, file_data)
+    })
+    .await
+    .map_err(|e| AppError::ValidationError(e.to_string()))??;
+
     let (width, height) = get_dimensions(&new_path)?;
 
     add_image_into_db(
@@ -68,14 +79,12 @@ pub fn import_image_from_data(
 }
 
 #[tauri::command]
-pub fn duplicate_image(
+pub async fn duplicate_image(
     app_handle: tauri::AppHandle,
-    db: tauri::State<AppDb>,
+    db: tauri::State<'_, AppDb>,
     original_image_id: i64,
 ) -> AppResult<GalleryImage> {
     let original = get_image_by_id(&db, original_image_id)?;
-    let image_data =
-        fs::read(&original.file_path).log_err("duplicate_image: failed to read image data")?;
 
     let file_name = Path::new(&original.file_path)
         .file_name()
@@ -83,7 +92,18 @@ pub fn duplicate_image(
         .to_string_lossy()
         .to_string();
 
-    let new_path = write_image_data(&app_handle, &file_name, image_data)?;
+    let new_path = tauri::async_runtime::spawn_blocking({
+        let file_path = original.file_path.clone();
+        move || {
+            let image_data =
+                fs::read(&file_path).log_err("duplicate_image: failed to read image data")?;
+
+            write_image_data(&app_handle, &file_name, image_data)
+        }
+    })
+    .await
+    .map_err(|e| AppError::ValidationError(e.to_string()))??;
+
     let (width, height) = get_dimensions(&new_path)?;
 
     add_image_into_db(
@@ -124,17 +144,26 @@ pub fn delete_image(db: tauri::State<AppDb>, id: i64) -> AppResult<()> {
 }
 
 #[tauri::command]
-pub fn download_image(db: tauri::State<AppDb>, id: i64, save_path: String) -> AppResult<()> {
+pub async fn download_image(
+    db: tauri::State<'_, AppDb>,
+    id: i64,
+    save_path: String,
+) -> AppResult<()> {
     let image = get_image_by_id(&db, id)?;
-    copy_to_user_dir(&image.file_path, &save_path)
+
+    tauri::async_runtime::spawn_blocking(move || copy_to_user_dir(&image.file_path, &save_path))
+        .await
+        .map_err(|e| AppError::ValidationError(e.to_string()))?
 }
 
 #[tauri::command]
-pub fn download_all_images(
-    db: tauri::State<AppDb>,
+pub async fn download_all_images(
+    db: tauri::State<'_, AppDb>,
     nestling_id: i64,
     save_path: String,
 ) -> AppResult<()> {
     let images = get_images_from_db(&db, nestling_id)?;
-    export_images_as_zip(images, &save_path)
+    tauri::async_runtime::spawn_blocking(move || export_images_as_zip(images, &save_path))
+        .await
+        .map_err(|e| AppError::ValidationError(e.to_string()))?
 }

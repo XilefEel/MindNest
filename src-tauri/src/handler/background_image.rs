@@ -5,16 +5,21 @@ use crate::db::background_image::{
 use crate::fs::file::{copy_to_app_dir, delete_file, get_dimensions};
 use crate::models::background_image::{BackgroundImage, NewBackgroundImage};
 use crate::utils::db::AppDb;
-use crate::utils::errors::AppResult;
+use crate::utils::errors::{AppError, AppResult};
 
 #[tauri::command]
-pub fn import_background(
-    db: tauri::State<AppDb>,
+pub async fn import_background(
+    db: tauri::State<'_, AppDb>,
     app_handle: tauri::AppHandle,
     nest_id: i64,
     file_path: String,
 ) -> AppResult<BackgroundImage> {
-    let new_path = copy_to_app_dir(&app_handle, &file_path, "backgrounds")?;
+    let new_path = tauri::async_runtime::spawn_blocking(move || {
+        copy_to_app_dir(&app_handle, &file_path, "backgrounds")
+    })
+    .await
+    .map_err(|e| AppError::ValidationError(e.to_string()))??;
+
     let (width, height) = get_dimensions(&new_path)?;
 
     let new_background = NewBackgroundImage {
