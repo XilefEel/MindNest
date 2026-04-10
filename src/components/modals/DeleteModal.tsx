@@ -27,10 +27,10 @@ export default function DeleteModal() {
           await clearLastNestling(activeNestId!);
           setActiveNestlingId(null);
         }
-        toast.success("Nestling deleted");
+        toast.success("Nestling successfully deleted!");
       } else if (deleteType === "folder") {
         await deleteFolder(deleteId);
-        toast.success("Folder deleted");
+        toast.success("Folder successfully deleted!");
       }
     } catch (error) {
       toast.error("Failed to delete.");

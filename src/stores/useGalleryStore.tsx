@@ -9,6 +9,7 @@ import {
 } from "@/lib/utils/general";
 import { useShallow } from "zustand/react/shallow";
 import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
+import { toast } from "@/lib/utils/toast";
 
 type GalleryState = {
   images: GalleryImage[];
@@ -152,6 +153,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     });
 
     if (!filePath) return false;
+
     await galleryApi.downloadImage(id, filePath);
 
     return true;
@@ -166,6 +168,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
 
     if (!filePath) return false;
 
+    toast.info("Downloading gallery...");
     await galleryApi.downloadAllImages(nestlingId, filePath);
 
     return true;

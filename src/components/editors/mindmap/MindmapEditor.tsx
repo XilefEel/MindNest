@@ -304,7 +304,7 @@ function MindmapEditorContent() {
 
     try {
       await Promise.all(nodes.map((node) => deleteNode(node.id)));
-      toast.success("All nodes deleted.");
+      toast.success("All nodes successfully deleted!");
     } catch (error) {
       toast.error("Failed to delete all nodes.");
     }

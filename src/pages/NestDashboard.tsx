@@ -24,6 +24,17 @@ import BookmarkEditor from "@/components/editors/bookmark/BookmarkEditor";
 import GlobalModals from "@/components/modals/GlobalModals";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useSettingsStore } from "@/stores/useSettingsStore";
+import { NestlingType } from "@/lib/types/nestling";
+
+const editors: Record<NestlingType, React.ComponentType> = {
+  note: NoteEditor,
+  board: BoardEditor,
+  calendar: CalendarEditor,
+  gallery: GalleryEditor,
+  mindmap: MindmapEditor,
+  bookmark: BookmarkEditor,
+  database: () => <div>Database Editor</div>,
+};
 
 export default function NestDashboardPage() {
   const { id } = useParams();
@@ -39,6 +50,10 @@ export default function NestDashboardPage() {
   const backgrounds = useBackgrounds();
   const activeBackgroundId = useActiveBackgroundId();
   const brightness = useBackgroundBrightness();
+
+  const ActiveEditor = activeNestling
+    ? editors[activeNestling.nestlingType]
+    : null;
 
   const activeBackgroundImage = backgrounds.find(
     (bg) => bg.id === activeBackgroundId,
@@ -122,8 +137,8 @@ export default function NestDashboardPage() {
               className={cn(
                 "w-72 transition-transform duration-300 ease-in-out",
                 "fixed top-0 z-40 h-full md:z-0",
-                isSidebarOpen ? "translate-x-0" : "-translate-x-full",
                 "md:relative",
+                isSidebarOpen ? "translate-x-0" : "-translate-x-full",
                 sidebarHidden ? "md:-translate-x-11/12" : "md:translate-x-0",
               )}
               onDoubleClick={() => setSetting("sidebarHidden", !sidebarHidden)}
@@ -138,27 +153,13 @@ export default function NestDashboardPage() {
 
           <main
             className={cn(
-              "relative mx-3 flex-1 px-5 py-3 md:mx-8",
-              activeNestling?.nestlingType === "note"
-                ? "overflow-hidden"
-                : "overflow-y-auto",
-              activeBackgroundId
-                ? "rounded-2xl bg-white/30 backdrop-blur-sm dark:bg-black/30"
-                : "",
+              "relative mx-3 flex-1 overflow-y-auto px-5 py-3 md:mx-8",
+              activeBackgroundId &&
+                "rounded-2xl bg-white/30 backdrop-blur-sm dark:bg-black/30",
             )}
           >
-            {activeNestling && activeNestling.nestlingType === "note" ? (
-              <NoteEditor key={activeNestling.id} />
-            ) : activeNestling?.nestlingType === "board" ? (
-              <BoardEditor key={activeNestling.id} />
-            ) : activeNestling?.nestlingType === "calendar" ? (
-              <CalendarEditor key={activeNestling.id} />
-            ) : activeNestling?.nestlingType === "gallery" ? (
-              <GalleryEditor key={activeNestling.id} />
-            ) : activeNestling?.nestlingType === "mindmap" ? (
-              <MindmapEditor key={activeNestling.id} />
-            ) : activeNestling?.nestlingType === "bookmark" ? (
-              <BookmarkEditor key={activeNestling.id} />
+            {ActiveEditor && activeNestling ? (
+              <ActiveEditor key={activeNestling.id} />
             ) : (
               <Home nestId={nest.id} />
             )}
