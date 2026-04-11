@@ -21,12 +21,12 @@ export default function NestlingModal() {
   } = useNestlingModal();
 
   const activeFolderId = useActiveFolderId();
-  const { addNestling } = useNestlingActions();
+  const { addNestling, setActiveNestlingId } = useNestlingActions();
   const activeBackgroundId = useActiveBackgroundId();
 
   const [title, setTitle] = useState("");
   const [nestlingType, setNestlingType] = useState<NestlingType>("note");
-  const [isSaving, setIsSaving] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   const effectiveFolderId = nestlingFolderId ?? activeFolderId;
 
@@ -36,14 +36,12 @@ export default function NestlingModal() {
     closeNestlingModal();
   };
 
-  const handleSaveNestling = async () => {
-    if (!nestlingNestId) return;
+  const handleCreateNestling = async () => {
+    if (!nestlingNestId || !title.trim()) return;
+    setIsCreating(true);
 
-    setIsSaving(true);
     try {
-      if (!title.trim()) return;
-
-      await addNestling({
+      const newNestling = await addNestling({
         nestId: nestlingNestId,
         folderId: effectiveFolderId,
         title: title,
@@ -52,12 +50,14 @@ export default function NestlingModal() {
         isPinned: false,
         nestlingType: nestlingType,
       });
+
       toast.success(`Nestling "${title}" created successfully!`);
+      setActiveNestlingId(newNestling.id);
       handleClose();
     } catch (error) {
       toast.error("Failed to create nestling.");
     } finally {
-      setIsSaving(false);
+      setIsCreating(false);
     }
   };
 
@@ -65,21 +65,21 @@ export default function NestlingModal() {
     <BaseModal
       isOpen={isNestlingOpen}
       setIsOpen={(open) => !open && closeNestlingModal()}
-      onSubmit={handleSaveNestling}
+      onSubmit={handleCreateNestling}
       title="Create Nestling"
       description="Give your nestling a title. You can always change it later."
       body={
         <div className="flex flex-col gap-6">
           <TextField
-            label="Nestling Title"
+            label="Nestling title"
             text={title}
             setText={setTitle}
             placeholder={`e.g. My ${nestlingTypes.find((type) => type.value === nestlingType)?.label || "Note"}`}
           />
 
           <div className="flex flex-col gap-3">
-            <p className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-              Choose Nestling Type
+            <p className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Choose nestling type
             </p>
             <div className="grid grid-cols-2 gap-3">
               {nestlingTypes.map((typeOption) => {
@@ -91,14 +91,14 @@ export default function NestlingModal() {
                     key={typeOption.value}
                     onClick={() => setNestlingType(typeOption.value)}
                     className={cn(
-                      "relative flex items-center gap-3 rounded-lg p-4 transition-colors",
+                      "relative flex items-center gap-3 rounded-xl p-4 transition-colors",
                       isSelected
                         ? activeBackgroundId
-                          ? "bg-teal-300/20 shadow backdrop-blur-sm dark:bg-teal-400/20"
-                          : "border-2 border-teal-500 bg-teal-50 shadow dark:bg-teal-950/30"
+                          ? "bg-teal-100/50 shadow-sm dark:bg-teal-500/20"
+                          : "border border-teal-300 bg-teal-50 shadow-sm dark:border-teal-500 dark:bg-teal-950/30"
                         : activeBackgroundId
-                          ? "bg-white/10 backdrop-blur-sm hover:bg-white/30 hover:shadow-sm dark:bg-black/10 dark:hover:bg-black/30"
-                          : "border-2 border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:hover:border-gray-600",
+                          ? "bg-white/30 hover:bg-white/50 hover:shadow-sm dark:bg-black/30 dark:hover:bg-white/5"
+                          : "border border-gray-200 hover:border-gray-300 hover:shadow-sm dark:border-gray-700 dark:hover:border-gray-500",
                     )}
                   >
                     <div
@@ -106,28 +106,28 @@ export default function NestlingModal() {
                         "flex size-10 items-center justify-center rounded-lg transition-colors duration-100",
                         isSelected
                           ? typeOption.color
-                          : "bg-gray-100 dark:bg-gray-700",
+                          : activeBackgroundId
+                            ? "bg-white/50 dark:bg-black/50"
+                            : "bg-gray-100 dark:bg-gray-700",
                       )}
                     >
                       <Icon
                         className={cn(
-                          "flex-shrink-0 text-white",
-                          !isSelected && "text-gray-600 dark:text-gray-300",
+                          "size-5 flex-shrink-0 text-white",
+                          !isSelected && "text-gray-700 dark:text-gray-300",
                         )}
                       />
                     </div>
 
-                    <div className="flex-1 text-left">
-                      <p
-                        className={cn(
-                          "text-sm text-gray-800 dark:text-gray-300",
-                          isSelected &&
-                            "font-medium text-teal-600 dark:text-teal-300",
-                        )}
-                      >
-                        {typeOption.label}
-                      </p>
-                    </div>
+                    <p
+                      className={cn(
+                        "flex-1 text-left text-sm text-gray-800 dark:text-gray-300",
+                        isSelected &&
+                          "font-medium text-teal-700 dark:text-teal-300",
+                      )}
+                    >
+                      {typeOption.label}
+                    </p>
 
                     {isSelected && (
                       <div
@@ -146,11 +146,11 @@ export default function NestlingModal() {
       }
       footer={
         <button
-          onClick={handleSaveNestling}
-          disabled={isSaving || !title.trim()}
+          onClick={handleCreateNestling}
+          disabled={isCreating || !title.trim()}
           className="rounded-lg bg-teal-500 px-4 py-1.5 text-sm text-white shadow hover:bg-teal-600 disabled:opacity-50 disabled:hover:bg-teal-500 disabled:dark:bg-teal-500"
         >
-          {isSaving ? "Creating..." : "Create"}
+          {isCreating ? "Creating..." : "Create"}
         </button>
       }
     >

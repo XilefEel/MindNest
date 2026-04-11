@@ -27,7 +27,7 @@ type NestlingState = {
   setActiveNestlingId: (nestlingId: number | null) => void;
   setActiveFolderId: (folder: number | null) => void;
 
-  addNestling: (nestling: NewNestling) => Promise<void>;
+  addNestling: (nestling: NewNestling) => Promise<Nestling>;
   duplicateNestling: (nestlingId: number) => Promise<void>;
   updateNestling: (id: number, updates: Partial<Nestling>) => Promise<void>;
   updateNestlingTimestamp: (nestlingId: number, timestamp: string) => void;
@@ -85,6 +85,8 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
         a.title.localeCompare(b.title),
       ),
     }));
+
+    return newNestling;
   }),
 
   duplicateNestling: withStoreErrorHandler(set, async (nestlingId: number) => {
