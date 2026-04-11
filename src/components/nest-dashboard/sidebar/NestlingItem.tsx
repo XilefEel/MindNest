@@ -15,6 +15,7 @@ import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import { saveLastNestling } from "@/lib/storage/nestling";
 import { toast } from "@/lib/utils/toast";
 import { useTheme } from "next-themes";
+import { useInlineEdit } from "@/hooks/useInlineEdit";
 
 const themeMap: Record<string, Theme> = {
   light: Theme.LIGHT,
@@ -38,12 +39,7 @@ export default function NestlingItem({
   const activeBackgroundId = useActiveBackgroundId();
 
   const { theme } = useTheme();
-
-  const [title, setTitle] = useState(nestling.title);
-  const [isEditing, setIsEditing] = useState(false);
-
   const inputRef = useRef<HTMLInputElement>(null);
-  const shouldSaveRef = useRef(true);
 
   const [showPicker, setShowPicker] = useState(false);
   const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
@@ -51,6 +47,18 @@ export default function NestlingItem({
   const emojiButtonRef = useRef<HTMLButtonElement>(null);
 
   const Icon = getNestlingIcon(nestling.nestlingType);
+
+  const {
+    value: title,
+    setValue: setTitle,
+    isEditing,
+    setIsEditing,
+    handleBlur,
+    handleKeyDown,
+  } = useInlineEdit({
+    initialValue: nestling.title,
+    onSave: (title) => updateNestling(nestling.id, { title }),
+  });
 
   const handleSelect = async () => {
     if (isEditing) return;
@@ -72,33 +80,6 @@ export default function NestlingItem({
       ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
       : undefined,
     opacity: isDragging ? 0.5 : 1,
-  };
-
-  const handleBlur = async () => {
-    setIsEditing(false);
-    if (!shouldSaveRef.current) {
-      shouldSaveRef.current = true;
-      return;
-    }
-    if (title.trim() === "") {
-      setTitle(nestling.title);
-      return;
-    }
-    if (title !== nestling.title) {
-      await updateNestling(nestling.id, { title });
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      shouldSaveRef.current = true;
-      e.currentTarget.blur();
-    }
-    if (e.key === "Escape") {
-      shouldSaveRef.current = false;
-      setTitle(nestling.title);
-      e.currentTarget.blur();
-    }
   };
 
   const handleEmojiClick = async (emojiData: EmojiClickData) => {
@@ -132,10 +113,6 @@ export default function NestlingItem({
     }
     setShowPicker((prev) => !prev);
   };
-
-  useEffect(() => {
-    setTitle(nestling.title);
-  }, [nestling.title]);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {

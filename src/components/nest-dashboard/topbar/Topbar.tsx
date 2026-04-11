@@ -5,10 +5,11 @@ import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId, useNestActions } from "@/stores/useNestStore";
 import { useNestlingActions } from "@/stores/useNestlingStore";
 import TopbarButton from "./TopbarButton";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { clearLastNestId } from "@/lib/storage/nest";
 import { useSettingsModal } from "@/stores/useModalStore";
 import { useSettingsStore } from "@/stores/useSettingsStore.tsx";
+import { useInlineEdit } from "@/hooks/useInlineEdit";
 
 export default function Topbar({
   nest,
@@ -35,46 +36,24 @@ export default function Topbar({
     setActiveNestId(null);
   };
 
-  const [title, setTitle] = useState(nest.title);
-  const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const shouldSaveRef = useRef(true);
 
   const handleDoubleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsEditing(true);
   };
 
-  const handleBlur = async () => {
-    setIsEditing(false);
-    if (!shouldSaveRef.current) {
-      shouldSaveRef.current = true;
-      return;
-    }
-    if (title.trim() === "") {
-      setTitle(nest.title);
-      return;
-    }
-    if (title !== nest.title) {
-      await updateNest(nest.id, title);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      shouldSaveRef.current = true;
-      e.currentTarget.blur();
-    }
-    if (e.key === "Escape") {
-      shouldSaveRef.current = false;
-      setTitle(nest.title);
-      e.currentTarget.blur();
-    }
-  };
-
-  useEffect(() => {
-    setTitle(nest.title);
-  }, [nest.title]);
+  const {
+    value: title,
+    setValue: setTitle,
+    isEditing,
+    setIsEditing,
+    handleBlur,
+    handleKeyDown,
+  } = useInlineEdit({
+    initialValue: nest.title,
+    onSave: (title) => updateNest(nest.id, title),
+  });
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -82,6 +61,7 @@ export default function Topbar({
       inputRef.current.select();
     }
   }, [isEditing]);
+
   return (
     <nav
       className={cn(
@@ -116,9 +96,10 @@ export default function Topbar({
         <p className="hidden text-3xl sm:block">🪹</p>
         <div
           className={cn(
-            "rounded transition-all duration-200",
-            isEditing &&
-              "bg-white px-2 py-0.5 shadow-md ring-2 ring-teal-500 dark:bg-gray-800",
+            "cursor-text rounded-lg text-gray-900 transition-all dark:text-gray-100",
+            isEditing
+              ? "px-3 py-0.5 shadow-md ring ring-teal-500"
+              : "hover:text-gray-900/70 dark:hover:text-gray-100/90",
           )}
           onDoubleClick={handleDoubleClick}
         >
@@ -134,6 +115,9 @@ export default function Topbar({
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             readOnly={!isEditing}
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
           />
         </div>
       </div>

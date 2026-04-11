@@ -4,8 +4,9 @@ import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, Folder as FolderIcon, GripVertical } from "lucide-react";
 import FolderContextMenu from "@/components/context-menu/FolderContextMenu";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { useNestlingActions } from "@/stores/useNestlingStore";
+import { useInlineEdit } from "@/hooks/useInlineEdit";
 
 export default function FolderItem({
   folder,
@@ -19,11 +20,7 @@ export default function FolderItem({
   const activeBackgroundId = useActiveBackgroundId();
   const { updateFolder } = useNestlingActions();
 
-  const [name, setName] = useState(folder.name);
-  const [isEditing, setIsEditing] = useState(false);
-
   const inputRef = useRef<HTMLInputElement>(null);
-  const shouldSaveRef = useRef(true);
 
   const handleClick = () => {
     if (isEditing) return;
@@ -42,36 +39,17 @@ export default function FolderItem({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const handleBlur = async () => {
-    setIsEditing(false);
-    if (!shouldSaveRef.current) {
-      shouldSaveRef.current = true;
-      return;
-    }
-    if (name.trim() === "") {
-      setName(folder.name);
-      return;
-    }
-    if (name !== folder.name) {
-      await updateFolder(folder.id, { name });
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      shouldSaveRef.current = true;
-      e.currentTarget.blur();
-    }
-    if (e.key === "Escape") {
-      shouldSaveRef.current = false;
-      setName(folder.name);
-      e.currentTarget.blur();
-    }
-  };
-
-  useEffect(() => {
-    setName(folder.name);
-  }, [folder.name]);
+  const {
+    value: name,
+    setValue: setName,
+    isEditing,
+    setIsEditing,
+    handleBlur,
+    handleKeyDown,
+  } = useInlineEdit({
+    initialValue: folder.name,
+    onSave: (name) => updateFolder(folder.id, { name }),
+  });
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
