@@ -1,22 +1,16 @@
-import { Nestling } from "@/lib/types/nestling";
-
-import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
+import { useNestlingActions } from "@/stores/useNestlingStore";
 import { useActiveNestId } from "@/stores/useNestStore";
 import { Clock } from "lucide-react";
 import { useEffect, useState } from "react";
-import {
-  clearRecentNestlings,
-  saveLastNestling,
-  getRecentNestlings,
-} from "@/lib/storage/nestling";
+import { clearRecentNestlings, saveLastNestling } from "@/lib/storage/nestling";
 import RecentCard from "./RecentCard";
+import { useRecentNestlings } from "@/hooks/useRecentNestlings";
 
 export default function RecentSection() {
   const activeNestId = useActiveNestId();
-  const nestlings = useNestlings();
   const { setActiveNestlingId } = useNestlingActions();
+  const { recentNestlings, setRecentNestlings } = useRecentNestlings();
 
-  const [recentNestlings, setRecentNestlings] = useState<Nestling[]>([]);
   const [, forceUpdate] = useState(0);
 
   const handleClear = async () => {
@@ -28,20 +22,6 @@ export default function RecentSection() {
     setActiveNestlingId(nestlingId);
     saveLastNestling(activeNestId!, nestlingId);
   };
-
-  useEffect(() => {
-    async function fetchRecent() {
-      const recentIds = (await getRecentNestlings(activeNestId)) || [];
-
-      const recents = recentIds
-        .map((recent) => nestlings.find((n) => n.id === recent))
-        .filter((n): n is Nestling => Boolean(n));
-
-      setRecentNestlings(recents);
-    }
-
-    if (activeNestId) fetchRecent();
-  }, [activeNestId, nestlings]);
 
   useEffect(() => {
     const interval = setInterval(() => {

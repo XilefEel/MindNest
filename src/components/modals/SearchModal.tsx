@@ -15,10 +15,12 @@ import { useSearchModal } from "@/stores/useModalStore";
 import SearchItem from "./SearchItem";
 import { useNestlingSearch } from "@/hooks/useNestlingSearch.ts";
 import { FileText, Pin } from "lucide-react";
+import { useRecentNestlings } from "@/hooks/useRecentNestlings";
 
 export default function SearchModal() {
   const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
+  const { recentNestlings } = useRecentNestlings();
   const { setActiveNestlingId } = useNestlingActions();
 
   const { isSearchOpen, setIsSearchOpen } = useSearchModal();
@@ -32,6 +34,12 @@ export default function SearchModal() {
     setSearchQuery("");
     setIsSearchOpen?.(false);
   };
+
+  const visibleNestlings =
+    searchQuery.trim() === "" ? recentNestlings : filteredNestlings;
+
+  const pinnedNestlings = filteredNestlings.filter((n) => n.isPinned);
+  const regularNestlings = visibleNestlings.filter((n) => !n.isPinned);
 
   return (
     <CommandDialog
@@ -54,10 +62,11 @@ export default function SearchModal() {
           </span>
         )}
       </div>
+
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
 
-        {filteredNestlings.length > 0 && (
+        {pinnedNestlings.length > 0 && (
           <CommandGroup
             heading={
               <div className="flex flex-row items-center gap-2">
@@ -68,56 +77,54 @@ export default function SearchModal() {
               </div>
             }
           >
-            {filteredNestlings
-              .filter((nestling) => nestling.isPinned)
-              .map((nestling) => (
-                <CommandItem
-                  key={nestling.id}
-                  value={String(nestling.id)}
-                  onSelect={() => handleSelectNestling(nestling.id)}
-                  className={cn(
-                    "flex flex-row items-center justify-between p-2 px-4 transition-colors",
-                    "data-[selected=true]:bg-gray-100 dark:data-[selected=true]:bg-gray-700",
-                    activeBackgroundId &&
-                      "data-[selected=true]:bg-white/30 dark:data-[selected=true]:bg-black/30",
-                  )}
-                >
-                  <SearchItem nestling={nestling} />
-                </CommandItem>
-              ))}
+            {pinnedNestlings.map((nestling) => (
+              <CommandItem
+                key={nestling.id}
+                value={String(nestling.id)}
+                onSelect={() => handleSelectNestling(nestling.id)}
+                className={cn(
+                  "flex flex-row items-center justify-between p-2 px-4 transition-colors",
+                  "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-gray-700/50",
+                  activeBackgroundId &&
+                    "data-[selected=true]:bg-white/30 dark:data-[selected=true]:bg-black/30",
+                )}
+              >
+                <SearchItem nestling={nestling} />
+              </CommandItem>
+            ))}
           </CommandGroup>
         )}
+
         <CommandSeparator className="my-1" />
 
-        {filteredNestlings.length > 0 && (
+        {regularNestlings.length > 0 && (
           <CommandGroup
             heading={
               <div className="flex flex-row items-center gap-2">
                 <div className="rounded-lg bg-linear-to-r from-teal-400 to-teal-500 p-1.5 text-white">
                   <FileText size={14} />
                 </div>
-                <p className="text-sm">Nestlings</p>
+                <p className="text-sm">
+                  {searchQuery.trim() === "" ? "Recent" : "Nestlings"}
+                </p>
               </div>
             }
           >
-            {filteredNestlings.length > 0 &&
-              filteredNestlings
-                .filter((nestling) => !nestling.isPinned)
-                .map((nestling) => (
-                  <CommandItem
-                    key={nestling.id}
-                    value={String(nestling.id)}
-                    onSelect={() => handleSelectNestling(nestling.id)}
-                    className={cn(
-                      "flex flex-row items-center justify-between p-2 px-4 transition-colors",
-                      "data-[selected=true]:bg-gray-100 dark:data-[selected=true]:bg-gray-700",
-                      activeBackgroundId &&
-                        "data-[selected=true]:bg-white/30 dark:data-[selected=true]:bg-black/30",
-                    )}
-                  >
-                    <SearchItem nestling={nestling} />
-                  </CommandItem>
-                ))}
+            {regularNestlings.map((nestling) => (
+              <CommandItem
+                key={nestling.id}
+                value={String(nestling.id)}
+                onSelect={() => handleSelectNestling(nestling.id)}
+                className={cn(
+                  "flex flex-row items-center justify-between p-2 px-4 transition-colors",
+                  "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-gray-700/50",
+                  activeBackgroundId &&
+                    "data-[selected=true]:bg-white/30 dark:data-[selected=true]:bg-black/30",
+                )}
+              >
+                <SearchItem nestling={nestling} />
+              </CommandItem>
+            ))}
           </CommandGroup>
         )}
       </CommandList>
