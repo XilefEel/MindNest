@@ -88,7 +88,7 @@ export default function BookmarkEditor() {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className="space-y-4"
+      className="flex flex-col gap-4"
     >
       <NestlingTitle
         title={title}

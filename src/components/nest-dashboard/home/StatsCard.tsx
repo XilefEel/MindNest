@@ -71,7 +71,7 @@ export default function StatCard({
       </div>
       <div
         className={cn(
-          "text-2xl font-bold text-gray-900 transition-colors dark:text-white",
+          "text-2xl font-bold text-gray-900 dark:text-white",
           number,
         )}
       >

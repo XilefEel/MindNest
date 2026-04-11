@@ -52,14 +52,16 @@ export default function RecentSection() {
   }, []);
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-gradient-to-br from-blue-400 to-blue-500 p-2 shadow-md">
-            <Clock className="size-4 text-white" />
+          <div className="rounded-lg bg-gradient-to-br from-blue-400 to-blue-500 p-2 shadow-sm">
+            <Clock className="size-4 flex-shrink-0 text-white" />
           </div>
           <div className="flex justify-between">
-            <h2 className="text-lg font-bold md:text-xl">Recent Nestlings</h2>
+            <h2 className="text-lg font-semibold md:text-xl">
+              Recent Nestlings
+            </h2>
           </div>
         </div>
         {recentNestlings.length > 0 && (
@@ -72,7 +74,7 @@ export default function RecentSection() {
         )}
       </div>
 
-      <div className="space-y-3">
+      <div className="flex flex-col gap-3">
         {recentNestlings.length === 0 && (
           <p className="text-sm text-gray-500 dark:text-gray-400">
             No recent nestlings

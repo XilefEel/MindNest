@@ -19,7 +19,7 @@ export default function KeyboardShortcutsSection() {
       </div>
 
       {categories.map((category) => (
-        <div key={category} className="space-y-2">
+        <div key={category} className="flex flex-col gap-2">
           <h2 className="text-xs font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-400">
             {category}
           </h2>

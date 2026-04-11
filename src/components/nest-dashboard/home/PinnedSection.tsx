@@ -17,15 +17,15 @@ export default function PinnedSection() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
-        <div className="rounded-lg bg-gradient-to-br from-pink-400 to-pink-500 p-2 shadow-md">
-          <Pin className="size-4 text-white" />
+        <div className="rounded-lg bg-gradient-to-br from-pink-400 to-pink-500 p-2 shadow-sm">
+          <Pin className="size-4 flex-shrink-0 text-white" />
         </div>
-        <h2 className="text-lg font-bold md:text-xl">Pinned Nestlings</h2>
+        <h2 className="text-lg font-semibold md:text-xl">Pinned Nestlings</h2>
       </div>
 
-      <div className="space-y-3">
+      <div className="flex flex-col gap-3">
         {pinnedNestlings.length === 0 && (
           <p className="text-sm text-gray-500 dark:text-gray-400">
             No pinned nestlings

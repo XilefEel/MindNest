@@ -49,9 +49,12 @@ export default function AuthForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className="flex w-full max-w-sm flex-col gap-6"
+    >
       {type === "signup" && (
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <label
             htmlFor="username"
             className="flex items-center gap-1 text-sm leading-none font-medium select-none"
@@ -72,7 +75,7 @@ export default function AuthForm({
         </div>
       )}
 
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <label
           htmlFor="email"
           className="flex items-center gap-1 text-sm leading-none font-medium select-none"
@@ -91,7 +94,7 @@ export default function AuthForm({
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <label
           htmlFor="password"
           className="flex items-center gap-1 text-sm leading-none font-medium select-none"
