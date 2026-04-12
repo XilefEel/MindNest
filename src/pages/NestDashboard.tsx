@@ -58,11 +58,12 @@ export default function NestDashboardPage() {
   const activeBackgroundImage = backgrounds.find(
     (bg) => bg.id === activeBackgroundId,
   );
+
   const backgroundUrl = activeBackgroundImage
     ? convertFileSrc(activeBackgroundImage.filePath)
     : null;
 
-  useLoadNest({ id, setNest, setLoading });
+  useLoadNest({ id: Number(id), setNest, setLoading });
 
   useKeyboardShortcuts({
     nestId: nest?.id || 0,

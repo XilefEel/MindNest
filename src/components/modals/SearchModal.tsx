@@ -105,7 +105,7 @@ export default function SearchModal() {
                   <FileText size={14} />
                 </div>
                 <p className="text-sm">
-                  {searchQuery.trim() === "" ? "Recent" : "Nestlings"}
+                  {searchQuery.trim() === "" ? "Recent Nestlings" : "Nestlings"}
                 </p>
               </div>
             }

@@ -25,10 +25,22 @@ export default function useLoadNest({
   setNest,
   setLoading,
 }: {
-  id: string | undefined;
+  id: number;
   setNest: (nest: Nest) => void;
   setLoading: (loading: boolean) => void;
 }) {
+  const {
+    setActiveNestId,
+    setActiveBackgroundId,
+    setStoredBackgroundId,
+    setActiveMusicId,
+    setBackgroundBrightness,
+    setMusicVolume,
+    getNests,
+    getBackgrounds,
+    getMusic,
+  } = useNestActions();
+
   const {
     setActiveNestlingId,
     setActiveFolderId,
@@ -38,26 +50,17 @@ export default function useLoadNest({
     getAllNestlingTags,
   } = useNestlingActions();
 
-  const {
-    setActiveNestId,
-    setActiveBackgroundId,
-    setStoredBackgroundId,
-    setActiveMusicId,
-    setBackgroundBrightness,
-    setMusicVolume,
-    getBackgrounds,
-    getMusic,
-  } = useNestActions();
-
   const { loadSettings } = useSettingsStore();
 
-  if (!id) return;
+  const nestlingStore = useNestlingStore.getState();
 
   useEffect(() => {
+    if (!id) return;
+
     async function restore() {
       setLoading(true);
       try {
-        const lastNest = await getNestFromId(Number(id));
+        const lastNest = await getNestFromId(id);
         setNest(lastNest);
         setActiveNestId(lastNest.id);
         await saveLastNestId(lastNest.id);
@@ -76,20 +79,23 @@ export default function useLoadNest({
           getLastBackgroundMusic(lastNest.id),
           getLastBackgroundImageBrightness(lastNest.id),
           getLastMusicVolume(lastNest.id),
+        ]);
 
+        await Promise.all([
           loadSettings(),
           fetchSidebar(lastNest.id),
+          getNests(lastNest.userId),
           getBackgrounds(lastNest.id),
           getMusic(lastNest.id),
           getTags(lastNest.id),
           getAllNestlingTags(lastNest.id),
         ]);
 
-        const lastNestling = useNestlingStore
-          .getState()
-          .nestlings.find((n) => n.id === lastNestlingId);
+        const lastNestling = nestlingStore.nestlings.find(
+          (n) => n.id === lastNestlingId,
+        );
 
-        if (lastNestling && Number(id) === lastNestling.nestId) {
+        if (lastNestling && id === lastNestling.nestId) {
           setActiveNestlingId(lastNestling.id);
 
           if (lastNestling.folderId) {
@@ -97,9 +103,9 @@ export default function useLoadNest({
 
             while (currentFolderId) {
               setFolderOpen(currentFolderId, true);
-              const currentFolder = useNestlingStore
-                .getState()
-                .folders.find((f) => f.id === currentFolderId);
+              const currentFolder = nestlingStore.folders.find(
+                (f) => f.id === currentFolderId,
+              );
               currentFolderId = currentFolder?.parentId || null;
             }
 
@@ -107,11 +113,9 @@ export default function useLoadNest({
           }
         }
 
-        if (lastBackgroundImage != null)
-          setActiveBackgroundId(lastBackgroundImage);
+        setActiveBackgroundId(lastBackgroundImage);
 
-        if (storedBackgroundImage != null)
-          setStoredBackgroundId(storedBackgroundImage);
+        setStoredBackgroundId(storedBackgroundImage);
 
         if (lastBackgroundImageBrightness != null) {
           setBackgroundBrightness(lastBackgroundImageBrightness);
@@ -124,11 +128,12 @@ export default function useLoadNest({
           setMusicVolume(lastMusicVolume);
         }
       } catch (error) {
-        toast.error("Failed to restore.");
+        toast.error("Failed to restore nest.");
       } finally {
         setLoading(false);
       }
     }
+
     restore();
   }, [id]);
 }

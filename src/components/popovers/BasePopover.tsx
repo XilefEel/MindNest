@@ -31,6 +31,7 @@ export default function BasePopover({
       <PopoverContent
         align={align}
         side={side}
+        onDoubleClick={(e) => e.stopPropagation()}
         className={cn(
           "rounded-xl border-gray-200 bg-white select-none dark:border-gray-700 dark:bg-gray-800",
           width,

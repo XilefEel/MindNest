@@ -148,10 +148,11 @@ export const useNestStore = create<NestState>((set, get) => ({
     await saveLastBackgroundImage(get().activeNestId!, backgroundId!);
     await saveStoredBackgroundImage(get().activeNestId!, backgroundId!);
 
-    set({
-      activeBackgroundId: backgroundId,
-      storedBackgroundId: backgroundId,
-    });
+    set({ activeBackgroundId: backgroundId });
+
+    if (backgroundId) {
+      set({ storedBackgroundId: backgroundId });
+    }
   },
 
   setStoredBackgroundId: (backgroundId) => {

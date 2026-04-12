@@ -5,11 +5,13 @@ import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId, useNestActions } from "@/stores/useNestStore";
 import { useNestlingActions } from "@/stores/useNestlingStore";
 import TopbarButton from "./TopbarButton";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { clearLastNestId } from "@/lib/storage/nest";
 import { useSettingsModal } from "@/stores/useModalStore";
 import { useSettingsStore } from "@/stores/useSettingsStore.tsx";
 import { useInlineEdit } from "@/hooks/useInlineEdit";
+import BasePopover from "@/components/popovers/BasePopover";
+import NestSwitchPopover from "@/components/popovers/NestSwitchPopover";
 
 export default function Topbar({
   nest,
@@ -28,6 +30,9 @@ export default function Topbar({
   const { setIsSettingsOpen } = useSettingsModal();
   const { topbarHidden } = useSettingsStore();
 
+  const [isOpen, setIsOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const handleExit = () => {
     navigate("/dashboard");
     clearLastNestId();
@@ -35,8 +40,6 @@ export default function Topbar({
     setActiveNestlingId(null);
     setActiveNestId(null);
   };
-
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleDoubleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -93,13 +96,26 @@ export default function Topbar({
             "rounded-lg bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
-        <p className="hidden text-3xl sm:block">🪹</p>
+        <BasePopover
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          align="start"
+          side="bottom"
+          width="w-72"
+          trigger={
+            <button className="hidden rounded-md p-1 text-3xl transition-[opacity] hover:opacity-90 sm:block">
+              🪹
+            </button>
+          }
+          content={<NestSwitchPopover onClose={() => setIsOpen(false)} />}
+        />
+
         <div
           className={cn(
             "cursor-text rounded-lg text-gray-900 transition-all dark:text-gray-100",
             isEditing
               ? "px-3 py-0.5 shadow-md ring ring-teal-500"
-              : "hover:text-gray-900/70 dark:hover:text-gray-100/90",
+              : "hover:opacity-70 dark:hover:opacity-90",
           )}
           onDoubleClick={handleDoubleClick}
         >
