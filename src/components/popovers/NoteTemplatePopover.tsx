@@ -133,6 +133,9 @@ export default function NoteTemplatePopover() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleSaveAsTemplate();
                 }}
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder={`Template ${noteTemplates.length + 1}`}
                 className={cn(
                   "min-w-0 flex-1 rounded border bg-transparent px-2 py-1 text-sm transition outline-none",

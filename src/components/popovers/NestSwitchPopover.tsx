@@ -41,7 +41,7 @@ export default function NestSwitchPopover({
             <div
               key={nest.id}
               className={cn(
-                "flex flex-row gap-2 rounded-md px-2 py-1 text-sm hover:bg-gray-100 dark:hover:bg-gray-700",
+                "flex flex-row gap-2 rounded-md px-2 py-1 text-sm text-gray-800 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700/50",
                 activeBackgroundId &&
                   "hover:bg-white/30 hover:dark:bg-black/30",
               )}

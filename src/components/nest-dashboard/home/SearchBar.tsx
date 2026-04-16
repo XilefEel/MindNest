@@ -29,8 +29,11 @@ export default function SearchBar() {
           placeholder="Search your nestlings..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
           className={cn(
-            "h-10 rounded-full border pl-10 text-xs transition-shadow md:text-sm",
+            "h-10 rounded-xl border pl-10 text-xs transition-shadow md:text-sm",
             "bg-white dark:bg-gray-800",
             "shadow-sm focus:shadow-md",
             "text-gray-900 placeholder-gray-500 dark:text-gray-100 dark:placeholder-gray-400",

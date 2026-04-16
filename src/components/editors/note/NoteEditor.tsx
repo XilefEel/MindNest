@@ -127,6 +127,9 @@ export default function NoteEditor() {
         <ToolBar title={activeNestling.title} />
         <EditorContent
           editor={editor}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
           className="w-full flex-1 overflow-auto"
         />
         <CustomBubbleMenu />

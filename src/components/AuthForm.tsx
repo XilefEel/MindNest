@@ -68,6 +68,8 @@ export default function AuthForm({
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
             required
             placeholder="Ex: JohnDoe"
             className="focus:border-teal-500 focus:ring-teal-500"

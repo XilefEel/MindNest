@@ -54,6 +54,9 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
           onKeyDown={handleKeyDown}
           placeholder="Tag name..."
           autoFocus
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
           className={cn(
             "w-full rounded-lg border px-3 py-1 text-sm shadow-sm transition",
             "dark:text-gray-100 dark:placeholder-gray-400",

@@ -103,7 +103,7 @@ export default function Topbar({
           side="bottom"
           width="w-72"
           trigger={
-            <button className="hidden rounded-md p-1 text-3xl transition-[opacity] hover:opacity-90 sm:block">
+            <button className="hidden rounded-md p-1 text-3xl transition-[opacity] hover:opacity-80 sm:block">
               🪹
             </button>
           }
@@ -115,7 +115,7 @@ export default function Topbar({
             "cursor-text rounded-lg text-gray-900 transition-all dark:text-gray-100",
             isEditing
               ? "px-3 py-0.5 shadow-md ring ring-teal-500"
-              : "hover:opacity-70 dark:hover:opacity-90",
+              : "hover:opacity-80",
           )}
           onDoubleClick={handleDoubleClick}
         >

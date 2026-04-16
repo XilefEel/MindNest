@@ -46,6 +46,9 @@ export default function BookmarkToolbar({
               type="url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
               placeholder="Paste a URL..."
               className={cn(
                 "w-full rounded-lg border border-gray-300 bg-white py-1.5 pr-4 pl-9 shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-teal-400",
@@ -72,6 +75,9 @@ export default function BookmarkToolbar({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
             placeholder="Search..."
             className={cn(
               "w-full rounded-lg border border-gray-300 bg-white py-1.5 pr-4 pl-9 shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-teal-400",

@@ -60,6 +60,9 @@ export default function YouTubeLinkDialog({
             if (e.key === "Enter") handleInsert();
             else if (e.key === "Escape") handleClose();
           }}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
           placeholder={`Enter ${type === "image" ? "Image" : "YouTube"} Url...`}
           className="flex-1 bg-transparent outline-none focus:outline-none dark:text-white dark:placeholder-gray-400"
           autoFocus

@@ -199,6 +199,8 @@ export default function NestlingItem({
                 onKeyDown={handleKeyDown}
                 readOnly={!isEditing}
                 autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
               />
             </div>
           </div>

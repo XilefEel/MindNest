@@ -97,7 +97,6 @@ export default function CustomNode({
 
         <textarea
           ref={textareaRef}
-          className="w-full resize-none bg-transparent text-center text-sm focus:outline-none"
           rows={1}
           onChange={(e) => {
             setLabel(e.target.value);
@@ -107,6 +106,10 @@ export default function CustomNode({
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           value={label}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
+          className="w-full resize-none bg-transparent text-center text-sm focus:outline-none"
         />
       </div>
     </MindmapContextMenu>

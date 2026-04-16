@@ -79,11 +79,14 @@ export default function EventPopover({
               onKeyDown={handleTitleKeyDown}
               onBlur={handleSaveTitle}
               autoFocus
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
+              placeholder="Event title"
               className={cn(
                 "w-full rounded border border-teal-500 px-2 py-1 text-lg font-semibold focus:ring-2 focus:ring-teal-500 focus:outline-none",
                 activeBackgroundId && "bg-white/30 dark:bg-black/30",
               )}
-              placeholder="Event title"
             />
           ) : (
             <h3

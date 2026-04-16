@@ -142,11 +142,14 @@ export default function NestlingTitle({
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
+          placeholder="Title..."
           className={cn(
             "w-full min-w-0 resize-none bg-transparent pl-2 text-2xl font-bold outline-none",
             nestlingTitleHidden && "text-lg font-semibold",
           )}
-          placeholder="Title..."
         />
       </div>
 

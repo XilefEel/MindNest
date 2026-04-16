@@ -120,6 +120,9 @@ export default function Column({ column }: { column: BoardColumn }) {
               onChange={(e) => setTitle(e.target.value)}
               onBlur={handleSubmit}
               onKeyDown={handleKeyDown}
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
               className="flex-1 rounded-lg border-0 bg-white px-3 py-1.5 text-sm font-semibold shadow-sm outline-none dark:bg-gray-700"
             />
           ) : (

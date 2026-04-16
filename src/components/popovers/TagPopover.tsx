@@ -58,6 +58,9 @@ export default function TagPopover({ nestlingId }: { nestlingId: number }) {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search or create a tag..."
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
           className={cn(
             "w-full rounded-lg border py-1 pr-4 pl-9 text-sm shadow-sm transition",
             "dark:text-gray-100 dark:placeholder-gray-400",

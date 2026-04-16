@@ -55,6 +55,9 @@ export default function SearchModal() {
           placeholder="Search your nestlings..."
           value={searchQuery}
           onValueChange={(value) => setSearchQuery(value)}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
         />
         {!searchQuery && (
           <span className="pointer-events-none absolute top-1/2 right-10 -translate-y-1/2 text-xs text-gray-400">
@@ -83,7 +86,7 @@ export default function SearchModal() {
                 value={String(nestling.id)}
                 onSelect={() => handleSelectNestling(nestling.id)}
                 className={cn(
-                  "flex flex-row items-center justify-between p-2 px-4 transition-colors",
+                  "flex flex-row items-center justify-between px-4 py-2 transition-colors",
                   "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-gray-700/50",
                   activeBackgroundId &&
                     "data-[selected=true]:bg-white/30 dark:data-[selected=true]:bg-black/30",
@@ -116,7 +119,7 @@ export default function SearchModal() {
                 value={String(nestling.id)}
                 onSelect={() => handleSelectNestling(nestling.id)}
                 className={cn(
-                  "flex flex-row items-center justify-between p-2 px-4 transition-colors",
+                  "flex flex-row items-center justify-between px-4 py-2 transition-colors",
                   "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-gray-700/50",
                   activeBackgroundId &&
                     "data-[selected=true]:bg-white/30 dark:data-[selected=true]:bg-black/30",

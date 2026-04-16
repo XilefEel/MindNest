@@ -169,15 +169,18 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
                 >
                   <input
                     ref={inputRef}
-                    className={cn(
-                      "w-full truncate bg-transparent focus:outline-none",
-                      !isEditing && "pointer-events-none",
-                    )}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     onBlur={handleBlur}
                     onKeyDown={handleKeyDown}
                     readOnly={!isEditing}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    className={cn(
+                      "w-full truncate bg-transparent focus:outline-none",
+                      !isEditing && "pointer-events-none",
+                    )}
                   />
                 </div>
                 <span className="text-xs text-gray-500 tabular-nums dark:text-gray-400">

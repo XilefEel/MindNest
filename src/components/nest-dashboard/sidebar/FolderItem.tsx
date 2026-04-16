@@ -112,6 +112,8 @@ export default function FolderItem({
                 onKeyDown={handleKeyDown}
                 readOnly={!isEditing}
                 autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
               />
             </div>
           </div>
