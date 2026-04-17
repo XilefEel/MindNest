@@ -1,4 +1,5 @@
 import { Tag } from "@/lib/types/tag";
+import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { X } from "lucide-react";
 
@@ -17,7 +18,10 @@ export function NestlingTag({
 
   return (
     <div
-      className="group relative flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium shadow-xs transition-all select-none hover:scale-105 hover:shadow-sm"
+      className={cn(
+        "group relative flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium shadow-xs transition-all select-none",
+        (onClick || onRemove) && "hover:scale-105 hover:shadow-sm",
+      )}
       style={{
         backgroundColor: activeBackgroundId ? `${tag.color}` : `${tag.color}30`,
         color: activeBackgroundId ? "#ffffff" : tag.color,

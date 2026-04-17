@@ -51,7 +51,7 @@ export default function TagPopover({ nestlingId }: { nestlingId: number }) {
   };
 
   return (
-    <div>
+    <>
       <div className="relative mb-3 w-full">
         <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
         <input
@@ -98,7 +98,7 @@ export default function TagPopover({ nestlingId }: { nestlingId: number }) {
       )}
 
       {!searchQuery && availableTags.length === 0 && (
-        <p className="py-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+        <p className="py-2 text-xs text-gray-700 dark:text-gray-200">
           No available tags
         </p>
       )}
@@ -106,12 +106,16 @@ export default function TagPopover({ nestlingId }: { nestlingId: number }) {
       {searchQuery && availableTags.length === 0 && (
         <button
           onClick={handleCreateAndAttach}
-          className="flex w-full items-center gap-1 rounded-lg px-2 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700/50"
+          className={cn(
+            "flex w-full items-center gap-1 rounded-lg px-2 py-2 text-xs transition-colors",
+            "text-gray-700 dark:text-gray-200",
+            "hover:bg-gray-50 dark:hover:bg-gray-700/50",
+          )}
         >
-          <Plus size={16} className="text-gray-700 dark:text-gray-200" />
+          <Plus className="size-4 flex-shrink-0 text-gray-700 dark:text-gray-200" />
           Create "{searchQuery}"
         </button>
       )}
-    </div>
+    </>
   );
 }
