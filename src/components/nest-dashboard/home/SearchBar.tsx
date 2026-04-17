@@ -40,7 +40,7 @@ export default function SearchBar() {
             "focus:ring-teal-500 dark:focus:ring-teal-400",
             "border-gray-100 focus:border-teal-50 dark:border-gray-700 dark:focus:border-teal-400",
             activeBackgroundId &&
-              "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+              "border-transparent bg-white/10 backdrop-blur-sm dark:border-transparent dark:bg-black/10",
           )}
         />
 
@@ -56,7 +56,7 @@ export default function SearchBar() {
           className={cn(
             "absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800",
             activeBackgroundId &&
-              "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/30",
+              "border-transparent bg-white/10 backdrop-blur-sm dark:border-transparent dark:bg-black/30",
           )}
         >
           {filteredNestlings.length > 0 ? (

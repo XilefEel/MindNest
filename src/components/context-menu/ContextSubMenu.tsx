@@ -33,7 +33,7 @@ export default function ContextSubMenu({
             "animate-in fade-in-0 zoom-in-95 z-50 rounded-lg border border-gray-200 bg-white py-2 shadow-lg select-none dark:border-gray-700 dark:bg-gray-800",
             width,
             activeBackgroundId &&
-              "border-0 bg-white/30 backdrop-blur-sm hover:bg-white/30 dark:bg-black/30 dark:hover:bg-black/30",
+              "border-transparent bg-white/30 backdrop-blur-sm hover:bg-white/30 dark:border-transparent dark:bg-black/30 dark:hover:bg-black/30",
           )}
         >
           {content}

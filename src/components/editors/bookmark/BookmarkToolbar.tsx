@@ -53,7 +53,7 @@ export default function BookmarkToolbar({
               className={cn(
                 "w-full rounded-lg border border-gray-300 bg-white py-1.5 pr-4 pl-9 shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-teal-400",
                 activeBackgroundId &&
-                  "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+                  "border-transparent bg-white/10 backdrop-blur-sm dark:border-transparent dark:bg-black/10",
               )}
               disabled={isAdding}
             />
@@ -82,7 +82,7 @@ export default function BookmarkToolbar({
             className={cn(
               "w-full rounded-lg border border-gray-300 bg-white py-1.5 pr-4 pl-9 shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-teal-400",
               activeBackgroundId &&
-                "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+                "border-transparent bg-white/10 backdrop-blur-sm dark:border-transparent dark:bg-black/10",
             )}
           />
         </div>

@@ -142,7 +142,7 @@ export default function PlannerEvent({
         className={cn(
           "w-80 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
           activeBackgroundId &&
-            "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
+            "border-transparent bg-white/30 backdrop-blur-sm dark:border-transparent dark:bg-black/30",
         )}
       >
         <EventPopover event={event} onClose={() => setIsOpen(false)} />

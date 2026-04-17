@@ -55,10 +55,10 @@ export default function StatCard({
         "group flex flex-col items-center justify-center gap-1 rounded-2xl border p-4 shadow-sm hover:shadow-md",
         "bg-white dark:bg-gray-800",
         "border-gray-100 dark:border-gray-700",
-        "transition-[scale] hover:scale-[1.02]",
+        "transition-[scale,border] hover:scale-[1.02]",
         border,
         activeBackgroundId &&
-          "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+          "border-transparent bg-white/10 backdrop-blur-sm dark:border-transparent dark:bg-black/10",
       )}
     >
       <div

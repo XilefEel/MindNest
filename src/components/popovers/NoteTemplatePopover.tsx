@@ -143,7 +143,7 @@ export default function NoteTemplatePopover() {
                   "border-gray-200 focus:border-teal-500 dark:border-gray-600 dark:focus:border-teal-400",
                   "focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400",
                   activeBackgroundId &&
-                    "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+                    "border-transparent bg-white/10 backdrop-blur-sm dark:border-transparent dark:bg-black/10",
                 )}
               />
               <button

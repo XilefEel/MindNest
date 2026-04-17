@@ -68,7 +68,7 @@ export default function TagPopover({ nestlingId }: { nestlingId: number }) {
             "focus:ring-2 focus:ring-teal-500 focus:outline-none dark:focus:ring-teal-400",
             "border-gray-300 dark:border-gray-600",
             activeBackgroundId &&
-              "border-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+              "border-transparent bg-white/10 backdrop-blur-sm dark:border-transparent dark:bg-black/10",
           )}
         />
       </div>

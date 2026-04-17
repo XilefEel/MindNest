@@ -45,7 +45,7 @@ export default function BookmarkCard({
           className={cn(
             "group relative overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm hover:border-teal-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-teal-600",
             activeBackgroundId &&
-              "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
+              "border-transparent bg-white/30 backdrop-blur-sm dark:border-transparent dark:bg-black/30",
           )}
         >
           {bookmark.imageUrl ? (
@@ -125,7 +125,7 @@ export default function BookmarkCard({
         className={cn(
           "group relative flex gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:border-teal-300 hover:shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:hover:border-teal-600",
           activeBackgroundId &&
-            "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
+            "border-transparent bg-white/30 backdrop-blur-sm dark:border-transparent dark:bg-black/30",
         )}
       >
         {bookmark.imageUrl && (

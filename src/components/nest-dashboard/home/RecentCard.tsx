@@ -29,9 +29,13 @@ export default function RecentCard({
           "group rounded-xl border border-l-4 p-4 shadow-sm hover:shadow-md",
           "bg-white dark:bg-gray-800",
           "border-gray-100 border-l-blue-500 hover:border-blue-500 dark:border-gray-700 dark:border-l-blue-500 dark:hover:hover:border-blue-500",
-          "transition-[scale] hover:scale-[1.02]",
+          "transition-[scale,border] hover:scale-[1.02]",
           activeBackgroundId &&
-            "border-t-0 border-r-0 border-b-0 bg-white/10 backdrop-blur-sm dark:bg-black/10",
+            cn(
+              "border-t-transparent border-r-transparent border-b-transparent",
+              "dark:border-t-transparent dark:border-r-transparent dark:border-b-transparent",
+              "bg-white/10 backdrop-blur-sm dark:bg-black/10",
+            ),
         )}
       >
         <div className="flex items-center justify-between">

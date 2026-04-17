@@ -36,7 +36,7 @@ export default function BasePopover({
           "rounded-xl border-gray-200 bg-white select-none dark:border-gray-700 dark:bg-gray-800",
           width,
           activeBackgroundId &&
-            "border-0 bg-white/30 backdrop-blur-sm dark:bg-black/30",
+            "border-transparent bg-white/30 backdrop-blur-sm dark:border-transparent dark:bg-black/30",
         )}
       >
         {content}

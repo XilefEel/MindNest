@@ -69,7 +69,7 @@ export default function Topbar({
     <nav
       className={cn(
         "flex w-full items-center gap-3 border-b border-gray-900 p-2 pt-6 transition-[border] sm:pt-8 dark:border-gray-100",
-        topbarHidden && "border-0",
+        topbarHidden && "border-transparent dark:border-transparent",
       )}
     >
       <div
