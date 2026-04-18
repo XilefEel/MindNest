@@ -7,10 +7,8 @@ import {
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useMemo, useState } from "react";
 import ToolBar from "./ToolBar";
-import CustomBubbleMenu from "./CustomBubbleMenu";
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
-import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import { Dropcursor } from "@tiptap/extensions";
 import Youtube from "@tiptap/extension-youtube";
@@ -25,6 +23,7 @@ import { cn } from "@/lib/utils/general";
 import BottomBar from "./BottomBar";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useNoteStore } from "@/stores/useNoteStore";
+import { openUrl } from "@tauri-apps/plugin-opener";
 
 export default function NoteEditor() {
   const activeNestling = useActiveNestling();
@@ -32,10 +31,10 @@ export default function NoteEditor() {
 
   const { updateNestling } = useNestlingActions();
   const { getTemplates } = useNoteStore();
+  const activeBackgroundId = useActiveBackgroundId();
 
   const [title, setTitle] = useState(activeNestling.title);
   const [content, setContent] = useState({});
-  const activeBackgroundId = useActiveBackgroundId();
 
   const editor = useEditor({
     extensions: [
@@ -43,10 +42,6 @@ export default function NoteEditor() {
       Highlight,
       TextAlign.configure({
         types: ["heading", "paragraph"],
-      }),
-      Link.configure({
-        openOnClick: false,
-        enableClickSelection: true,
       }),
       Image.configure({
         resize: {
@@ -66,6 +61,15 @@ export default function NoteEditor() {
       attributes: {
         class:
           "h-full max-w-none prose dark:prose-invert min-h-full outline-none focus:outline-none text-gray-900 dark:text-gray-100",
+      },
+      handleClick(_view, _pos, event) {
+        const target = event.target as HTMLElement;
+        const anchor = target.closest("a");
+        if (anchor?.href) {
+          openUrl(anchor.href);
+          return true;
+        }
+        return false;
       },
     },
   });
@@ -125,14 +129,9 @@ export default function NoteEditor() {
 
       <EditorContext.Provider value={providerValue}>
         <ToolBar title={activeNestling.title} />
-        <EditorContent
-          editor={editor}
-          autoComplete="off"
-          autoCorrect="off"
-          spellCheck={false}
-          className="w-full flex-1 overflow-auto"
-        />
-        <CustomBubbleMenu />
+        <div className="flex-1 overflow-auto">
+          <EditorContent editor={editor} className="w-full" />
+        </div>
       </EditorContext.Provider>
 
       <div

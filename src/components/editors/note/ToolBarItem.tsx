@@ -18,8 +18,10 @@ export default function ToolBarItem({
   return (
     <BaseToolTip label={label}>
       <button
-        onClick={onFormat}
-        aria-label={label}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          onFormat?.();
+        }}
         className={cn(
           "rounded p-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
           isActive

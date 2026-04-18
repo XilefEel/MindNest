@@ -12,7 +12,6 @@ import {
   Highlighter,
   ImagePlus,
   Italic,
-  Link,
   List,
   ListOrdered,
   Redo2,
@@ -173,7 +172,6 @@ export default function ToolBar({ title }: { title: string }) {
         label="Highlight"
         onFormat={() => editor.chain().focus().toggleHighlight().run()}
       />
-      <ToolBarItem Icon={Link} label="Link" onFormat={() => {}} />
       <ToolBarItem
         Icon={Code2}
         label="Code"
