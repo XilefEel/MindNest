@@ -94,6 +94,7 @@ export default function MusicSection() {
         onDragEnd={handleDragEnd}
       >
         <div
+          style={{ scrollbarGutter: "stable" }}
           className={cn(
             "max-h-72 overflow-y-auto rounded-lg bg-gray-50 p-2 dark:bg-gray-700/30",
             activeBackgroundId && "bg-white/30 dark:bg-black/30",
@@ -129,6 +130,7 @@ export default function MusicSection() {
         ) : (
           <VolumeX className="size-4 flex-shrink-0 text-gray-400 dark:text-gray-500" />
         )}
+
         <Slider
           value={[volume * 100]}
           onValueChange={(value) => setMusicVolume(value[0] / 100)}

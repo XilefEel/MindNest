@@ -8,7 +8,6 @@ import {
   useNestActions,
 } from "@/stores/useNestStore";
 import { useSortable } from "@dnd-kit/sortable";
-import { motion } from "framer-motion";
 import { Music, Pause, Play, Trash2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "@/lib/utils/toast";
@@ -117,104 +116,91 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
   }, [isEditing]);
 
   return (
-    <div className="py-1">
-      <motion.div
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ opacity: 1, height: "auto" }}
-        exit={{ opacity: 0, height: 0 }}
-        transition={{ duration: 0.15 }}
-      >
-        <div
-          ref={setNodeRef}
-          style={style}
-          className={cn(
-            "group rounded-md p-2 transition-colors",
-            isActive
-              ? activeBackgroundId
-                ? "bg-teal-200/50 dark:bg-teal-900/50"
-                : "bg-teal-100 dark:bg-teal-900/50"
-              : activeBackgroundId
-                ? "hover:bg-white/30 dark:hover:bg-black/30"
-                : "hover:bg-gray-100 dark:hover:bg-gray-700",
-          )}
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        "group rounded-md p-2 transition-colors",
+        isActive
+          ? activeBackgroundId
+            ? "bg-teal-200/50 dark:bg-teal-900/50"
+            : "bg-teal-100 dark:bg-teal-900/50"
+          : activeBackgroundId
+            ? "hover:bg-white/30 dark:hover:bg-black/30"
+            : "hover:bg-gray-100 dark:hover:bg-gray-700",
+      )}
+    >
+      <div className="flex items-center gap-2" {...listeners} {...attributes}>
+        <button
+          onClick={handlePlayMusic}
+          className="flex size-11 items-center justify-center rounded-md bg-teal-500 text-white transition hover:bg-teal-600"
         >
-          <div
-            className="flex items-center gap-2"
-            {...listeners}
-            {...attributes}
-          >
-            <button
-              onClick={handlePlayMusic}
-              className="flex size-11 items-center justify-center rounded-md bg-teal-500 text-white transition hover:bg-teal-600"
+          {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+        </button>
+
+        <div className="flex flex-1 items-center gap-2">
+          <Music size={16} className="text-gray-400" />
+
+          <div className="flex flex-col" onDoubleClick={handleDoubleClick}>
+            <div
+              className={cn(
+                "truncate rounded text-sm font-medium text-gray-900 transition-all duration-200 dark:text-gray-100",
+                isActive && "text-teal-600 dark:text-teal-400",
+                isEditing &&
+                  cn(
+                    "px-2 py-0.5 shadow ring-2 ring-teal-500",
+                    activeBackgroundId
+                      ? "bg-white/10 backdrop-blur-sm dark:bg-black/10"
+                      : "bg-white dark:bg-gray-800",
+                  ),
+              )}
             >
-              {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-            </button>
-
-            <div className="flex flex-1 items-center gap-2">
-              <Music size={16} className="text-gray-400" />
-
-              <div className="flex flex-col" onDoubleClick={handleDoubleClick}>
-                <div
-                  className={cn(
-                    "truncate rounded text-sm font-medium text-gray-900 transition-all duration-200 dark:text-gray-100",
-                    isActive && "text-teal-600 dark:text-teal-400",
-                    isEditing &&
-                      cn(
-                        "px-2 py-0.5 shadow ring-2 ring-teal-500",
-                        activeBackgroundId
-                          ? "bg-white/10 backdrop-blur-sm dark:bg-black/10"
-                          : "bg-white dark:bg-gray-800",
-                      ),
-                  )}
-                >
-                  <input
-                    ref={inputRef}
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    onBlur={handleBlur}
-                    onKeyDown={handleKeyDown}
-                    readOnly={!isEditing}
-                    autoComplete="off"
-                    autoCorrect="off"
-                    spellCheck={false}
-                    className={cn(
-                      "w-full truncate bg-transparent focus:outline-none",
-                      !isEditing && "pointer-events-none",
-                    )}
-                  />
-                </div>
-                <span className="text-xs text-gray-500 tabular-nums dark:text-gray-400">
-                  {formatTime(track.durationSeconds)}
-                </span>
-              </div>
+              <input
+                ref={inputRef}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                readOnly={!isEditing}
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
+                className={cn(
+                  "w-full truncate bg-transparent focus:outline-none",
+                  !isEditing && "pointer-events-none",
+                )}
+              />
             </div>
-
-            <button
-              onClick={handleDeleteMusic}
-              className="rounded-md p-1.5 text-gray-400 opacity-0 transition group-hover:opacity-100 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
-            >
-              <Trash2 size={16} />
-            </button>
+            <span className="text-xs text-gray-500 tabular-nums dark:text-gray-400">
+              {formatTime(track.durationSeconds)}
+            </span>
           </div>
-
-          {isActive && (
-            <div className="flex items-center gap-2 p-2 pb-1">
-              <span className="text-xs text-gray-500 tabular-nums dark:text-gray-400">
-                {formatTime(currentTime)}
-              </span>
-              <div className="h-1 flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-                <div
-                  className="h-full rounded-full bg-teal-500 transition-all duration-100 dark:bg-teal-400"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <span className="text-xs text-gray-500 tabular-nums dark:text-gray-400">
-                {formatTime(track.durationSeconds)}
-              </span>
-            </div>
-          )}
         </div>
-      </motion.div>
+
+        <button
+          onClick={handleDeleteMusic}
+          className="rounded-md p-1.5 text-gray-400 opacity-0 transition group-hover:opacity-100 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
+
+      {isActive && (
+        <div className="flex items-center gap-2 p-2 pb-1">
+          <span className="text-xs text-gray-500 tabular-nums dark:text-gray-400">
+            {formatTime(currentTime)}
+          </span>
+          <div className="h-1 flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+            <div
+              className="h-full rounded-full bg-teal-500 transition-all duration-100 dark:bg-teal-400"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <span className="text-xs text-gray-500 tabular-nums dark:text-gray-400">
+            {formatTime(track.durationSeconds)}
+          </span>
+        </div>
+      )}
     </div>
   );
 }
