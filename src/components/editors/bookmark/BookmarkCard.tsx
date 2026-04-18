@@ -43,7 +43,10 @@ export default function BookmarkCard({
       >
         <div
           className={cn(
-            "group relative overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm hover:border-teal-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-teal-600",
+            "group relative overflow-hidden rounded-lg",
+            "bg-white dark:bg-gray-800",
+            "border border-gray-200 hover:border-teal-300 dark:border-gray-700 dark:hover:border-teal-600",
+            "shadow-sm hover:shadow-md",
             activeBackgroundId &&
               "border-transparent bg-white/30 backdrop-blur-sm dark:border-transparent dark:bg-black/30",
           )}
@@ -67,7 +70,7 @@ export default function BookmarkCard({
                 href={bookmark.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="line-clamp-2 font-semibold text-gray-900 transition hover:text-teal-500 dark:text-gray-100 dark:hover:text-teal-400"
+                className="text-md line-clamp-2 cursor-default font-semibold text-gray-900 transition hover:text-teal-500 dark:text-gray-100 dark:hover:text-teal-400"
               >
                 {bookmark.title || bookmark.url}
               </a>
@@ -77,6 +80,7 @@ export default function BookmarkCard({
                   {bookmark.description}
                 </p>
               )}
+
               <p className="mt-3 truncate text-xs text-gray-400 dark:text-gray-500">
                 {new URL(bookmark.url).hostname}
               </p>
@@ -123,7 +127,10 @@ export default function BookmarkCard({
     >
       <div
         className={cn(
-          "group relative flex gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:border-teal-300 hover:shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:hover:border-teal-600",
+          "group relative flex gap-4 rounded-lg p-3",
+          "bg-white dark:bg-gray-800",
+          "border border-gray-200 hover:border-teal-300 dark:border-gray-700 dark:hover:border-teal-600",
+          "shadow-sm hover:shadow-sm",
           activeBackgroundId &&
             "border-transparent bg-white/30 backdrop-blur-sm dark:border-transparent dark:bg-black/30",
         )}
@@ -143,14 +150,16 @@ export default function BookmarkCard({
           <p className="truncate text-xs text-gray-400 dark:text-gray-500">
             {new URL(bookmark.url).hostname}
           </p>
+
           <a
             href={bookmark.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="line-clamp-1 text-lg font-bold text-gray-900 transition-colors hover:text-teal-500 dark:text-gray-100 dark:hover:text-teal-400"
+            className="text-md line-clamp-1 cursor-default font-bold text-gray-900 transition-colors hover:text-teal-500 dark:text-gray-100 dark:hover:text-teal-400"
           >
             {bookmark.title || bookmark.url}
           </a>
+
           {bookmark.description && (
             <p className="line-clamp-3 text-sm text-gray-600 dark:text-gray-400">
               {bookmark.description}

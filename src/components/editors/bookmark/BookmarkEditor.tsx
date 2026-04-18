@@ -10,6 +10,7 @@ import BookmarkCard from "./BookmarkCard";
 import { cn } from "@/lib/utils/general";
 import { toast } from "@/lib/utils/toast";
 import BookmarkToolbar from "./BookmarkToolbar";
+import { Upload } from "lucide-react";
 
 export default function BookmarkEditor() {
   const activeNestling = useActiveNestling();
@@ -20,9 +21,6 @@ export default function BookmarkEditor() {
   const { updateNestling } = useNestlingActions();
 
   const [title, setTitle] = useState(activeNestling.title);
-  const [url, setUrl] = useState("");
-
-  const [isAdding, setIsAdding] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const [isDragging, setIsDragging] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,15 +43,13 @@ export default function BookmarkEditor() {
   const handleAddBookmark = async (url: string) => {
     if (!url.trim()) return;
 
-    setIsAdding(true);
+    toast.info("Adding bookmark...");
+
     try {
       await createBookmark(activeNestling.id!, url.trim());
-      setUrl("");
       toast.success("Bookmark added!");
     } catch (error) {
       toast.error("Failed to add bookmark.");
-    } finally {
-      setIsAdding(false);
     }
   };
 
@@ -99,14 +95,11 @@ export default function BookmarkEditor() {
       <BookmarkToolbar
         title={activeNestling.title}
         bookmarks={bookmarks}
-        url={url}
-        isAdding={isAdding}
         viewMode={viewMode}
         searchQuery={searchQuery}
-        setUrl={setUrl}
         setViewMode={setViewMode}
-        handleAddBookmark={handleAddBookmark}
         setSearchQuery={setSearchQuery}
+        handleAddBookmark={handleAddBookmark}
       />
 
       <div
@@ -115,11 +108,10 @@ export default function BookmarkEditor() {
         )}
       >
         {bookmarks.length === 0 && (
-          <div className="flex flex-col py-24 text-center text-gray-500 dark:text-gray-400">
+          <div className="flex flex-col items-center justify-center py-24 text-gray-500 dark:text-gray-400">
+            <Upload className="mb-4 size-16 flex-shrink-0" />
             <p className="text-base font-medium">No bookmarks yet.</p>
-            <p className="text-sm">
-              Click the upload button, or drag and drop a URL here.
-            </p>
+            <p className="text-sm">Add a URL or drag and drop one here.</p>
           </div>
         )}
 
