@@ -6,7 +6,7 @@ import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { ExternalLink, Download, Search, BookmarkPlus } from "lucide-react";
 import ViewToggle from "../gallery/ViewToggle";
-import BookmarkPopover from "./BookmarkPopover";
+import BookmarkPopover from "../../popovers/BookmarkPopover";
 import { useState } from "react";
 
 export default function BookmarkToolbar({

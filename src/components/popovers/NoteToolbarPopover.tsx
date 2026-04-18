@@ -1,7 +1,6 @@
-import { Check, X, SquareArrowOutUpRight } from "lucide-react";
+import { Check, Link, X } from "lucide-react";
 import { useState } from "react";
 import { Editor } from "@tiptap/react";
-import { openUrl } from "@tauri-apps/plugin-opener";
 import {
   Popover,
   PopoverContent,
@@ -10,7 +9,7 @@ import {
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 
-export default function YouTubeLinkDialog({
+export default function NoteToolbarPopover({
   editor,
   type = "image",
   isOpen,
@@ -28,19 +27,22 @@ export default function YouTubeLinkDialog({
   const [linkUrl, setLinkUrl] = useState("");
 
   const handleInsert = () => {
-    if (linkUrl.trim()) {
-      if (type === "image")
-        editor.chain().focus().setImage({ src: linkUrl }).run();
-      if (type === "youtube")
-        editor.chain().focus().setYoutubeVideo({ src: linkUrl }).run();
+    if (type === "image")
+      editor.chain().focus().setImage({ src: linkUrl }).run();
+    if (type === "youtube")
+      editor.chain().focus().setYoutubeVideo({ src: linkUrl }).run();
 
-      handleClose();
-    }
+    handleClose();
   };
 
   const handleClose = () => {
     setIsOpen(false);
     setLinkUrl("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleInsert();
+    else if (e.key === "Escape") handleClose();
   };
 
   return (
@@ -53,44 +55,35 @@ export default function YouTubeLinkDialog({
             "border-none bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
+        <Link className="size-4 flex-shrink-0 text-gray-400" />
+
         <input
           value={linkUrl}
           onChange={(e) => setLinkUrl(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleInsert();
-            else if (e.key === "Escape") handleClose();
-          }}
+          onKeyDown={(e) => handleKeyDown(e)}
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
           placeholder={`Enter ${type === "image" ? "Image" : "YouTube"} Url...`}
-          className="flex-1 bg-transparent outline-none focus:outline-none dark:text-white dark:placeholder-gray-400"
+          className="flex-1 bg-transparent pl-3 outline-none focus:outline-none dark:text-white dark:placeholder-gray-400"
           autoFocus
         />
 
         <div className="flex flex-row items-center gap-1 pl-3">
           <button
             onClick={handleInsert}
-            disabled={!linkUrl.trim()}
+            disabled={
+              !linkUrl.trim() ||
+              (type === "image"
+                ? !editor.can().setImage({ src: linkUrl })
+                : !editor.can().setYoutubeVideo({ src: linkUrl }))
+            }
             className={cn(
               "rounded p-1 text-gray-500 transition-colors hover:bg-teal-50 hover:text-teal-500 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-gray-500 dark:text-gray-400 dark:hover:bg-teal-900/30 dark:hover:text-teal-400 dark:disabled:hover:bg-transparent dark:disabled:hover:text-gray-400",
               activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
             )}
           >
-            <Check size={18} />
-          </button>
-
-          <div className="h-5 w-px bg-gray-200 dark:bg-gray-600" />
-
-          <button
-            onClick={() => linkUrl.trim() && openUrl(linkUrl)}
-            disabled={!linkUrl.trim()}
-            className={cn(
-              "rounded p-1 text-gray-500 transition-colors hover:bg-blue-50 hover:text-blue-500 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-gray-500 dark:text-gray-400 dark:hover:bg-blue-900/30 dark:hover:text-blue-400 dark:disabled:hover:bg-transparent dark:disabled:hover:text-gray-400",
-              activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
-            )}
-          >
-            <SquareArrowOutUpRight size={16} />
+            <Check className="size-4 flex-shrink-0" />
           </button>
 
           <button
@@ -100,7 +93,7 @@ export default function YouTubeLinkDialog({
               activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
             )}
           >
-            <X size={16} />
+            <X className="size-4 flex-shrink-0" />
           </button>
         </div>
       </PopoverContent>

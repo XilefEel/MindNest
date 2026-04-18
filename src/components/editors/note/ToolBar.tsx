@@ -26,7 +26,7 @@ import ToolBarItem from "./ToolBarItem";
 import { useCurrentEditor, useEditorState } from "@tiptap/react";
 import { exportNoteToHTML } from "@/lib/utils/note";
 import { useState } from "react";
-import ToolBarPopover from "./ToolBarPopover.tsx";
+import NoteToolbarPopover from "../../popovers/NoteToolbarPopover.tsx";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 import NoteTemplatePopover from "@/components/popovers/NoteTemplatePopover.tsx";
@@ -220,7 +220,7 @@ export default function ToolBar({ title }: { title: string }) {
         )}
       />
 
-      <ToolBarPopover
+      <NoteToolbarPopover
         editor={editor}
         type="image"
         isOpen={showImageDialog}
@@ -229,9 +229,9 @@ export default function ToolBar({ title }: { title: string }) {
         <button>
           <ToolBarItem Icon={ImagePlus} label="Add Image" />
         </button>
-      </ToolBarPopover>
+      </NoteToolbarPopover>
 
-      <ToolBarPopover
+      <NoteToolbarPopover
         editor={editor}
         type="youtube"
         isOpen={showYoutubeDialog}
@@ -240,7 +240,7 @@ export default function ToolBar({ title }: { title: string }) {
         <button>
           <ToolBarItem Icon={Youtube} label="Insert YouTube Link" />
         </button>
-      </ToolBarPopover>
+      </NoteToolbarPopover>
 
       <ToolBarItem
         Icon={Download}
