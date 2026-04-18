@@ -52,13 +52,12 @@ export default function useLoadNest({
 
   const { loadSettings } = useSettingsStore();
 
-  const nestlingStore = useNestlingStore.getState();
-
   useEffect(() => {
     if (!id) return;
 
     async function restore() {
       setLoading(true);
+
       try {
         const lastNest = await getNestFromId(id);
         setNest(lastNest);
@@ -91,9 +90,9 @@ export default function useLoadNest({
           getAllNestlingTags(lastNest.id),
         ]);
 
-        const lastNestling = nestlingStore.nestlings.find(
-          (n) => n.id === lastNestlingId,
-        );
+        const lastNestling = useNestlingStore
+          .getState()
+          .nestlings.find((n) => n.id === lastNestlingId);
 
         if (lastNestling && id === lastNestling.nestId) {
           setActiveNestlingId(lastNestling.id);
@@ -103,9 +102,9 @@ export default function useLoadNest({
 
             while (currentFolderId) {
               setFolderOpen(currentFolderId, true);
-              const currentFolder = nestlingStore.folders.find(
-                (f) => f.id === currentFolderId,
-              );
+              const currentFolder = useNestlingStore
+                .getState()
+                .folders.find((f) => f.id === currentFolderId);
               currentFolderId = currentFolder?.parentId || null;
             }
 
