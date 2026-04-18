@@ -60,7 +60,7 @@ export default function NoteEditor() {
     editorProps: {
       attributes: {
         class:
-          "h-full max-w-none prose dark:prose-invert min-h-full outline-none focus:outline-none text-gray-900 dark:text-gray-100",
+          "prose dark:prose-invert prose-sm md:prose-base max-w-none min-h-full outline-none focus:outline-none text-gray-900 dark:text-gray-100",
       },
       handleClick(_view, _pos, event) {
         const target = event.target as HTMLElement;

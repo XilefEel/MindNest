@@ -29,7 +29,7 @@ export const exportNoteToHTML = async (editor: Editor, title: string) => {
       border-left: 3px solid #ccc;
       margin-left: 0;
       padding-left: 1em;
-      color: #666;
+      color: #555;
     }
     code {
       background: #f4f4f4;
@@ -42,7 +42,28 @@ export const exportNoteToHTML = async (editor: Editor, title: string) => {
       border-radius: 6px;
       overflow-x: auto;
     }
+    pre code {
+      background: none;
+      padding: 0;
+    }
     img { max-width: 100%; height: auto; }
+    mark {
+      background: #fef08a;
+      padding: 1px 2px;
+      border-radius: 2px;
+    }
+    iframe {
+      max-width: 100%;
+      aspect-ratio: 16/9;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #1a1a1a; color: #e0e0e0; }
+      blockquote { border-left-color: #555; color: #aaa; }
+      code, pre { background: #2a2a2a; }
+      mark { background: #854d0e; color: #fef9c3; }
+    }
+
   </style>
 </head>
 <body>
