@@ -5,6 +5,8 @@ export type Settings = {
   topbarHidden: boolean;
   nestlingTitleHidden: boolean;
   largeSidebarText: boolean;
+  folderIndentLines: boolean;
+  folderArrow: boolean;
   musicLooped: boolean;
 };
 
@@ -13,6 +15,8 @@ export const DEFAULT_UI_SETTINGS: Settings = {
   topbarHidden: false,
   nestlingTitleHidden: false,
   largeSidebarText: false,
+  folderIndentLines: true,
+  folderArrow: true,
   musicLooped: false,
 };
 

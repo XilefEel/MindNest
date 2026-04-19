@@ -8,6 +8,8 @@ export default function GeneralSettings() {
     sidebarHidden,
     nestlingTitleHidden,
     largeSidebarText,
+    folderIndentLines,
+    folderArrow,
     setSetting,
   } = useSettingsStore();
 
@@ -16,6 +18,8 @@ export default function GeneralSettings() {
     setSetting("sidebarHidden", false);
     setSetting("nestlingTitleHidden", false);
     setSetting("largeSidebarText", false);
+    setSetting("folderIndentLines", true);
+    setSetting("folderArrow", true);
   };
 
   const settings = [
@@ -33,7 +37,7 @@ export default function GeneralSettings() {
     },
     {
       text: "Compact Nestling Title",
-      description: "Hides folder path and tags to save space",
+      description: "Hide folder path and tags to save space",
       value: nestlingTitleHidden,
       onChange: () => setSetting("nestlingTitleHidden", !nestlingTitleHidden),
     },
@@ -42,6 +46,18 @@ export default function GeneralSettings() {
       description: "Use larger text in the sidebar for better readability",
       value: largeSidebarText,
       onChange: () => setSetting("largeSidebarText", !largeSidebarText),
+    },
+    {
+      text: "Show Folder Indent Lines",
+      description: "Show indent lines beside folders",
+      value: folderIndentLines,
+      onChange: () => setSetting("folderIndentLines", !folderIndentLines),
+    },
+    {
+      text: "Show Folder Arrow",
+      description: "Show the arrow icon beside folders",
+      value: folderArrow,
+      onChange: () => setSetting("folderArrow", !folderArrow),
     },
   ];
 

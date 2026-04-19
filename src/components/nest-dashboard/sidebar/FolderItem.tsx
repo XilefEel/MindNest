@@ -12,6 +12,7 @@ import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useRef, useEffect } from "react";
 import { useNestlingActions } from "@/stores/useNestlingStore";
 import { useInlineEdit } from "@/hooks/useInlineEdit";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 
 export default function FolderItem({
   folder,
@@ -24,6 +25,7 @@ export default function FolderItem({
 }) {
   const activeBackgroundId = useActiveBackgroundId();
   const { updateFolder } = useNestlingActions();
+  const { folderArrow } = useSettingsStore();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -87,13 +89,17 @@ export default function FolderItem({
           )}
         >
           <div className="flex min-w-0 flex-1 items-center gap-1.5">
-            <ChevronDown
-              className={cn(
-                "size-4 flex-shrink-0 transition-transform duration-100",
-                isFolderOpen ? "rotate-0" : "-rotate-90",
-              )}
-            />
+            {folderArrow && (
+              <ChevronDown
+                className={cn(
+                  "size-4 flex-shrink-0 transition-transform",
+                  isFolderOpen ? "rotate-0" : "-rotate-90",
+                )}
+              />
+            )}
+
             <FolderIcon className="size-4 flex-shrink-0" />
+
             <div
               className={cn(
                 "min-w-0 flex-1 rounded transition-all",

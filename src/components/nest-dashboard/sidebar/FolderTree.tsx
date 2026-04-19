@@ -29,9 +29,7 @@ export default function FolderTree({
   const activeBackgroundId = useActiveBackgroundId();
   const activeFolderId = useActiveFolderId();
 
-  console.log(`Active Folder ID: ${activeFolderId} | Folder ID: ${folder.id}`);
-
-  const { largeSidebarText } = useSettingsStore();
+  const { largeSidebarText, folderIndentLines } = useSettingsStore();
 
   const isFolderOpen = openFolders[folder.id] || false;
 
@@ -69,12 +67,15 @@ export default function FolderTree({
               key={`folder-content-${folder.id}`}
               className={cn(
                 "ml-6",
-                "before:absolute before:top-0 before:left-4 before:h-full",
-                "before:border-l before:border-gray-200 dark:before:border-gray-700",
-                activeBackgroundId &&
-                  "before:border-black/20 dark:before:border-white/20",
-                activeFolderId === folder.id &&
-                  "before:border-teal-500 dark:before:border-teal-400",
+                folderIndentLines &&
+                  cn(
+                    "before:absolute before:top-0 before:left-4 before:h-full",
+                    "before:border-l before:border-gray-200 dark:before:border-gray-700",
+                    activeBackgroundId &&
+                      "before:border-black/20 dark:before:border-white/20",
+                    activeFolderId === folder.id &&
+                      "before:border-teal-500 dark:before:border-teal-400",
+                  ),
               )}
             >
               {childFolders.map((childFolder) => (
