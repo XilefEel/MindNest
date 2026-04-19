@@ -24,6 +24,7 @@ import BottomBar from "./BottomBar";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useNoteStore } from "@/stores/useNoteStore";
 import { openUrl } from "@tauri-apps/plugin-opener";
+import { TaskItem, TaskList } from "@tiptap/extension-list";
 
 export default function NoteEditor() {
   const activeNestling = useActiveNestling();
@@ -39,6 +40,10 @@ export default function NoteEditor() {
   const editor = useEditor({
     extensions: [
       StarterKit,
+      TaskList,
+      TaskItem.configure({
+        nested: true,
+      }),
       Highlight,
       TextAlign.configure({
         types: ["heading", "paragraph"],

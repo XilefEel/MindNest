@@ -10,7 +10,7 @@ export default function Titlebar() {
   return (
     <div
       data-tauri-drag-region
-      className="fixed z-50 flex h-6 w-full items-center justify-between dark:text-white"
+      className="fixed z-[1000] flex h-6 w-full items-center justify-between dark:text-white"
     >
       <div
         className={cn(
@@ -25,8 +25,9 @@ export default function Titlebar() {
           )}
           onClick={() => appWindow.minimize()}
         >
-          <Minus className="size-4" />
+          <Minus className="size-4 flex-shrink-0" />
         </div>
+
         <div
           className={cn(
             "flex h-6 items-center justify-center px-4 transition-colors hover:bg-gray-200 hover:dark:bg-gray-700",
@@ -34,13 +35,14 @@ export default function Titlebar() {
           )}
           onClick={() => appWindow.toggleMaximize()}
         >
-          <Maximize className="size-4" />
+          <Maximize className="size-4 flex-shrink-0" />
         </div>
+
         <div
           className="flex h-6 items-center justify-center px-4 transition-colors hover:bg-red-500"
           onClick={() => appWindow.close()}
         >
-          <X className="size-4" />
+          <X className="size-4 flex-shrink-0" />
         </div>
       </div>
     </div>

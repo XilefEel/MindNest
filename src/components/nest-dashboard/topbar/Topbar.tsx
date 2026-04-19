@@ -140,30 +140,28 @@ export default function Topbar({
 
       <div
         className={cn(
-          "ml-auto flex items-center justify-center p-1 px-3",
+          "ml-auto flex items-center justify-center gap-1 p-1 px-2",
           activeBackgroundId &&
             "rounded-lg bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
-        <div className="flex items-center gap-3">
-          <TopbarButton
-            label={"Share"}
-            action={() => console.log("share nest")}
-            Icon={Link}
-          />
+        <TopbarButton
+          label={"Share"}
+          action={() => console.log("share nest")}
+          Icon={Link}
+        />
 
-          <TopbarButton
-            label={"Settings"}
-            action={() => setIsSettingsOpen(true)}
-            Icon={Settings}
-          />
+        <TopbarButton
+          label={"Settings"}
+          action={() => setIsSettingsOpen(true)}
+          Icon={Settings}
+        />
 
-          <TopbarButton
-            label={"Profile"}
-            action={() => console.log("profile")}
-            Icon={CircleUserRound}
-          />
-        </div>
+        <TopbarButton
+          label={"Profile"}
+          action={() => console.log("profile")}
+          Icon={CircleUserRound}
+        />
       </div>
     </nav>
   );
