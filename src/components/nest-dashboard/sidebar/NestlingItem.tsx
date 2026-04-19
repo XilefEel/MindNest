@@ -62,10 +62,12 @@ export default function NestlingItem({
 
   const handleSelect = async () => {
     if (isEditing) return;
+
     setActiveNestlingId(nestling.id);
     setActiveFolderId(nestling.folderId);
-    await saveLastNestling(activeNestId!, nestling.id);
     setIsSidebarOpen(false);
+
+    await saveLastNestling(activeNestId!, nestling.id);
   };
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =

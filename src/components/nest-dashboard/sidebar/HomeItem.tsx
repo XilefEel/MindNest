@@ -1,15 +1,30 @@
+import { clearLastNestling } from "@/lib/storage/nestling";
 import { cn } from "@/lib/utils/general";
+import {
+  useActiveNestlingId,
+  useNestlingActions,
+} from "@/stores/useNestlingStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { Home } from "lucide-react";
 
 export default function HomeItem({
-  activeBackgroundId,
-  activeNestlingId,
-  handleHomeClick,
+  nestId,
+  setIsSidebarOpen,
 }: {
-  activeBackgroundId: number | null;
-  activeNestlingId: number | null;
-  handleHomeClick: () => void;
+  nestId: number;
+  setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
+  const { setActiveNestlingId, setActiveFolderId } = useNestlingActions();
+
+  const activeNestlingId = useActiveNestlingId();
+  const activeBackgroundId = useActiveBackgroundId();
+
+  const handleHomeClick = async () => {
+    setActiveNestlingId(null);
+    setActiveFolderId(null);
+    setIsSidebarOpen(false);
+    await clearLastNestling(nestId);
+  };
   return (
     <div
       className={cn(

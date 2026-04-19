@@ -4,6 +4,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils/general";
 import FolderContextMenu from "../../context-menu/FolderContextMenu";
 import {
+  useActiveFolderId,
   useFolders,
   useNestlingActions,
   useNestlings,
@@ -26,6 +27,10 @@ export default function FolderTree({
   const openFolders = useNestlingStore((state) => state.openFolders);
 
   const activeBackgroundId = useActiveBackgroundId();
+  const activeFolderId = useActiveFolderId();
+
+  console.log(`Active Folder ID: ${activeFolderId} | Folder ID: ${folder.id}`);
+
   const { largeSidebarText } = useSettingsStore();
 
   const isFolderOpen = openFolders[folder.id] || false;
@@ -58,31 +63,44 @@ export default function FolderTree({
           toggleFolder={toggleFolder}
         />
 
-        {isFolderOpen && (
-          <div key={`folder-content-${folder.id}`} className="ml-6">
-            {childFolders.map((childFolder) => (
-              <FolderTree
-                key={childFolder.id}
-                folder={childFolder}
-                setIsSidebarOpen={setIsSidebarOpen}
-              />
-            ))}
+        <div className="relative">
+          {isFolderOpen && (
             <div
+              key={`folder-content-${folder.id}`}
               className={cn(
-                "flex flex-col gap-0.5 pt-0.5",
-                largeSidebarText && "gap-1 pt-1",
+                "ml-6",
+                "before:absolute before:top-0 before:left-4 before:h-full",
+                "before:border-l before:border-gray-200 dark:before:border-gray-700",
+                activeBackgroundId &&
+                  "before:border-black/20 dark:before:border-white/20",
+                activeFolderId === folder.id &&
+                  "before:border-teal-500 dark:before:border-teal-400",
               )}
             >
-              {childNestlings.map((nestling) => (
-                <NestlingItem
-                  key={nestling.id}
-                  nestling={nestling}
+              {childFolders.map((childFolder) => (
+                <FolderTree
+                  key={childFolder.id}
+                  folder={childFolder}
                   setIsSidebarOpen={setIsSidebarOpen}
                 />
               ))}
+              <div
+                className={cn(
+                  "flex flex-col gap-0.5 pt-0.5",
+                  largeSidebarText && "gap-1 pt-1",
+                )}
+              >
+                {childNestlings.map((nestling) => (
+                  <NestlingItem
+                    key={nestling.id}
+                    nestling={nestling}
+                    setIsSidebarOpen={setIsSidebarOpen}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </FolderContextMenu>
   );

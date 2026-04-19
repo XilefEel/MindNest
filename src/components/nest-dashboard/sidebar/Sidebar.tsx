@@ -3,7 +3,6 @@ import { DndContext, rectIntersection } from "@dnd-kit/core";
 import LooseNestlings from "./LooseNestlings";
 import { useEffect, useMemo } from "react";
 import {
-  useActiveNestlingId,
   useFolders,
   useNestlingActions,
   useNestlings,
@@ -15,7 +14,6 @@ import ToolBar from "./ToolBar";
 import PinnedNestlings from "./PinnedNestlings";
 import HomeItem from "./HomeItem";
 import { AnimatePresence } from "framer-motion";
-import { clearLastNestling } from "@/lib/storage/nestling";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 
 export default function Sidebar({
@@ -28,10 +26,8 @@ export default function Sidebar({
 }) {
   const nestlings = useNestlings();
   const folders = useFolders();
-  const { handleDragStart, handleDragEnd, fetchSidebar, setActiveNestlingId } =
-    useNestlingActions();
+  const { handleDragStart, handleDragEnd, fetchSidebar } = useNestlingActions();
 
-  const activeNestlingId = useActiveNestlingId();
   const activeBackgroundId = useActiveBackgroundId();
   const { largeSidebarText } = useSettingsStore();
 
@@ -52,12 +48,6 @@ export default function Sidebar({
     return nestlings.filter((n) => n.isPinned);
   }, [nestlings]);
 
-  const handleHomeClick = async () => {
-    setActiveNestlingId(null);
-    setIsSidebarOpen(false);
-    await clearLastNestling(nestId);
-  };
-
   useEffect(() => {
     if (nestId) {
       fetchSidebar(nestId);
@@ -69,6 +59,7 @@ export default function Sidebar({
       <aside
         style={{ scrollbarGutter: "stable" }}
         className={cn(
+          "[&::-webkit-scrollbar]:hidden",
           "flex h-full flex-col overflow-x-hidden overflow-y-auto p-5",
           "bg-white dark:bg-gray-800 md:dark:bg-gray-800/50",
           "rounded-tr-2xl rounded-br-2xl border border-gray-200 dark:border-gray-700",
@@ -80,11 +71,7 @@ export default function Sidebar({
       >
         <ToolBar nestId={nestId} />
 
-        <HomeItem
-          activeBackgroundId={activeBackgroundId}
-          activeNestlingId={activeNestlingId}
-          handleHomeClick={handleHomeClick}
-        />
+        <HomeItem nestId={nestId} setIsSidebarOpen={setIsSidebarOpen} />
 
         <AnimatePresence initial={false}>
           <PinnedNestlings

@@ -136,7 +136,7 @@ export default function NestDashboardPage() {
           >
             <div
               className={cn(
-                "w-72 transition-transform duration-300 ease-in-out",
+                "w-72 transition-[translate,opacity] duration-300 ease-in-out",
                 "fixed top-0 z-40 h-full md:z-0",
                 "md:relative",
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full",
