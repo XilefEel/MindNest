@@ -79,7 +79,7 @@ export default function NestDashboardPage() {
   return (
     <div
       style={{ scrollbarGutter: "stable" }}
-      className="relative flex h-screen flex-col bg-gray-50 pb-3 select-none md:pb-6 dark:bg-gray-900"
+      className="flex h-screen flex-col bg-gray-50 pb-3 select-none dark:bg-gray-900"
       onContextMenu={(e) => e.preventDefault()}
     >
       <div
@@ -94,22 +94,22 @@ export default function NestDashboardPage() {
 
       <div
         className={cn(
-          "relative z-10 flex h-full flex-col",
+          "z-10 flex h-full flex-col",
           isCardHidden ? "pointer-events-none opacity-0" : "opacity-100",
         )}
       >
         <nav
           className={cn(
             "shrink-0 transition-[height] duration-300 ease-in-out",
-            topbarHidden ? "h-0" : "h-20",
+            topbarHidden ? "h-0" : "h-17",
           )}
         >
           <div
+            onDoubleClick={() => setSetting("topbarHidden", !topbarHidden)}
             className={cn(
-              "transition-transform duration-300 md:px-6",
+              "transition-transform duration-300",
               topbarHidden ? "-translate-y-full" : "translate-y-0",
             )}
-            onDoubleClick={() => setSetting("topbarHidden", !topbarHidden)}
           >
             <Topbar
               nest={nest}
@@ -119,7 +119,7 @@ export default function NestDashboardPage() {
           </div>
         </nav>
 
-        <div className="mt-1 flex flex-1 overflow-hidden sm:mt-6">
+        <div className="flex flex-1 overflow-hidden sm:mt-6">
           {isSidebarOpen && (
             <div
               className="fixed inset-0 z-30 bg-black/30 md:hidden"
@@ -152,7 +152,7 @@ export default function NestDashboardPage() {
 
           <main
             className={cn(
-              "relative mx-3 flex-1 overflow-y-auto px-5 py-3 md:mx-6",
+              "relative flex-1 overflow-y-auto px-5 py-3 md:mx-3",
               activeBackgroundId &&
                 "rounded-2xl bg-white/30 backdrop-blur-sm dark:bg-black/30",
             )}

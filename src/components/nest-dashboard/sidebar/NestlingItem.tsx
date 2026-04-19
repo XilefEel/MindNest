@@ -150,8 +150,10 @@ export default function NestlingItem({
         className="transition-[scale] active:scale-[0.98]"
       >
         <div
+          onClick={handleSelect}
+          style={style}
           className={cn(
-            "flex h-8 w-full max-w-full items-center justify-between gap-1 truncate rounded px-2 py-1 transition-[background]",
+            "flex w-full max-w-full items-center justify-between gap-1 truncate rounded px-2 py-1 transition-[background]",
             activeBackgroundId
               ? nestling.id === activeNestling?.id
                 ? "bg-white/50 font-medium dark:bg-black/50"
@@ -160,8 +162,6 @@ export default function NestlingItem({
                 ? "bg-teal-50 font-medium text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
                 : "hover:bg-gray-50 dark:hover:bg-gray-700/50",
           )}
-          onClick={() => handleSelect()}
-          style={style}
         >
           <div className="flex min-w-0 flex-1 items-center gap-1.5">
             <button
@@ -191,10 +191,6 @@ export default function NestlingItem({
               <input
                 ref={inputRef}
                 id="text"
-                className={cn(
-                  "w-full truncate bg-transparent focus:outline-none",
-                  !isEditing && "pointer-events-none",
-                )}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 onBlur={handleBlur}
@@ -203,6 +199,10 @@ export default function NestlingItem({
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck={false}
+                className={cn(
+                  "w-full truncate bg-transparent focus:outline-none",
+                  !isEditing && "pointer-events-none",
+                )}
               />
             </div>
           </div>
