@@ -38,7 +38,9 @@ export default function PinnedNestlings({
         <div className="rounded-lg bg-linear-to-r from-pink-400 to-pink-500 p-1.5 text-white">
           <Pin className="size-4 flex-shrink-0" />
         </div>
+
         <span>Pinned</span>
+
         <div className="ml-auto">
           <ChevronLeft
             className={cn(

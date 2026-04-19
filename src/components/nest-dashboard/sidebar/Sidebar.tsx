@@ -59,7 +59,7 @@ export default function Sidebar({
         style={{ scrollbarGutter: "stable" }}
         className={cn(
           "[&::-webkit-scrollbar]:hidden",
-          "flex h-full flex-col overflow-x-hidden overflow-y-auto px-3 py-2",
+          "flex h-full flex-col overflow-x-hidden overflow-y-auto px-4 py-3",
           "bg-white dark:bg-gray-800 md:dark:bg-gray-800/50",
           "rounded-tr-2xl rounded-br-2xl border border-gray-200 dark:border-gray-700",
           "text-sm font-medium text-gray-900 dark:text-gray-100",

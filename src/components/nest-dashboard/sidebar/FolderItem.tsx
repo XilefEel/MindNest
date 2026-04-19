@@ -136,9 +136,9 @@ export default function FolderItem({
             {...listeners}
             {...attributes}
             onClick={(e) => e.stopPropagation()}
-            className="cursor-grab p-1"
+            className="cursor-grab py-0.75"
           >
-            <GripVertical className="size-4 text-gray-500 dark:text-gray-200" />
+            <GripVertical className="size-4 flex-shrink-0 text-gray-500 dark:text-gray-200" />
           </div>
         </div>
       </div>

@@ -109,16 +109,17 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
       updatedAt: new Date().toISOString(),
     };
 
-    await Promise.all([
-      nestlingApi.updateNestling({ ...updated, id }),
-      updateNestlingTimestamp(id),
-    ]);
-
+    // optimistic update
     set((state) => ({
       nestlings: state.nestlings
         .map((n) => (n.id === id ? updated : n))
         .sort((a, b) => a.title.localeCompare(b.title)),
     }));
+
+    await Promise.all([
+      nestlingApi.updateNestling({ ...updated, id }),
+      updateNestlingTimestamp(id),
+    ]);
   }),
 
   updateNestlingTimestamp: withStoreErrorHandler(

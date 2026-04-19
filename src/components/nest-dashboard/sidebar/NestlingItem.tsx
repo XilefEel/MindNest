@@ -167,10 +167,10 @@ export default function NestlingItem({
             <button
               ref={emojiButtonRef}
               onClick={toggleEmojiPicker}
-              className="flex w-5 items-center justify-center transition-opacity duration-100 hover:opacity-70"
+              className="flex w-5 items-center justify-center py-0.75 transition-opacity duration-100 hover:opacity-70"
             >
               {nestling.icon ? (
-                <p>{nestling.icon}</p>
+                <span>{nestling.icon}</span>
               ) : (
                 <Icon className="size-4 flex-shrink-0" />
               )}
@@ -213,9 +213,9 @@ export default function NestlingItem({
               {...listeners}
               {...attributes}
               onClick={(e) => e.stopPropagation()}
-              className="cursor-grab p-1"
+              className="cursor-grab py-0.75"
             >
-              <GripVertical className="size-4 text-gray-500 dark:text-gray-300" />
+              <GripVertical className="size-4 flex-shrink-0 text-gray-500 dark:text-gray-200" />
             </div>
           )}
         </div>
