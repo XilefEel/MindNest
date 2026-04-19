@@ -135,26 +135,24 @@ export default function NestDashboardPage() {
             )}
           >
             <div
+              onDoubleClick={() => setSetting("sidebarHidden", !sidebarHidden)}
               className={cn(
-                "w-72 transition-[translate,opacity] duration-300 ease-in-out",
+                "w-72 backdrop-blur-sm transition-[translate,opacity] duration-300 ease-in-out",
                 "fixed top-0 z-40 h-full md:z-0",
                 "md:relative",
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full",
-                sidebarHidden ? "md:-translate-x-11/12" : "md:translate-x-0",
+                sidebarHidden
+                  ? "md:-translate-x-11/12 md:opacity-0"
+                  : "md:translate-x-0",
               )}
-              onDoubleClick={() => setSetting("sidebarHidden", !sidebarHidden)}
             >
-              <Sidebar
-                nestId={nest.id}
-                isSidebarOpen={isSidebarOpen}
-                setIsSidebarOpen={setIsSidebarOpen}
-              />
+              <Sidebar nestId={nest.id} setIsSidebarOpen={setIsSidebarOpen} />
             </div>
           </aside>
 
           <main
             className={cn(
-              "relative mx-3 flex-1 overflow-y-auto px-5 py-3 md:mx-8",
+              "relative mx-3 flex-1 overflow-y-auto px-5 py-3 md:mx-6",
               activeBackgroundId &&
                 "rounded-2xl bg-white/30 backdrop-blur-sm dark:bg-black/30",
             )}
