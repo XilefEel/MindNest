@@ -2,6 +2,7 @@ import { getMap, saveMap } from "./storage";
 
 export type Settings = {
   sidebarHidden: boolean;
+  sidebarPosition: "left" | "right";
   topbarHidden: boolean;
   nestlingTitleHidden: boolean;
   largeSidebarText: boolean;
@@ -12,6 +13,7 @@ export type Settings = {
 
 export const DEFAULT_UI_SETTINGS: Settings = {
   sidebarHidden: false,
+  sidebarPosition: "left",
   topbarHidden: false,
   nestlingTitleHidden: false,
   largeSidebarText: false,

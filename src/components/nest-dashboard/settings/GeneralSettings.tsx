@@ -2,10 +2,18 @@ import { ThemeToggle } from "./theme-toggle";
 import Toggle from "./Toggle.tsx";
 import { useSettingsStore } from "@/stores/useSettingsStore.tsx";
 
+type Setting = {
+  text: string;
+  description: string;
+  value: boolean;
+  onChange: () => void;
+};
+
 export default function GeneralSettings() {
   const {
     topbarHidden,
     sidebarHidden,
+    sidebarPosition,
     nestlingTitleHidden,
     largeSidebarText,
     folderIndentLines,
@@ -16,13 +24,14 @@ export default function GeneralSettings() {
   const handleReset = () => {
     setSetting("topbarHidden", false);
     setSetting("sidebarHidden", false);
+    setSetting("sidebarPosition", "left");
     setSetting("nestlingTitleHidden", false);
     setSetting("largeSidebarText", false);
     setSetting("folderIndentLines", true);
     setSetting("folderArrow", true);
   };
 
-  const settings = [
+  const settings: Setting[] = [
     {
       text: "Hide Nest Topbar",
       description: "Hide the topbar across all nests",
@@ -34,6 +43,16 @@ export default function GeneralSettings() {
       description: "Hide the sidebar across all nests",
       value: sidebarHidden,
       onChange: () => setSetting("sidebarHidden", !sidebarHidden),
+    },
+    {
+      text: "Move Sidebar to Right",
+      description: "Move the sidebar to the right side of the screen",
+      value: sidebarPosition === "right",
+      onChange: () =>
+        setSetting(
+          "sidebarPosition",
+          sidebarPosition === "right" ? "left" : "right",
+        ),
     },
     {
       text: "Compact Nestling Title",

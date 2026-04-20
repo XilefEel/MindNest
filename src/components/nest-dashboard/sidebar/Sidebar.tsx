@@ -28,7 +28,7 @@ export default function Sidebar({
   const { handleDragStart, handleDragEnd, fetchSidebar } = useNestlingActions();
 
   const activeBackgroundId = useActiveBackgroundId();
-  const { largeSidebarText } = useSettingsStore();
+  const { largeSidebarText, sidebarPosition } = useSettingsStore();
 
   const folderGroups = useMemo(() => {
     return folders
@@ -61,11 +61,15 @@ export default function Sidebar({
           "[&::-webkit-scrollbar]:hidden",
           "flex h-full flex-col overflow-x-hidden overflow-y-auto px-4 py-3",
           "bg-white dark:bg-gray-800 md:dark:bg-gray-800/50",
-          "rounded-tr-2xl rounded-br-2xl border border-gray-200 dark:border-gray-700",
+          "border border-gray-200 dark:border-gray-700",
           "text-sm font-medium text-gray-900 dark:text-gray-100",
+
+          largeSidebarText && "text-base",
+          sidebarPosition === "right"
+            ? "rounded-tl-2xl rounded-bl-2xl"
+            : "rounded-tr-2xl rounded-br-2xl",
           activeBackgroundId &&
             "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30 md:dark:bg-black/30",
-          largeSidebarText && "text-base",
         )}
       >
         <ToolBar nestId={nestId} />

@@ -44,12 +44,13 @@ export default function NestDashboardPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCardHidden, setIsCardHidden] = useState(false);
 
-  const { topbarHidden, sidebarHidden, setSetting } = useSettingsStore();
-
   const activeNestling = useActiveNestling();
   const backgrounds = useBackgrounds();
   const activeBackgroundId = useActiveBackgroundId();
   const brightness = useBackgroundBrightness();
+
+  const { topbarHidden, sidebarHidden, sidebarPosition, setSetting } =
+    useSettingsStore();
 
   const ActiveEditor = activeNestling
     ? editors[activeNestling.nestlingType]
@@ -62,6 +63,21 @@ export default function NestDashboardPage() {
   const backgroundUrl = activeBackgroundImage
     ? convertFileSrc(activeBackgroundImage.filePath)
     : null;
+
+  const isRight = sidebarPosition === "right";
+
+  const desktopTranslate = sidebarHidden
+    ? cn(
+        "md:opacity-0",
+        isRight ? "md:translate-x-11/12" : "md:-translate-x-11/12",
+      )
+    : "md:translate-x-0";
+
+  const mobileTranslate = isSidebarOpen
+    ? "translate-x-0"
+    : isRight
+      ? "translate-x-full"
+      : "-translate-x-full";
 
   useLoadNest({ id: Number(id), setNest, setLoading });
 
@@ -119,31 +135,33 @@ export default function NestDashboardPage() {
           </div>
         </nav>
 
-        <div className="flex flex-1 overflow-hidden sm:mt-6">
+        <div
+          className={cn(
+            "flex flex-1 overflow-hidden sm:mt-6",
+            sidebarPosition === "right" && "flex-row-reverse",
+          )}
+        >
           {isSidebarOpen && (
             <div
-              className="fixed inset-0 z-30 bg-black/30 md:hidden"
+              className="fixed inset-0 z-30 bg-black/30 backdrop-blur-sm md:hidden"
               onClick={() => setIsSidebarOpen(false)}
             />
           )}
 
           <aside
             className={cn(
-              "shrink-0 transition-[width] duration-300 ease-in-out",
-              "w-0 md:w-72",
-              sidebarHidden ? "md:w-0" : "md:w-72",
+              "flex-shrink-0 transition-[width] duration-300 ease-in-out",
+              sidebarHidden ? "md:w-0" : "md:w-75",
             )}
           >
             <div
               onDoubleClick={() => setSetting("sidebarHidden", !sidebarHidden)}
               className={cn(
-                "w-72 backdrop-blur-sm transition-[translate,opacity] duration-300 ease-in-out",
-                "fixed top-0 z-40 h-full md:z-0",
-                "md:relative",
-                isSidebarOpen ? "translate-x-0" : "-translate-x-full",
-                sidebarHidden
-                  ? "md:-translate-x-11/12 md:opacity-0"
-                  : "md:translate-x-0",
+                "w-75 backdrop-blur-sm transition-[translate,opacity] duration-300 ease-in-out",
+                "fixed top-0 z-40 h-full md:relative md:z-0",
+                isRight ? "right-0" : "left-0",
+                desktopTranslate,
+                mobileTranslate,
               )}
             >
               <Sidebar nestId={nest.id} setIsSidebarOpen={setIsSidebarOpen} />

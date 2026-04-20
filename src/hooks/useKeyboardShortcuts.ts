@@ -85,8 +85,6 @@ export function useKeyboardShortcuts({
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      e.preventDefault();
-
       if (!e.ctrlKey && !e.metaKey) return;
 
       const match = shortcutConfig.find(({ keys }) => {
@@ -95,7 +93,10 @@ export function useKeyboardShortcuts({
         return key === e.key.toLowerCase() && needsShift === e.shiftKey;
       });
 
-      if (match) shortcutHandlers[match.id]();
+      if (match) {
+        e.preventDefault();
+        shortcutHandlers[match.id]();
+      }
     };
 
     window.addEventListener("keydown", handleKeyPress);
