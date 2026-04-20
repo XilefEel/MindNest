@@ -2,7 +2,16 @@ import { cn } from "@/lib/utils/general.ts";
 import { PanelLeft, PanelRight } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import Toggle from "./Toggle.tsx";
-import { useSettingsStore } from "@/stores/useSettingsStore.tsx";
+import {
+  useFolderArrow,
+  useFolderIndentLines,
+  useLargeSidebarText,
+  useNestlingTitleHidden,
+  useSettingsActions,
+  useSidebarHidden,
+  useSidebarPosition,
+  useTopbarHidden,
+} from "@/stores/useSettingsStore.tsx";
 
 type Setting = {
   text: string;
@@ -13,26 +22,15 @@ type Setting = {
 );
 
 export default function GeneralSettings() {
-  const {
-    topbarHidden,
-    sidebarHidden,
-    sidebarPosition,
-    nestlingTitleHidden,
-    largeSidebarText,
-    folderIndentLines,
-    folderArrow,
-    setSetting,
-  } = useSettingsStore();
+  const topbarHidden = useTopbarHidden();
+  const sidebarHidden = useSidebarHidden();
+  const sidebarPosition = useSidebarPosition();
+  const nestlingTitleHidden = useNestlingTitleHidden();
+  const largeSidebarText = useLargeSidebarText();
+  const folderIndentLines = useFolderIndentLines();
+  const folderArrow = useFolderArrow();
 
-  const handleReset = () => {
-    setSetting("topbarHidden", false);
-    setSetting("sidebarHidden", false);
-    setSetting("sidebarPosition", "left");
-    setSetting("nestlingTitleHidden", false);
-    setSetting("largeSidebarText", false);
-    setSetting("folderIndentLines", true);
-    setSetting("folderArrow", true);
-  };
+  const { setSetting, resetSettings } = useSettingsActions();
 
   const settings: Setting[] = [
     {
@@ -144,7 +142,7 @@ export default function GeneralSettings() {
           </p>
         </div>
         <button
-          onClick={handleReset}
+          onClick={resetSettings}
           className="rounded-lg bg-red-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-red-600"
         >
           Reset

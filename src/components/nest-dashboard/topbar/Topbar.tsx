@@ -8,7 +8,7 @@ import TopbarButton from "./TopbarButton";
 import { useEffect, useRef, useState } from "react";
 import { clearLastNestId } from "@/lib/storage/nest";
 import { useSettingsModal } from "@/stores/useModalStore";
-import { useSettingsStore } from "@/stores/useSettingsStore.tsx";
+import { useTopbarHidden } from "@/stores/useSettingsStore.tsx";
 import { useInlineEdit } from "@/hooks/useInlineEdit";
 import BasePopover from "@/components/popovers/BasePopover";
 import NestSwitchPopover from "@/components/popovers/NestSwitchPopover";
@@ -28,7 +28,7 @@ export default function Topbar({
   const { setActiveBackgroundId, setActiveNestId, updateNest } =
     useNestActions();
   const { setIsSettingsOpen } = useSettingsModal();
-  const { topbarHidden } = useSettingsStore();
+  const topbarHidden = useTopbarHidden();
 
   const [isOpen, setIsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);

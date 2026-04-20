@@ -3,7 +3,7 @@ import NestlingItem from "./NestlingItem";
 import { ChevronLeft, Pin } from "lucide-react";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
-import { useSettingsStore } from "@/stores/useSettingsStore";
+import { useLargeSidebarText } from "@/stores/useSettingsStore";
 import { Nestling } from "@/lib/types/nestling";
 
 export default function PinnedNestlings({
@@ -14,7 +14,7 @@ export default function PinnedNestlings({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
-  const { largeSidebarText } = useSettingsStore();
+  const largeSidebarText = useLargeSidebarText();
 
   const [isPinnedOpen, setIsPinnedOpen] = useState(true);
 

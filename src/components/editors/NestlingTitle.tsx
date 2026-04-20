@@ -9,7 +9,10 @@ import {
   useNestlingTags,
 } from "@/stores/useNestlingStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
-import { useSettingsStore } from "@/stores/useSettingsStore";
+import {
+  useNestlingTitleHidden,
+  useSettingsActions,
+} from "@/stores/useSettingsStore";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import { ChevronDown, Dot, Folder, Plus } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -42,7 +45,8 @@ export default function NestlingTitle({
   const [isOpen, setIsOpen] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
 
-  const { nestlingTitleHidden, setSetting } = useSettingsStore();
+  const nestlingTitleHidden = useNestlingTitleHidden();
+  const { setSetting } = useSettingsActions();
 
   const pickerRef = useRef<HTMLDivElement>(null);
   const Icon = getNestlingIcon(nestling.nestlingType);

@@ -22,7 +22,7 @@ import {
 import { AnimatePresence } from "framer-motion";
 import { FolderOpen, Repeat, Volume1, Volume2, VolumeX } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
-import { useSettingsStore } from "@/stores/useSettingsStore";
+import { useMusicLooped, useSettingsActions } from "@/stores/useSettingsStore";
 import BaseToolTip from "@/components/BaseToolTip";
 
 export default function MusicSection() {
@@ -35,7 +35,8 @@ export default function MusicSection() {
 
   const musicIds = music.map((m) => m.id);
 
-  const { musicLooped, setSetting } = useSettingsStore();
+  const musicLooped = useMusicLooped();
+  const { setSetting } = useSettingsActions();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

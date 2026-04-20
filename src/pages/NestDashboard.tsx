@@ -23,7 +23,12 @@ import FloatingMusicPlayer from "@/components/nest-dashboard/music/FloatingMusic
 import BookmarkEditor from "@/components/editors/bookmark/BookmarkEditor";
 import GlobalModals from "@/components/modals/GlobalModals";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
-import { useSettingsStore } from "@/stores/useSettingsStore";
+import {
+  useSettingsActions,
+  useSidebarHidden,
+  useSidebarPosition,
+  useTopbarHidden,
+} from "@/stores/useSettingsStore";
 import { NestlingType } from "@/lib/types/nestling";
 
 const editors: Record<NestlingType, React.ComponentType> = {
@@ -49,8 +54,10 @@ export default function NestDashboardPage() {
   const activeBackgroundId = useActiveBackgroundId();
   const brightness = useBackgroundBrightness();
 
-  const { topbarHidden, sidebarHidden, sidebarPosition, setSetting } =
-    useSettingsStore();
+  const topbarHidden = useTopbarHidden();
+  const sidebarHidden = useSidebarHidden();
+  const sidebarPosition = useSidebarPosition();
+  const { setSetting } = useSettingsActions();
 
   const ActiveEditor = activeNestling
     ? editors[activeNestling.nestlingType]

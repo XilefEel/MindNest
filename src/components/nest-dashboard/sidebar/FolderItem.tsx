@@ -12,7 +12,7 @@ import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useRef, useEffect } from "react";
 import { useNestlingActions } from "@/stores/useNestlingStore";
 import { useInlineEdit } from "@/hooks/useInlineEdit";
-import { useSettingsStore } from "@/stores/useSettingsStore";
+import { useFolderArrow } from "@/stores/useSettingsStore";
 
 export default function FolderItem({
   folder,
@@ -25,7 +25,7 @@ export default function FolderItem({
 }) {
   const activeBackgroundId = useActiveBackgroundId();
   const { updateFolder } = useNestlingActions();
-  const { folderArrow } = useSettingsStore();
+  const folderArrow = useFolderArrow();
 
   const inputRef = useRef<HTMLInputElement>(null);
 

@@ -17,7 +17,7 @@ import {
   useNestlingStore,
 } from "@/stores/useNestlingStore";
 import { useNestActions } from "@/stores/useNestStore";
-import { useSettingsStore } from "@/stores/useSettingsStore";
+import { useSettingsActions } from "@/stores/useSettingsStore";
 import { useEffect } from "react";
 
 export default function useLoadNest({
@@ -50,7 +50,7 @@ export default function useLoadNest({
     getAllNestlingTags,
   } = useNestlingActions();
 
-  const { loadSettings } = useSettingsStore();
+  const { loadSettings } = useSettingsActions();
 
   useEffect(() => {
     if (!id) return;

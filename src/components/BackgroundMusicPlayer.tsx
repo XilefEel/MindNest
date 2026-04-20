@@ -6,7 +6,7 @@ import {
   useAudioIsPaused,
   useMusicVolume,
 } from "@/stores/useNestStore";
-import { useSettingsStore } from "@/stores/useSettingsStore";
+import { useMusicLooped } from "@/stores/useSettingsStore";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { useEffect, useRef } from "react";
 
@@ -22,7 +22,7 @@ export default function BackgroundMusicPlayer() {
     setAudioIsPaused,
     setActiveMusicId,
   } = useNestActions();
-  const { musicLooped } = useSettingsStore();
+  const musicLooped = useMusicLooped();
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 

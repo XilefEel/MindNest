@@ -12,7 +12,10 @@ import {
 } from "@/stores/useNestlingStore";
 import FolderItem from "./FolderItem";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
-import { useSettingsStore } from "@/stores/useSettingsStore";
+import {
+  useFolderIndentLines,
+  useLargeSidebarText,
+} from "@/stores/useSettingsStore";
 
 export default function FolderTree({
   folder,
@@ -29,7 +32,8 @@ export default function FolderTree({
   const activeBackgroundId = useActiveBackgroundId();
   const activeFolderId = useActiveFolderId();
 
-  const { largeSidebarText, folderIndentLines } = useSettingsStore();
+  const largeSidebarText = useLargeSidebarText();
+  const folderIndentLines = useFolderIndentLines();
 
   const isFolderOpen = openFolders[folder.id] || false;
 

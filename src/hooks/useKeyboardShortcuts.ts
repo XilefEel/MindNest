@@ -12,7 +12,11 @@ import {
   useNestStore,
   useStoredBackgroundId,
 } from "@/stores/useNestStore";
-import { useSettingsStore } from "@/stores/useSettingsStore";
+import {
+  useSettingsActions,
+  useSidebarHidden,
+  useTopbarHidden,
+} from "@/stores/useSettingsStore";
 import shortcutConfig, { ShortcutId } from "@/lib/utils/shortcuts";
 
 export function useKeyboardShortcuts({
@@ -28,7 +32,9 @@ export function useKeyboardShortcuts({
   isCardHidden: boolean;
   setIsCardHidden: (val: boolean) => void;
 }) {
-  const { topbarHidden, sidebarHidden, setSetting } = useSettingsStore();
+  const { setSetting } = useSettingsActions();
+  const topbarHidden = useTopbarHidden();
+  const sidebarHidden = useSidebarHidden();
 
   const activeBackgroundId = useActiveBackgroundId();
   const storedBackgroundId = useStoredBackgroundId();
