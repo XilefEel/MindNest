@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils/general.ts";
+import { PanelLeft, PanelRight } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import Toggle from "./Toggle.tsx";
 import { useSettingsStore } from "@/stores/useSettingsStore.tsx";
@@ -5,9 +7,10 @@ import { useSettingsStore } from "@/stores/useSettingsStore.tsx";
 type Setting = {
   text: string;
   description: string;
-  value: boolean;
-  onChange: () => void;
-};
+} & (
+  | { custom?: never; value: boolean; onChange: () => void }
+  | { custom: React.ReactNode; value?: never; onChange?: never }
+);
 
 export default function GeneralSettings() {
   const {
@@ -45,14 +48,34 @@ export default function GeneralSettings() {
       onChange: () => setSetting("sidebarHidden", !sidebarHidden),
     },
     {
-      text: "Move Sidebar to Right",
-      description: "Move the sidebar to the right side of the screen",
-      value: sidebarPosition === "right",
-      onChange: () =>
-        setSetting(
-          "sidebarPosition",
-          sidebarPosition === "right" ? "left" : "right",
-        ),
+      text: "Nest Sidebar Position",
+      description: "Move the sidebar to the left or right side",
+      custom: (
+        <div className="flex rounded-lg border border-gray-200 dark:border-gray-700">
+          <button
+            onClick={() => setSetting("sidebarPosition", "left")}
+            className={cn(
+              "flex items-center gap-1.5 rounded-l-lg p-2 transition-colors",
+              sidebarPosition === "left"
+                ? "bg-teal-500 text-white dark:bg-teal-400 dark:text-gray-100"
+                : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300",
+            )}
+          >
+            <PanelLeft className="size-4 flex-shrink-0" />
+          </button>
+          <button
+            onClick={() => setSetting("sidebarPosition", "right")}
+            className={cn(
+              "flex items-center gap-1.5 rounded-r-lg p-2 transition-colors",
+              sidebarPosition === "right"
+                ? "bg-teal-500 text-white dark:bg-teal-400 dark:text-gray-100"
+                : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300",
+            )}
+          >
+            <PanelRight className="size-4 flex-shrink-0" />
+          </button>
+        </div>
+      ),
     },
     {
       text: "Compact Nestling Title",
@@ -95,7 +118,7 @@ export default function GeneralSettings() {
       </div>
 
       {settings.map((setting) => (
-        <div className="flex items-center justify-between">
+        <div key={setting.text} className="flex items-center justify-between">
           <div>
             <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
               {setting.text}
@@ -104,7 +127,10 @@ export default function GeneralSettings() {
               {setting.description}
             </p>
           </div>
-          <Toggle checked={setting.value} onChange={setting.onChange} />
+
+          {setting.custom ?? (
+            <Toggle checked={setting.value!} onChange={setting.onChange!} />
+          )}
         </div>
       ))}
 
