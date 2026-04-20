@@ -19,6 +19,19 @@ import {
 } from "@/stores/useSettingsStore";
 import shortcutConfig, { ShortcutId } from "@/lib/utils/shortcuts";
 
+type BlockedShortcut = {
+  key: string;
+  needsShift: boolean;
+};
+
+const BLOCKED_SHORTCUTS: BlockedShortcut[] = [
+  { key: "j", needsShift: false },
+  { key: "p", needsShift: true },
+  { key: "f", needsShift: false },
+  { key: "g", needsShift: false },
+  { key: "g", needsShift: true },
+] as const;
+
 export function useKeyboardShortcuts({
   nestId,
   isSidebarOpen,
@@ -103,6 +116,13 @@ export function useKeyboardShortcuts({
         e.preventDefault();
         shortcutHandlers[match.id]();
       }
+
+      if (
+        BLOCKED_SHORTCUTS.some(
+          (b) => b.key === e.key.toLowerCase() && b.needsShift === e.shiftKey,
+        )
+      )
+        e.preventDefault();
     };
 
     window.addEventListener("keydown", handleKeyPress);

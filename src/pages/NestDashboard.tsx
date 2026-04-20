@@ -89,7 +89,7 @@ export default function NestDashboardPage() {
   useLoadNest({ id: Number(id), setNest, setLoading });
 
   useKeyboardShortcuts({
-    nestId: nest?.id || 0,
+    nestId: Number(id),
     isSidebarOpen,
     setIsSidebarOpen,
     isCardHidden,
@@ -123,7 +123,7 @@ export default function NestDashboardPage() {
       >
         <nav
           className={cn(
-            "shrink-0 transition-[height] duration-300 ease-in-out",
+            "mx-3 flex-shrink-0 transition-[height] duration-300 ease-in-out",
             topbarHidden ? "h-0" : "h-17",
           )}
         >
@@ -171,7 +171,10 @@ export default function NestDashboardPage() {
                 mobileTranslate,
               )}
             >
-              <Sidebar nestId={nest.id} setIsSidebarOpen={setIsSidebarOpen} />
+              <Sidebar
+                nestId={Number(id)}
+                setIsSidebarOpen={setIsSidebarOpen}
+              />
             </div>
           </aside>
 
@@ -185,7 +188,7 @@ export default function NestDashboardPage() {
             {ActiveEditor && activeNestling ? (
               <ActiveEditor key={activeNestling.id} />
             ) : (
-              <Home nestId={nest.id} />
+              <Home nestId={Number(id)} />
             )}
           </main>
         </div>

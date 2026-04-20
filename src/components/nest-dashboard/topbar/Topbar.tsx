@@ -68,7 +68,7 @@ export default function Topbar({
   return (
     <nav
       className={cn(
-        "flex w-full items-center gap-3 border-b border-gray-900 px-3 pt-6 pb-2 transition-[border] dark:border-gray-100",
+        "flex w-full items-center gap-3 border-b border-gray-900 pt-6 pb-2 transition-[border] dark:border-gray-100",
         topbarHidden && "border-transparent dark:border-transparent",
       )}
     >
@@ -140,7 +140,7 @@ export default function Topbar({
 
       <div
         className={cn(
-          "ml-auto flex items-center justify-center gap-1 p-1 px-2",
+          "ml-auto flex items-center justify-center gap-2 p-1 px-2",
           activeBackgroundId &&
             "rounded-lg bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
