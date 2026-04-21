@@ -1,22 +1,20 @@
 import { getMap, saveMap } from "./storage";
 
 export type Settings = {
+  topbarHidden: boolean;
   sidebarHidden: boolean;
   sidebarPosition: "left" | "right";
-  topbarHidden: boolean;
   nestlingTitleHidden: boolean;
-  largeSidebarText: boolean;
   folderIndentLines: boolean;
   folderArrow: boolean;
   musicLooped: boolean;
 };
 
 export const DEFAULT_UI_SETTINGS: Settings = {
+  topbarHidden: false,
   sidebarHidden: false,
   sidebarPosition: "left",
-  topbarHidden: false,
   nestlingTitleHidden: false,
-  largeSidebarText: false,
   folderIndentLines: true,
   folderArrow: true,
   musicLooped: false,

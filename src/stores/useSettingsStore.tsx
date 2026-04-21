@@ -75,9 +75,6 @@ export const useTopbarHidden = () =>
 export const useNestlingTitleHidden = () =>
   useSettingsStore((state) => state.nestlingTitleHidden);
 
-export const useLargeSidebarText = () =>
-  useSettingsStore((state) => state.largeSidebarText);
-
 export const useFolderIndentLines = () =>
   useSettingsStore((state) => state.folderIndentLines);
 

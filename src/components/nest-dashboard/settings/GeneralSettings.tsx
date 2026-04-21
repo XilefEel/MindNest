@@ -5,7 +5,6 @@ import Toggle from "./Toggle.tsx";
 import {
   useFolderArrow,
   useFolderIndentLines,
-  useLargeSidebarText,
   useNestlingTitleHidden,
   useSettingsActions,
   useSidebarHidden,
@@ -26,7 +25,6 @@ export default function GeneralSettings() {
   const sidebarHidden = useSidebarHidden();
   const sidebarPosition = useSidebarPosition();
   const nestlingTitleHidden = useNestlingTitleHidden();
-  const largeSidebarText = useLargeSidebarText();
   const folderIndentLines = useFolderIndentLines();
   const folderArrow = useFolderArrow();
 
@@ -80,12 +78,6 @@ export default function GeneralSettings() {
       description: "Hide folder path and tags to save space",
       value: nestlingTitleHidden,
       onChange: () => setSetting("nestlingTitleHidden", !nestlingTitleHidden),
-    },
-    {
-      text: "Large Nest Sidebar Text",
-      description: "Use larger text in the sidebar for better readability",
-      value: largeSidebarText,
-      onChange: () => setSetting("largeSidebarText", !largeSidebarText),
     },
     {
       text: "Show Folder Indent Lines",

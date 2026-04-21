@@ -3,7 +3,6 @@ import NestlingItem from "./NestlingItem";
 import { ChevronLeft, Pin } from "lucide-react";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
-import { useLargeSidebarText } from "@/stores/useSettingsStore";
 import { Nestling } from "@/lib/types/nestling";
 
 export default function PinnedNestlings({
@@ -14,17 +13,11 @@ export default function PinnedNestlings({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
-  const largeSidebarText = useLargeSidebarText();
 
   const [isPinnedOpen, setIsPinnedOpen] = useState(true);
 
   return (
-    <div
-      className={cn(
-        "my-1 flex flex-col gap-0.5",
-        largeSidebarText && "my-2 gap-1",
-      )}
-    >
+    <div className={cn("my-1 flex flex-col gap-0.5")}>
       <div
         onClick={() => setIsPinnedOpen((prev) => !prev)}
         onDoubleClick={(e) => {
@@ -52,12 +45,7 @@ export default function PinnedNestlings({
       </div>
 
       {isPinnedOpen && (
-        <div
-          className={cn(
-            "ml-6 flex flex-col gap-0.5",
-            largeSidebarText && "gap-1",
-          )}
-        >
+        <div className={cn("ml-6 flex flex-col gap-0.5")}>
           {pinnedNestlings.map((nestling) => (
             <NestlingItem
               key={`pinned-${nestling.id}`}

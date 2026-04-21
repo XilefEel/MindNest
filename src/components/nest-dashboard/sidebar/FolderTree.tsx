@@ -12,10 +12,7 @@ import {
 } from "@/stores/useNestlingStore";
 import FolderItem from "./FolderItem";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
-import {
-  useFolderIndentLines,
-  useLargeSidebarText,
-} from "@/stores/useSettingsStore";
+import { useFolderIndentLines } from "@/stores/useSettingsStore";
 
 export default function FolderTree({
   folder,
@@ -32,7 +29,6 @@ export default function FolderTree({
   const activeBackgroundId = useActiveBackgroundId();
   const activeFolderId = useActiveFolderId();
 
-  const largeSidebarText = useLargeSidebarText();
   const folderIndentLines = useFolderIndentLines();
 
   const isFolderOpen = openFolders[folder.id] || false;
@@ -50,7 +46,6 @@ export default function FolderTree({
         ref={setNodeRef}
         className={cn(
           "flex flex-col rounded pt-0.5",
-          largeSidebarText && "pt-1",
           isOver &&
             cn(
               activeBackgroundId
@@ -89,12 +84,7 @@ export default function FolderTree({
                   setIsSidebarOpen={setIsSidebarOpen}
                 />
               ))}
-              <div
-                className={cn(
-                  "flex flex-col gap-0.5 pt-0.5",
-                  largeSidebarText && "gap-1 pt-1",
-                )}
-              >
+              <div className={cn("flex flex-col gap-0.5 pt-0.5")}>
                 {childNestlings.map((nestling) => (
                   <NestlingItem
                     key={nestling.id}

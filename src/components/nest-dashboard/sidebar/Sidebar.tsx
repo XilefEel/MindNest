@@ -14,10 +14,7 @@ import ToolBar from "./ToolBar";
 import PinnedNestlings from "./PinnedNestlings";
 import HomeItem from "./HomeItem";
 import { AnimatePresence } from "framer-motion";
-import {
-  useLargeSidebarText,
-  useSidebarPosition,
-} from "@/stores/useSettingsStore";
+import { useSidebarPosition } from "@/stores/useSettingsStore";
 
 export default function Sidebar({
   nestId,
@@ -31,7 +28,6 @@ export default function Sidebar({
   const { handleDragStart, handleDragEnd, fetchSidebar } = useNestlingActions();
 
   const activeBackgroundId = useActiveBackgroundId();
-  const largeSidebarText = useLargeSidebarText();
   const sidebarPosition = useSidebarPosition();
 
   const folderGroups = useMemo(() => {
@@ -67,8 +63,6 @@ export default function Sidebar({
           "bg-white dark:bg-gray-800 md:dark:bg-gray-800/50",
           "border border-gray-200 dark:border-gray-700",
           "text-sm font-medium text-gray-900 dark:text-gray-100",
-
-          largeSidebarText && "text-base",
           sidebarPosition === "right"
             ? "rounded-tl-2xl rounded-bl-2xl"
             : "rounded-tr-2xl rounded-br-2xl",

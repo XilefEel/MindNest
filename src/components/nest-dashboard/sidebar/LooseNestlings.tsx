@@ -3,7 +3,6 @@ import { useDroppable } from "@dnd-kit/core";
 import NestlingItem from "./NestlingItem";
 import { Nestling } from "@/lib/types/nestling";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
-import { useLargeSidebarText } from "@/stores/useSettingsStore";
 
 export default function LooseNestlings({
   looseNestlings,
@@ -13,7 +12,6 @@ export default function LooseNestlings({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
-  const largeSidebarText = useLargeSidebarText();
 
   const { setNodeRef, isOver } = useDroppable({
     id: "loose-null",
@@ -24,7 +22,6 @@ export default function LooseNestlings({
       ref={setNodeRef}
       className={cn(
         "flex flex-1 flex-col gap-0.5 rounded pt-0.5",
-        largeSidebarText && "gap-1 pt-1",
         isOver &&
           cn(
             activeBackgroundId
