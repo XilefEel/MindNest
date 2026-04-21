@@ -10,6 +10,7 @@ import {
 } from "@/stores/useNestlingStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import {
+  useCompactNestlingTitle,
   useNestlingTitleHidden,
   useSettingsActions,
 } from "@/stores/useSettingsStore";
@@ -46,6 +47,7 @@ export default function NestlingTitle({
   const [showPicker, setShowPicker] = useState(false);
 
   const nestlingTitleHidden = useNestlingTitleHidden();
+  const compactNestlingTitle = useCompactNestlingTitle();
   const { setSetting } = useSettingsActions();
 
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -91,18 +93,20 @@ export default function NestlingTitle({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showPicker]);
 
+  if (nestlingTitleHidden) return null;
+
   return (
     <div className="flex flex-col">
       <div className="group relative flex flex-row items-center text-gray-900 transition-all dark:text-gray-100">
         <button
           onClick={() =>
-            setSetting("nestlingTitleHidden", !nestlingTitleHidden)
+            setSetting("compactNestlingTitle", !compactNestlingTitle)
           }
           className="w-0 text-gray-500 opacity-0 transition-all group-hover:mr-2 group-hover:w-6 group-hover:opacity-100 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         >
           <ChevronDown
             size={24}
-            className={nestlingTitleHidden ? "-rotate-90" : ""}
+            className={compactNestlingTitle ? "-rotate-90" : ""}
           />
         </button>
 
@@ -111,13 +115,16 @@ export default function NestlingTitle({
             onClick={() => setShowPicker(!showPicker)}
             className={cn(
               "flex w-8 items-center justify-center text-2xl font-bold transition-opacity hover:opacity-70",
-              nestlingTitleHidden && "w-6 text-lg",
+              compactNestlingTitle && "w-6 text-lg",
             )}
           >
             {nestling.icon ? (
               <p>{nestling.icon}</p>
             ) : (
-              <Icon size={nestlingTitleHidden ? 24 : 32} />
+              <Icon
+                size={compactNestlingTitle ? 24 : 32}
+                className="flex-shrink-0"
+              />
             )}
           </button>
 
@@ -152,19 +159,22 @@ export default function NestlingTitle({
           placeholder="Title..."
           className={cn(
             "w-full min-w-0 resize-none bg-transparent pl-2 text-2xl font-bold outline-none",
-            nestlingTitleHidden && "text-lg font-semibold",
+            compactNestlingTitle && "text-lg font-semibold",
           )}
         />
       </div>
 
       <div
         className={cn(
-          "mt-2 flex items-center gap-2 text-gray-800 dark:text-gray-200",
-          nestlingTitleHidden && "hidden",
+          "mt-2 flex items-center gap-1.5 text-gray-800 dark:text-gray-200",
+          compactNestlingTitle && "hidden",
         )}
       >
-        <Folder size={20} />
-        <span>{findFolderPath(nestling.folderId, folders) || "No folder"}</span>
+        <Folder className="size-4 flex-shrink-0" />
+
+        <span className="text-sm">
+          {findFolderPath(nestling.folderId, folders) || "No folder"}
+        </span>
 
         {nestlingTags.length > 0 && <Dot size={20} />}
 

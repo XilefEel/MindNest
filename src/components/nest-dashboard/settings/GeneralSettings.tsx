@@ -5,6 +5,7 @@ import Toggle from "./Toggle.tsx";
 import {
   useFolderArrow,
   useFolderIndentLines,
+  useCompactNestlingTitle,
   useNestlingTitleHidden,
   useSettingsActions,
   useSidebarHidden,
@@ -24,6 +25,7 @@ export default function GeneralSettings() {
   const topbarHidden = useTopbarHidden();
   const sidebarHidden = useSidebarHidden();
   const sidebarPosition = useSidebarPosition();
+  const compactNestlingTitle = useCompactNestlingTitle();
   const nestlingTitleHidden = useNestlingTitleHidden();
   const folderIndentLines = useFolderIndentLines();
   const folderArrow = useFolderArrow();
@@ -76,6 +78,12 @@ export default function GeneralSettings() {
     {
       text: "Compact Nestling Title",
       description: "Hide folder path and tags to save space",
+      value: compactNestlingTitle,
+      onChange: () => setSetting("compactNestlingTitle", !compactNestlingTitle),
+    },
+    {
+      text: "Hide Nestling Title",
+      description: "Completely hide the nestling title to save more space",
       value: nestlingTitleHidden,
       onChange: () => setSetting("nestlingTitleHidden", !nestlingTitleHidden),
     },
