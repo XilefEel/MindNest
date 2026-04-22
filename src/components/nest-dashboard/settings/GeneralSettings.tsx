@@ -12,6 +12,7 @@ import {
   useSidebarPosition,
   useTopbarHidden,
 } from "@/stores/useSettingsStore.tsx";
+import { useActiveBackgroundId } from "@/stores/useNestStore.tsx";
 
 type Setting = {
   text: string;
@@ -22,6 +23,8 @@ type Setting = {
 );
 
 export default function GeneralSettings() {
+  const activeBackgroundId = useActiveBackgroundId();
+
   const topbarHidden = useTopbarHidden();
   const sidebarHidden = useSidebarHidden();
   const sidebarPosition = useSidebarPosition();
@@ -49,14 +52,22 @@ export default function GeneralSettings() {
       text: "Nest Sidebar Position",
       description: "Move the sidebar to the left or right side",
       custom: (
-        <div className="flex rounded-lg border border-gray-200 dark:border-gray-700">
+        <div
+          className={cn(
+            "flex rounded-lg border border-gray-200 dark:border-gray-700",
+            activeBackgroundId && "border-transparent dark:border-transparent",
+          )}
+        >
           <button
             onClick={() => setSetting("sidebarPosition", "left")}
             className={cn(
               "flex items-center gap-1.5 rounded-l-lg p-2 transition-colors",
               sidebarPosition === "left"
                 ? "bg-teal-500 text-white dark:bg-teal-400 dark:text-gray-100"
-                : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300",
+                : cn(
+                    "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300",
+                    activeBackgroundId && "bg-gray-300 dark:bg-gray-700",
+                  ),
             )}
           >
             <PanelLeft className="size-4 flex-shrink-0" />
@@ -67,7 +78,10 @@ export default function GeneralSettings() {
               "flex items-center gap-1.5 rounded-r-lg p-2 transition-colors",
               sidebarPosition === "right"
                 ? "bg-teal-500 text-white dark:bg-teal-400 dark:text-gray-100"
-                : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300",
+                : cn(
+                    "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300",
+                    activeBackgroundId && "bg-gray-300 dark:bg-gray-700",
+                  ),
             )}
           >
             <PanelRight className="size-4 flex-shrink-0" />
