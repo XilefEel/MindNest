@@ -4,7 +4,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover.tsx";
 import { cn } from "@/lib/utils/general.ts";
+import { getBlurClass } from "@/lib/utils/settings";
 import { useActiveBackgroundId } from "@/stores/useNestStore.tsx";
+import { useBlurStrength } from "@/stores/useSettingsStore";
 
 export default function BasePopover({
   trigger,
@@ -24,6 +26,7 @@ export default function BasePopover({
   width?: string;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
+  const blurStrength = useBlurStrength();
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -36,7 +39,10 @@ export default function BasePopover({
           "rounded-xl border-gray-200 bg-white select-none dark:border-gray-700 dark:bg-gray-800",
           width,
           activeBackgroundId &&
-            "border-transparent bg-white/30 backdrop-blur-sm dark:border-transparent dark:bg-black/30",
+            cn(
+              "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30",
+              getBlurClass(blurStrength),
+            ),
         )}
       >
         {content}

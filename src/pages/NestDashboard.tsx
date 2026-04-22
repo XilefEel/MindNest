@@ -24,12 +24,14 @@ import BookmarkEditor from "@/components/editors/bookmark/BookmarkEditor";
 import GlobalModals from "@/components/modals/GlobalModals";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import {
+  useBlurStrength,
   useSettingsActions,
   useSidebarHidden,
   useSidebarPosition,
   useTopbarHidden,
 } from "@/stores/useSettingsStore";
 import { NestlingType } from "@/lib/types/nestling";
+import { getBlurClass } from "@/lib/utils/settings";
 
 const editors: Record<NestlingType, React.ComponentType> = {
   note: NoteEditor,
@@ -57,6 +59,7 @@ export default function NestDashboardPage() {
   const topbarHidden = useTopbarHidden();
   const sidebarHidden = useSidebarHidden();
   const sidebarPosition = useSidebarPosition();
+  const blurStrength = useBlurStrength();
   const { setSetting } = useSettingsActions();
 
   const ActiveEditor = activeNestling
@@ -164,9 +167,10 @@ export default function NestDashboardPage() {
             <div
               onDoubleClick={() => setSetting("sidebarHidden", !sidebarHidden)}
               className={cn(
-                "w-75 backdrop-blur-sm transition-[translate,opacity] duration-300 ease-in-out",
+                "w-75 transition-[translate,opacity] duration-300 ease-in-out",
                 "fixed top-0 z-40 h-full md:relative md:z-0",
                 isRight ? "right-0" : "left-0",
+                getBlurClass(blurStrength),
                 desktopTranslate,
                 mobileTranslate,
               )}
@@ -182,7 +186,10 @@ export default function NestDashboardPage() {
             className={cn(
               "relative flex-1 overflow-y-auto px-5 py-3 md:mx-3",
               activeBackgroundId &&
-                "rounded-2xl bg-white/30 backdrop-blur-sm dark:bg-black/30",
+                cn(
+                  "rounded-2xl bg-white/30 dark:bg-black/30",
+                  getBlurClass(blurStrength),
+                ),
             )}
           >
             {ActiveEditor && activeNestling ? (

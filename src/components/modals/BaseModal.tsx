@@ -11,6 +11,8 @@ import {
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 import { useEffect } from "react";
+import { getBlurClass } from "@/lib/utils/settings";
+import { useBlurStrength } from "@/stores/useSettingsStore";
 
 export default function BaseModal({
   children,
@@ -36,6 +38,7 @@ export default function BaseModal({
   onSubmit?: () => void;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
+  const blurStrength = useBlurStrength();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -57,7 +60,8 @@ export default function BaseModal({
         className={cn(
           "flex flex-col rounded-2xl border-0 bg-white p-3 select-none md:p-6 dark:bg-gray-800",
           isLarge && "md:min-w-3xl",
-          activeBackgroundId && "bg-white/30 backdrop-blur-sm dark:bg-black/30",
+          activeBackgroundId &&
+            cn("bg-white/30 dark:bg-black/30", getBlurClass(blurStrength)),
         )}
       >
         <DialogHeader>

@@ -1,5 +1,7 @@
 import { cn } from "@/lib/utils/general";
+import { getBlurClass } from "@/lib/utils/settings";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { useBlurStrength } from "@/stores/useSettingsStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 
 export default function BaseContextMenu({
@@ -10,17 +12,22 @@ export default function BaseContextMenu({
   content: React.ReactNode;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
+  const blurStrength = useBlurStrength();
+
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>
       <ContextMenu.Portal>
         <ContextMenu.Content
+          onClick={(e) => e.stopPropagation()}
           className={cn(
             "animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white px-1 py-2 shadow-lg select-none dark:border-gray-700 dark:bg-gray-800",
             activeBackgroundId &&
-              "border-transparent bg-white/30 backdrop-blur-sm dark:border-transparent dark:bg-black/30",
+              cn(
+                "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30",
+                getBlurClass(blurStrength),
+              ),
           )}
-          onClick={(e) => e.stopPropagation()}
         >
           {content}
         </ContextMenu.Content>

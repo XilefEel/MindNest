@@ -8,10 +8,14 @@ import TopbarButton from "./TopbarButton";
 import { useEffect, useRef, useState } from "react";
 import { clearLastNestId } from "@/lib/storage/nest";
 import { useSettingsModal } from "@/stores/useModalStore";
-import { useTopbarHidden } from "@/stores/useSettingsStore.tsx";
+import {
+  useBlurStrength,
+  useTopbarHidden,
+} from "@/stores/useSettingsStore.tsx";
 import { useInlineEdit } from "@/hooks/useInlineEdit";
 import BasePopover from "@/components/popovers/BasePopover";
 import NestSwitchPopover from "@/components/popovers/NestSwitchPopover";
+import { getBlurClass } from "@/lib/utils/settings";
 
 export default function Topbar({
   nest,
@@ -29,6 +33,7 @@ export default function Topbar({
     useNestActions();
   const { setIsSettingsOpen } = useSettingsModal();
   const topbarHidden = useTopbarHidden();
+  const blurStrength = useBlurStrength();
 
   const [isOpen, setIsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -76,7 +81,10 @@ export default function Topbar({
         className={cn(
           "flex items-center justify-center p-1",
           activeBackgroundId &&
-            "rounded-lg bg-white/30 backdrop-blur-sm dark:bg-black/30",
+            cn(
+              "rounded-lg bg-white/30 dark:bg-black/30",
+              getBlurClass(blurStrength),
+            ),
         )}
       >
         <TopbarButton label={"Go Back"} action={handleExit} Icon={ArrowLeft} />
@@ -93,7 +101,10 @@ export default function Topbar({
         className={cn(
           "flex items-center gap-3 p-1 px-3",
           activeBackgroundId &&
-            "rounded-lg bg-white/30 backdrop-blur-sm dark:bg-black/30",
+            cn(
+              "rounded-lg bg-white/30 dark:bg-black/30",
+              getBlurClass(blurStrength),
+            ),
         )}
       >
         <BasePopover
@@ -142,7 +153,10 @@ export default function Topbar({
         className={cn(
           "ml-auto flex items-center justify-center gap-2 p-1 px-2",
           activeBackgroundId &&
-            "rounded-lg bg-white/30 backdrop-blur-sm dark:bg-black/30",
+            cn(
+              "rounded-lg bg-white/30 dark:bg-black/30",
+              getBlurClass(blurStrength),
+            ),
         )}
       >
         <TopbarButton

@@ -11,8 +11,10 @@ import {
   useSidebarHidden,
   useSidebarPosition,
   useTopbarHidden,
+  useBlurStrength,
 } from "@/stores/useSettingsStore.tsx";
 import { useActiveBackgroundId } from "@/stores/useNestStore.tsx";
+import { BlurStrength } from "@/lib/storage/settings.ts";
 
 type Setting = {
   text: string;
@@ -32,6 +34,7 @@ export default function GeneralSettings() {
   const nestlingTitleHidden = useNestlingTitleHidden();
   const folderIndentLines = useFolderIndentLines();
   const folderArrow = useFolderArrow();
+  const blurStrength = useBlurStrength();
 
   const { setSetting, resetSettings } = useSettingsActions();
 
@@ -112,6 +115,23 @@ export default function GeneralSettings() {
       description: "Show the arrow icon beside folders",
       value: folderArrow,
       onChange: () => setSetting("folderArrow", !folderArrow),
+    },
+    {
+      text: "Glassmorphism Blur Strength",
+      description: "Adjust the strength of the glassmorphism blur effect",
+      custom: (
+        <select
+          value={blurStrength}
+          onChange={(e) =>
+            setSetting("blurStrength", e.target.value as BlurStrength)
+          }
+          className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:focus:ring-teal-400"
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      ),
     },
   ];
 

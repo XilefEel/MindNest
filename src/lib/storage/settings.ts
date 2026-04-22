@@ -1,5 +1,7 @@
 import { getMap, saveMap } from "./storage";
 
+export type BlurStrength = "low" | "medium" | "high";
+
 export type Settings = {
   topbarHidden: boolean;
   sidebarHidden: boolean;
@@ -8,6 +10,7 @@ export type Settings = {
   nestlingTitleHidden: boolean;
   folderIndentLines: boolean;
   folderArrow: boolean;
+  blurStrength: BlurStrength;
   musicLooped: boolean;
 };
 
@@ -19,6 +22,7 @@ export const DEFAULT_UI_SETTINGS: Settings = {
   nestlingTitleHidden: false,
   folderIndentLines: true,
   folderArrow: true,
+  blurStrength: "low",
   musicLooped: false,
 };
 

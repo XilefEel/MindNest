@@ -84,5 +84,8 @@ export const useFolderIndentLines = () =>
 export const useFolderArrow = () =>
   useSettingsStore((state) => state.folderArrow);
 
+export const useBlurStrength = () =>
+  useSettingsStore((state) => state.blurStrength);
+
 export const useMusicLooped = () =>
   useSettingsStore((state) => state.musicLooped);

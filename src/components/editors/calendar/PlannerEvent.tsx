@@ -14,6 +14,8 @@ import EventPopover from "../../popovers/EventPopover";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { gridHeight } from "@/lib/utils/constants";
+import { getBlurClass } from "@/lib/utils/settings";
+import { useBlurStrength } from "@/stores/useSettingsStore";
 
 export default function PlannerEvent({
   event,
@@ -24,7 +26,9 @@ export default function PlannerEvent({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const { updateEvent } = usePlannerActions();
+
   const activeBackgroundId = useActiveBackgroundId();
+  const blurStrength = useBlurStrength();
 
   const snapUnit = gridHeight / 4;
 
@@ -142,7 +146,10 @@ export default function PlannerEvent({
         className={cn(
           "w-80 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
           activeBackgroundId &&
-            "border-transparent bg-white/30 backdrop-blur-sm dark:border-transparent dark:bg-black/30",
+            cn(
+              "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30",
+              getBlurClass(blurStrength),
+            ),
         )}
       >
         <EventPopover event={event} onClose={() => setIsOpen(false)} />

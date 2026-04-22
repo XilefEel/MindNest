@@ -1,5 +1,7 @@
 import { cn } from "@/lib/utils/general";
+import { getBlurClass } from "@/lib/utils/settings";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { useBlurStrength } from "@/stores/useSettingsStore";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 
 export default function ContextSubMenu({
@@ -12,6 +14,8 @@ export default function ContextSubMenu({
   width?: string;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
+  const blurStrength = useBlurStrength();
+
   return (
     <ContextMenu.Sub>
       <ContextMenu.SubTrigger
@@ -32,8 +36,10 @@ export default function ContextSubMenu({
           className={cn(
             "animate-in fade-in-0 zoom-in-95 z-50 rounded-lg border border-gray-200 bg-white py-2 shadow-lg select-none dark:border-gray-700 dark:bg-gray-800",
             width,
-            activeBackgroundId &&
-              "border-transparent bg-white/30 backdrop-blur-sm hover:bg-white/30 dark:border-transparent dark:bg-black/30 dark:hover:bg-black/30",
+            cn(
+              "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30",
+              getBlurClass(blurStrength),
+            ),
           )}
         >
           {content}
