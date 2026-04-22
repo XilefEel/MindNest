@@ -153,7 +153,7 @@ export default function NestlingItem({
           onClick={handleSelect}
           style={style}
           className={cn(
-            "flex w-full max-w-full items-center justify-between gap-1 truncate rounded px-2 py-1 transition-[background]",
+            "group flex w-full max-w-full items-center justify-between gap-1 truncate rounded px-2 py-1 transition-[background]",
             activeBackgroundId
               ? nestling.id === activeNestling?.id
                 ? "bg-white/50 font-medium dark:bg-black/50"
@@ -213,7 +213,7 @@ export default function NestlingItem({
               {...listeners}
               {...attributes}
               onClick={(e) => e.stopPropagation()}
-              className="cursor-grab py-0.75"
+              className="cursor-grab py-0.75 opacity-0 transition-opacity group-hover:opacity-100"
             >
               <GripVertical className="size-4 flex-shrink-0 text-gray-500 dark:text-gray-200" />
             </div>
