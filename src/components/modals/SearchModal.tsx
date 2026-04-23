@@ -67,7 +67,9 @@ export default function SearchModal() {
       </div>
 
       <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandEmpty className="p-6 text-center text-sm text-gray-400 dark:text-gray-500">
+          No nestlings matched "{searchQuery}"
+        </CommandEmpty>
 
         {pinnedNestlings.length > 0 && (
           <CommandGroup

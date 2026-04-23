@@ -68,8 +68,8 @@ export default function SearchBar() {
               />
             ))
           ) : (
-            <div className="p-3 text-center text-sm text-gray-400">
-              No results found
+            <div className="p-3 text-center text-sm text-gray-400 dark:text-gray-500">
+              No nestlings matched "{searchQuery}"
             </div>
           )}
         </div>

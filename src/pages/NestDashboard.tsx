@@ -32,6 +32,7 @@ import {
 } from "@/stores/useSettingsStore";
 import { NestlingType } from "@/lib/types/nestling";
 import { getBlurClass } from "@/lib/utils/settings";
+import { Construction } from "lucide-react";
 
 const editors: Record<NestlingType, React.ComponentType> = {
   note: NoteEditor,
@@ -40,7 +41,26 @@ const editors: Record<NestlingType, React.ComponentType> = {
   gallery: GalleryEditor,
   mindmap: MindmapEditor,
   bookmark: BookmarkEditor,
-  database: () => <div>Database Editor</div>,
+  database: () => (
+    <div className="flex flex-col items-center justify-center gap-4 py-52 text-center">
+      <div className="flex size-16 items-center justify-center rounded-2xl bg-teal-50 text-teal-400 dark:bg-teal-500/10">
+        <Construction className="size-8 flex-shrink-0" />
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <p className="text-base font-semibold text-gray-700 dark:text-gray-200">
+          Coming soon
+        </p>
+        <p className="text-xs text-gray-400 dark:text-gray-500">
+          This feature is still being built
+        </p>
+      </div>
+
+      <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-600 dark:bg-teal-500/10 dark:text-teal-400">
+        In progress
+      </span>
+    </div>
+  ),
 };
 
 export default function NestDashboardPage() {

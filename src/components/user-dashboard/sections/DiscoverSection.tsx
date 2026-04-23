@@ -12,9 +12,9 @@ export default function ExploreSection() {
         </p>
       </div>
 
-      <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
+      <div className="flex flex-col items-center justify-center gap-4 py-52 text-center">
         <div className="flex size-16 items-center justify-center rounded-2xl bg-teal-50 text-teal-400 dark:bg-teal-500/10">
-          <Construction size={32} />
+          <Construction className="size-8 flex-shrink-0" />
         </div>
 
         <div className="flex flex-col gap-1">

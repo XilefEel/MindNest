@@ -10,7 +10,7 @@ import BookmarkCard from "./BookmarkCard";
 import { cn } from "@/lib/utils/general";
 import { toast } from "@/lib/utils/toast";
 import BookmarkToolbar from "./BookmarkToolbar";
-import { Upload } from "lucide-react";
+import { BookmarkPlus, SearchX } from "lucide-react";
 
 export default function BookmarkEditor() {
   const activeNestling = useActiveNestling();
@@ -107,17 +107,19 @@ export default function BookmarkEditor() {
           isDragging && "h-full rounded-lg outline-teal-500 outline-dashed",
         )}
       >
-        {bookmarks.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-24 text-gray-500 dark:text-gray-400">
-            <Upload className="mb-4 size-16 flex-shrink-0" />
-            <p className="text-base font-medium">No bookmarks yet.</p>
-            <p className="text-sm">Add a URL or drag and drop one here.</p>
+        {bookmarks.length === 0 && !searchQuery && (
+          <div className="flex flex-col items-center justify-center py-52 text-gray-400 dark:text-gray-500">
+            <BookmarkPlus className="mb-3 size-16 text-gray-300 dark:text-gray-600" />
+            <p className="mb-0.5 text-sm font-semibold">No bookmarks yet</p>
+            <p className="text-xs">Add a URL or drag and drop one here.</p>
           </div>
         )}
 
         {filteredBookmarks.length === 0 && searchQuery && (
-          <div className="py-24 text-center text-gray-400">
-            No bookmarks found for "{searchQuery}"
+          <div className="flex flex-col items-center justify-center py-52 text-gray-400 dark:text-gray-500">
+            <SearchX className="mb-3 size-16 text-gray-300 dark:text-gray-600" />
+            <p className="mb-0.5 text-sm font-semibold">No results found</p>
+            <p className="text-xs">No bookmarks matched "{searchQuery}"</p>
           </div>
         )}
 
