@@ -89,7 +89,7 @@ export default function SearchModal() {
                   "flex flex-row items-center justify-between px-4 py-2 transition-colors",
                   "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-gray-700/50",
                   activeBackgroundId &&
-                    "data-[selected=true]:bg-white/30 dark:data-[selected=true]:bg-black/30",
+                    "data-[selected=true]:bg-black/5 dark:data-[selected=true]:bg-white/5",
                 )}
               >
                 <SearchItem nestling={nestling} />
@@ -122,7 +122,7 @@ export default function SearchModal() {
                   "flex flex-row items-center justify-between px-4 py-2 transition-colors",
                   "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-gray-700/50",
                   activeBackgroundId &&
-                    "data-[selected=true]:bg-white/30 dark:data-[selected=true]:bg-black/30",
+                    "data-[selected=true]:bg-black/5 dark:data-[selected=true]:bg-white/5",
                 )}
               >
                 <SearchItem nestling={nestling} />

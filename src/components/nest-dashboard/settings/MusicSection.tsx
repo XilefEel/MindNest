@@ -80,7 +80,7 @@ export default function MusicSection() {
               "hover:bg-gray-50 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
               "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
               activeBackgroundId &&
-                "hover:bg-white/30 hover:text-black dark:hover:bg-black/30",
+                "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
             )}
           >
             <FolderOpen className="size-4 flex-shrink-0" />

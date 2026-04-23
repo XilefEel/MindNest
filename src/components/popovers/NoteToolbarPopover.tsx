@@ -80,7 +80,7 @@ export default function NoteToolbarPopover({
             }
             className={cn(
               "rounded p-1 text-gray-500 transition-colors hover:bg-teal-50 hover:text-teal-500 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-gray-500 dark:text-gray-400 dark:hover:bg-teal-900/30 dark:hover:text-teal-400 dark:disabled:hover:bg-transparent dark:disabled:hover:text-gray-400",
-              activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
+              activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
             )}
           >
             <Check className="size-4 flex-shrink-0" />
@@ -90,7 +90,7 @@ export default function NoteToolbarPopover({
             onClick={handleClose}
             className={cn(
               "rounded p-1 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-500 dark:text-gray-400 dark:hover:bg-red-900/30 dark:hover:text-red-400",
-              activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
+              activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
             )}
           >
             <X className="size-4 flex-shrink-0" />

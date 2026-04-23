@@ -31,8 +31,8 @@ export default function HomeItem({
         "flex items-center gap-2 rounded px-2 py-1 transition-[background,scale] active:scale-[0.98]",
         activeBackgroundId
           ? activeNestlingId === null
-            ? "bg-white/50 font-semibold dark:bg-black/50"
-            : "hover:bg-white/20 dark:hover:bg-black/20"
+            ? "bg-white/30 font-semibold dark:bg-black/30"
+            : "hover:bg-black/5 dark:hover:bg-white/5"
           : activeNestlingId === null
             ? "bg-teal-50 font-semibold text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
             : "hover:bg-gray-50 dark:hover:bg-gray-700/50",

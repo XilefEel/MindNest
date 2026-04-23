@@ -25,7 +25,7 @@ export default function PinnedNestlings({
         }}
         className={cn(
           "flex items-center gap-2 rounded px-2 py-1 transition-[background,scale] hover:bg-gray-50 active:scale-[0.98] dark:hover:bg-gray-700/50",
-          activeBackgroundId && "hover:bg-white/20 dark:hover:bg-black/20",
+          activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
         )}
       >
         <div className="rounded-lg bg-linear-to-r from-pink-400 to-pink-500 p-1.5 text-white">

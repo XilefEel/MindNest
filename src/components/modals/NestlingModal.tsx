@@ -97,7 +97,7 @@ export default function NestlingModal() {
                           ? "bg-teal-100/50 shadow-sm dark:bg-teal-500/20"
                           : "border border-teal-300 bg-teal-50 shadow-sm dark:border-teal-500 dark:bg-teal-950/30"
                         : activeBackgroundId
-                          ? "bg-white/30 hover:bg-white/50 hover:shadow-sm dark:bg-black/30 dark:hover:bg-white/5"
+                          ? "bg-white/30 hover:bg-black/5 hover:shadow-sm dark:bg-black/30 dark:hover:bg-white/5"
                           : "border border-gray-200 hover:border-gray-300 hover:shadow-sm dark:border-gray-700 dark:hover:border-gray-500",
                     )}
                   >

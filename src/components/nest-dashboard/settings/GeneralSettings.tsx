@@ -132,7 +132,7 @@ export default function GeneralSettings() {
             className={cn(
               "flex items-center gap-3 rounded-lg border px-3 py-1 text-sm capitalize transition-colors focus:outline-none",
               activeBackgroundId
-                ? "border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10"
+                ? "border-white/20 bg-white/10 backdrop-blur-sm hover:bg-black/5 dark:bg-white/5 dark:hover:bg-white/10"
                 : "border-gray-200 text-gray-700 focus:ring-2 focus:ring-teal-500 dark:border-gray-700 dark:text-gray-200 dark:focus:ring-teal-400",
             )}
           >

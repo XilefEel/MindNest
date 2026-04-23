@@ -84,7 +84,7 @@ export default function FolderItem({
           className={cn(
             "group flex items-center justify-between gap-1 rounded px-2 py-1 transition-[background] hover:bg-teal-50 dark:hover:bg-gray-700",
             activeBackgroundId
-              ? "hover:bg-white/20 dark:hover:bg-black/20"
+              ? "hover:bg-black/5 dark:hover:bg-white/5"
               : "hover:bg-gray-50 dark:hover:bg-gray-700/50",
           )}
         >

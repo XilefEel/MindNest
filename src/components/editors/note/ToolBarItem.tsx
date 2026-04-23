@@ -29,7 +29,7 @@ export default function ToolBarItem({
             : "hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-white",
           activeBackgroundId &&
             !isActive &&
-            "hover:bg-white/30 hover:text-black dark:hover:bg-black/30",
+            "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
         )}
       >
         <Icon className="size-4" />

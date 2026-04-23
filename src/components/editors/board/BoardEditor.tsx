@@ -118,7 +118,7 @@ export default function BoardEditor() {
                   "border-2 border-dashed border-gray-600 dark:border-gray-400",
                   "hover:bg-gray-100 hover:dark:bg-gray-800",
                   activeBackgroundId &&
-                    "hover:bg-white/30 dark:hover:bg-black/30",
+                    "hover:bg-black/5 dark:hover:bg-white/5",
                 )}
               >
                 <Plus size={16} />

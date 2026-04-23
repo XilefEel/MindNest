@@ -208,7 +208,7 @@ export default function NestlingTitle({
                   ? "p-1"
                   : "flex items-center gap-1 px-2 py-0.5",
                 activeBackgroundId &&
-                  "border-transparent bg-white/30 backdrop-blur-sm hover:bg-white/50 dark:border-transparent dark:bg-black/30 dark:hover:bg-black/50",
+                  "border-transparent bg-white/30 backdrop-blur-sm hover:border-transparent hover:bg-black/5 dark:border-transparent dark:bg-black/30 dark:hover:border-transparent dark:hover:bg-white/5",
               )}
             >
               <Plus size={12} />

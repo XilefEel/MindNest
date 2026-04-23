@@ -126,7 +126,7 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
             ? "bg-teal-200/50 dark:bg-teal-900/50"
             : "bg-teal-100 dark:bg-teal-900/50"
           : activeBackgroundId
-            ? "hover:bg-white/30 dark:hover:bg-black/30"
+            ? "hover:bg-black/5 dark:hover:bg-white/5"
             : "hover:bg-gray-100 dark:hover:bg-gray-700",
       )}
     >

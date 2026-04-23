@@ -42,8 +42,7 @@ export default function NestSwitchPopover({
               key={nest.id}
               className={cn(
                 "flex flex-row gap-2 rounded-md px-2 py-1 text-sm text-gray-800 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700/50",
-                activeBackgroundId &&
-                  "hover:bg-white/30 hover:dark:bg-black/30",
+                activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
               )}
               onClick={() => handleClick(nest)}
             >
@@ -57,7 +56,7 @@ export default function NestSwitchPopover({
         onClick={onClose}
         className={cn(
           "absolute top-4 right-4 rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 hover:dark:bg-gray-700 hover:dark:text-gray-200",
-          activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
+          activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
         )}
       >
         <X size={18} />

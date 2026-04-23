@@ -93,8 +93,7 @@ export default function EventPopover({
               onClick={() => setIsEditingTitle(true)}
               className={cn(
                 "truncate rounded px-2 py-1 text-lg font-semibold transition-colors hover:bg-gray-50 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
-                activeBackgroundId &&
-                  "hover:bg-white/30 hover:dark:bg-black/30",
+                activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
               )}
             >
               {title}
@@ -122,8 +121,7 @@ export default function EventPopover({
               onClick={() => setIsEditingDescription(true)}
               className={cn(
                 "line-clamp-3 rounded px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50 hover:text-teal-500 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-teal-400",
-                activeBackgroundId &&
-                  "hover:bg-white/30 hover:dark:bg-black/30",
+                activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
               )}
             >
               {description || (
@@ -158,7 +156,7 @@ export default function EventPopover({
         onClick={onClose}
         className={cn(
           "absolute top-4 right-4 rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 hover:dark:bg-gray-700 hover:dark:text-gray-200",
-          activeBackgroundId && "hover:bg-white/30 hover:dark:bg-black/30",
+          activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
         )}
       >
         <X size={18} />

@@ -93,7 +93,7 @@ export default function NoteTemplatePopover() {
                   className={cn(
                     "group flex items-center justify-between rounded-md px-2 py-1.5 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700/50",
                     activeBackgroundId &&
-                      "hover:bg-white/30 hover:dark:bg-black/30",
+                      "hover:bg-black/5 dark:hover:bg-white/5",
                   )}
                 >
                   <span className="truncate text-sm text-gray-700 dark:text-gray-200">

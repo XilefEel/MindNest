@@ -60,7 +60,7 @@ function createToast(
           "rounded-full p-1.5 transition",
           "text-gray-500 hover:bg-gray-100 hover:text-gray-600",
           "dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-200",
-          activeBackgroundId && "hover:bg-white/30 dark:hover:bg-black/30",
+          activeBackgroundId && "hover:bg-black/5 dark:hover:bg-black/30",
         )}
       >
         <X className="size-4 flex-shrink-0" />
@@ -86,7 +86,7 @@ export const toast = {
             "rounded-full p-1.5 transition",
             "text-gray-500 hover:bg-gray-100 hover:text-gray-600",
             "dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-200",
-            activeBackgroundId && "hover:bg-white/30 dark:hover:bg-black/30",
+            activeBackgroundId && "hover:bg-black/5 dark:hover:bg-black/30",
           )}
         >
           <FolderOpen className="size-4 flex-shrink-0" />

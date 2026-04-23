@@ -135,7 +135,7 @@ export default function FloatingCalendar({
                       "flex size-8 items-center justify-center rounded-full text-sm transition-colors",
                       "hover:bg-gray-100 dark:hover:bg-gray-700",
                       activeBackgroundId &&
-                        "hover:bg-white/30 dark:hover:bg-black/30",
+                        "hover:bg-black/5 dark:hover:bg-white/5",
                       isSameDay(day, new Date()) &&
                         "bg-teal-500 text-white hover:bg-teal-600 dark:bg-teal-400 dark:hover:bg-teal-500",
                       !isSameMonth(day, currentMonth) &&

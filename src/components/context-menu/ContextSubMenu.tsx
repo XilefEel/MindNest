@@ -25,7 +25,7 @@ export default function ContextSubMenu({
         }}
         className={cn(
           "mx-1 flex items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
-          activeBackgroundId && "hover:bg-white/30 dark:hover:bg-black/30",
+          activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
         )}
       >
         {trigger}
