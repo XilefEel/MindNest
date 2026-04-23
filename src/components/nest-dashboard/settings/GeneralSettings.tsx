@@ -149,7 +149,7 @@ export default function GeneralSettings() {
               side="bottom"
               sideOffset={4}
               className={cn(
-                "z-50 w-28 overflow-hidden rounded-lg border shadow-sm",
+                "z-[100] w-28 overflow-hidden rounded-lg border shadow-sm",
                 "data-[state=open]:animate-in data-[state=closed]:animate-out",
                 "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
                 "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",

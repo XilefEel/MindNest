@@ -58,7 +58,7 @@ export default function Sidebar({
       <aside
         style={{ scrollbarGutter: "stable" }}
         className={cn(
-          "[&::-webkit-scrollbar]:hidden",
+          "[&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar-thumb]:hidden [&::-webkit-scrollbar-track]:hidden",
           "flex h-full flex-col overflow-x-hidden overflow-y-auto px-4 py-3",
           "bg-white dark:bg-gray-800 md:dark:bg-gray-800/50",
           "border border-gray-200 dark:border-gray-700",
