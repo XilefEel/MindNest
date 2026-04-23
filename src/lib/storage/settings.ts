@@ -6,6 +6,7 @@ export type Settings = {
   topbarHidden: boolean;
   sidebarHidden: boolean;
   sidebarPosition: "left" | "right";
+  sidebarToolbarHidden: boolean;
   compactNestlingTitle: boolean;
   nestlingTitleHidden: boolean;
   folderIndentLines: boolean;
@@ -18,6 +19,7 @@ export const DEFAULT_UI_SETTINGS: Settings = {
   topbarHidden: false,
   sidebarHidden: false,
   sidebarPosition: "left",
+  sidebarToolbarHidden: false,
   compactNestlingTitle: false,
   nestlingTitleHidden: false,
   folderIndentLines: true,

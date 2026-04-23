@@ -69,6 +69,9 @@ export const useSidebarHidden = () =>
 export const useSidebarPosition = () =>
   useSettingsStore((state) => state.sidebarPosition);
 
+export const useSidebarToolbarHidden = () =>
+  useSettingsStore((state) => state.sidebarToolbarHidden);
+
 export const useTopbarHidden = () =>
   useSettingsStore((state) => state.topbarHidden);
 

@@ -12,6 +12,7 @@ import {
   useSidebarPosition,
   useTopbarHidden,
   useBlurStrength,
+  useSidebarToolbarHidden,
 } from "@/stores/useSettingsStore.tsx";
 import { useActiveBackgroundId } from "@/stores/useNestStore.tsx";
 import { BlurStrength } from "@/lib/storage/settings.ts";
@@ -32,6 +33,7 @@ export default function GeneralSettings() {
   const topbarHidden = useTopbarHidden();
   const sidebarHidden = useSidebarHidden();
   const sidebarPosition = useSidebarPosition();
+  const sidebarToolbarHidden = useSidebarToolbarHidden();
   const compactNestlingTitle = useCompactNestlingTitle();
   const nestlingTitleHidden = useNestlingTitleHidden();
   const folderIndentLines = useFolderIndentLines();
@@ -93,6 +95,12 @@ export default function GeneralSettings() {
           </button>
         </div>
       ),
+    },
+    {
+      text: "Hide Sidebar Toolbar",
+      description: "Hide the toolbar in the sidebar",
+      value: sidebarToolbarHidden,
+      onChange: () => setSetting("sidebarToolbarHidden", !sidebarToolbarHidden),
     },
     {
       text: "Compact Nestling Title",

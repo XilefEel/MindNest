@@ -14,7 +14,10 @@ import ToolBar from "./ToolBar";
 import PinnedNestlings from "./PinnedNestlings";
 import HomeItem from "./HomeItem";
 import { AnimatePresence } from "framer-motion";
-import { useSidebarPosition } from "@/stores/useSettingsStore";
+import {
+  useSidebarPosition,
+  useSidebarToolbarHidden,
+} from "@/stores/useSettingsStore";
 
 export default function Sidebar({
   nestId,
@@ -29,6 +32,7 @@ export default function Sidebar({
 
   const activeBackgroundId = useActiveBackgroundId();
   const sidebarPosition = useSidebarPosition();
+  const sidebarToolbarHidden = useSidebarToolbarHidden();
 
   const folderGroups = useMemo(() => {
     return folders
@@ -70,7 +74,7 @@ export default function Sidebar({
             "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30 md:dark:bg-black/30",
         )}
       >
-        <ToolBar nestId={nestId} />
+        {!sidebarToolbarHidden && <ToolBar nestId={nestId} />}
 
         <HomeItem nestId={nestId} setIsSidebarOpen={setIsSidebarOpen} />
 
