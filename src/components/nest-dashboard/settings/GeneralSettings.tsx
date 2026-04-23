@@ -15,6 +15,8 @@ import {
 } from "@/stores/useSettingsStore.tsx";
 import { useActiveBackgroundId } from "@/stores/useNestStore.tsx";
 import { BlurStrength } from "@/lib/storage/settings.ts";
+import * as Select from "@radix-ui/react-select";
+import { ChevronDown, Check } from "lucide-react";
 
 type Setting = {
   text: string;
@@ -120,17 +122,72 @@ export default function GeneralSettings() {
       text: "Glassmorphism Blur Strength",
       description: "Adjust the strength of the glassmorphism blur effect",
       custom: (
-        <select
+        <Select.Root
           value={blurStrength}
-          onChange={(e) =>
-            setSetting("blurStrength", e.target.value as BlurStrength)
+          onValueChange={(value) =>
+            setSetting("blurStrength", value as BlurStrength)
           }
-          className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:focus:ring-teal-400"
         >
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-        </select>
+          <Select.Trigger
+            className={cn(
+              "flex items-center gap-3 rounded-lg border px-3 py-1 text-sm capitalize transition-colors focus:outline-none",
+              activeBackgroundId
+                ? "border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10"
+                : "border-gray-200 text-gray-700 focus:ring-2 focus:ring-teal-500 dark:border-gray-700 dark:text-gray-200 dark:focus:ring-teal-400",
+            )}
+          >
+            <Select.Value />
+            <Select.Icon>
+              <ChevronDown className="size-3 flex-shrink-0" />
+            </Select.Icon>
+          </Select.Trigger>
+
+          <Select.Portal>
+            <Select.Content
+              position="popper"
+              align="end"
+              side="bottom"
+              sideOffset={4}
+              className={cn(
+                "z-50 w-28 overflow-hidden rounded-lg border shadow-sm",
+                "data-[state=open]:animate-in data-[state=closed]:animate-out",
+                "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+                "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+                "data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2",
+                activeBackgroundId
+                  ? "border-white/20 bg-white/30 backdrop-blur-sm dark:bg-white/0"
+                  : "border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+              )}
+            >
+              <Select.Viewport>
+                {(["low", "medium", "high"] as BlurStrength[]).map((level) => (
+                  <Select.Item
+                    key={level}
+                    value={level}
+                    className={cn(
+                      "flex cursor-default items-center justify-between px-3 py-1.5 text-sm capitalize transition-colors outline-none select-none",
+                      "text-gray-800 dark:text-gray-200",
+                      activeBackgroundId
+                        ? "data-[highlighted]:bg-white/20 dark:data-[highlighted]:bg-white/10"
+                        : "data-[highlighted]:bg-gray-50 dark:data-[highlighted]:bg-gray-700/50",
+                    )}
+                  >
+                    <Select.ItemText>{level}</Select.ItemText>
+                    <Select.ItemIndicator>
+                      <Check
+                        className={cn(
+                          "size-3",
+                          !activeBackgroundId &&
+                            "text-teal-500 dark:text-teal-400",
+                        )}
+                      />
+                    </Select.ItemIndicator>
+                  </Select.Item>
+                ))}
+              </Select.Viewport>
+            </Select.Content>
+          </Select.Portal>
+        </Select.Root>
       ),
     },
   ];
