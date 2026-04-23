@@ -27,6 +27,12 @@ export default function HomeItem({
   };
   return (
     <div
+      onClick={handleHomeClick}
+      onDoubleClick={(e) => e.stopPropagation()}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       className={cn(
         "flex items-center gap-2 rounded px-2 py-1 transition-[background,scale] active:scale-[0.98]",
         activeBackgroundId
@@ -37,8 +43,6 @@ export default function HomeItem({
             ? "bg-teal-50 font-semibold text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
             : "hover:bg-gray-50 dark:hover:bg-gray-700/50",
       )}
-      onClick={handleHomeClick}
-      onDoubleClick={(e) => e.stopPropagation()}
     >
       <div className="rounded-lg bg-linear-to-r from-teal-500 to-teal-600 p-1.5 text-white">
         <Home className="size-4 flex-shrink-0" />

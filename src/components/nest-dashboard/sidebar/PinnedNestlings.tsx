@@ -20,7 +20,9 @@ export default function PinnedNestlings({
     <div className={cn("my-1 flex flex-col gap-0.5")}>
       <div
         onClick={() => setIsPinnedOpen((prev) => !prev)}
-        onDoubleClick={(e) => {
+        onDoubleClick={(e) => e.stopPropagation()}
+        onContextMenu={(e) => {
+          e.preventDefault();
           e.stopPropagation();
         }}
         className={cn(

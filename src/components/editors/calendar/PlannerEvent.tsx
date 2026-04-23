@@ -121,15 +121,15 @@ export default function PlannerEvent({
           }}
           onDragStop={(_, d) => onDragStop(d)}
           onResizeStop={(_, dir, ref, delta) => onResizeStop(dir, ref, delta)}
-          className={cn(
-            "absolute z-10 rounded-lg px-2 text-sm tracking-wide text-white shadow-lg",
-            event.duration > 1 && "py-1",
-          )}
+          onClick={() => setIsOpen(true)}
           style={{
             backgroundColor: event.color,
             zIndex: 10 + event.startTime,
           }}
-          onClick={() => setIsOpen(true)}
+          className={cn(
+            "absolute z-10 rounded-lg px-2 text-sm tracking-wide text-white shadow-lg",
+            event.duration > 1 && "py-1",
+          )}
         >
           <h3 className="truncate font-semibold">{event.title}</h3>
           <p className="text-xs leading-tight text-gray-100">

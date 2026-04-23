@@ -57,6 +57,10 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
           <div
             ref={setNodeRef}
             style={style}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
             className="group relative rounded-lg bg-white p-3 shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-700"
           >
             <div

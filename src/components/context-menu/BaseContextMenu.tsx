@@ -20,6 +20,10 @@ export default function BaseContextMenu({
       <ContextMenu.Portal>
         <ContextMenu.Content
           onClick={(e) => e.stopPropagation()}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
           className={cn(
             "animate-in fade-in-0 zoom-in-95 z-50 min-w-[220px] rounded-lg border border-gray-200 bg-white px-1 py-2 shadow-lg select-none dark:border-gray-700 dark:bg-gray-800",
             activeBackgroundId &&

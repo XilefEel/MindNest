@@ -35,7 +35,13 @@ export default function ToolBar({ nestId }: { nestId: number }) {
   ];
 
   return (
-    <div className="mb-2.5 flex items-center border-b border-gray-800 dark:border-gray-200">
+    <div
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      className="mb-2.5 flex items-center border-b border-gray-800 dark:border-gray-200"
+    >
       {buttons.map((btn) => (
         <BaseToolTip label={btn.label}>
           <button
