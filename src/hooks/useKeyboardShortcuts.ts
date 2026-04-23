@@ -104,6 +104,21 @@ export function useKeyboardShortcuts({
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+
+      if (
+        BLOCKED_SHORTCUTS.some(
+          (b) => b.key === e.key.toLowerCase() && b.needsShift === e.shiftKey,
+        )
+      )
+        e.preventDefault();
+
+      if (
+        ["INPUT", "TEXTAREA"].includes(target.tagName) ||
+        target.isContentEditable
+      )
+        return;
+
       if (!e.ctrlKey && !e.metaKey) return;
 
       const match = shortcutConfig.find(({ keys }) => {
@@ -116,13 +131,6 @@ export function useKeyboardShortcuts({
         e.preventDefault();
         shortcutHandlers[match.id]();
       }
-
-      if (
-        BLOCKED_SHORTCUTS.some(
-          (b) => b.key === e.key.toLowerCase() && b.needsShift === e.shiftKey,
-        )
-      )
-        e.preventDefault();
     };
 
     window.addEventListener("keydown", handleKeyPress);
