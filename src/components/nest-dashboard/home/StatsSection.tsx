@@ -53,7 +53,7 @@ export default function StatsSection() {
   ];
 
   return (
-    <section className="grid gap-3 sm:grid-cols-3 md:grid-cols-5">
+    <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
       {stats.map((stat, i) => (
         <StatsCard key={i} {...stat} />
       ))}

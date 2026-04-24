@@ -7,7 +7,7 @@ import {
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 import { cn } from "@/lib/utils/general";
-import { nestlingTypes } from "@/lib/utils/nestlings";
+import { nestlingTypeConfigs } from "@/lib/utils/nestlings";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { NestlingType } from "@/lib/types/nestling";
 import { useNestlingModal } from "@/stores/useModalStore";
@@ -74,7 +74,7 @@ export default function NestlingModal() {
             label="Nestling title"
             text={title}
             setText={setTitle}
-            placeholder={`e.g. My ${nestlingTypes.find((type) => type.value === nestlingType)?.label || "Note"}`}
+            placeholder={`e.g. My ${nestlingTypeConfigs.find((type) => type.value === nestlingType)?.label || "Note"}`}
           />
 
           <div className="flex flex-col gap-3">
@@ -82,7 +82,7 @@ export default function NestlingModal() {
               Choose nestling type
             </p>
             <div className="grid grid-cols-2 gap-3">
-              {nestlingTypes.map((typeOption) => {
+              {nestlingTypeConfigs.map((typeOption) => {
                 const Icon = typeOption.icon;
                 const isSelected = nestlingType === typeOption.value;
 

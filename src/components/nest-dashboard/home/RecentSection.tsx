@@ -34,10 +34,8 @@ export default function RecentSection() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-gradient-to-br from-blue-400 to-blue-500 p-2 shadow-sm">
-            <Clock className="size-4 flex-shrink-0 text-white" />
-          </div>
+        <div className="flex items-center gap-2">
+          <Clock className="size-6 flex-shrink-0" />
           <div className="flex justify-between">
             <h2 className="text-lg font-semibold md:text-xl">
               Recent Nestlings

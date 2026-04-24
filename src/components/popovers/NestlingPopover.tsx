@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { NestlingType, Nestling } from "@/lib/types/nestling";
-import { nestlingTypes } from "@/lib/utils/nestlings";
+import { nestlingTypeConfigs } from "@/lib/utils/nestlings";
 
 export default function NestlingPopover({
   nestlings,
@@ -28,7 +28,7 @@ export default function NestlingPopover({
       </div>
       <div className="flex flex-col gap-2">
         {nestlings.length > 0 ? (
-          nestlingTypes
+          nestlingTypeConfigs
             .filter((nestling) => nestlingTypeCount[nestling.value] > 0)
             .map((nestling) => {
               const Icon = nestling.icon;
@@ -48,6 +48,7 @@ export default function NestlingPopover({
                     </div>
                     <span className="text-sm">{nestling.label}</span>
                   </div>
+
                   <span
                     className={cn(
                       "flex size-6 items-center justify-center rounded-full bg-gray-200/50 text-sm font-semibold dark:bg-gray-600",

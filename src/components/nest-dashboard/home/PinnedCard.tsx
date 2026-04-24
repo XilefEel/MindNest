@@ -1,12 +1,11 @@
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
 import { NestlingTag } from "@/components/editors/NestlingTag";
 import { Nestling } from "@/lib/types/nestling";
-import { findFolderPath } from "@/lib/utils/folders";
 import { cn } from "@/lib/utils/general";
-import { getNestlingIcon } from "@/lib/utils/nestlings";
-import { useNestlingTags, useFolders } from "@/stores/useNestlingStore";
+import { getNestlingIcon, getNestlingTypeColor } from "@/lib/utils/nestlings";
+import { useNestlingTags } from "@/stores/useNestlingStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
-import { Folder, ArrowRight, Dot } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function PinnedCard({
   nestling,
@@ -17,67 +16,65 @@ export default function PinnedCard({
 }) {
   const Icon = getNestlingIcon(nestling.nestlingType);
   const nestlingTags = useNestlingTags(nestling.id);
-  const folders = useFolders();
   const activeBackgroundId = useActiveBackgroundId();
+
+  const { color, border } = getNestlingTypeColor(nestling.nestlingType);
 
   return (
     <NestlingContextMenu nestlingId={nestling.id}>
       <div
         onClick={() => onClick(nestling.id)}
         className={cn(
-          "group rounded-xl border border-l-4 p-4 shadow-sm hover:shadow-md",
+          "group relative min-h-[120px] rounded-xl border p-4 shadow-sm hover:shadow-md",
           "bg-white dark:bg-gray-800",
-          "border-gray-100 border-l-pink-500 hover:border-pink-500 dark:border-gray-700 dark:border-l-pink-500 dark:hover:hover:border-pink-500",
+          "border-gray-100 dark:border-gray-700",
           "transition-[scale,border] hover:scale-[1.02]",
+          border,
           activeBackgroundId &&
             cn(
-              "border-t-transparent border-r-transparent border-b-transparent",
-              "dark:border-t-transparent dark:border-r-transparent dark:border-b-transparent",
+              "border-transparent dark:border-transparent",
               "bg-white/10 backdrop-blur-sm dark:bg-black/10",
             ),
         )}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-1 font-semibold">
-              <div className="flex w-6 items-center justify-center">
-                {nestling.icon ? (
-                  <p>{nestling.icon}</p>
-                ) : (
-                  <Icon className="size-4 flex-shrink-0" />
-                )}
-              </div>
-              <span>{nestling.title}</span>
-            </div>
-            <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-              <div className="flex items-center gap-1">
-                <Folder className="h-3.5 w-6" />
-                <span className="text-xs">
-                  {findFolderPath(nestling.folderId, folders) || "No Folder"}
-                </span>
-              </div>
-
-              {nestlingTags.length > 0 && <Dot size={20} />}
-
-              <div className="flex items-center gap-1">
-                {nestlingTags.slice(0, 3).map((tag) => (
-                  <NestlingTag key={tag.id} tag={tag} />
-                ))}
-                {nestlingTags.length > 3 && (
-                  <span className="text-xs tracking-widest">
-                    ... +{nestlingTags.length - 3}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-          <ArrowRight
+        <div className="flex flex-col gap-1.5">
+          <div
             className={cn(
-              "size-4 flex-shrink-0 text-gray-500 opacity-0 transition-opacity group-hover:opacity-100 dark:text-gray-300",
-              activeBackgroundId && "text-gray-400",
+              "flex size-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700",
+              !nestling.icon && color,
             )}
-          />
+          >
+            {nestling.icon ? (
+              <p>{nestling.icon}</p>
+            ) : (
+              <Icon className="size-4 text-white" />
+            )}
+          </div>
+
+          <span className="line-clamp-2 text-sm leading-snug font-semibold">
+            {nestling.title}
+          </span>
+
+          {nestlingTags.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {nestlingTags.slice(0, 3).map((tag) => (
+                <NestlingTag key={tag.id} tag={tag} />
+              ))}
+              {nestlingTags.length > 3 && (
+                <span className="text-xs tracking-widest text-gray-400">
+                  +{nestlingTags.length - 3}
+                </span>
+              )}
+            </div>
+          )}
         </div>
+
+        <ArrowRight
+          className={cn(
+            "absolute top-4 right-4 size-4 flex-shrink-0 text-gray-500 opacity-0 transition-opacity group-hover:opacity-100 dark:text-gray-300",
+            activeBackgroundId && "text-gray-400",
+          )}
+        />
       </div>
     </NestlingContextMenu>
   );

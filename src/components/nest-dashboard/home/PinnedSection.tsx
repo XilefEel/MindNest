@@ -18,14 +18,12 @@ export default function PinnedSection() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-3">
-        <div className="rounded-lg bg-gradient-to-br from-pink-400 to-pink-500 p-2 shadow-sm">
-          <Pin className="size-4 flex-shrink-0 text-white" />
-        </div>
+      <div className="flex items-center gap-2">
+        <Pin className="size-6 flex-shrink-0" />
         <h2 className="text-lg font-semibold md:text-xl">Pinned Nestlings</h2>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {pinnedNestlings.length === 0 && (
           <p className="text-sm text-gray-500 dark:text-gray-400">
             No pinned nestlings
