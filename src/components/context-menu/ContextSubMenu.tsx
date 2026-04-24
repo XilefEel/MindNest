@@ -24,7 +24,8 @@ export default function ContextSubMenu({
           e.stopPropagation();
         }}
         className={cn(
-          "mx-1 flex items-center gap-3 rounded px-3 py-2 text-sm transition-colors outline-none hover:bg-gray-100 dark:hover:bg-gray-700",
+          "flex items-center gap-3 rounded px-2 py-1.5 text-sm transition-colors outline-none",
+          "hover:bg-gray-100 dark:hover:bg-gray-700/50",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
         )}
       >
@@ -34,7 +35,10 @@ export default function ContextSubMenu({
       <ContextMenu.Portal>
         <ContextMenu.SubContent
           className={cn(
-            "animate-in fade-in-0 zoom-in-95 z-50 rounded-lg border border-gray-200 bg-white py-2 shadow-lg select-none dark:border-gray-700 dark:bg-gray-800",
+            "animate-in fade-in-0 zoom-in-95",
+            "z-50 rounded-lg p-2 shadow-lg select-none",
+            "bg-white dark:bg-gray-800",
+            "border border-gray-200 dark:border-gray-700",
             width,
             activeBackgroundId &&
               cn(

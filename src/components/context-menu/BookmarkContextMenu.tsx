@@ -33,13 +33,13 @@ export default function BookmarkContextMenu({
             action={() => writeText(bookmark.url)}
           />
 
-          <ContextMenuSeparator />
-
           <ContextMenuItem
             Icon={Star}
             text={bookmark.isFavorite ? "Unfavorite" : "Favorite"}
             action={() => handleToggleFavorite(bookmark.id)}
           />
+
+          <ContextMenuSeparator />
 
           <ContextMenuItem
             Icon={Trash2}

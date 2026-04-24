@@ -31,16 +31,16 @@ export default function ColorPickerMenu<T extends { color: string }>({
         </>
       }
       content={
-        <div className="grid grid-cols-4 gap-2 px-2">
+        <div className="grid grid-cols-4 gap-2">
           {COLORS.map((color) => (
             <button
               key={color}
+              onClick={() => handleChangeColor(color)}
+              style={{ backgroundColor: color }}
               className={cn(
                 "relative h-8 w-8 rounded-full border-2 border-gray-200 transition-all hover:scale-110 dark:border-gray-600",
                 activeBackgroundId && "border-black/20 dark:border-white/20",
               )}
-              style={{ backgroundColor: color }}
-              onClick={() => handleChangeColor(color)}
             >
               {element.color === color && (
                 <Check className="absolute inset-0 m-auto h-4 w-4 text-white drop-shadow" />
