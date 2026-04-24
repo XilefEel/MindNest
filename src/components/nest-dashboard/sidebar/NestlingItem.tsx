@@ -4,15 +4,14 @@ import {
 } from "@/stores/useNestlingStore";
 import { Nestling } from "@/lib/types/nestling";
 import { cn } from "@/lib/utils/general";
-import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useDraggable } from "@dnd-kit/core";
 import { GripVertical } from "lucide-react";
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { getNestlingIcon } from "@/lib/utils/nestlings";
+import { getNestlingIcon, openNestling } from "@/lib/utils/nestlings";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
-import { saveLastNestling } from "@/lib/storage/nestling";
 import { toast } from "@/lib/utils/toast";
 import { useTheme } from "next-themes";
 import { useInlineEdit } from "@/hooks/useInlineEdit";
@@ -32,10 +31,8 @@ export default function NestlingItem({
   setIsSidebarOpen: (isOpen: boolean) => void;
   isPinnedShortcut?: boolean;
 }) {
-  const { setActiveFolderId, setActiveNestlingId, updateNestling } =
-    useNestlingActions();
+  const { updateNestling } = useNestlingActions();
   const activeNestling = useActiveNestling();
-  const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
 
   const { theme } = useTheme();
@@ -62,12 +59,8 @@ export default function NestlingItem({
 
   const handleSelect = async () => {
     if (isEditing) return;
-
-    setActiveNestlingId(nestling.id);
-    setActiveFolderId(nestling.folderId);
     setIsSidebarOpen(false);
-
-    await saveLastNestling(activeNestId!, nestling.id);
+    openNestling(nestling);
   };
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =

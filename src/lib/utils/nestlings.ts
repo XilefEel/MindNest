@@ -8,11 +8,11 @@ import {
   LucideIcon,
   BookmarkCheck,
 } from "lucide-react";
-import { NestlingType } from "../types/nestling";
+import { Nestling, NestlingType } from "../types/nestling";
 import * as nestlingApi from "@/lib/api/nestling";
 import { getActiveNestId } from "./nests";
 import { useNestlingStore } from "@/stores/useNestlingStore";
-import { saveRecentNestling } from "../storage/nestling";
+import { saveLastNestling, saveRecentNestling } from "../storage/nestling";
 
 export type NestlingTypeConfig = {
   value: NestlingType;
@@ -97,4 +97,14 @@ export const updateNestlingTimestamp = async (nestlingId: number) => {
   ]);
 
   useNestlingStore.getState().updateNestlingTimestamp(nestlingId, now);
+};
+
+export const openNestling = async (nestling: Nestling) => {
+  const activeNestId = getActiveNestId();
+  const setActiveNestlingId = useNestlingStore.getState().setActiveNestlingId;
+  const setActiveFolderId = useNestlingStore.getState().setActiveFolderId;
+
+  setActiveNestlingId(nestling.id);
+  setActiveFolderId(nestling.folderId);
+  await saveLastNestling(activeNestId!, nestling.id);
 };

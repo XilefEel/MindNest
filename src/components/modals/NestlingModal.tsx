@@ -7,7 +7,7 @@ import {
 import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 import { cn } from "@/lib/utils/general";
-import { nestlingTypeConfigs } from "@/lib/utils/nestlings";
+import { nestlingTypeConfigs, openNestling } from "@/lib/utils/nestlings";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { NestlingType } from "@/lib/types/nestling";
 import { useNestlingModal } from "@/stores/useModalStore";
@@ -21,7 +21,7 @@ export default function NestlingModal() {
   } = useNestlingModal();
 
   const activeFolderId = useActiveFolderId();
-  const { addNestling, setActiveNestlingId } = useNestlingActions();
+  const { addNestling } = useNestlingActions();
   const activeBackgroundId = useActiveBackgroundId();
 
   const [title, setTitle] = useState("");
@@ -50,9 +50,9 @@ export default function NestlingModal() {
         isPinned: false,
         nestlingType: nestlingType,
       });
-
       toast.success(`Nestling "${title}" created successfully!`);
-      setActiveNestlingId(newNestling.id);
+
+      openNestling(newNestling);
       handleClose();
     } catch (error) {
       toast.error("Failed to create nestling.");

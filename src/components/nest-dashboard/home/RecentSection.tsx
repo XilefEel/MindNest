@@ -1,14 +1,13 @@
-import { useNestlingActions } from "@/stores/useNestlingStore";
 import { useActiveNestId } from "@/stores/useNestStore";
 import { Clock } from "lucide-react";
 import { useEffect, useState } from "react";
-import { clearRecentNestlings, saveLastNestling } from "@/lib/storage/nestling";
+import { clearRecentNestlings } from "@/lib/storage/nestling";
 import RecentCard from "./RecentCard";
 import { useRecentNestlings } from "@/hooks/useRecentNestlings";
+import { openNestling } from "@/lib/utils/nestlings";
 
 export default function RecentSection() {
   const activeNestId = useActiveNestId();
-  const { setActiveNestlingId } = useNestlingActions();
   const { recentNestlings, setRecentNestlings } = useRecentNestlings();
 
   const [, forceUpdate] = useState(0);
@@ -16,11 +15,6 @@ export default function RecentSection() {
   const handleClear = async () => {
     await clearRecentNestlings(activeNestId!);
     setRecentNestlings([]);
-  };
-
-  const handleClick = (nestlingId: number) => {
-    setActiveNestlingId(nestlingId);
-    saveLastNestling(activeNestId!, nestlingId);
   };
 
   useEffect(() => {
@@ -62,7 +56,7 @@ export default function RecentSection() {
           <RecentCard
             key={nestling.id}
             nestling={nestling}
-            onClick={handleClick}
+            onClick={() => openNestling(nestling)}
           />
         ))}
       </div>

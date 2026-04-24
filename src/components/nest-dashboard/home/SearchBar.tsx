@@ -1,23 +1,20 @@
 import { Input } from "@/components/ui/input";
-import { saveLastNestling } from "@/lib/storage/nestling";
 import { cn } from "@/lib/utils/general";
-import { useNestlingActions } from "@/stores/useNestlingStore";
-import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { Search } from "lucide-react";
 import SearchItem from "./SearchItem";
 import { useNestlingSearch } from "@/hooks/useNestlingSearch.ts";
+import { openNestling } from "@/lib/utils/nestlings";
+import { Nestling } from "@/lib/types/nestling";
 
 export default function SearchBar() {
-  const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
-  const { setActiveNestlingId } = useNestlingActions();
 
   const { searchQuery, setSearchQuery, filteredNestlings } =
     useNestlingSearch();
 
-  const handleClick = (nestlingId: number) => {
-    setActiveNestlingId(nestlingId);
-    saveLastNestling(activeNestId!, nestlingId);
+  const handleClick = (nestling: Nestling) => {
+    openNestling(nestling);
     setSearchQuery("");
   };
 
@@ -64,7 +61,7 @@ export default function SearchBar() {
               <SearchItem
                 key={nestling.id}
                 nestling={nestling}
-                handleClick={handleClick}
+                handleClick={() => handleClick(nestling)}
               />
             ))
           ) : (

@@ -7,30 +7,27 @@ import {
   CommandSeparator,
   CommandItem,
 } from "../ui/command";
-import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
-import { useNestlingActions } from "@/stores/useNestlingStore";
-import { saveLastNestling } from "@/lib/storage/nestling";
 import { useSearchModal } from "@/stores/useModalStore";
 import SearchItem from "./SearchItem";
 import { useNestlingSearch } from "@/hooks/useNestlingSearch.ts";
 import { FileText, Pin } from "lucide-react";
 import { useRecentNestlings } from "@/hooks/useRecentNestlings";
+import { openNestling } from "@/lib/utils/nestlings";
+import { Nestling } from "@/lib/types/nestling";
 
 export default function SearchModal() {
-  const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
   const { recentNestlings } = useRecentNestlings();
-  const { setActiveNestlingId } = useNestlingActions();
 
   const { isSearchOpen, setIsSearchOpen } = useSearchModal();
 
   const { searchQuery, setSearchQuery, filteredNestlings } =
     useNestlingSearch();
 
-  const handleSelectNestling = (nestlingId: number) => {
-    setActiveNestlingId(nestlingId);
-    saveLastNestling(activeNestId!, nestlingId);
+  const handleSelectNestling = (nestling: Nestling) => {
+    openNestling(nestling);
     setSearchQuery("");
     setIsSearchOpen?.(false);
   };
@@ -86,7 +83,7 @@ export default function SearchModal() {
               <CommandItem
                 key={nestling.id}
                 value={String(nestling.id)}
-                onSelect={() => handleSelectNestling(nestling.id)}
+                onSelect={() => handleSelectNestling(nestling)}
                 className={cn(
                   "flex flex-row items-center justify-between px-4 py-2 transition-colors",
                   "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-gray-700/50",
@@ -119,7 +116,7 @@ export default function SearchModal() {
               <CommandItem
                 key={nestling.id}
                 value={String(nestling.id)}
-                onSelect={() => handleSelectNestling(nestling.id)}
+                onSelect={() => handleSelectNestling(nestling)}
                 className={cn(
                   "flex flex-row items-center justify-between px-4 py-2 transition-colors",
                   "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-gray-700/50",

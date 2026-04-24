@@ -1,20 +1,12 @@
-import { saveLastNestling } from "@/lib/storage/nestling";
-import { useNestlingActions, useNestlings } from "@/stores/useNestlingStore";
-import { useActiveNestId } from "@/stores/useNestStore";
+import { useNestlings } from "@/stores/useNestlingStore";
 import { Pin } from "lucide-react";
 import PinnedCard from "./PinnedCard";
+import { openNestling } from "@/lib/utils/nestlings";
 
 export default function PinnedSection() {
-  const activeNestId = useActiveNestId();
   const nestlings = useNestlings();
-  const { setActiveNestlingId } = useNestlingActions();
 
   const pinnedNestlings = nestlings.filter((n) => n.isPinned === true);
-
-  const handleClick = (nestlingId: number) => {
-    setActiveNestlingId(nestlingId);
-    saveLastNestling(activeNestId!, nestlingId);
-  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -34,7 +26,7 @@ export default function PinnedSection() {
           <PinnedCard
             key={nestling.id}
             nestling={nestling}
-            onClick={handleClick}
+            onClick={() => openNestling(nestling)}
           />
         ))}
       </div>
