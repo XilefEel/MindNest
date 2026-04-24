@@ -1,4 +1,4 @@
-import { PlannerEventType } from "@/lib/types/calendar";
+import { PlannerEventType } from "@/lib/types/planner";
 import { usePlannerActions } from "@/stores/usePlannerStore";
 import { useState } from "react";
 import { Clock, Calendar, Timer, X } from "lucide-react";

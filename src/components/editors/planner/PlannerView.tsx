@@ -3,7 +3,7 @@ import { addDays, format, isSameDay, startOfWeek } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 import PlannerEvent from "./PlannerEvent";
 import { useEvents, usePlannerActions } from "@/stores/usePlannerStore";
-import { NewPlannerEventType } from "@/lib/types/calendar";
+import { NewPlannerEventType } from "@/lib/types/planner";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { COLORS, gridHeight } from "@/lib/utils/constants";
 import { useActiveNestling } from "@/stores/useNestlingStore";

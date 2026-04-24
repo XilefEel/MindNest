@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils/general";
 import { useActiveNestlingId } from "@/stores/useNestlingStore";
 import { usePlannerActions } from "@/stores/usePlannerStore";
 import { createPortal } from "react-dom";
-import * as calendarApi from "@/lib/api/calendar";
+import * as plannerApi from "@/lib/api/planner";
 import BasePopover from "@/components/popovers/BasePopover";
 import { getWeekRange } from "@/lib/utils/date";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
@@ -66,7 +66,7 @@ export default function FloatingCalendar({
     if (!isOpen || !activeNestlingId) return;
 
     const fetch = async () => {
-      const events = await calendarApi.getPlannerEvents({
+      const events = await plannerApi.getPlannerEvents({
         id: activeNestlingId,
         start: format(monthStart, "yyyy-MM-dd"),
         end: format(monthEnd, "yyyy-MM-dd"),

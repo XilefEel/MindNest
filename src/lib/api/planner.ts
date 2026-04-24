@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { NewPlannerEventType, PlannerEventType } from "../types/calendar";
+import { NewPlannerEventType, PlannerEventType } from "../types/planner";
 
 export async function createPlannerEvent(data: NewPlannerEventType) {
   return await invoke<PlannerEventType>("create_event", { data });

@@ -2,8 +2,8 @@ import { create } from "zustand";
 import type {
   PlannerEventType,
   NewPlannerEventType,
-} from "@/lib/types/calendar";
-import * as calendarApi from "@/lib/api/calendar";
+} from "@/lib/types/planner";
+import * as plannerApi from "@/lib/api/planner";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { useShallow } from "zustand/react/shallow";
 import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
@@ -47,7 +47,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
       start: string;
       end: string;
     }) => {
-      const events = await calendarApi.getPlannerEvents({
+      const events = await plannerApi.getPlannerEvents({
         id: nestlingId,
         start,
         end,
@@ -65,7 +65,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
   createEvent: withStoreErrorHandler(
     set,
     async (newEvent: NewPlannerEventType) => {
-      const event = await calendarApi.createPlannerEvent(newEvent);
+      const event = await plannerApi.createPlannerEvent(newEvent);
       set((state) => ({
         events: [...state.events, event],
       }));
@@ -83,7 +83,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
 
     try {
       set({ events: prevEvent.map((e) => (e.id === id ? updated : e)) });
-      await calendarApi.updatePlannerEvent({ ...updated, id });
+      await plannerApi.updatePlannerEvent({ ...updated, id });
     } catch (error) {
       set({ events: prevEvent });
       throw error;
@@ -98,7 +98,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
     const event = get().events.find((e) => e.id === id);
     const nestlingId = event?.nestlingId;
 
-    await calendarApi.deletePlannerEvent(id);
+    await plannerApi.deletePlannerEvent(id);
 
     set((state) => ({
       events: state.events.filter((e) => e.id !== id),

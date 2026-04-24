@@ -27,7 +27,7 @@ use handler::board::{
     create_board_card, create_board_column, delete_board_card, delete_board_column, get_board_data,
     update_board_card, update_board_column,
 };
-use handler::calendar::{create_event, delete_event, get_events, update_event};
+use handler::planner::{create_event, delete_event, get_events, update_event};
 
 use handler::gallery::{
     delete_image, download_all_images, download_image, duplicate_image, get_images,

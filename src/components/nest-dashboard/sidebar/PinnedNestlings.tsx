@@ -47,7 +47,7 @@ export default function PinnedNestlings({
       </div>
 
       {isPinnedOpen && (
-        <div className={cn("ml-6 flex flex-col gap-0.5")}>
+        <div className="ml-6 flex flex-col gap-0.5">
           {pinnedNestlings.map((nestling) => (
             <NestlingItem
               key={`pinned-${nestling.id}`}

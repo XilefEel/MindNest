@@ -3,7 +3,7 @@ import { WithBase } from "./base";
 export type NestlingType =
   | "note"
   | "board"
-  | "calendar"
+  | "planner"
   | "bookmark"
   | "gallery"
   | "mindmap"

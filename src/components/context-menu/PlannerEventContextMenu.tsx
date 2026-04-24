@@ -1,4 +1,4 @@
-import { PlannerEventType } from "@/lib/types/calendar";
+import { PlannerEventType } from "@/lib/types/planner";
 import { usePlannerActions } from "@/stores/usePlannerStore";
 import { Copy, CopyPlus, Trash } from "lucide-react";
 import ContextMenuItem from "./ContextMenuItem";

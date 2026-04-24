@@ -1,5 +1,5 @@
 import { Rnd } from "react-rnd";
-import { PlannerEventType } from "@/lib/types/calendar";
+import { PlannerEventType } from "@/lib/types/planner";
 import { addDays, format, startOfWeek } from "date-fns";
 import { formatTime, getDayFromDate } from "@/lib/utils/date";
 import PlannerEventContextMenu from "@/components/context-menu/PlannerEventContextMenu";

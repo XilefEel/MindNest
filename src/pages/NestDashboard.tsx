@@ -15,7 +15,7 @@ import Home from "@/components/nest-dashboard/home/Home";
 import LoadingScreen from "@/components/LoadingScreen";
 import NoteEditor from "@/components/editors/note/NoteEditor";
 import BoardEditor from "@/components/editors/board/BoardEditor";
-import CalendarEditor from "@/components/editors/calendar/CalendarEditor";
+import PlannerEditor from "@/components/editors/planner/PlannerEditor";
 import GalleryEditor from "@/components/editors/gallery/GalleryEditor";
 import useLoadNest from "@/hooks/useLoadNest";
 import MindmapEditor from "@/components/editors/mindmap/MindmapEditor";
@@ -37,7 +37,7 @@ import { Construction } from "lucide-react";
 const editors: Record<NestlingType, React.ComponentType> = {
   note: NoteEditor,
   board: BoardEditor,
-  calendar: CalendarEditor,
+  planner: PlannerEditor,
   gallery: GalleryEditor,
   mindmap: MindmapEditor,
   bookmark: BookmarkEditor,

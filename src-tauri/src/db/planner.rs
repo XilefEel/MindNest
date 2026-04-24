@@ -1,5 +1,5 @@
 use crate::{
-    models::calendar::{NewPlannerEvent, PlannerEvent},
+    models::planner::{NewPlannerEvent, PlannerEvent},
     utils::{
         db::AppDb,
         errors::{AppResult, LogError},

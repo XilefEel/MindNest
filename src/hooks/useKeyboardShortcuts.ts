@@ -106,6 +106,8 @@ export function useKeyboardShortcuts({
     const handleKeyPress = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
 
+      if (!e.ctrlKey && !e.metaKey) return;
+
       if (
         BLOCKED_SHORTCUTS.some(
           (b) => b.key === e.key.toLowerCase() && b.needsShift === e.shiftKey,
@@ -118,8 +120,6 @@ export function useKeyboardShortcuts({
         target.isContentEditable
       )
         return;
-
-      if (!e.ctrlKey && !e.metaKey) return;
 
       const match = shortcutConfig.find(({ keys }) => {
         const needsShift = keys.length === 3;

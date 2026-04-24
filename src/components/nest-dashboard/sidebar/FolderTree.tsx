@@ -84,7 +84,8 @@ export default function FolderTree({
                   setIsSidebarOpen={setIsSidebarOpen}
                 />
               ))}
-              <div className={cn("flex flex-col gap-0.5 pt-0.5")}>
+
+              <div className="flex flex-col gap-0.5 pt-0.5">
                 {childNestlings.map((nestling) => (
                   <NestlingItem
                     key={nestling.id}

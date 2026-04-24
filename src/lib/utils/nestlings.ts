@@ -38,8 +38,8 @@ export const nestlingTypeConfigs: NestlingTypeConfig[] = [
     border: "hover:border-purple-500 dark:hover:border-purple-400",
   },
   {
-    value: "calendar",
-    label: "Calendar",
+    value: "planner",
+    label: "Planner",
     icon: Calendar,
     color: "bg-red-500 dark:bg-red-400",
     border: "hover:border-red-500 dark:hover:border-red-400",
