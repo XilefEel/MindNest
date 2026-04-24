@@ -29,8 +29,8 @@ const shortcutConfig = [
   },
   {
     id: "hideCards",
-    keys: ["Ctrl", "H"],
-    description: "Hide/show cards",
+    keys: ["Ctrl", "Shift", "H"],
+    description: "Hide/show UI",
     category: "Navigation",
     Icon: Eye,
   },

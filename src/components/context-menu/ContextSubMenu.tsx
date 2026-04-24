@@ -36,10 +36,11 @@ export default function ContextSubMenu({
           className={cn(
             "animate-in fade-in-0 zoom-in-95 z-50 rounded-lg border border-gray-200 bg-white py-2 shadow-lg select-none dark:border-gray-700 dark:bg-gray-800",
             width,
-            cn(
-              "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30",
-              getBlurClass(blurStrength),
-            ),
+            activeBackgroundId &&
+              cn(
+                "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30",
+                getBlurClass(blurStrength),
+              ),
           )}
         >
           {content}

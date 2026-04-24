@@ -205,7 +205,7 @@ export default function NestlingTitle({
                 "border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500",
                 "hover:bg-gray-200/50 dark:hover:bg-gray-700",
                 nestlingTags.length > 0
-                  ? "p-1"
+                  ? "p-0.5"
                   : "flex items-center gap-1 px-2 py-0.5",
                 activeBackgroundId &&
                   "border-transparent bg-white/30 backdrop-blur-sm hover:border-transparent hover:bg-black/5 dark:border-transparent dark:bg-black/30 dark:hover:border-transparent dark:hover:bg-white/5",

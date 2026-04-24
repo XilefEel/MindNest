@@ -18,8 +18,9 @@ export function NestlingTag({
 
   return (
     <div
+      onClick={onClick}
       className={cn(
-        "group relative flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium shadow-xs transition-all select-none",
+        "group relative flex items-center rounded-full px-1.5 py-[1px] shadow-xs transition-all select-none",
         (onClick || onRemove) && "hover:scale-105 hover:shadow-sm",
       )}
       style={{
@@ -27,9 +28,8 @@ export function NestlingTag({
         color: activeBackgroundId ? "#ffffff" : tag.color,
         border: `1px solid ${tag.color}`,
       }}
-      onClick={onClick}
     >
-      <span>{tag.name}</span>
+      <span className="text-xs font-medium">{tag.name}</span>
 
       {onRemove && (
         <button
@@ -37,7 +37,7 @@ export function NestlingTag({
             e.stopPropagation();
             onRemove(tag.id);
           }}
-          className="absolute -top-2 -right-2 rounded-full bg-white p-1 opacity-0 shadow-sm transition-opacity group-hover:opacity-100 dark:bg-gray-800"
+          className="absolute -top-2 -right-2 rounded-full bg-white p-0.5 opacity-0 shadow-sm transition-opacity group-hover:opacity-100 dark:bg-gray-800"
           style={{
             color: tag.color,
             border: `1px solid ${tag.color}`,

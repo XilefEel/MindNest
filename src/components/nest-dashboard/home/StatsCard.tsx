@@ -15,6 +15,11 @@ const colorMap = {
     border: "hover:border-purple-500 dark:hover:border-purple-400",
     number: "group-hover:text-purple-500 dark:group-hover:text-purple-400",
   },
+  blue: {
+    icon: "bg-blue-50 text-blue-500 dark:bg-blue-500/10 dark:text-blue-400",
+    border: "hover:border-blue-500 dark:hover:border-blue-400",
+    number: "group-hover:text-blue-500 dark:group-hover:text-blue-400",
+  },
   amber: {
     icon: "bg-amber-50 text-amber-500 dark:bg-amber-500/10 dark:text-amber-400",
     border: "hover:border-amber-500 dark:hover:border-amber-400",

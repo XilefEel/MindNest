@@ -73,7 +73,7 @@ export default function PinnedCard({
           </div>
           <ArrowRight
             className={cn(
-              "h-5 w-5 text-gray-500 dark:text-gray-300",
+              "size-4 flex-shrink-0 text-gray-500 opacity-0 transition-opacity group-hover:opacity-100 dark:text-gray-300",
               activeBackgroundId && "text-gray-400",
             )}
           />
