@@ -8,8 +8,8 @@ Built with Tauri and React for beautiful UI and native performance.
 
 ## Screenshots
 
-<img src="./screenshots/home.png" width="49%" alt="home"/>
-<img src="./screenshots/note.png" width="49%" alt="note"/>
+<img src="./screenshots/home.png" width="49%" alt="home"/><img src="./screenshots/note.png" width="49%" alt="note"/>
+
 <img src="./screenshots/bookmark.png" width="49%" alt="bookmark"/>
 
 ## Tech Stack
