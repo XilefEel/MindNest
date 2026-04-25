@@ -1,8 +1,16 @@
 # MindNest
 
+> Your mind deserves a cozy nest. 🪺
+
 MindNest is an all-in-one desktop productivity app where you create **Nests** (workspaces) and fill them with whatever **Nestlings** (tools) you need, like notes, boards, planners, galleries, bookmarks, mind maps, and more.
 
-Built with Tauri, React, and Rust for beautiful UI and native performance.
+Built with Tauri and React for beautiful UI and native performance.
+
+## Screenshots
+
+<img src="./screenshots/home.png" width="49%" alt="home"/>
+<img src="./screenshots/note.png" width="49%" alt="note"/>
+<img src="./screenshots/bookmark.png" width="49%" alt="bookmark"/>
 
 ## Tech Stack
 
@@ -34,29 +42,18 @@ Built with Tauri, React, and Rust for beautiful UI and native performance.
 - Context Menus
 - Light, Dark and System Theme
 
-## Run Locally
+## Requirements
 
-Clone the project
+- [Node.js](https://nodejs.org/)
+- [Rust](https://rustup.rs/)
+- [Tauri CLI prerequisites](https://tauri.app/start/prerequisites/)
+
+## Run Locally
 
 ```bash
 git clone https://github.com/XilefEel/MindNest.git
-```
-
-Go to the project directory
-
-```bash
 cd mindnest
-```
-
-Install dependencies
-
-```bash
 npm install
-```
-
-Start the app
-
-```bash
 npm run tauri dev
 ```
 
