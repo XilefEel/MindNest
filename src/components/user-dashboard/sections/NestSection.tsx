@@ -30,10 +30,10 @@ export default function NestSection() {
     <div className="mx-auto flex w-full flex-col gap-5 md:p-4 md:pt-8">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-zinc-100">
             🪹 My Nests
           </h1>
-          <p className="text-sm text-gray-400 dark:text-gray-500">
+          <p className="text-sm text-gray-400 dark:text-zinc-500">
             Your personal collections and projects
           </p>
         </div>
@@ -49,7 +49,7 @@ export default function NestSection() {
       <div className="relative">
         <Search
           size={14}
-          className="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+          className="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400 dark:text-zinc-500"
         />
 
         <Input
@@ -58,11 +58,11 @@ export default function NestSection() {
           onChange={(e) => setQuery(e.target.value)}
           className={cn(
             "h-10 rounded-xl border pl-10 text-base transition-shadow",
-            "bg-white dark:bg-gray-800",
+            "bg-white dark:bg-zinc-800",
             "shadow-sm hover:shadow focus:shadow-md",
-            "text-gray-900 placeholder-gray-500 dark:text-gray-100 dark:placeholder-gray-400",
+            "text-gray-900 placeholder-gray-500 dark:text-zinc-100 dark:placeholder-gray-400",
             "focus:ring-teal-500 dark:focus:ring-teal-400",
-            "border-gray-100 focus:border-teal-50 dark:border-gray-700 dark:focus:border-teal-400",
+            "border-gray-100 focus:border-teal-50 dark:border-zinc-700 dark:focus:border-teal-400",
           )}
         />
       </div>
@@ -76,19 +76,19 @@ export default function NestSection() {
           <div className="flex flex-col gap-1">
             {query ? (
               <>
-                <p className="text-base font-semibold text-gray-700 dark:text-gray-200">
+                <p className="text-base font-semibold text-gray-700 dark:text-zinc-200">
                   No nests match "{query}"
                 </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">
+                <p className="text-xs text-gray-400 dark:text-zinc-500">
                   Try a different search term
                 </p>
               </>
             ) : (
               <>
-                <p className="text-base font-semibold text-gray-700 dark:text-gray-200">
+                <p className="text-base font-semibold text-gray-700 dark:text-zinc-200">
                   No nests yet
                 </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">
+                <p className="text-xs text-gray-400 dark:text-zinc-500">
                   Create your first nest to get started 🪺
                 </p>
               </>

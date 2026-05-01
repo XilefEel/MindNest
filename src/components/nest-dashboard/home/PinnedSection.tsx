@@ -17,7 +17,7 @@ export default function PinnedSection() {
 
       <div className="grid grid-cols-2 gap-3">
         {pinnedNestlings.length === 0 && (
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-500 dark:text-zinc-400">
             No pinned nestlings
           </p>
         )}

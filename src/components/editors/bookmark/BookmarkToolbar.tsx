@@ -47,7 +47,7 @@ export default function BookmarkToolbar({
             spellCheck={false}
             placeholder="Search..."
             className={cn(
-              "w-full rounded-lg border border-gray-300 bg-white py-1.5 pr-4 pl-9 shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-teal-400",
+              "w-full rounded-lg border border-gray-300 bg-white py-1.5 pr-4 pl-9 shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-gray-400 dark:focus:ring-teal-400",
               activeBackgroundId &&
                 "border-transparent bg-white/10 backdrop-blur-sm dark:border-transparent dark:bg-black/10",
             )}
@@ -67,7 +67,7 @@ export default function BookmarkToolbar({
                 className={cn(
                   "rounded p-2 transition-colors",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-                  "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
+                  "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
                   "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
                   activeBackgroundId &&
                     "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
@@ -86,7 +86,7 @@ export default function BookmarkToolbar({
             className={cn(
               "rounded p-2 transition-colors",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-              "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
+              "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
               "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
               activeBackgroundId &&
                 "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
@@ -103,7 +103,7 @@ export default function BookmarkToolbar({
             className={cn(
               "rounded p-2 transition-colors",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-              "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
+              "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
               "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
               activeBackgroundId &&
                 "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",

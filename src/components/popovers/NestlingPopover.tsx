@@ -22,7 +22,7 @@ export default function NestlingPopover({
     <div>
       <div className="mb-4 gap-1">
         <h2 className="text-lg font-semibold">Nestlings Breakdown</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm text-gray-500 dark:text-zinc-400">
           Total nestlings per type
         </p>
       </div>
@@ -38,7 +38,7 @@ export default function NestlingPopover({
                 <div
                   key={nestling.value}
                   className={cn(
-                    "flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 dark:bg-gray-700/50",
+                    "flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 dark:bg-zinc-700/50",
                     activeBackgroundId && "bg-white/30 dark:bg-black/30",
                   )}
                 >
@@ -51,7 +51,7 @@ export default function NestlingPopover({
 
                   <span
                     className={cn(
-                      "flex size-6 items-center justify-center rounded-full bg-gray-200/50 text-sm font-semibold dark:bg-gray-600",
+                      "flex size-6 items-center justify-center rounded-full bg-gray-200/50 text-sm font-semibold dark:bg-zinc-600",
                       activeBackgroundId && "bg-black/5 dark:bg-white/10",
                     )}
                   >
@@ -61,7 +61,7 @@ export default function NestlingPopover({
               );
             })
         ) : (
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-center text-sm text-gray-500 dark:text-zinc-400">
             No nestlings yet
           </p>
         )}

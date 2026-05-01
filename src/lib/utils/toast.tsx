@@ -42,13 +42,13 @@ function createToast(
   return sonnerToast.custom((id) => (
     <div
       className={cn(
-        `flex w-90 flex-row items-center gap-2 rounded-lg border-l-6 ${border} bg-white p-3 shadow-lg dark:bg-gray-800`,
+        `flex w-90 flex-row items-center gap-2 rounded-lg border-l-6 ${border} bg-white p-3 shadow-lg dark:bg-zinc-800`,
         activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/50",
       )}
     >
       <div className={cn("flex-shrink-0 rounded-full p-2", bg)}>{icon}</div>
 
-      <p className="flex-1 text-sm font-medium text-gray-900 select-none dark:text-gray-100">
+      <p className="flex-1 text-sm font-medium text-gray-900 select-none dark:text-zinc-100">
         {message}
       </p>
 
@@ -59,7 +59,7 @@ function createToast(
         className={cn(
           "rounded-full p-1.5 transition",
           "text-gray-500 hover:bg-gray-100 hover:text-gray-600",
-          "dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-200",
+          "dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-zinc-200",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-black/30",
         )}
       >
@@ -85,7 +85,7 @@ export const toast = {
           className={cn(
             "rounded-full p-1.5 transition",
             "text-gray-500 hover:bg-gray-100 hover:text-gray-600",
-            "dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-200",
+            "dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-zinc-200",
             activeBackgroundId && "hover:bg-black/5 dark:hover:bg-black/30",
           )}
         >

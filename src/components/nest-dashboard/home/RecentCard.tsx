@@ -29,8 +29,8 @@ export default function RecentCard({
         onClick={() => onClick(nestling.id)}
         className={cn(
           "group relative min-h-[120px] rounded-xl border p-4 shadow-sm hover:shadow-md",
-          "bg-white dark:bg-gray-800",
-          "border-gray-100 dark:border-gray-700",
+          "bg-white dark:bg-zinc-800",
+          "border-gray-100 dark:border-zinc-700",
           "transition-[scale,border] hover:scale-[1.02]",
           border,
           activeBackgroundId &&
@@ -44,7 +44,7 @@ export default function RecentCard({
           <div className="flex items-center gap-2 font-semibold">
             <div
               className={cn(
-                "flex size-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700",
+                "flex size-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-zinc-700",
                 !nestling.icon && color,
               )}
             >
@@ -55,12 +55,12 @@ export default function RecentCard({
               )}
             </div>
 
-            <span className="text-gray-800 dark:text-gray-100">
+            <span className="text-gray-800 dark:text-zinc-100">
               {nestling.title}
             </span>
           </div>
 
-          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-zinc-400">
             <Folder className="size-3.5" />
             <span>
               {findFolderPath(nestling.folderId, folders) || "No Folder"}
@@ -89,7 +89,7 @@ export default function RecentCard({
 
         <ArrowRight
           className={cn(
-            "absolute top-4 right-4 size-4 flex-shrink-0 text-gray-500 opacity-0 transition-opacity group-hover:opacity-100 dark:text-gray-300",
+            "absolute top-4 right-4 size-4 flex-shrink-0 text-gray-500 opacity-0 transition-opacity group-hover:opacity-100 dark:text-zinc-300",
             activeBackgroundId && "text-gray-400",
           )}
         />

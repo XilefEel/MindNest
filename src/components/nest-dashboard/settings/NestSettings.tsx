@@ -53,7 +53,7 @@ export default function NestSettings() {
     <div className="flex h-full flex-row gap-5">
       <div
         className={cn(
-          "flex flex-col gap-1 border-r border-gray-200 pr-4 md:w-50 md:pr-5 dark:border-gray-700",
+          "flex flex-col gap-1 border-r border-gray-200 pr-4 md:w-50 md:pr-5 dark:border-zinc-700",
           activeBackgroundId && "border-black/30 dark:border-white/30",
         )}
       >
@@ -69,7 +69,7 @@ export default function NestSettings() {
                   : "hover:bg-black/5 dark:hover:bg-white/5"
                 : activeTab === tab.id
                   ? "bg-teal-50 font-medium text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
-                  : "hover:bg-gray-50 dark:hover:bg-gray-700/50",
+                  : "hover:bg-gray-50 dark:hover:bg-zinc-700/50",
             )}
           >
             <div className="flex flex-row items-center justify-start gap-2">
@@ -86,10 +86,10 @@ export default function NestSettings() {
         {activeTab === "reset" && (
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              <h1 className="text-sm font-medium text-gray-900 dark:text-zinc-100">
                 Reset Settings
               </h1>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-gray-500 dark:text-zinc-400">
                 Restore all settings to defaults
               </p>
             </div>

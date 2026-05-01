@@ -43,7 +43,7 @@ export default function SearchModal() {
       open={isSearchOpen}
       onOpenChange={setIsSearchOpen}
       className={cn(
-        "rounded-lg border-0 bg-white p-0 shadow-md select-none md:min-w-[600px] dark:bg-gray-800",
+        "rounded-lg border-0 bg-white p-0 shadow-md select-none md:min-w-[600px] dark:bg-zinc-800",
         activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/30",
       )}
     >
@@ -64,7 +64,7 @@ export default function SearchModal() {
       </div>
 
       <CommandList>
-        <CommandEmpty className="p-6 text-center text-sm text-gray-400 dark:text-gray-500">
+        <CommandEmpty className="p-6 text-center text-sm text-gray-400 dark:text-zinc-500">
           No nestlings matched "{searchQuery}"
         </CommandEmpty>
 
@@ -86,7 +86,7 @@ export default function SearchModal() {
                 onSelect={() => handleSelectNestling(nestling)}
                 className={cn(
                   "flex flex-row items-center justify-between px-4 py-2 transition-colors",
-                  "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-gray-700/50",
+                  "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-zinc-700/50",
                   activeBackgroundId &&
                     "data-[selected=true]:bg-black/5 dark:data-[selected=true]:bg-white/5",
                 )}
@@ -119,7 +119,7 @@ export default function SearchModal() {
                 onSelect={() => handleSelectNestling(nestling)}
                 className={cn(
                   "flex flex-row items-center justify-between px-4 py-2 transition-colors",
-                  "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-gray-700/50",
+                  "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-zinc-700/50",
                   activeBackgroundId &&
                     "data-[selected=true]:bg-black/5 dark:data-[selected=true]:bg-white/5",
                 )}

@@ -68,7 +68,7 @@ export default function Header({ nestId }: { nestId: number }) {
           {greeting}
           <span className="absolute -bottom-2 left-0 h-1 w-full rounded-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-300 dark:to-teal-400"></span>
         </h1>
-        <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-3 text-sm text-gray-600 dark:text-zinc-400">
           {subtext}
         </p>
       </div>

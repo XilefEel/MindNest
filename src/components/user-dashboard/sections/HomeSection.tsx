@@ -45,10 +45,10 @@ export default function HomeSection() {
           {greeting}, {user?.username}
         </h1>
         <div className="mt-2 md:mt-0 md:text-right">
-          <div className="text-2xl font-bold text-gray-700 tabular-nums dark:text-gray-200">
+          <div className="text-2xl font-bold text-gray-700 tabular-nums dark:text-zinc-200">
             {currentTime}
           </div>
-          <div className="text-lg text-gray-500 dark:text-gray-400">
+          <div className="text-lg text-gray-500 dark:text-zinc-400">
             {currentDate}
           </div>
         </div>

@@ -17,7 +17,7 @@ export default function NestCard({ nest }: { nest: Nest }) {
   return (
     <div
       onClick={() => handleNavigate(nest.id)}
-      className="group relative overflow-hidden rounded-xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-teal-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-teal-500/50"
+      className="group relative overflow-hidden rounded-xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-teal-200 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-teal-500/50"
     >
       <div className="mb-2 flex items-start justify-between">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-500 dark:bg-teal-500/10 dark:text-teal-400">
@@ -26,7 +26,7 @@ export default function NestCard({ nest }: { nest: Nest }) {
         <EditNestModal nest={nest}>
           <div
             onClick={(e) => e.stopPropagation()}
-            className="rounded-lg p-0.5 text-gray-400 transition-colors hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-300"
+            className="rounded-lg p-0.5 text-gray-400 transition-colors hover:text-gray-500 dark:text-zinc-500 dark:hover:text-zinc-300"
           >
             <EllipsisVertical size={14} />
           </div>
@@ -34,10 +34,10 @@ export default function NestCard({ nest }: { nest: Nest }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <h3 className="line-clamp-2 text-base font-semibold text-gray-800 transition-colors group-hover:text-teal-600 dark:text-gray-100 dark:group-hover:text-teal-400">
+        <h3 className="line-clamp-2 text-base font-semibold text-gray-800 transition-colors group-hover:text-teal-600 dark:text-zinc-100 dark:group-hover:text-teal-400">
           {nest.title}
         </h3>
-        <p className="text-xs text-gray-400 dark:text-gray-500">
+        <p className="text-xs text-gray-400 dark:text-zinc-500">
           {formatDistanceToNow(new Date(nest.updatedAt), { addSuffix: true })}
         </p>
       </div>

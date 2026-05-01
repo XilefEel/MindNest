@@ -26,8 +26,8 @@ export default function PinnedCard({
         onClick={() => onClick(nestling.id)}
         className={cn(
           "group relative min-h-[120px] rounded-xl border p-4 shadow-sm hover:shadow-md",
-          "bg-white dark:bg-gray-800",
-          "border-gray-100 dark:border-gray-700",
+          "bg-white dark:bg-zinc-800",
+          "border-gray-100 dark:border-zinc-700",
           "transition-[scale,border] hover:scale-[1.02]",
           border,
           activeBackgroundId &&
@@ -40,7 +40,7 @@ export default function PinnedCard({
         <div className="flex flex-col gap-1.5">
           <div
             className={cn(
-              "flex size-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700",
+              "flex size-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-zinc-700",
               !nestling.icon && color,
             )}
           >
@@ -71,7 +71,7 @@ export default function PinnedCard({
 
         <ArrowRight
           className={cn(
-            "absolute top-4 right-4 size-4 flex-shrink-0 text-gray-500 opacity-0 transition-opacity group-hover:opacity-100 dark:text-gray-300",
+            "absolute top-4 right-4 size-4 flex-shrink-0 text-gray-500 opacity-0 transition-opacity group-hover:opacity-100 dark:text-zinc-300",
             activeBackgroundId && "text-gray-400",
           )}
         />

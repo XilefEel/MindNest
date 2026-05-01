@@ -91,12 +91,12 @@ export default function NoteTemplatePopover() {
                   key={template.id}
                   onClick={() => handleUseTemplate(template)}
                   className={cn(
-                    "group flex items-center justify-between rounded-md px-2 py-1.5 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700/50",
+                    "group flex items-center justify-between rounded-md px-2 py-1.5 transition-colors hover:bg-gray-100 dark:hover:bg-zinc-700/50",
                     activeBackgroundId &&
                       "hover:bg-black/5 dark:hover:bg-white/5",
                   )}
                 >
-                  <span className="truncate text-sm text-gray-700 dark:text-gray-200">
+                  <span className="truncate text-sm text-gray-700 dark:text-zinc-200">
                     {template.name}
                   </span>
                   <button
@@ -104,7 +104,7 @@ export default function NoteTemplatePopover() {
                       e.stopPropagation();
                       deleteTemplate(template.id);
                     }}
-                    className="rounded p-0.5 text-gray-600 opacity-0 transition-opacity group-hover:opacity-100 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
+                    className="rounded p-0.5 text-gray-600 opacity-0 transition-opacity group-hover:opacity-100 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -112,18 +112,18 @@ export default function NoteTemplatePopover() {
               ))}
             </div>
           ) : (
-            <div className="px-2 py-5 text-center text-xs text-gray-600 dark:text-gray-400">
+            <div className="px-2 py-5 text-center text-xs text-gray-600 dark:text-zinc-400">
               No templates yet
             </div>
           )}
 
           <div
             className={cn(
-              "mt-2 flex flex-col gap-2 border-t border-gray-200 pt-2 dark:border-gray-700",
+              "mt-2 flex flex-col gap-2 border-t border-gray-200 pt-2 dark:border-zinc-700",
               activeBackgroundId && "border-black/30 dark:border-white/30",
             )}
           >
-            <label className="text-xs text-gray-600 dark:text-gray-400">
+            <label className="text-xs text-gray-600 dark:text-zinc-400">
               Save as template
             </label>
             <div className="flex items-center gap-2">
@@ -139,8 +139,8 @@ export default function NoteTemplatePopover() {
                 placeholder={`Template ${noteTemplates.length + 1}`}
                 className={cn(
                   "min-w-0 flex-1 rounded border bg-transparent px-2 py-1 text-sm transition outline-none",
-                  "text-gray-800 dark:text-gray-100",
-                  "border-gray-200 focus:border-teal-500 dark:border-gray-600 dark:focus:border-teal-400",
+                  "text-gray-800 dark:text-zinc-100",
+                  "border-gray-200 focus:border-teal-500 dark:border-zinc-600 dark:focus:border-teal-400",
                   "focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400",
                   activeBackgroundId &&
                     "border-transparent bg-white/10 backdrop-blur-sm dark:border-transparent dark:bg-black/10",
@@ -148,7 +148,7 @@ export default function NoteTemplatePopover() {
               />
               <button
                 onClick={handleSaveAsTemplate}
-                className="rounded p-1 text-gray-600 transition-colors hover:text-green-500 dark:text-gray-400"
+                className="rounded p-1 text-gray-600 transition-colors hover:text-green-500 dark:text-zinc-400"
               >
                 <Check size={16} />
               </button>

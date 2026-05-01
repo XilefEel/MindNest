@@ -89,7 +89,7 @@ export default function NestlingContextMenu({
             content={
               <>
                 {otherFolders.length === 0 ? (
-                  <p className="px-2 py-1.5 text-center text-sm text-gray-500 dark:text-gray-400">
+                  <p className="px-2 py-1.5 text-center text-sm text-gray-500 dark:text-zinc-400">
                     No other folders available.
                   </p>
                 ) : (

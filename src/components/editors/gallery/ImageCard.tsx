@@ -56,7 +56,7 @@ export default function ImageCard({
               "absolute top-2 left-2 rounded-full p-2 shadow-md transition-colors",
               photo.isFavorite
                 ? "bg-yellow-400 opacity-100"
-                : "bg-white/80 text-gray-500 opacity-0 group-hover:opacity-100 hover:bg-yellow-50 hover:text-yellow-400 dark:bg-gray-900/80 dark:text-gray-400 dark:hover:bg-yellow-800 hover:dark:text-yellow-500",
+                : "bg-white/80 text-gray-500 opacity-0 group-hover:opacity-100 hover:bg-yellow-50 hover:text-yellow-400 dark:bg-zinc-900/80 dark:text-zinc-400 dark:hover:bg-yellow-800 dark:hover:text-yellow-500",
             )}
           >
             <Star
@@ -74,8 +74,8 @@ export default function ImageCard({
             }}
             className={cn(
               "absolute top-2 right-2 rounded-full p-2 opacity-0 shadow-md transition-all group-hover:opacity-100",
-              "bg-white/80 hover:bg-red-50 dark:bg-gray-900/80 dark:hover:bg-red-950",
-              "text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400",
+              "bg-white/80 hover:bg-red-50 dark:bg-zinc-900/80 dark:hover:bg-red-950",
+              "text-gray-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400",
             )}
           >
             <Trash2 className="size-4" />

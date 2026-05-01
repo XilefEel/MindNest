@@ -91,7 +91,7 @@ export default function CardPopover({
             <h3
               onClick={() => setIsEditingTitle(true)}
               className={cn(
-                "truncate rounded px-2 py-1 text-lg font-semibold transition-colors hover:bg-gray-50 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
+                "truncate rounded px-2 py-1 text-lg font-semibold transition-colors hover:bg-gray-50 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
                 activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
               )}
             >
@@ -122,7 +122,7 @@ export default function CardPopover({
             <p
               onClick={() => setIsEditingDescription(true)}
               className={cn(
-                "line-clamp-3 rounded px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50 hover:text-teal-500 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-teal-400",
+                "line-clamp-3 rounded px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50 hover:text-teal-500 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
                 activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
               )}
             >
@@ -137,7 +137,7 @@ export default function CardPopover({
       <button
         onClick={onClose}
         className={cn(
-          "absolute top-4 right-4 rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 hover:dark:bg-gray-700 hover:dark:text-gray-200",
+          "absolute top-4 right-4 rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-zinc-700 dark:hover:text-zinc-200",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
         )}
       >

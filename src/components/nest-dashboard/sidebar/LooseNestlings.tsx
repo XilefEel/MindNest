@@ -26,7 +26,7 @@ export default function LooseNestlings({
           cn(
             activeBackgroundId
               ? "bg-teal-200/50 dark:bg-teal-300/50"
-              : "bg-gray-100/80 dark:bg-gray-700/80",
+              : "bg-gray-100/80 dark:bg-zinc-700/80",
           ),
       )}
     >

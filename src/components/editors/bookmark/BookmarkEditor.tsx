@@ -108,16 +108,16 @@ export default function BookmarkEditor() {
         )}
       >
         {bookmarks.length === 0 && !searchQuery && (
-          <div className="flex flex-col items-center justify-center py-52 text-gray-400 dark:text-gray-500">
-            <BookmarkPlus className="mb-3 size-16 text-gray-300 dark:text-gray-600" />
+          <div className="flex flex-col items-center justify-center py-52 text-gray-400 dark:text-zinc-500">
+            <BookmarkPlus className="mb-3 size-16 text-gray-300 dark:text-zinc-600" />
             <p className="mb-0.5 text-sm font-semibold">No bookmarks yet</p>
             <p className="text-xs">Add a URL or drag and drop one here.</p>
           </div>
         )}
 
         {filteredBookmarks.length === 0 && searchQuery && (
-          <div className="flex flex-col items-center justify-center py-52 text-gray-400 dark:text-gray-500">
-            <SearchX className="mb-3 size-16 text-gray-300 dark:text-gray-600" />
+          <div className="flex flex-col items-center justify-center py-52 text-gray-400 dark:text-zinc-500">
+            <SearchX className="mb-3 size-16 text-gray-300 dark:text-zinc-600" />
             <p className="mb-0.5 text-sm font-semibold">No results found</p>
             <p className="text-xs">No bookmarks matched "{searchQuery}"</p>
           </div>

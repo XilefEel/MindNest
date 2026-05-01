@@ -61,7 +61,7 @@ export default function GeneralSettings() {
       custom: (
         <div
           className={cn(
-            "flex rounded-lg border border-gray-200 dark:border-gray-700",
+            "flex rounded-lg border border-gray-200 dark:border-zinc-700",
             activeBackgroundId && "border-transparent dark:border-transparent",
           )}
         >
@@ -70,10 +70,10 @@ export default function GeneralSettings() {
             className={cn(
               "flex items-center gap-1.5 rounded-l-lg p-2 transition-colors",
               sidebarPosition === "left"
-                ? "bg-teal-500 text-white dark:bg-teal-400 dark:text-gray-100"
+                ? "bg-teal-500 text-white dark:bg-teal-400 dark:text-zinc-100"
                 : cn(
-                    "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300",
-                    activeBackgroundId && "bg-gray-300 dark:bg-gray-700",
+                    "text-gray-500 hover:text-gray-700 dark:hover:text-zinc-300",
+                    activeBackgroundId && "bg-gray-300 dark:bg-zinc-700",
                   ),
             )}
           >
@@ -84,10 +84,10 @@ export default function GeneralSettings() {
             className={cn(
               "flex items-center gap-1.5 rounded-r-lg p-2 transition-colors",
               sidebarPosition === "right"
-                ? "bg-teal-500 text-white dark:bg-teal-400 dark:text-gray-100"
+                ? "bg-teal-500 text-white dark:bg-teal-400 dark:text-zinc-100"
                 : cn(
-                    "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300",
-                    activeBackgroundId && "bg-gray-300 dark:bg-gray-700",
+                    "text-gray-500 hover:text-gray-700 dark:hover:text-zinc-300",
+                    activeBackgroundId && "bg-gray-300 dark:bg-zinc-700",
                   ),
             )}
           >
@@ -141,7 +141,7 @@ export default function GeneralSettings() {
               "flex items-center gap-3 rounded-lg border px-3 py-1 text-sm capitalize transition-colors focus:outline-none",
               activeBackgroundId
                 ? "border-white/20 bg-white/10 backdrop-blur-sm hover:bg-black/5 dark:bg-white/5 dark:hover:bg-white/10"
-                : "border-gray-200 text-gray-700 focus:ring-2 focus:ring-teal-500 dark:border-gray-700 dark:text-gray-200 dark:focus:ring-teal-400",
+                : "border-gray-200 text-gray-700 focus:ring-2 focus:ring-teal-500 dark:border-zinc-700 dark:text-zinc-200 dark:focus:ring-teal-400",
             )}
           >
             <Select.Value />
@@ -164,7 +164,7 @@ export default function GeneralSettings() {
                 "data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2",
                 activeBackgroundId
                   ? "border-white/20 bg-white/30 backdrop-blur-sm dark:bg-white/0"
-                  : "border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+                  : "border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800",
               )}
             >
               <Select.Viewport>
@@ -174,10 +174,10 @@ export default function GeneralSettings() {
                     value={level}
                     className={cn(
                       "flex cursor-default items-center justify-between px-3 py-1.5 text-sm capitalize transition-colors outline-none select-none",
-                      "text-gray-800 dark:text-gray-200",
+                      "text-gray-800 dark:text-zinc-200",
                       activeBackgroundId
                         ? "data-[highlighted]:bg-white/20 dark:data-[highlighted]:bg-white/10"
-                        : "data-[highlighted]:bg-gray-50 dark:data-[highlighted]:bg-gray-700/50",
+                        : "data-[highlighted]:bg-gray-50 dark:data-[highlighted]:bg-zinc-700/50",
                     )}
                   >
                     <Select.ItemText>{level}</Select.ItemText>
@@ -204,10 +204,10 @@ export default function GeneralSettings() {
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between">
         <div>
-          <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <label className="text-sm font-medium text-gray-900 dark:text-zinc-100">
             Theme
           </label>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-500 dark:text-zinc-400">
             Choose your preferred theme
           </p>
         </div>
@@ -217,10 +217,10 @@ export default function GeneralSettings() {
       {settings.map((setting) => (
         <div key={setting.text} className="flex items-center justify-between">
           <div>
-            <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
+            <label className="text-sm font-medium text-gray-900 dark:text-zinc-100">
               {setting.text}
             </label>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-gray-500 dark:text-zinc-400">
               {setting.description}
             </p>
           </div>
@@ -233,10 +233,10 @@ export default function GeneralSettings() {
 
       <div className="flex items-center justify-between">
         <div>
-          <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <label className="text-sm font-medium text-gray-900 dark:text-zinc-100">
             Reset Settings
           </label>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-500 dark:text-zinc-400">
             Restore all settings to their defaults
           </p>
         </div>

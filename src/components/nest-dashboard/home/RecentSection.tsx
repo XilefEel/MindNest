@@ -39,7 +39,7 @@ export default function RecentSection() {
         {recentNestlings.length > 0 && (
           <div
             onClick={handleClear}
-            className="text-xs text-gray-500 transition-all duration-100 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-300"
+            className="text-xs text-gray-500 transition-all duration-100 hover:text-gray-400 dark:text-zinc-400 dark:hover:text-zinc-300"
           >
             Clear all
           </div>
@@ -48,7 +48,7 @@ export default function RecentSection() {
 
       <div className="flex flex-col gap-3">
         {recentNestlings.length === 0 && (
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-500 dark:text-zinc-400">
             No recent nestlings
           </p>
         )}

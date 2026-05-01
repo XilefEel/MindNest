@@ -43,7 +43,7 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <label className="mb-1 flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-gray-200">
+        <label className="mb-1 flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-zinc-200">
           <TagIcon size={14} />
           <span>Name</span>
         </label>
@@ -59,10 +59,10 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
           spellCheck={false}
           className={cn(
             "w-full rounded-lg border px-3 py-1 text-sm shadow-sm transition",
-            "dark:text-gray-100 dark:placeholder-gray-400",
-            "bg-white dark:bg-gray-800",
+            "dark:text-zinc-100 dark:placeholder-gray-400",
+            "bg-white dark:bg-zinc-800",
             "focus:ring-2 focus:ring-teal-500 focus:outline-none dark:focus:ring-teal-400",
-            "border-gray-300 dark:border-gray-600",
+            "border-gray-300 dark:border-zinc-600",
             activeBackgroundId &&
               "border-transparent bg-white/10 backdrop-blur-sm dark:border-transparent dark:bg-black/10",
           )}
@@ -70,7 +70,7 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
       </div>
 
       <div>
-        <label className="flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-gray-200">
+        <label className="flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-zinc-200">
           <Palette size={14} />
           <span>Color</span>
         </label>
@@ -79,7 +79,7 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
             <button
               key={color}
               className={cn(
-                "relative h-8 w-8 rounded-full border-2 border-gray-200 transition-all hover:scale-110 dark:border-gray-600",
+                "relative h-8 w-8 rounded-full border-2 border-gray-200 transition-all hover:scale-110 dark:border-zinc-600",
                 activeBackgroundId && "border-black/20 dark:border-white/20",
               )}
               style={{ backgroundColor: color }}

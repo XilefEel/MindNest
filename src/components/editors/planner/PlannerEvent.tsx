@@ -144,7 +144,7 @@ export default function PlannerEvent({
         side="right"
         align="start"
         className={cn(
-          "w-80 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800",
+          "w-80 border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800",
           activeBackgroundId &&
             cn(
               "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30",

@@ -25,7 +25,7 @@ export default function ContextSubMenu({
         }}
         className={cn(
           "flex items-center gap-3 rounded px-2 py-1.5 text-sm transition-colors outline-none",
-          "hover:bg-gray-100 dark:hover:bg-gray-700/50",
+          "hover:bg-gray-100 dark:hover:bg-zinc-700/50",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
         )}
       >
@@ -37,8 +37,8 @@ export default function ContextSubMenu({
           className={cn(
             "animate-in fade-in-0 zoom-in-95",
             "z-50 rounded-lg p-2 shadow-lg select-none",
-            "bg-white dark:bg-gray-800",
-            "border border-gray-200 dark:border-gray-700",
+            "bg-white dark:bg-zinc-800",
+            "border border-gray-200 dark:border-zinc-700",
             width,
             activeBackgroundId &&
               cn(

@@ -27,8 +27,8 @@ export default function BaseContextMenu({
           className={cn(
             "animate-in fade-in-0 zoom-in-95",
             "z-50 min-w-[220px] rounded-lg p-2 shadow-lg select-none",
-            "bg-white dark:bg-gray-800",
-            "border border-gray-200 dark:border-gray-700",
+            "bg-white dark:bg-zinc-800",
+            "border border-gray-200 dark:border-zinc-700",
             activeBackgroundId &&
               cn(
                 "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30",

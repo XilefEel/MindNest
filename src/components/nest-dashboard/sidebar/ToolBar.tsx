@@ -40,7 +40,7 @@ export default function ToolBar({ nestId }: { nestId: number }) {
         e.preventDefault();
         e.stopPropagation();
       }}
-      className="mb-2.5 flex items-center border-b border-gray-800 dark:border-gray-200"
+      className="mb-2.5 flex items-center border-b border-gray-800 dark:border-zinc-200"
     >
       {buttons.map((btn) => (
         <BaseToolTip label={btn.label}>
@@ -48,7 +48,7 @@ export default function ToolBar({ nestId }: { nestId: number }) {
             onClick={btn.onClick}
             onDoubleClick={(e) => e.stopPropagation()}
             className={cn(
-              "rounded-lg p-2 text-gray-800 transition-colors dark:text-gray-200",
+              "rounded-lg p-2 text-gray-800 transition-colors dark:text-zinc-200",
               "hover:text-teal-500 dark:hover:text-teal-300",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
               activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",

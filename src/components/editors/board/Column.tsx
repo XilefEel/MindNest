@@ -123,7 +123,7 @@ export default function Column({ column }: { column: BoardColumn }) {
               autoComplete="off"
               autoCorrect="off"
               spellCheck={false}
-              className="flex-1 rounded-lg border-0 bg-white px-3 py-1.5 text-sm font-semibold shadow-sm outline-none dark:bg-gray-700"
+              className="flex-1 rounded-lg border-0 bg-white px-3 py-1.5 text-sm font-semibold shadow-sm outline-none dark:bg-zinc-700"
             />
           ) : (
             <h3

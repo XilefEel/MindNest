@@ -114,9 +114,9 @@ export default function BoardEditor() {
                 onClick={handleAddColumn}
                 className={cn(
                   "flex w-72 flex-shrink-0 items-center justify-center gap-2 rounded-lg py-5 transition-colors",
-                  "text-gray-600 dark:text-gray-400",
-                  "border-2 border-dashed border-gray-600 dark:border-gray-400",
-                  "hover:bg-gray-100 hover:dark:bg-gray-800",
+                  "text-gray-600 dark:text-zinc-400",
+                  "border-2 border-dashed border-gray-600 dark:border-zinc-400",
+                  "hover:bg-gray-100 dark:hover:bg-zinc-800",
                   activeBackgroundId &&
                     "hover:bg-black/5 dark:hover:bg-white/5",
                 )}

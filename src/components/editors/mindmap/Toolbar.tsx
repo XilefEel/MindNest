@@ -15,7 +15,7 @@ export default function MindmapToolbar({
   const maxZoom = useStore((state) => state.maxZoom);
 
   return (
-    <Panel className="flex items-center gap-1 rounded-xl bg-white/30 p-1 font-medium shadow-lg backdrop-blur-sm transition dark:bg-gray-900/30">
+    <Panel className="flex items-center gap-1 rounded-xl bg-white/30 p-1 font-medium shadow-lg backdrop-blur-sm transition dark:bg-zinc-900/30">
       <button
         onClick={onAddNode}
         className="flex items-center justify-center gap-2 rounded-lg px-3 py-2 transition hover:bg-teal-100/50 hover:text-teal-500 active:scale-98 dark:hover:bg-teal-700/20"
@@ -34,7 +34,7 @@ export default function MindmapToolbar({
 
       <button
         onClick={() => zoomOut({ duration: 300 })}
-        className="rounded-lg p-2 transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
+        className="rounded-lg p-2 transition hover:bg-gray-100/50 dark:hover:bg-zinc-800/50"
       >
         <Minus className="size-4 flex-shrink-0" />
       </button>
@@ -52,13 +52,13 @@ export default function MindmapToolbar({
 
       <button
         onClick={() => zoomIn({ duration: 300 })}
-        className="rounded-lg p-2 transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
+        className="rounded-lg p-2 transition hover:bg-gray-100/50 dark:hover:bg-zinc-800/50"
       >
         <Plus className="size-4 flex-shrink-0" />
       </button>
 
       <button
-        className="flex w-18 items-center justify-center rounded-lg py-2 transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
+        className="flex w-18 items-center justify-center rounded-lg py-2 transition hover:bg-gray-100/50 dark:hover:bg-zinc-800/50"
         onClick={() => zoomTo(1, { duration: 300 })}
       >
         <span className="text-xs">
@@ -69,7 +69,7 @@ export default function MindmapToolbar({
 
       <button
         onClick={() => fitView({ duration: 300 })}
-        className="rounded-lg p-2 transition hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
+        className="rounded-lg p-2 transition hover:bg-gray-100/50 dark:hover:bg-zinc-800/50"
       >
         <Maximize className="size-4 flex-shrink-0" />
       </button>

@@ -15,7 +15,7 @@ export default function Toggle({
         "relative inline-flex h-5 w-9 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none",
         checked
           ? "bg-teal-500 dark:bg-teal-400"
-          : "bg-gray-300 dark:bg-gray-700",
+          : "bg-gray-300 dark:bg-zinc-700",
       )}
     >
       <div

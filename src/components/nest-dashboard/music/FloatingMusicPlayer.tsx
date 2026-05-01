@@ -47,10 +47,10 @@ export default function FloatingMusicPlayer() {
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
+          <p className="truncate text-sm font-medium text-gray-900 dark:text-zinc-100">
             {activeMusic.title}
           </p>
-          <span className="text-xs text-gray-500 tabular-nums dark:text-gray-400">
+          <span className="text-xs text-gray-500 tabular-nums dark:text-zinc-400">
             {Math.floor(audioCurrentTime / 60)}:
             {String(Math.floor(audioCurrentTime % 60)).padStart(2, "0")} /{" "}
             {Math.floor(activeMusic.durationSeconds / 60)}:
@@ -70,13 +70,13 @@ export default function FloatingMusicPlayer() {
 
         <button
           onClick={handleClose}
-          className="text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          className="text-gray-500 transition-colors hover:text-gray-700 dark:text-zinc-400 dark:hover:text-zinc-200"
         >
           <X size={16} />
         </button>
       </div>
 
-      <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-600">
+      <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-zinc-600">
         <div
           className="h-full rounded-full bg-teal-500 transition-all duration-100 dark:bg-teal-400"
           style={{ width: `${progress}%` }}

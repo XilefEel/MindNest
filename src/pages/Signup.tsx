@@ -14,8 +14,8 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-teal-100 px-6 py-12 dark:bg-gray-900">
-      <div className="border-muted w-full max-w-md rounded-2xl border bg-white p-10 shadow-xl dark:border-gray-600 dark:bg-gray-800">
+    <div className="flex min-h-screen items-center justify-center bg-teal-100 px-6 py-12 dark:bg-zinc-900">
+      <div className="border-muted w-full max-w-md rounded-2xl border bg-white p-10 shadow-xl dark:border-zinc-600 dark:bg-zinc-800">
         <div className="flex flex-col items-center justify-center gap-2 text-center">
           <h1 className="text-4xl font-bold tracking-tight text-teal-500 dark:text-teal-300">
             Sign Up
@@ -25,7 +25,7 @@ export default function SignupPage() {
           </p>
         </div>
 
-        <hr className="border-muted my-6 dark:border-gray-500" />
+        <hr className="border-muted my-6 dark:border-zinc-500" />
 
         <AuthForm type="signup" onSubmit={handleSignup} />
 

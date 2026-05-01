@@ -89,7 +89,7 @@ export default function ToolBar({ title }: { title: string }) {
 
       <div
         className={cn(
-          "w-px rounded-full bg-gray-200 dark:bg-gray-700",
+          "w-px rounded-full bg-gray-200 dark:bg-zinc-700",
           activeBackgroundId && "bg-black/30 dark:bg-white/30",
         )}
       />
@@ -139,7 +139,7 @@ export default function ToolBar({ title }: { title: string }) {
 
       <div
         className={cn(
-          "w-px rounded-full bg-gray-200 dark:bg-gray-700",
+          "w-px rounded-full bg-gray-200 dark:bg-zinc-700",
           activeBackgroundId && "bg-black/30 dark:bg-white/30",
         )}
       />
@@ -181,7 +181,7 @@ export default function ToolBar({ title }: { title: string }) {
 
       <div
         className={cn(
-          "w-px rounded-full bg-gray-200 dark:bg-gray-700",
+          "w-px rounded-full bg-gray-200 dark:bg-zinc-700",
           activeBackgroundId && "bg-black/30 dark:bg-white/30",
         )}
       />
@@ -213,7 +213,7 @@ export default function ToolBar({ title }: { title: string }) {
 
       <div
         className={cn(
-          "w-px rounded-full bg-gray-200 dark:bg-gray-700",
+          "w-px rounded-full bg-gray-200 dark:bg-zinc-700",
           activeBackgroundId && "bg-black/30 dark:bg-white/30",
         )}
       />
@@ -248,7 +248,7 @@ export default function ToolBar({ title }: { title: string }) {
 
       <div
         className={cn(
-          "w-px rounded-full bg-gray-200 dark:bg-gray-700",
+          "w-px rounded-full bg-gray-200 dark:bg-zinc-700",
           activeBackgroundId && "bg-black/30 dark:bg-white/30",
         )}
       />

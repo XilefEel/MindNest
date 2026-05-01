@@ -19,7 +19,7 @@ export default function SearchItem({ nestling }: { nestling: Nestling }) {
         <span>{nestling.title}</span>
       </div>
 
-      <div className="flex flex-1 items-center gap-1 text-gray-500 dark:text-gray-400">
+      <div className="flex flex-1 items-center gap-1 text-gray-500 dark:text-zinc-400">
         {nestlingTags.slice(0, 3).map((tag) => (
           <NestlingTag key={tag.id} tag={tag} />
         ))}
@@ -30,7 +30,7 @@ export default function SearchItem({ nestling }: { nestling: Nestling }) {
         )}
       </div>
 
-      <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+      <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-zinc-400">
         <Folder />
         <span>{findFolderPath(nestling.folderId, folders) || "No Folder"}</span>
       </div>

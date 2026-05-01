@@ -64,9 +64,9 @@ export default function Sidebar({
         className={cn(
           "[&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar-thumb]:hidden [&::-webkit-scrollbar-track]:hidden",
           "flex h-full flex-col overflow-x-hidden overflow-y-auto px-4 py-3",
-          "bg-white dark:bg-gray-800 md:dark:bg-gray-800/50",
-          "border border-gray-200 dark:border-gray-700",
-          "text-sm font-medium text-gray-900 dark:text-gray-100",
+          "bg-white dark:bg-zinc-800 md:dark:bg-zinc-800/50",
+          "border border-gray-200 dark:border-zinc-700",
+          "text-sm font-medium text-gray-900 dark:text-zinc-100",
           sidebarPosition === "right"
             ? "rounded-tl-2xl rounded-bl-2xl"
             : "rounded-tr-2xl rounded-br-2xl",

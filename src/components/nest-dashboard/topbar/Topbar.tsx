@@ -73,7 +73,7 @@ export default function Topbar({
   return (
     <nav
       className={cn(
-        "flex w-full items-center gap-3 border-b border-gray-900 pt-6 pb-2 transition-[border] dark:border-gray-100",
+        "flex w-full items-center gap-3 border-b border-gray-900 pt-6 pb-2 transition-[border] dark:border-zinc-100",
         topbarHidden && "border-transparent dark:border-transparent",
       )}
     >
@@ -123,7 +123,7 @@ export default function Topbar({
 
         <div
           className={cn(
-            "cursor-text rounded-lg text-gray-900 transition-all dark:text-gray-100",
+            "cursor-text rounded-lg text-gray-900 transition-all dark:text-zinc-100",
             isEditing
               ? "px-3 py-0.5 shadow-md ring ring-teal-500"
               : "hover:opacity-80",

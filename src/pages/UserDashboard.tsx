@@ -33,7 +33,7 @@ export default function DashboardPage() {
   return (
     <div
       onContextMenu={(e) => e.preventDefault()}
-      className="flex h-screen overflow-hidden bg-gray-50 text-gray-800 select-none dark:bg-gray-900 dark:text-white"
+      className="flex h-screen overflow-hidden bg-gray-50 text-gray-800 select-none dark:bg-zinc-900 dark:text-white"
     >
       {isSidebarOpen && (
         <div
@@ -68,7 +68,7 @@ export default function DashboardPage() {
       <div className="flex flex-1 flex-col">
         <header className="p-4 md:hidden">
           <button
-            className="rounded-md bg-white p-2 transition-colors hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
+            className="rounded-md bg-white p-2 transition-colors hover:bg-gray-100 dark:bg-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-600"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           >
             <Menu />

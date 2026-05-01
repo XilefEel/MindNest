@@ -36,7 +36,7 @@ export default function BasePopover({
         side={side}
         onDoubleClick={(e) => e.stopPropagation()}
         className={cn(
-          "rounded-xl border-gray-200 bg-white select-none dark:border-gray-700 dark:bg-gray-800",
+          "rounded-xl border-gray-200 bg-white select-none dark:border-zinc-700 dark:bg-zinc-800",
           width,
           activeBackgroundId &&
             cn(

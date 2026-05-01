@@ -61,10 +61,10 @@ export default function MusicSection() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
-          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+          <h2 className="text-base font-semibold text-gray-900 dark:text-zinc-100">
             Music
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-600 dark:text-zinc-400">
             Add background music to your nest
           </p>
         </div>
@@ -77,7 +77,7 @@ export default function MusicSection() {
             className={cn(
               "ml-auto rounded p-2 transition-colors",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-              "hover:bg-gray-50 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
+              "hover:bg-gray-50 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
               "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
               activeBackgroundId &&
                 "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
@@ -97,7 +97,7 @@ export default function MusicSection() {
         <div
           style={{ scrollbarGutter: "stable" }}
           className={cn(
-            "max-h-72 overflow-y-auto rounded-lg bg-gray-50 p-2 dark:bg-gray-700/30",
+            "max-h-72 overflow-y-auto rounded-lg bg-gray-50 p-2 dark:bg-zinc-700/30",
             activeBackgroundId && "bg-white/30 dark:bg-black/30",
           )}
         >
@@ -107,7 +107,7 @@ export default function MusicSection() {
           >
             <AnimatePresence mode="popLayout">
               {music.length === 0 ? (
-                <p className="p-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                <p className="p-4 text-center text-sm text-gray-500 dark:text-zinc-400">
                   No music yet.
                 </p>
               ) : (
@@ -120,16 +120,16 @@ export default function MusicSection() {
 
       <div
         className={cn(
-          "flex items-center gap-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-700/30",
+          "flex items-center gap-3 rounded-lg bg-gray-50 p-3 dark:bg-zinc-700/30",
           activeBackgroundId && "bg-white/30 dark:bg-black/30",
         )}
       >
         {volume > 0.5 ? (
-          <Volume2 className="size-4 flex-shrink-0 text-gray-600 dark:text-gray-400" />
+          <Volume2 className="size-4 flex-shrink-0 text-gray-600 dark:text-zinc-400" />
         ) : volume > 0 ? (
-          <Volume1 className="size-4 flex-shrink-0 text-gray-600 dark:text-gray-400" />
+          <Volume1 className="size-4 flex-shrink-0 text-gray-600 dark:text-zinc-400" />
         ) : (
-          <VolumeX className="size-4 flex-shrink-0 text-gray-400 dark:text-gray-500" />
+          <VolumeX className="size-4 flex-shrink-0 text-gray-400 dark:text-zinc-500" />
         )}
 
         <Slider
@@ -139,17 +139,17 @@ export default function MusicSection() {
           step={1}
           className="flex-1"
         />
-        <span className="text-sm text-gray-600 dark:text-gray-400">
+        <span className="text-sm text-gray-600 dark:text-zinc-400">
           {Math.round(volume * 100)}%
         </span>
       </div>
 
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
-          <p className="text-sm text-gray-800 dark:text-gray-300">
+          <p className="text-sm text-gray-800 dark:text-zinc-300">
             Choose a music track
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-500 dark:text-zinc-400">
             MP3, WAV, OGG, or FLAC
           </p>
         </div>
@@ -164,10 +164,10 @@ export default function MusicSection() {
 
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
-          <p className="text-sm text-gray-800 dark:text-gray-300">
+          <p className="text-sm text-gray-800 dark:text-zinc-300">
             Loop current track
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-500 dark:text-zinc-400">
             When enabled, the current track will repeat indefinitely
           </p>
         </div>
@@ -178,7 +178,7 @@ export default function MusicSection() {
             "rounded-lg p-2 shadow-sm transition hover:brightness-95 active:scale-95",
             musicLooped
               ? "bg-teal-100 text-teal-700 dark:bg-teal-500 dark:text-teal-100"
-              : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400",
+              : "bg-gray-100 text-gray-600 dark:bg-zinc-700 dark:text-zinc-400",
           )}
         >
           <Repeat size={16} />

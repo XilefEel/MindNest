@@ -61,7 +61,7 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
               e.preventDefault();
               e.stopPropagation();
             }}
-            className="group relative rounded-lg bg-white p-3 shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-700"
+            className="group relative rounded-lg bg-white p-3 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-700 dark:bg-zinc-700"
           >
             <div
               {...attributes}
@@ -74,11 +74,11 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
                 }
               }}
             >
-              <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+              <h3 className="text-sm font-semibold text-gray-800 dark:text-zinc-100">
                 {card.title}
               </h3>
               {card.description && (
-                <p className="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">
+                <p className="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-zinc-400">
                   {card.description}
                 </p>
               )}

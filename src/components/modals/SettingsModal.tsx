@@ -36,7 +36,7 @@ export default function SettingsModal() {
           {activeNestId && (
             <div
               className={cn(
-                "flex shrink-0 border-b border-gray-200 dark:border-gray-700",
+                "flex shrink-0 border-b border-gray-200 dark:border-zinc-700",
                 activeBackgroundId && "border-black/30 dark:border-white/30",
               )}
             >
@@ -52,7 +52,7 @@ export default function SettingsModal() {
                         : "hover:bg-black/5 dark:hover:bg-white/5"
                       : activeTab === tab.id
                         ? "border-b-2 border-teal-600 bg-teal-50 font-medium text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
-                        : "hover:bg-gray-50 dark:hover:bg-gray-700/50",
+                        : "hover:bg-gray-50 dark:hover:bg-zinc-700/50",
                   )}
                 >
                   {tab.label}

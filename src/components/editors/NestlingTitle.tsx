@@ -97,12 +97,12 @@ export default function NestlingTitle({
 
   return (
     <div className="flex flex-col">
-      <div className="group relative flex flex-row items-center text-gray-900 transition-all dark:text-gray-100">
+      <div className="group relative flex flex-row items-center text-gray-900 transition-all dark:text-zinc-100">
         <button
           onClick={() =>
             setSetting("compactNestlingTitle", !compactNestlingTitle)
           }
-          className="w-0 text-gray-500 opacity-0 transition-all group-hover:mr-2 group-hover:w-6 group-hover:opacity-100 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          className="w-0 text-gray-500 opacity-0 transition-all group-hover:mr-2 group-hover:w-6 group-hover:opacity-100 hover:text-gray-700 dark:text-zinc-400 dark:hover:text-zinc-200"
         >
           <ChevronDown
             size={24}
@@ -166,7 +166,7 @@ export default function NestlingTitle({
 
       <div
         className={cn(
-          "mt-2 flex items-center gap-1.5 text-gray-800 dark:text-gray-200",
+          "mt-2 flex items-center gap-1.5 text-gray-800 dark:text-zinc-200",
           compactNestlingTitle && "hidden",
         )}
       >
@@ -201,9 +201,9 @@ export default function NestlingTitle({
             <button
               className={cn(
                 "rounded-full border text-xs transition-colors",
-                "text-gray-600 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-200",
-                "border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500",
-                "hover:bg-gray-200/50 dark:hover:bg-gray-700",
+                "text-gray-600 hover:text-gray-700 dark:text-zinc-300 dark:hover:text-zinc-200",
+                "border-gray-300 hover:border-gray-400 dark:border-zinc-600 dark:hover:border-zinc-500",
+                "hover:bg-gray-200/50 dark:hover:bg-zinc-700",
                 nestlingTags.length > 0
                   ? "p-0.5"
                   : "flex items-center gap-1 px-2 py-0.5",

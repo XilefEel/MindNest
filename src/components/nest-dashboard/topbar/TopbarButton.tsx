@@ -20,7 +20,7 @@ export default function ({
     <BaseToolTip label={label}>
       <button
         className={cn(
-          "rounded-lg p-2 text-gray-800 transition-colors dark:text-gray-200",
+          "rounded-lg p-2 text-gray-800 transition-colors dark:text-zinc-200",
           "hover:text-teal-500 dark:hover:text-teal-300",
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",

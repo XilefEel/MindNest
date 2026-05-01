@@ -153,7 +153,7 @@ export default function NestlingItem({
                 : "hover:bg-black/5 dark:hover:bg-white/5"
               : nestling.id === activeNestling?.id
                 ? "bg-teal-50 font-medium text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
-                : "hover:bg-gray-50 dark:hover:bg-gray-700/50",
+                : "hover:bg-gray-50 dark:hover:bg-zinc-700/50",
           )}
         >
           <div className="flex min-w-0 flex-1 items-center gap-1.5">
@@ -177,7 +177,7 @@ export default function NestlingItem({
                     "px-2 py-0.5 shadow-md ring-2 ring-teal-500",
                     activeBackgroundId
                       ? "bg-white/10 backdrop-blur-sm dark:bg-black/10"
-                      : "bg-white px-2 py-0.5 shadow-md ring-2 ring-teal-500 dark:bg-gray-800",
+                      : "bg-white px-2 py-0.5 shadow-md ring-2 ring-teal-500 dark:bg-zinc-800",
                   ),
               )}
             >
@@ -208,7 +208,7 @@ export default function NestlingItem({
               onClick={(e) => e.stopPropagation()}
               className="cursor-grab py-0.75 opacity-0 transition-opacity group-hover:opacity-100"
             >
-              <GripVertical className="size-4 flex-shrink-0 text-gray-500 dark:text-gray-200" />
+              <GripVertical className="size-4 flex-shrink-0 text-gray-500 dark:text-zinc-200" />
             </div>
           )}
         </div>

@@ -39,8 +39,8 @@ export default function Sidebar({
     <aside
       className={cn(
         "flex h-screen flex-col px-4 py-6",
-        "bg-white dark:bg-gray-800 md:dark:bg-gray-800/50",
-        "border-r border-gray-100 dark:border-gray-700",
+        "bg-white dark:bg-zinc-800 md:dark:bg-zinc-800/50",
+        "border-r border-gray-100 dark:border-zinc-700",
       )}
     >
       <div
@@ -86,7 +86,7 @@ export default function Sidebar({
         />
       </nav>
 
-      <div className="mt-auto flex flex-col gap-1.5 border-t border-gray-300 pt-4 dark:border-gray-600">
+      <div className="mt-auto flex flex-col gap-1.5 border-t border-gray-300 pt-4 dark:border-zinc-600">
         <SidebarItem
           Icon={CircleUserRound}
           label="Profile"

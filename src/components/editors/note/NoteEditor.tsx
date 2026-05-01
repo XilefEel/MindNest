@@ -65,7 +65,7 @@ export default function NoteEditor() {
     editorProps: {
       attributes: {
         class:
-          "prose dark:prose-invert prose-sm md:prose-base max-w-none min-h-full outline-none focus:outline-none text-gray-900 dark:text-gray-100",
+          "prose dark:prose-invert prose-sm md:prose-base max-w-none min-h-full outline-none focus:outline-none text-gray-900 dark:text-zinc-100",
       },
       handleClick(_view, _pos, event) {
         const target = event.target as HTMLElement;
@@ -144,7 +144,7 @@ export default function NoteEditor() {
           "flex justify-between rounded-lg px-3",
           activeBackgroundId
             ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
-            : "bg-white dark:bg-gray-800",
+            : "bg-white dark:bg-zinc-800",
         )}
       >
         <BottomBar autoSaveStatus={autoSaveStatus} wordCount={wordCount} />

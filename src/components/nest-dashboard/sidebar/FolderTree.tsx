@@ -50,7 +50,7 @@ export default function FolderTree({
             cn(
               activeBackgroundId
                 ? "bg-teal-200/50 dark:bg-teal-300/50"
-                : "bg-gray-100/80 dark:bg-gray-700/80",
+                : "bg-gray-100/80 dark:bg-zinc-700/80",
             ),
         )}
       >
@@ -69,7 +69,7 @@ export default function FolderTree({
                 folderIndentLines &&
                   cn(
                     "before:absolute before:top-0 before:left-4 before:h-full",
-                    "before:border-l before:border-gray-200 dark:before:border-gray-700",
+                    "before:border-l before:border-gray-200 dark:before:border-zinc-700",
                     activeBackgroundId &&
                       "before:border-black/20 dark:before:border-white/20",
                     activeFolderId === folder.id &&

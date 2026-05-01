@@ -58,7 +58,7 @@ export default function GalleryToolbar({
           className={cn(
             "ml-auto rounded p-2 transition-colors",
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-            "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
+            "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
             "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
             activeBackgroundId &&
               "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
@@ -75,7 +75,7 @@ export default function GalleryToolbar({
           className={cn(
             "rounded p-2 transition-colors",
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-            "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
+            "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
             "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
             activeBackgroundId &&
               "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
@@ -92,7 +92,7 @@ export default function GalleryToolbar({
           className={cn(
             "rounded p-2 transition-colors",
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-            "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-gray-700 dark:hover:text-teal-400",
+            "hover:bg-gray-100 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
             "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
             activeBackgroundId &&
               "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",

@@ -10,7 +10,7 @@ export default function ViewToggle({
   setViewMode: (mode: "grid" | "list") => void;
 }) {
   return (
-    <div className="flex rounded border border-gray-200 bg-gray-100 p-1 dark:border-gray-700 dark:bg-gray-800">
+    <div className="flex rounded border border-gray-200 bg-gray-100 p-1 dark:border-zinc-700 dark:bg-zinc-800">
       <BaseToolTip label="Grid view">
         <button
           onClick={() => setViewMode("grid")}
@@ -18,7 +18,7 @@ export default function ViewToggle({
             "rounded p-2 transition duration-100",
             viewMode === "grid"
               ? "bg-teal-50 text-teal-500 shadow-sm dark:bg-teal-400 dark:text-white"
-              : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+              : "text-gray-600 hover:bg-gray-200 dark:text-zinc-300 dark:hover:bg-zinc-700",
           )}
         >
           <Grid size={18} />
@@ -32,7 +32,7 @@ export default function ViewToggle({
             "rounded p-2 transition duration-100",
             viewMode === "list"
               ? "bg-teal-50 text-teal-500 shadow-sm dark:bg-teal-400 dark:text-white"
-              : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700",
+              : "text-gray-600 hover:bg-gray-200 dark:text-zinc-300 dark:hover:bg-zinc-700",
           )}
         >
           <List size={18} />

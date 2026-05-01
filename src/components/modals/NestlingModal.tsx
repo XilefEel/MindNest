@@ -78,7 +78,7 @@ export default function NestlingModal() {
           />
 
           <div className="flex flex-col gap-3">
-            <p className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <p className="block text-sm font-medium text-gray-700 dark:text-zinc-300">
               Choose nestling type
             </p>
             <div className="grid grid-cols-2 gap-3">
@@ -98,7 +98,7 @@ export default function NestlingModal() {
                           : "border border-teal-300 bg-teal-50 shadow-sm dark:border-teal-500 dark:bg-teal-950/30"
                         : activeBackgroundId
                           ? "bg-white/30 hover:bg-black/5 hover:shadow-sm dark:bg-black/30 dark:hover:bg-white/5"
-                          : "border border-gray-200 hover:border-gray-300 hover:shadow-sm dark:border-gray-700 dark:hover:border-gray-500",
+                          : "border border-gray-200 hover:border-gray-300 hover:shadow-sm dark:border-zinc-700 dark:hover:border-zinc-500",
                     )}
                   >
                     <div
@@ -108,20 +108,20 @@ export default function NestlingModal() {
                           ? typeOption.color
                           : activeBackgroundId
                             ? "bg-white/50 dark:bg-black/50"
-                            : "bg-gray-100 dark:bg-gray-700",
+                            : "bg-gray-100 dark:bg-zinc-700",
                       )}
                     >
                       <Icon
                         className={cn(
                           "size-5 flex-shrink-0 text-white",
-                          !isSelected && "text-gray-700 dark:text-gray-300",
+                          !isSelected && "text-gray-700 dark:text-zinc-300",
                         )}
                       />
                     </div>
 
                     <p
                       className={cn(
-                        "flex-1 text-left text-sm text-gray-800 dark:text-gray-300",
+                        "flex-1 text-left text-sm text-gray-800 dark:text-zinc-300",
                         isSelected &&
                           "font-medium text-teal-700 dark:text-teal-300",
                       )}

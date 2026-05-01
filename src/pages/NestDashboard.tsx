@@ -48,10 +48,10 @@ const editors: Record<NestlingType, React.ComponentType> = {
       </div>
 
       <div className="flex flex-col gap-1">
-        <p className="text-base font-semibold text-gray-700 dark:text-gray-200">
+        <p className="text-base font-semibold text-gray-700 dark:text-zinc-200">
           Coming soon
         </p>
-        <p className="text-xs text-gray-400 dark:text-gray-500">
+        <p className="text-xs text-gray-400 dark:text-zinc-500">
           This feature is still being built
         </p>
       </div>
@@ -125,7 +125,7 @@ export default function NestDashboardPage() {
   return (
     <div
       style={{ scrollbarGutter: "stable" }}
-      className="flex h-screen flex-col bg-gray-50 pb-3 select-none dark:bg-gray-900"
+      className="flex h-screen flex-col bg-gray-50 pb-3 select-none dark:bg-zinc-900"
       onContextMenu={(e) => e.preventDefault()}
     >
       <div

@@ -24,8 +24,8 @@ export default function SearchItem({
       key={nestling.id}
       onClick={() => handleClick(nestling.id)}
       className={cn(
-        "flex flex-row items-center justify-between gap-2 p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-700",
-        activeBackgroundId && "hover:bg-black/5 hover:dark:bg-white/10",
+        "flex flex-row items-center justify-between gap-2 p-2 px-4 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-zinc-700",
+        activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/10",
       )}
     >
       <div className="flex items-center gap-1">
@@ -40,7 +40,7 @@ export default function SearchItem({
         <span className="text-sm">{nestling.title}</span>
       </div>
 
-      <div className="flex flex-1 items-center gap-1 text-gray-500 dark:text-gray-400">
+      <div className="flex flex-1 items-center gap-1 text-gray-500 dark:text-zinc-400">
         {nestlingTags.slice(0, 5).map((tag) => (
           <NestlingTag key={tag.id} tag={tag} />
         ))}
@@ -51,7 +51,7 @@ export default function SearchItem({
         )}
       </div>
 
-      <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+      <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-zinc-400">
         <Folder className="h-3.5 w-5" />
         <span className="text-xs">
           {findFolderPath(nestling.folderId, folders) || "No Folder"}

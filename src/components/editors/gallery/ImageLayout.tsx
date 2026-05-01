@@ -130,8 +130,8 @@ export default function ImageLayout({
       )}
     >
       {photos.length === 0 && !isUploading ? (
-        <div className="flex flex-col items-center justify-center py-52 text-gray-400 dark:text-gray-500">
-          <Upload className="mb-3 size-16 text-gray-300 dark:text-gray-600" />
+        <div className="flex flex-col items-center justify-center py-52 text-gray-400 dark:text-zinc-500">
+          <Upload className="mb-3 size-16 text-gray-300 dark:text-zinc-600" />
           <p className="mb-0.5 text-sm font-semibold">No images yet</p>
           <p className="text-xs">Upload an image or drag and drop one here.</p>
         </div>

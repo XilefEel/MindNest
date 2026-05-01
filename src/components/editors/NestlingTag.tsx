@@ -37,7 +37,7 @@ export function NestlingTag({
             e.stopPropagation();
             onRemove(tag.id);
           }}
-          className="absolute -top-2 -right-2 rounded-full bg-white p-0.5 opacity-0 shadow-sm transition-opacity group-hover:opacity-100 dark:bg-gray-800"
+          className="absolute -top-2 -right-2 rounded-full bg-white p-0.5 opacity-0 shadow-sm transition-opacity group-hover:opacity-100 dark:bg-zinc-800"
           style={{
             color: tag.color,
             border: `1px solid ${tag.color}`,

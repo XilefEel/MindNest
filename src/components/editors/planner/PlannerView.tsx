@@ -105,14 +105,14 @@ export default function PlannerView({
       >
         <button
           onClick={() => handleMoveWeek("left")}
-          className="absolute top-6 -left-6 text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          className="absolute top-6 -left-6 text-gray-500 transition hover:text-gray-700 dark:text-zinc-400 dark:hover:text-zinc-200"
         >
           <ChevronLeft size={32} />
         </button>
 
         <button
           onClick={() => handleMoveWeek("right")}
-          className="absolute top-6 -right-6 text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          className="absolute top-6 -right-6 text-gray-500 transition hover:text-gray-700 dark:text-zinc-400 dark:hover:text-zinc-200"
         >
           <ChevronRight size={32} />
         </button>
@@ -124,7 +124,7 @@ export default function PlannerView({
           >
             <div
               className={cn(
-                "text-xs text-gray-600 dark:text-gray-300",
+                "text-xs text-gray-600 dark:text-zinc-300",
                 isSameDay(day, new Date()) &&
                   "text-teal-500 dark:text-teal-400",
               )}
@@ -147,9 +147,9 @@ export default function PlannerView({
           <div
             key={day.toISOString()}
             className={cn(
-              "relative border-r border-gray-300 dark:border-gray-600",
+              "relative border-r border-gray-300 dark:border-zinc-600",
               activeBackgroundId &&
-                "border-gray-300/30 dark:border-gray-600/30",
+                "border-gray-300/30 dark:border-zinc-600/30",
             )}
           >
             <div className="relative grid grid-rows-24">
@@ -160,12 +160,12 @@ export default function PlannerView({
                   className={cn(
                     "border-t",
                     activeBackgroundId
-                      ? "border-gray-200/30 dark:border-gray-700/30"
-                      : "border-gray-200 dark:border-gray-700",
+                      ? "border-gray-200/30 dark:border-zinc-700/30"
+                      : "border-gray-200 dark:border-zinc-700",
                     hour % 2 === 0 &&
                       (activeBackgroundId
                         ? "bg-white/20 dark:bg-black/20"
-                        : "bg-gray-100 dark:bg-gray-800/50"),
+                        : "bg-gray-100 dark:bg-zinc-800/50"),
                   )}
                   onDoubleClick={() => {
                     handleDoubleClick({
@@ -175,7 +175,7 @@ export default function PlannerView({
                   }}
                 >
                   {dayIndex === 0 && (
-                    <div className="absolute -mt-2 -ml-16 w-14 text-right text-xs tracking-wide text-gray-600 dark:text-gray-300">
+                    <div className="absolute -mt-2 -ml-16 w-14 text-right text-xs tracking-wide text-gray-600 dark:text-zinc-300">
                       {format(new Date(0, 0, 0, hour, 0), "h a")}
                     </div>
                   )}

@@ -41,7 +41,7 @@ export default function HomeItem({
             : "hover:bg-black/5 dark:hover:bg-white/5"
           : activeNestlingId === null
             ? "bg-teal-50 font-semibold text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
-            : "hover:bg-gray-50 dark:hover:bg-gray-700/50",
+            : "hover:bg-gray-50 dark:hover:bg-zinc-700/50",
       )}
     >
       <div className="rounded-lg bg-linear-to-r from-teal-500 to-teal-600 p-1.5 text-white">

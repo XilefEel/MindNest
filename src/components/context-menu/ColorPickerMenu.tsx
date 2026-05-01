@@ -25,7 +25,7 @@ export default function ColorPickerMenu<T extends { color: string }>({
           <Icon className="size-4 flex-shrink-0" />
           <span>{label}</span>
           <div
-            className="ml-auto h-3 w-3 rounded-full border border-gray-300 dark:border-gray-600"
+            className="ml-auto h-3 w-3 rounded-full border border-gray-300 dark:border-zinc-600"
             style={{ backgroundColor: element.color }}
           />
         </>
@@ -38,7 +38,7 @@ export default function ColorPickerMenu<T extends { color: string }>({
               onClick={() => handleChangeColor(color)}
               style={{ backgroundColor: color }}
               className={cn(
-                "relative h-8 w-8 rounded-full border-2 border-gray-200 transition-all hover:scale-110 dark:border-gray-600",
+                "relative h-8 w-8 rounded-full border-2 border-gray-200 transition-all hover:scale-110 dark:border-zinc-600",
                 activeBackgroundId && "border-black/20 dark:border-white/20",
               )}
             >

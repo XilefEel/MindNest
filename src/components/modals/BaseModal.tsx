@@ -58,17 +58,17 @@ export default function BaseModal({
         onClick={(e) => e.stopPropagation()}
         onDoubleClick={(e) => e.stopPropagation()}
         className={cn(
-          "flex flex-col rounded-2xl border-0 bg-white p-3 select-none md:p-6 dark:bg-gray-800",
+          "flex flex-col rounded-2xl border-0 bg-white p-3 select-none md:p-6 dark:bg-zinc-800",
           isLarge && "md:min-w-3xl",
           activeBackgroundId &&
             cn("bg-white/30 dark:bg-black/30", getBlurClass(blurStrength)),
         )}
       >
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-gray-900 md:text-xl dark:text-gray-100">
+          <DialogTitle className="text-lg font-bold text-gray-900 md:text-xl dark:text-zinc-100">
             {title}
           </DialogTitle>
-          <DialogDescription className="text-xs text-gray-600 md:text-sm dark:text-gray-400">
+          <DialogDescription className="text-xs text-gray-600 md:text-sm dark:text-zinc-400">
             {description}
           </DialogDescription>
         </DialogHeader>
@@ -81,7 +81,7 @@ export default function BaseModal({
           <DialogFooter className="flex justify-between gap-2">
             {showCancel && (
               <DialogClose asChild>
-                <button className="rounded-lg bg-gray-200 px-4 py-1.5 text-sm text-gray-900 shadow transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600">
+                <button className="rounded-lg bg-gray-200 px-4 py-1.5 text-sm text-gray-900 shadow transition-colors hover:bg-gray-300 dark:bg-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-600">
                   Cancel
                 </button>
               </DialogClose>
