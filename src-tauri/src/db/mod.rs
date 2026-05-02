@@ -2,6 +2,7 @@ pub mod background_image;
 pub mod background_music;
 pub mod board;
 pub mod bookmark;
+pub mod database;
 pub mod folder;
 pub mod gallery;
 pub mod mindmap;

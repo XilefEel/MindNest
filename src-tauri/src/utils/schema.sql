@@ -183,3 +183,35 @@ CREATE TABLE IF NOT EXISTS bookmarks (
     updated_at TEXT NOT NULL,
     FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS db_columns (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nestling_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    type TEXT NOT NULL,
+    order_index INTEGER NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS db_rows (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nestling_id INTEGER NOT NULL,
+    order_index INTEGER NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY (nestling_id) REFERENCES nestlings(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS db_cells (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    row_id INTEGER NOT NULL,
+    column_id INTEGER NOT NULL,
+    value TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY (row_id) REFERENCES db_rows(id) ON DELETE CASCADE,
+    FOREIGN KEY (column_id) REFERENCES db_columns(id) ON DELETE CASCADE,
+    UNIQUE(row_id, column_id)
+);
