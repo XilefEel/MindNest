@@ -61,7 +61,7 @@ export default function BookmarkCard({
               />
             </div>
           ) : (
-            <div className="aspect-video w-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800" />
+            <div className="aspect-video w-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-zinc-700 dark:to-zinc-800" />
           )}
 
           <div className="w-full p-4">

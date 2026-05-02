@@ -170,7 +170,7 @@
         color: theme("colors.gray.400");
 
         .dark & {
-          color: theme("colors.gray.500");
+          color: theme("colors.zinc.500");
         }
       }
     }
@@ -189,7 +189,7 @@
 
     .dark & {
       border-left-color: theme("colors.teal.500");
-      color: theme("colors.gray.400");
+      color: theme("colors.zinc.400");
     }
   }
 
@@ -205,19 +205,19 @@
 }
 
 .react-flow__edge.selected .react-flow__edge-path {
-  stroke: #14b8a6 !important;
+  stroke: theme("colors.teal.600") !important;
 }
 
 .dark .react-flow__edge.selected .react-flow__edge-path {
-  stroke: #2dd4bf !important;
+  stroke: theme("colors.teal.500") !important;
 }
 
 .react-flow {
-  --xy-edge-stroke-selected-default: #14b8a6 !important;
+  --xy-edge-stroke-selected-default: theme("colors.teal.600") !important;
 }
 
 .dark .react-flow {
-  --xy-edge-stroke-selected-default: #2dd4bf !important;
+  --xy-edge-stroke-selected-default: theme("colors.teal.500") !important;
 }
 
 .epr_-8ygbw8 {
@@ -255,15 +255,15 @@
 }
 
 .dark .EmojiPickerReact {
-  --epr-dark: theme("colors.gray.800") !important;
-  --epr-highlight-color: theme("colors.gray.200") !important;
-  --epr-search-input-bg-color: theme("colors.gray.800") !important;
+  --epr-dark: theme("colors.zinc.800") !important;
+  --epr-highlight-color: theme("colors.zinc.200") !important;
+  --epr-search-input-bg-color: theme("colors.zinc.800") !important;
   --epr-search-border-color-active: theme("colors.teal.500") !important;
-  --epr-category-icon-active-color: theme("colors.gray.800") !important;
-  --epr-bg-color: theme("colors.gray.800") !important;
-  --epr-category-label-bg-color: theme("colors.gray.800") !important;
-  --epr-focus-bg-color: theme("colors.gray.900") !important;
-  --epr-hover-bg-color: theme("colors.gray.900") !important;
+  --epr-category-icon-active-color: theme("colors.zinc.800") !important;
+  --epr-bg-color: theme("colors.zinc.800") !important;
+  --epr-category-label-bg-color: theme("colors.zinc.800") !important;
+  --epr-focus-bg-color: theme("colors.zinc.700") !important;
+  --epr-hover-bg-color: theme("colors.zinc.700") !important;
 }
 
 .yarl__button {
