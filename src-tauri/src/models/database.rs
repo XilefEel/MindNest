@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct NewDbColumn {
     pub nestling_id: i64,
-    pub title: String,
+    pub name: String,
     pub column_type: String,
     pub order_index: i64,
 }
