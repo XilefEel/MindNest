@@ -41,6 +41,6 @@ export async function deleteDbRow(id: number) {
   await invoke<void>("delete_db_row", { id });
 }
 
-export async function upsertDbCell(data: NewDbCell) {
-  return await invoke<DbCell>("upsert_db_cell", { data });
+export async function insertDbCell(data: NewDbCell) {
+  return await invoke<DbCell>("insert_db_cell", { data });
 }

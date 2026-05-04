@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS db_columns (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nestling_id INTEGER NOT NULL,
     name TEXT NOT NULL,
-    type TEXT NOT NULL,
+    column_type TEXT NOT NULL,
     order_index INTEGER NOT NULL,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,

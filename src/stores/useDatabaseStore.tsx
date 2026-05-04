@@ -26,7 +26,6 @@ type DatabaseState = {
     rowId: number,
     columnId: number,
     value: string | null,
-    nestlingId: number,
   ) => Promise<void>;
 };
 export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
@@ -114,7 +113,7 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
   insertCell: withStoreErrorHandler(
     set,
     async (rowId: number, columnId: number, value: string | null) => {
-      const cell = await dbApi.upsertDbCell({ rowId, columnId, value });
+      const cell = await dbApi.insertDbCell({ rowId, columnId, value });
 
       set((state) => ({
         rows: state.rows.map((rowData) => {
