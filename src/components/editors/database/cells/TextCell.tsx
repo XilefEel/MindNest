@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils/general";
 import { useEffect, useRef, useState } from "react";
 
 export default function TextCell({
@@ -51,7 +52,10 @@ export default function TextCell({
       autoComplete="off"
       autoCorrect="off"
       spellCheck={false}
-      className="min-h-5 w-full cursor-pointer resize-none bg-transparent text-sm focus:outline-none"
+      className={cn(
+        "min-h-5 w-full resize-none bg-transparent text-sm focus:outline-none",
+        editing ? "cursor-text" : "cursor-default",
+      )}
     />
   );
 }

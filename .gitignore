@@ -53,4 +53,5 @@ yarn-error.log*
 # IDEs/editors
 .vscode/
 .idea/
+.zed/
 *.sw?

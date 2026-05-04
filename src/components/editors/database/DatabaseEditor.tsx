@@ -19,6 +19,7 @@ import {
   useDbActions,
 } from "@/stores/useDatabaseStore";
 import TextCell from "./cells/TextCell";
+import DatabaseHeader from "./DatabaseHeader";
 
 export default function DatabaseEditor() {
   const activeNestling = useActiveNestling();
@@ -48,14 +49,17 @@ export default function DatabaseEditor() {
       <Table>
         <TableHeader>
           <TableRow>
-            {columns.map((col) => (
-              <TableHead key={col.id} className="w-20 border-gray-300">
-                {col.name}
-              </TableHead>
+            {columns.map((col, index) => (
+              <DatabaseHeader
+                key={index}
+                column={col}
+                isFirst={index === 0}
+                isLast={index === columns.length - 1}
+              />
             ))}
             <TableHead
               onClick={() => createColumn(activeNestling.id!, "Name", "text")}
-              className="w-10 border-gray-300 text-gray-400"
+              className="w-5 border-gray-300 text-gray-400 dark:border-zinc-600"
             >
               <button>+ Add column</button>
             </TableHead>
@@ -64,11 +68,17 @@ export default function DatabaseEditor() {
 
         <TableBody>
           {rows.map((rowData) => (
-            <TableRow key={rowData.row.id} className="border-gray-300">
+            <TableRow
+              key={rowData.row.id}
+              className="border-gray-300 dark:border-zinc-600"
+            >
               {columns.map((col) => {
                 const cell = rowData.cells.find((c) => c.columnId === col.id);
                 return (
-                  <TableCell key={col.id} className="border-gray-300">
+                  <TableCell
+                    key={col.id}
+                    className="border-gray-300 dark:border-zinc-600"
+                  >
                     <TextCell
                       value={cell?.value ?? null}
                       onSave={(value) =>
@@ -85,7 +95,7 @@ export default function DatabaseEditor() {
             <TableCell
               colSpan={columns.length + 1}
               onClick={() => createRow(activeNestling.id!)}
-              className="border-gray-300 text-gray-400"
+              className="border-gray-300 text-gray-400 dark:border-zinc-600"
             >
               <button>+ Add row</button>
             </TableCell>
