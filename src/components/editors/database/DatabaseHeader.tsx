@@ -37,26 +37,27 @@ export default function DatabaseHead({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState(column.name);
+
   const { updateColumn, deleteColumn } = useDbActions();
   const activeBackgroundId = useActiveBackgroundId();
 
+  const currentType = COLUMN_TYPES.find((t) => t.value === column.columnType);
+  const HeaderIcon = currentType?.Icon ?? Type;
+
   const handleRename = () => {
     if (name.trim() && name !== column.name) {
-      updateColumn(column.id, name.trim(), column.orderIndex);
+      updateColumn(column.id, { name: name.trim() });
     }
   };
 
-  const handleTypeChange = () => {
-    updateColumn(column.id, column.name, column.orderIndex);
-  };
+  const handleTypeChange = (type: string) =>
+    updateColumn(column.id, { columnType: type });
 
-  const handleMoveLeft = () => {
-    updateColumn(column.id, column.name, column.orderIndex - 1);
-  };
+  const handleMoveLeft = () =>
+    updateColumn(column.id, { orderIndex: column.orderIndex - 1 });
 
-  const handleMoveRight = () => {
-    updateColumn(column.id, column.name, column.orderIndex + 1);
-  };
+  const handleMoveRight = () =>
+    updateColumn(column.id, { orderIndex: column.orderIndex + 1 });
 
   return (
     <TableHead className="border-border w-48 border-x border-gray-300 dark:border-zinc-600">
@@ -66,7 +67,7 @@ export default function DatabaseHead({
         width="w-60"
         trigger={
           <button className="flex w-full items-center gap-2 text-left text-sm font-medium">
-            <Type className="size-4 flex-shrink-0 text-gray-800 dark:text-zinc-100" />{" "}
+            <HeaderIcon className="size-4 flex-shrink-0 text-gray-800 dark:text-zinc-100" />{" "}
             {column.name}
           </button>
         }
@@ -96,11 +97,12 @@ export default function DatabaseHead({
               {COLUMN_TYPES.map((type) => (
                 <button
                   key={type.value}
-                  onClick={() => handleTypeChange()}
+                  onClick={() => handleTypeChange(type.value)}
                   className={cn(
-                    "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-zinc-700/50",
-                    column.columnType === type.value &&
-                      "bg-teal-50 font-medium text-teal-600 dark:bg-zinc-700 dark:text-zinc-300",
+                    "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
+                    column.columnType === type.value
+                      ? "bg-teal-50 font-medium text-teal-600 dark:bg-zinc-700 dark:text-zinc-300"
+                      : "hover:bg-gray-50 dark:hover:bg-zinc-700/50",
                   )}
                 >
                   <type.Icon

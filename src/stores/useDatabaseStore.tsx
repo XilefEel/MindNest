@@ -1,5 +1,5 @@
 import { DbColumn, DbRowData } from "@/lib/types/database";
-import { withStoreErrorHandler } from "@/lib/utils/general";
+import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
 import * as dbApi from "@/lib/api/database";
 import { useShallow } from "zustand/react/shallow";
@@ -16,7 +16,7 @@ type DatabaseState = {
     name: string,
     columnType: string,
   ) => Promise<void>;
-  updateColumn: (id: number, name: string, orderIndex: number) => Promise<void>;
+  updateColumn: (id: number, updates: Partial<DbColumn>) => Promise<void>;
   deleteColumn: (id: number) => Promise<void>;
 
   createRow: (nestlingId: number) => Promise<void>;
@@ -56,22 +56,29 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
     },
   ),
 
-  updateColumn: withStoreErrorHandler(
-    set,
-    async (id: number, name: string, orderIndex: number) => {
-      await dbApi.updateDbColumn({ id, name, orderIndex });
+  updateColumn: withStoreErrorHandler(set, async (id, updates) => {
+    const currentColumn = get().columns.find((col) => col.id === id);
+    if (!currentColumn) throw new Error("Column not found");
 
-      set((state) => ({
-        columns: state.columns.map((col) =>
-          col.id === id ? { ...col, name, orderIndex } : col,
+    const updated = mergeWithCurrent(currentColumn, updates);
+
+    set((state) => ({
+      columns: state.columns.map((col) => (col.id === id ? updated : col)),
+
+      rows: state.rows.map((rowData) => ({
+        ...rowData,
+        cells: rowData.cells.map((cell) =>
+          cell.columnId === id ? { ...cell, value: null } : cell,
         ),
-      }));
+      })),
+    }));
 
-      await updateNestlingTimestamp(
-        get().columns.find((col) => col.id === id)?.nestlingId!,
-      );
-    },
-  ),
+    await dbApi.updateDbColumn({ ...updated, id });
+
+    await updateNestlingTimestamp(
+      get().columns.find((col) => col.id === id)?.nestlingId!,
+    );
+  }),
 
   deleteColumn: withStoreErrorHandler(set, async (id: number) => {
     await dbApi.deleteDbColumn(id);

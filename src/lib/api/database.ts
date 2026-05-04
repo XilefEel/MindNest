@@ -20,13 +20,15 @@ export async function createDbColumn(data: NewDbColumn) {
 export async function updateDbColumn({
   id,
   name,
+  columnType,
   orderIndex,
 }: {
   id: number;
   name: string;
+  columnType: string;
   orderIndex: number;
 }) {
-  await invoke<void>("update_db_column", { id, name, orderIndex });
+  await invoke<void>("update_db_column", { id, name, columnType, orderIndex });
 }
 
 export async function deleteDbColumn(id: number) {

@@ -16,9 +16,10 @@ pub fn update_db_column(
     db: tauri::State<AppDb>,
     id: i64,
     name: String,
+    column_type: String,
     order_index: i64,
 ) -> AppResult<()> {
-    update_db_column_in_db(&db, id, name, order_index)
+    update_db_column_in_db(&db, id, name, column_type, order_index)
 }
 
 #[tauri::command]

@@ -44,6 +44,7 @@ pub fn update_db_column_in_db(
     db: &AppDb,
     id: i64,
     name: String,
+    column_type: String,
     order_index: i64,
 ) -> AppResult<()> {
     let connection = db.conn()?;
@@ -52,9 +53,9 @@ pub fn update_db_column_in_db(
     connection
         .execute(
             "UPDATE db_columns
-            SET name = ?1, order_index = ?2, updated_at = ?3
-            WHERE id = ?4",
-            params![name, order_index, updated_at, id],
+            SET name = ?1, column_type = ?2, order_index = ?3, updated_at = ?4
+            WHERE id = ?5",
+            params![name, column_type, order_index, updated_at, id],
         )
         .log_err("update_db_column_in_db")?;
 
