@@ -59,7 +59,7 @@ export default function DatabaseEditor() {
             ))}
             <TableHead
               onClick={() => createColumn(activeNestling.id!, "Name", "text")}
-              className="w-5 border-gray-300 text-gray-400 dark:border-zinc-600 dark:text-zinc-500"
+              className="w-5 border-gray-300 text-gray-400 transition hover:bg-gray-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800"
             >
               <button>+ Add column</button>
             </TableHead>
@@ -75,7 +75,7 @@ export default function DatabaseEditor() {
               {columns.map((col) => (
                 <TableCell
                   key={col.id}
-                  className="border-gray-300 dark:border-zinc-600"
+                  className="border-gray-300 align-middle dark:border-zinc-600"
                 >
                   <DatabaseCell
                     column={col}
@@ -94,7 +94,7 @@ export default function DatabaseEditor() {
             <TableCell
               colSpan={columns.length + 1}
               onClick={() => createRow(activeNestling.id!)}
-              className="border-gray-300 text-gray-400 dark:border-zinc-600 dark:text-zinc-500"
+              className="border-gray-300 text-gray-400 transition hover:bg-gray-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800"
             >
               <button>+ Add row</button>
             </TableCell>

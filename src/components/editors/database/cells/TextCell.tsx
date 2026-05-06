@@ -37,25 +37,27 @@ export default function TextCell({
   };
 
   return (
-    <textarea
-      ref={textareaRef}
-      value={content}
-      rows={1}
-      readOnly={!editing}
-      onClick={() => setEditing(true)}
-      onChange={(e) => {
-        setContent(e.target.value);
-        resetHeight();
-      }}
-      onBlur={save}
-      onKeyDown={handleKeyDown}
-      autoComplete="off"
-      autoCorrect="off"
-      spellCheck={false}
-      className={cn(
-        "min-h-5 w-full resize-none bg-transparent text-sm focus:outline-none",
-        editing ? "cursor-text" : "cursor-default",
-      )}
-    />
+    <div className="flex items-center justify-center">
+      <textarea
+        ref={textareaRef}
+        value={content}
+        rows={1}
+        readOnly={!editing}
+        onClick={() => setEditing(true)}
+        onChange={(e) => {
+          setContent(e.target.value);
+          resetHeight();
+        }}
+        onBlur={save}
+        onKeyDown={handleKeyDown}
+        autoComplete="off"
+        autoCorrect="off"
+        spellCheck={false}
+        className={cn(
+          "w-full resize-none overflow-hidden bg-transparent align-top text-sm focus:outline-none",
+          editing ? "cursor-text" : "cursor-default",
+        )}
+      />
+    </div>
   );
 }

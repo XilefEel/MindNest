@@ -18,13 +18,15 @@ export default function NumberCell({
   };
 
   return (
-    <input
-      type="number"
-      value={draft}
-      onChange={(e) => setDraft(e.target.value)}
-      onBlur={() => onSave(draft)}
-      onKeyDown={handleKeyDown}
-      className="w-full [appearance:textfield] bg-transparent text-sm focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-    />
+    <div className="flex items-center justify-center">
+      <input
+        type="number"
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={() => onSave(draft)}
+        onKeyDown={handleKeyDown}
+        className="w-full [appearance:textfield] bg-transparent text-sm focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+      />
+    </div>
   );
 }

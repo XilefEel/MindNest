@@ -50,8 +50,10 @@ export default function DatabaseHead({
     }
   };
 
-  const handleTypeChange = (type: string) =>
+  const handleTypeChange = (type: string) => {
     updateColumn(column.id, { columnType: type });
+    setIsOpen(false);
+  };
 
   const handleMoveLeft = () =>
     updateColumn(column.id, { orderIndex: column.orderIndex - 1 });
@@ -60,7 +62,7 @@ export default function DatabaseHead({
     updateColumn(column.id, { orderIndex: column.orderIndex + 1 });
 
   return (
-    <TableHead className="border-border w-48 border-x border-gray-300 dark:border-zinc-600">
+    <TableHead className="border-border w-48 border-x border-gray-300 transition-colors hover:bg-gray-100 dark:border-zinc-600 dark:hover:bg-zinc-800">
       <BasePopover
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -72,7 +74,7 @@ export default function DatabaseHead({
           </button>
         }
         content={
-          <div className="flex flex-col text-gray-900 dark:text-zinc-100">
+          <div className="flex flex-col text-gray-800 dark:text-zinc-200">
             <input
               autoFocus
               value={name}
@@ -101,7 +103,7 @@ export default function DatabaseHead({
                   className={cn(
                     "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
                     column.columnType === type.value
-                      ? "bg-teal-50 font-medium text-teal-600 dark:bg-zinc-700 dark:text-zinc-300"
+                      ? "bg-teal-50 font-medium text-teal-600 dark:bg-zinc-700 dark:text-zinc-100"
                       : "hover:bg-gray-50 dark:hover:bg-zinc-700/50",
                   )}
                 >

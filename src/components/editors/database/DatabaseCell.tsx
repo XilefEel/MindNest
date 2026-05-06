@@ -27,14 +27,14 @@ export default function DatabaseCell({
 
     case "created_at":
       return (
-        <div className="text-muted-foreground text-sm">
+        <div className="text-muted-foreground flex items-center text-sm">
           {format(new Date(row.createdAt), "MMM d, yyyy")}
         </div>
       );
 
     case "last_modified":
       return (
-        <div className="text-muted-foreground text-sm">
+        <div className="text-muted-foreground flex items-center text-sm">
           {format(new Date(row.updatedAt), "MMM d, yyyy")}
         </div>
       );
