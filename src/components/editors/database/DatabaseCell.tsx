@@ -3,6 +3,7 @@ import NumberCell from "./cells/NumberCell";
 import CheckboxCell from "./cells/CheckboxCell";
 import { DbCell, DbColumn, DbRow } from "@/lib/types/database";
 import { format } from "date-fns";
+import DateCell from "./cells/DateCell";
 
 export default function DatabaseCell({
   column,
@@ -24,6 +25,9 @@ export default function DatabaseCell({
 
     case "checkbox":
       return <CheckboxCell value={cell?.value ?? null} onSave={onSave} />;
+
+    case "date":
+      return <DateCell value={cell?.value ?? null} onSave={onSave} />;
 
     case "created_at":
       return (
