@@ -20,10 +20,14 @@ import {
 } from "@/stores/useDatabaseStore";
 import DatabaseHeader from "./DatabaseHeader";
 import DatabaseCell from "./DatabaseCell";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { cn } from "@/lib/utils/general";
 
 export default function DatabaseEditor() {
   const activeNestling = useActiveNestling();
   if (!activeNestling) return null;
+
+  const activeBackgroundId = useActiveBackgroundId();
 
   const { updateNestling } = useNestlingActions();
   const [title, setTitle] = useState(activeNestling.title);
@@ -59,7 +63,11 @@ export default function DatabaseEditor() {
             ))}
             <TableHead
               onClick={() => createColumn(activeNestling.id!, "Name", "text")}
-              className="w-5 border-gray-300 text-gray-400 transition hover:bg-gray-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800"
+              className={cn(
+                "w-5 border-gray-300 text-gray-400 transition-[background] hover:bg-gray-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
+                activeBackgroundId &&
+                  "border-black/30 text-gray-600 hover:bg-black/5 dark:border-white/30 dark:text-zinc-300 dark:hover:bg-white/5",
+              )}
             >
               <button>+ Add column</button>
             </TableHead>
@@ -70,12 +78,19 @@ export default function DatabaseEditor() {
           {rows.map((rowData) => (
             <TableRow
               key={rowData.row.id}
-              className="border-gray-300 dark:border-zinc-600"
+              className={cn(
+                "border-gray-300 dark:border-zinc-600",
+                activeBackgroundId && "border-black/30 dark:border-white/30",
+              )}
             >
               {columns.map((col) => (
                 <TableCell
                   key={col.id}
-                  className="border-gray-300 align-middle dark:border-zinc-600"
+                  className={cn(
+                    "border-gray-300 align-middle dark:border-zinc-600",
+                    activeBackgroundId &&
+                      "border-black/30 dark:border-white/30",
+                  )}
                 >
                   <DatabaseCell
                     column={col}
@@ -94,7 +109,11 @@ export default function DatabaseEditor() {
             <TableCell
               colSpan={columns.length + 1}
               onClick={() => createRow(activeNestling.id!)}
-              className="border-gray-300 text-gray-400 transition hover:bg-gray-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800"
+              className={cn(
+                "border-gray-300 text-gray-400 transition-[background] hover:bg-gray-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
+                activeBackgroundId &&
+                  "border-black/30 text-gray-600 hover:bg-black/5 dark:border-white/30 dark:text-zinc-300 dark:hover:bg-white/5",
+              )}
             >
               <button>+ Add row</button>
             </TableCell>

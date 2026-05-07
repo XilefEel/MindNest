@@ -43,11 +43,14 @@ export default function DateCell({
   }
 
   const selectedDate = value ? new Date(value) : null;
+  const isValidDate = selectedDate && !isNaN(selectedDate.getTime());
 
   const handleSelectDay = (day: Date) => {
     onSave(format(day, "yyyy-MM-dd"));
     setIsOpen(false);
   };
+
+  if (!isValidDate) return;
 
   return (
     <BasePopover

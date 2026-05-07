@@ -62,7 +62,13 @@ export default function DatabaseHead({
     updateColumn(column.id, { orderIndex: column.orderIndex + 1 });
 
   return (
-    <TableHead className="border-border w-48 border-x border-gray-300 transition-colors hover:bg-gray-100 dark:border-zinc-600 dark:hover:bg-zinc-800">
+    <TableHead
+      className={cn(
+        "border-border w-48 border-x border-gray-300 transition-colors hover:bg-gray-100 dark:border-zinc-600 dark:hover:bg-zinc-800",
+        activeBackgroundId &&
+          "border-black/30 hover:bg-black/5 dark:border-white/30 dark:hover:bg-white/5",
+      )}
+    >
       <BasePopover
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -91,7 +97,7 @@ export default function DatabaseHead({
               )}
             />
 
-            <div className="mb-1 border-b border-gray-200 pb-1">
+            <div className="mb-2 border-b border-gray-200 pb-2">
               <p className="text-muted-foreground mb-1 px-2 text-xs">
                 Field type
               </p>
@@ -102,9 +108,13 @@ export default function DatabaseHead({
                   onClick={() => handleTypeChange(type.value)}
                   className={cn(
                     "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
-                    column.columnType === type.value
-                      ? "bg-teal-50 font-medium text-teal-600 dark:bg-zinc-700 dark:text-zinc-100"
-                      : "hover:bg-gray-50 dark:hover:bg-zinc-700/50",
+                    activeBackgroundId
+                      ? column.columnType === type.value
+                        ? "bg-white/30 font-medium text-gray-800 dark:bg-black/30 dark:text-zinc-100"
+                        : "hover:bg-black/5 dark:hover:bg-white/5"
+                      : column.columnType === type.value
+                        ? "bg-teal-50 font-medium text-teal-600 dark:bg-zinc-700 dark:text-zinc-100"
+                        : "hover:bg-gray-50 dark:hover:bg-zinc-700/50",
                   )}
                 >
                   <type.Icon
@@ -119,11 +129,15 @@ export default function DatabaseHead({
               ))}
             </div>
 
-            <div className="mb-1 border-b border-gray-200 pb-1">
+            <div className="mb-2 border-b border-gray-200 pb-2">
               <button
                 disabled={isFirst}
                 onClick={handleMoveLeft}
-                className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-gray-50 disabled:opacity-40 dark:hover:bg-zinc-700/50"
+                className={cn(
+                  "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-gray-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
+                  activeBackgroundId &&
+                    "hover:bg-black/5 dark:hover:bg-white/5",
+                )}
               >
                 <ChevronLeft className="size-4 flex-shrink-0 text-gray-600 dark:text-zinc-300" />
                 Move left
@@ -132,7 +146,11 @@ export default function DatabaseHead({
               <button
                 disabled={isLast}
                 onClick={handleMoveRight}
-                className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-gray-50 disabled:opacity-40 dark:hover:bg-zinc-700/50"
+                className={cn(
+                  "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-gray-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
+                  activeBackgroundId &&
+                    "hover:bg-black/5 dark:hover:bg-white/5",
+                )}
               >
                 <ChevronRight className="size-4 flex-shrink-0 text-gray-600 dark:text-zinc-300" />
                 Move right
