@@ -72,6 +72,19 @@ pub fn delete_db_column_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     Ok(())
 }
 
+pub fn clear_cells_by_column_from_db(db: &AppDb, column_id: i64) -> AppResult<()> {
+    let connection = db.conn()?;
+
+    connection
+        .execute(
+            "DELETE FROM db_cells WHERE column_id = ?1",
+            params![column_id],
+        )
+        .log_err("clear_cells_by_column_from_db")?;
+
+    Ok(())
+}
+
 pub fn insert_db_row_into_db(db: &AppDb, data: NewDbRow) -> AppResult<DbRow> {
     let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();

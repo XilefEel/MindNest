@@ -62,6 +62,10 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
 
     const updated = mergeWithCurrent(currentColumn, updates);
 
+    if (updates.columnType && updates.columnType !== currentColumn.columnType) {
+      await dbApi.clearCellsByColumn(id);
+    }
+
     set((state) => ({
       columns: state.columns.map((col) => (col.id === id ? updated : col)),
 

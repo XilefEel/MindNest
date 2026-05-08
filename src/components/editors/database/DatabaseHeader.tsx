@@ -64,7 +64,7 @@ export default function DatabaseHead({
   return (
     <TableHead
       className={cn(
-        "border-border w-48 border-x border-gray-300 transition-colors hover:bg-gray-100 dark:border-zinc-600 dark:hover:bg-zinc-800",
+        "border-border w-48 border-x border-gray-300 p-0 transition-colors hover:bg-gray-100 dark:border-zinc-600 dark:hover:bg-zinc-800",
         activeBackgroundId &&
           "border-black/30 hover:bg-black/5 dark:border-white/30 dark:hover:bg-white/5",
       )}
@@ -74,7 +74,7 @@ export default function DatabaseHead({
         setIsOpen={setIsOpen}
         width="w-60"
         trigger={
-          <button className="flex w-full items-center gap-2 text-left text-sm font-medium">
+          <button className="flex h-full w-full items-center gap-2 px-2 text-left text-sm font-medium">
             <HeaderIcon className="size-4 flex-shrink-0 text-gray-800 dark:text-zinc-100" />{" "}
             {column.name}
           </button>
@@ -98,9 +98,7 @@ export default function DatabaseHead({
             />
 
             <div className="mb-2 border-b border-gray-200 pb-2">
-              <p className="text-muted-foreground mb-1 px-2 text-xs">
-                Field type
-              </p>
+              <p className="mb-1 px-2 text-xs">Field type</p>
 
               {COLUMN_TYPES.map((type) => (
                 <button

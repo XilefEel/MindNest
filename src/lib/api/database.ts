@@ -35,6 +35,10 @@ export async function deleteDbColumn(id: number) {
   await invoke<void>("delete_db_column", { id });
 }
 
+export async function clearCellsByColumn(columnId: number) {
+  await invoke<void>("clear_cells_by_column", { columnId });
+}
+
 export async function createDbRow(data: NewDbRow) {
   return await invoke<DbRow>("create_db_row", { data });
 }

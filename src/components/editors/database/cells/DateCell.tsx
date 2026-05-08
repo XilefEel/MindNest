@@ -43,14 +43,11 @@ export default function DateCell({
   }
 
   const selectedDate = value ? new Date(value) : null;
-  const isValidDate = selectedDate && !isNaN(selectedDate.getTime());
 
   const handleSelectDay = (day: Date) => {
     onSave(format(day, "yyyy-MM-dd"));
     setIsOpen(false);
   };
-
-  if (!isValidDate) return;
 
   return (
     <BasePopover
@@ -64,7 +61,14 @@ export default function DateCell({
           {selectedDate ? (
             format(selectedDate, "MMM d, yyyy")
           ) : (
-            <span className="text-muted-foreground">Pick a date</span>
+            <span
+              className={cn(
+                "text-gray-400 dark:text-zinc-500",
+                activeBackgroundId && "text-gray-500 dark:text-zinc-400",
+              )}
+            >
+              Pick a date
+            </span>
           )}
         </button>
       }

@@ -1,6 +1,7 @@
 use crate::db::database::{
-    delete_db_column_from_db, delete_db_row_from_db, get_db_data_from_db, insert_db_cell_in_db,
-    insert_db_column_into_db, insert_db_row_into_db, update_db_column_in_db,
+    clear_cells_by_column_from_db, delete_db_column_from_db, delete_db_row_from_db,
+    get_db_data_from_db, insert_db_cell_in_db, insert_db_column_into_db, insert_db_row_into_db,
+    update_db_column_in_db,
 };
 use crate::models::database::{DbCell, DbColumn, DbData, DbRow, NewDbCell, NewDbColumn, NewDbRow};
 use crate::utils::db::AppDb;
@@ -25,6 +26,11 @@ pub fn update_db_column(
 #[tauri::command]
 pub fn delete_db_column(db: tauri::State<AppDb>, id: i64) -> AppResult<()> {
     delete_db_column_from_db(&db, id)
+}
+
+#[tauri::command]
+pub fn clear_cells_by_column(db: tauri::State<AppDb>, column_id: i64) -> AppResult<()> {
+    clear_cells_by_column_from_db(&db, column_id)
 }
 
 #[tauri::command]

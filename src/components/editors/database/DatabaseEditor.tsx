@@ -61,12 +61,13 @@ export default function DatabaseEditor() {
                 isLast={index === columns.length - 1}
               />
             ))}
+
             <TableHead
               onClick={() => createColumn(activeNestling.id!, "Name", "text")}
               className={cn(
                 "w-5 border-gray-300 text-gray-400 transition-[background] hover:bg-gray-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
                 activeBackgroundId &&
-                  "border-black/30 text-gray-600 hover:bg-black/5 dark:border-white/30 dark:text-zinc-300 dark:hover:bg-white/5",
+                  "border-black/30 text-gray-500 hover:bg-black/5 dark:border-white/30 dark:text-zinc-400 dark:hover:bg-white/5",
               )}
             >
               <button>+ Add column</button>
