@@ -38,7 +38,7 @@ export default function DatabaseHead({
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState(column.name);
 
-  const { updateColumn, deleteColumn } = useDbActions();
+  const { updateColumn, moveColumn, deleteColumn } = useDbActions();
   const activeBackgroundId = useActiveBackgroundId();
 
   const currentType = COLUMN_TYPES.find((t) => t.value === column.columnType);
@@ -55,11 +55,15 @@ export default function DatabaseHead({
     setIsOpen(false);
   };
 
-  const handleMoveLeft = () =>
-    updateColumn(column.id, { orderIndex: column.orderIndex - 1 });
+  const handleMoveLeft = () => {
+    moveColumn(column.id, "left");
+    setIsOpen(false);
+  };
 
-  const handleMoveRight = () =>
-    updateColumn(column.id, { orderIndex: column.orderIndex + 1 });
+  const handleMoveRight = () => {
+    moveColumn(column.id, "right");
+    setIsOpen(false);
+  };
 
   return (
     <TableHead

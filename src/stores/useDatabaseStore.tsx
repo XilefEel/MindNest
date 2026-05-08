@@ -17,6 +17,7 @@ type DatabaseState = {
     columnType: string,
   ) => Promise<void>;
   updateColumn: (id: number, updates: Partial<DbColumn>) => Promise<void>;
+  moveColumn: (id: number, direction: "left" | "right") => Promise<void>;
   deleteColumn: (id: number) => Promise<void>;
 
   createRow: (nestlingId: number) => Promise<void>;
@@ -82,6 +83,39 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
     await updateNestlingTimestamp(
       get().columns.find((col) => col.id === id)?.nestlingId!,
     );
+  }),
+
+  moveColumn: withStoreErrorHandler(set, async (id, direction) => {
+    const columns = get().columns;
+    const index = columns.findIndex((col) => col.id === id);
+
+    const swapIndex = direction === "left" ? index - 1 : index + 1;
+
+    if (swapIndex < 0 || swapIndex >= columns.length) return;
+
+    const column = columns[index];
+    const swapColumn = columns[swapIndex];
+
+    await Promise.all([
+      dbApi.updateDbColumn({ ...column, orderIndex: swapColumn.orderIndex }),
+      dbApi.updateDbColumn({ ...swapColumn, orderIndex: column.orderIndex }),
+    ]);
+
+    set((state) => ({
+      columns: state.columns
+        .map((col) => {
+          if (col.id === column.id)
+            return { ...col, orderIndex: swapColumn.orderIndex };
+
+          if (col.id === swapColumn.id)
+            return { ...col, orderIndex: column.orderIndex };
+
+          return col;
+        })
+        .sort((a, b) => a.orderIndex - b.orderIndex),
+    }));
+
+    await updateNestlingTimestamp(column.nestlingId);
   }),
 
   deleteColumn: withStoreErrorHandler(set, async (id: number) => {
@@ -152,6 +186,7 @@ export const useDbActions = () =>
       getDbData: state.getDbData,
       createColumn: state.createColumn,
       updateColumn: state.updateColumn,
+      moveColumn: state.moveColumn,
       deleteColumn: state.deleteColumn,
       createRow: state.createRow,
       deleteRow: state.deleteRow,
