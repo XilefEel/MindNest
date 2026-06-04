@@ -81,8 +81,8 @@ export const getNestlingIcon = (type: NestlingType) => {
 export const getNestlingTypeColor = (type: NestlingType) => {
   return (
     nestlingTypeConfigs.find((t) => t.value === type) || {
-      color: "bg-gray-500",
-      border: "hover:border-gray-500",
+      color: "bg-zinc-500",
+      border: "hover:border-zinc-500",
     }
   );
 };

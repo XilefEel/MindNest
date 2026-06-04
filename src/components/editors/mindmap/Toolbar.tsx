@@ -34,7 +34,7 @@ export default function MindmapToolbar({
 
       <button
         onClick={() => zoomOut({ duration: 300 })}
-        className="rounded-lg p-2 transition hover:bg-gray-100/50 dark:hover:bg-zinc-800/50"
+        className="rounded-lg p-2 transition hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50"
       >
         <Minus className="size-4 flex-shrink-0" />
       </button>
@@ -52,13 +52,13 @@ export default function MindmapToolbar({
 
       <button
         onClick={() => zoomIn({ duration: 300 })}
-        className="rounded-lg p-2 transition hover:bg-gray-100/50 dark:hover:bg-zinc-800/50"
+        className="rounded-lg p-2 transition hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50"
       >
         <Plus className="size-4 flex-shrink-0" />
       </button>
 
       <button
-        className="flex w-18 items-center justify-center rounded-lg py-2 transition hover:bg-gray-100/50 dark:hover:bg-zinc-800/50"
+        className="flex w-18 items-center justify-center rounded-lg py-2 transition hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50"
         onClick={() => zoomTo(1, { duration: 300 })}
       >
         <span className="text-xs">
@@ -69,7 +69,7 @@ export default function MindmapToolbar({
 
       <button
         onClick={() => fitView({ duration: 300 })}
-        className="rounded-lg p-2 transition hover:bg-gray-100/50 dark:hover:bg-zinc-800/50"
+        className="rounded-lg p-2 transition hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50"
       >
         <Maximize className="size-4 flex-shrink-0" />
       </button>

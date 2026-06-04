@@ -21,7 +21,7 @@ export default function SearchBar() {
   return (
     <div className="relative">
       <div className="relative">
-        <Search className="absolute top-1/2 left-4 size-4 -translate-y-1/2 text-gray-400" />
+        <Search className="absolute top-1/2 left-4 size-4 -translate-y-1/2 text-zinc-400" />
         <Input
           placeholder="Search your nestlings..."
           value={searchQuery}
@@ -33,16 +33,16 @@ export default function SearchBar() {
             "h-9 rounded-xl border pl-10 text-xs transition-shadow md:text-sm",
             "bg-white dark:bg-zinc-800",
             "shadow-sm focus:shadow-md",
-            "text-gray-900 placeholder-gray-500 dark:text-zinc-100 dark:placeholder-gray-400",
+            "text-zinc-900 placeholder-zinc-500 dark:text-zinc-100 dark:placeholder-zinc-400",
             "focus:ring-teal-500 dark:focus:ring-teal-400",
-            "border-gray-100 focus:border-teal-50 dark:border-zinc-700 dark:focus:border-teal-400",
+            "border-zinc-100 focus:border-teal-50 dark:border-zinc-700 dark:focus:border-teal-400",
             activeBackgroundId &&
               "border-transparent bg-white/10 backdrop-blur-sm dark:border-transparent dark:bg-black/10",
           )}
         />
 
         {!searchQuery && (
-          <span className="pointer-events-none absolute top-1/2 right-3.5 hidden -translate-y-1/2 text-xs text-gray-400 md:block">
+          <span className="pointer-events-none absolute top-1/2 right-3.5 hidden -translate-y-1/2 text-xs text-zinc-400 md:block">
             type # to filter by tags
           </span>
         )}
@@ -51,7 +51,7 @@ export default function SearchBar() {
       {searchQuery && (
         <div
           className={cn(
-            "absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-800",
+            "absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-800",
             activeBackgroundId &&
               "border-transparent bg-white/10 backdrop-blur-sm dark:border-transparent dark:bg-black/30",
           )}
@@ -65,7 +65,7 @@ export default function SearchBar() {
               />
             ))
           ) : (
-            <div className="p-3 text-center text-sm text-gray-400 dark:text-zinc-500">
+            <div className="p-3 text-center text-sm text-zinc-400 dark:text-zinc-500">
               No nestlings matched "{searchQuery}"
             </div>
           )}

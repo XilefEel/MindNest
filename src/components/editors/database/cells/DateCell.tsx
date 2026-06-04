@@ -63,8 +63,8 @@ export default function DateCell({
           ) : (
             <span
               className={cn(
-                "text-gray-400 dark:text-zinc-500",
-                activeBackgroundId && "text-gray-500 dark:text-zinc-400",
+                "text-zinc-400 dark:text-zinc-500",
+                activeBackgroundId && "text-zinc-500 dark:text-zinc-400",
               )}
             >
               Pick a date
@@ -82,14 +82,14 @@ export default function DateCell({
             <div className="flex flex-row items-center gap-1">
               <button
                 onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                className="rounded-full p-1 text-gray-500 transition hover:text-gray-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                className="rounded-full p-1 text-zinc-500 transition hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
               >
                 <ChevronLeft size={20} />
               </button>
 
               <button
                 onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                className="rounded-full p-1 text-gray-500 transition hover:text-gray-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                className="rounded-full p-1 text-zinc-500 transition hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
               >
                 <ChevronRight size={20} />
               </button>
@@ -100,7 +100,7 @@ export default function DateCell({
             {weekDays.map((day, i) => (
               <div
                 key={i}
-                className="flex h-8 items-center justify-center text-xs font-medium text-gray-500"
+                className="flex h-8 items-center justify-center text-xs font-medium text-zinc-500"
               >
                 {day}
               </div>
@@ -114,7 +114,7 @@ export default function DateCell({
                 onClick={() => handleSelectDay(day)}
                 className={cn(
                   "flex size-8 items-center justify-center rounded-full text-sm transition-[background]",
-                  "hover:bg-gray-100 dark:hover:bg-zinc-700",
+                  "hover:bg-zinc-100 dark:hover:bg-zinc-700",
                   activeBackgroundId &&
                     "hover:bg-black/5 dark:hover:bg-white/5",
                   isSameDay(day, new Date()) &&
@@ -124,7 +124,7 @@ export default function DateCell({
                     !isSameDay(day, new Date()) &&
                     "bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-300",
                   !isSameMonth(day, currentMonth) &&
-                    "text-gray-400 dark:text-zinc-500",
+                    "text-zinc-400 dark:text-zinc-500",
                 )}
               >
                 {format(day, "d")}

@@ -106,7 +106,7 @@ export default function NestDashboardPage() {
   return (
     <div
       style={{ scrollbarGutter: "stable" }}
-      className="flex h-screen flex-col bg-gray-50 pb-3 select-none dark:bg-zinc-900"
+      className="flex h-screen flex-col bg-zinc-50 pb-3 select-none dark:bg-zinc-900"
       onContextMenu={(e) => e.preventDefault()}
     >
       <div

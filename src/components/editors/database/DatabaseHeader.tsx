@@ -68,7 +68,7 @@ export default function DatabaseHead({
   return (
     <TableHead
       className={cn(
-        "border-border w-48 border-x border-gray-300 p-0 transition-colors hover:bg-gray-100 dark:border-zinc-600 dark:hover:bg-zinc-800",
+        "border-border w-48 border-x border-zinc-300 p-0 transition-colors hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800",
         activeBackgroundId &&
           "border-black/30 hover:bg-black/5 dark:border-white/30 dark:hover:bg-white/5",
       )}
@@ -79,12 +79,12 @@ export default function DatabaseHead({
         width="w-60"
         trigger={
           <button className="flex h-full w-full items-center gap-2 px-2 text-left text-sm font-medium">
-            <HeaderIcon className="size-4 flex-shrink-0 text-gray-800 dark:text-zinc-100" />{" "}
+            <HeaderIcon className="size-4 flex-shrink-0 text-zinc-800 dark:text-zinc-100" />{" "}
             {column.name}
           </button>
         }
         content={
-          <div className="flex flex-col text-gray-800 dark:text-zinc-200">
+          <div className="flex flex-col text-zinc-800 dark:text-zinc-200">
             <input
               autoFocus
               value={name}
@@ -95,13 +95,13 @@ export default function DatabaseHead({
                 if (e.key === "Escape") setName(column.name);
               }}
               className={cn(
-                "mb-3 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-sm shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-gray-400 dark:focus:ring-teal-400",
+                "mb-3 w-full rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-400 dark:focus:ring-teal-400",
                 activeBackgroundId &&
                   "border-transparent bg-white/10 backdrop-blur-sm dark:border-transparent dark:bg-black/10",
               )}
             />
 
-            <div className="mb-2 border-b border-gray-200 pb-2">
+            <div className="mb-2 border-b border-zinc-200 pb-2">
               <p className="mb-1 px-2 text-xs">Field type</p>
 
               {COLUMN_TYPES.map((type) => (
@@ -112,16 +112,16 @@ export default function DatabaseHead({
                     "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
                     activeBackgroundId
                       ? column.columnType === type.value
-                        ? "bg-white/30 font-medium text-gray-800 dark:bg-black/30 dark:text-zinc-100"
+                        ? "bg-white/30 font-medium text-zinc-800 dark:bg-black/30 dark:text-zinc-100"
                         : "hover:bg-black/5 dark:hover:bg-white/5"
                       : column.columnType === type.value
                         ? "bg-teal-50 font-medium text-teal-600 dark:bg-zinc-700 dark:text-zinc-100"
-                        : "hover:bg-gray-50 dark:hover:bg-zinc-700/50",
+                        : "hover:bg-zinc-50 dark:hover:bg-zinc-700/50",
                   )}
                 >
                   <type.Icon
                     className={cn(
-                      "size-4 flex-shrink-0 text-gray-600 dark:text-zinc-300",
+                      "size-4 flex-shrink-0 text-zinc-600 dark:text-zinc-300",
                       column.columnType === type.value &&
                         "text-teal-600 dark:text-zinc-300",
                     )}
@@ -131,17 +131,17 @@ export default function DatabaseHead({
               ))}
             </div>
 
-            <div className="mb-2 border-b border-gray-200 pb-2">
+            <div className="mb-2 border-b border-zinc-200 pb-2">
               <button
                 disabled={isFirst}
                 onClick={handleMoveLeft}
                 className={cn(
-                  "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-gray-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
+                  "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
                   activeBackgroundId &&
                     "hover:bg-black/5 dark:hover:bg-white/5",
                 )}
               >
-                <ChevronLeft className="size-4 flex-shrink-0 text-gray-600 dark:text-zinc-300" />
+                <ChevronLeft className="size-4 flex-shrink-0 text-zinc-600 dark:text-zinc-300" />
                 Move left
               </button>
 
@@ -149,12 +149,12 @@ export default function DatabaseHead({
                 disabled={isLast}
                 onClick={handleMoveRight}
                 className={cn(
-                  "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-gray-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
+                  "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
                   activeBackgroundId &&
                     "hover:bg-black/5 dark:hover:bg-white/5",
                 )}
               >
-                <ChevronRight className="size-4 flex-shrink-0 text-gray-600 dark:text-zinc-300" />
+                <ChevronRight className="size-4 flex-shrink-0 text-zinc-600 dark:text-zinc-300" />
                 Move right
               </button>
             </div>

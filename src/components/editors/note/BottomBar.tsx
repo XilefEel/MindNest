@@ -33,7 +33,7 @@ export default function BottomBar({
           </>
         )}
         {autoSaveStatus === "idle" && (
-          <span className="text-gray-400 dark:text-zinc-500">Ready</span>
+          <span className="text-zinc-400 dark:text-zinc-500">Ready</span>
         )}
       </div>
 

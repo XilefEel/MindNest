@@ -65,10 +65,10 @@ export default function BaseModal({
         )}
       >
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-gray-900 md:text-xl dark:text-zinc-100">
+          <DialogTitle className="text-lg font-bold text-zinc-900 md:text-xl dark:text-zinc-100">
             {title}
           </DialogTitle>
-          <DialogDescription className="text-xs text-gray-600 md:text-sm dark:text-zinc-400">
+          <DialogDescription className="text-xs text-zinc-600 md:text-sm dark:text-zinc-400">
             {description}
           </DialogDescription>
         </DialogHeader>
@@ -81,7 +81,7 @@ export default function BaseModal({
           <DialogFooter className="flex justify-between gap-2">
             {showCancel && (
               <DialogClose asChild>
-                <button className="rounded-lg bg-gray-200 px-4 py-1.5 text-sm text-gray-900 shadow transition-colors hover:bg-gray-300 dark:bg-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-600">
+                <button className="rounded-lg bg-zinc-200 px-4 py-1.5 text-sm text-zinc-900 shadow transition-colors hover:bg-zinc-300 dark:bg-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-600">
                   Cancel
                 </button>
               </DialogClose>

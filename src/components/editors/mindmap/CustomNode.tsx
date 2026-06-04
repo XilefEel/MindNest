@@ -66,7 +66,7 @@ export default function CustomNode({
   return (
     <MindmapContextMenu node={currentNode}>
       <div
-        className="flex h-full w-full items-center justify-center rounded border border-gray-200 p-3"
+        className="flex h-full w-full items-center justify-center rounded border border-zinc-200 p-3"
         style={{ backgroundColor: data.color }}
       >
         <NodeResizer

@@ -57,14 +57,14 @@ export default function SearchModal() {
           spellCheck={false}
         />
         {!searchQuery && (
-          <span className="pointer-events-none absolute top-1/2 right-10 -translate-y-1/2 text-xs text-gray-400">
+          <span className="pointer-events-none absolute top-1/2 right-10 -translate-y-1/2 text-xs text-zinc-400">
             type # to filter by tags
           </span>
         )}
       </div>
 
       <CommandList>
-        <CommandEmpty className="p-6 text-center text-sm text-gray-400 dark:text-zinc-500">
+        <CommandEmpty className="p-6 text-center text-sm text-zinc-400 dark:text-zinc-500">
           No nestlings matched "{searchQuery}"
         </CommandEmpty>
 
@@ -86,7 +86,7 @@ export default function SearchModal() {
                 onSelect={() => handleSelectNestling(nestling)}
                 className={cn(
                   "flex flex-row items-center justify-between px-4 py-2 transition-colors",
-                  "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-zinc-700/50",
+                  "data-[selected=true]:bg-zinc-50 dark:data-[selected=true]:bg-zinc-700/50",
                   activeBackgroundId &&
                     "data-[selected=true]:bg-black/5 dark:data-[selected=true]:bg-white/5",
                 )}
@@ -119,7 +119,7 @@ export default function SearchModal() {
                 onSelect={() => handleSelectNestling(nestling)}
                 className={cn(
                   "flex flex-row items-center justify-between px-4 py-2 transition-colors",
-                  "data-[selected=true]:bg-gray-50 dark:data-[selected=true]:bg-zinc-700/50",
+                  "data-[selected=true]:bg-zinc-50 dark:data-[selected=true]:bg-zinc-700/50",
                   activeBackgroundId &&
                     "data-[selected=true]:bg-black/5 dark:data-[selected=true]:bg-white/5",
                 )}

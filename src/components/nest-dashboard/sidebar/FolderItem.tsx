@@ -85,7 +85,7 @@ export default function FolderItem({
             "group flex items-center justify-between gap-1 rounded px-2 py-1 transition-[background] hover:bg-teal-50 dark:hover:bg-zinc-700",
             activeBackgroundId
               ? "hover:bg-black/5 dark:hover:bg-white/5"
-              : "hover:bg-gray-50 dark:hover:bg-zinc-700/50",
+              : "hover:bg-zinc-50 dark:hover:bg-zinc-700/50",
           )}
         >
           <div className="flex min-w-0 flex-1 items-center gap-1.5">
@@ -136,9 +136,9 @@ export default function FolderItem({
             {...listeners}
             {...attributes}
             onClick={(e) => e.stopPropagation()}
-            className="cursor-grab py-0.75 opacity-0 transition-opacity group-hover:opacity-100"
+            className="cursor-grab opacity-0 transition-opacity group-hover:opacity-100"
           >
-            <GripVertical className="size-4 flex-shrink-0 text-gray-500 dark:text-zinc-200" />
+            <GripVertical className="size-4 flex-shrink-0 text-zinc-500 dark:text-zinc-200" />
           </div>
         </div>
       </div>

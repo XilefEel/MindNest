@@ -17,7 +17,7 @@ export const COLORS = [
   "#F9A8D4", // pink-300
   "#F472B6", // pink-400
   "#FB7185", // rose-400
-  "#9CA3AF", // gray-400
+  "#9CA3AF", // zinc-400
   "#64748B", // slate-400
 ];
 

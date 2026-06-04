@@ -74,11 +74,11 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
                 }
               }}
             >
-              <h3 className="text-sm font-semibold text-gray-800 dark:text-zinc-100">
+              <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
                 {card.title}
               </h3>
               {card.description && (
-                <p className="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-zinc-400">
+                <p className="mt-1 line-clamp-2 text-xs text-zinc-500 dark:text-zinc-400">
                   {card.description}
                 </p>
               )}
@@ -89,7 +89,7 @@ export default function ColumnCard({ card }: { card: BoardCard }) {
                 e.stopPropagation();
                 handleDelete();
               }}
-              className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 items-center justify-center rounded-lg text-gray-400 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/30"
+              className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 items-center justify-center rounded-lg text-zinc-400 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/30"
             >
               <Trash className="size-3.5" />
             </button>

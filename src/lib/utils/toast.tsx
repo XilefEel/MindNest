@@ -48,7 +48,7 @@ function createToast(
     >
       <div className={cn("flex-shrink-0 rounded-full p-2", bg)}>{icon}</div>
 
-      <p className="flex-1 text-sm font-medium text-gray-900 select-none dark:text-zinc-100">
+      <p className="flex-1 text-sm font-medium text-zinc-900 select-none dark:text-zinc-100">
         {message}
       </p>
 
@@ -58,7 +58,7 @@ function createToast(
         onClick={() => sonnerToast.dismiss(id)}
         className={cn(
           "rounded-full p-1.5 transition",
-          "text-gray-500 hover:bg-gray-100 hover:text-gray-600",
+          "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-600",
           "dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-zinc-200",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-black/30",
         )}
@@ -84,7 +84,7 @@ export const toast = {
           }}
           className={cn(
             "rounded-full p-1.5 transition",
-            "text-gray-500 hover:bg-gray-100 hover:text-gray-600",
+            "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-600",
             "dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-zinc-200",
             activeBackgroundId && "hover:bg-black/5 dark:hover:bg-black/30",
           )}

@@ -59,7 +59,7 @@ export default function StatCard({
       className={cn(
         "group flex flex-col items-center justify-center gap-1 rounded-2xl border p-4 shadow-sm hover:shadow-md",
         "bg-white dark:bg-zinc-800",
-        "border-gray-100 dark:border-zinc-700",
+        "border-zinc-100 dark:border-zinc-700",
         "transition-[scale,border] hover:scale-[1.02]",
         border,
         activeBackgroundId &&
@@ -76,13 +76,13 @@ export default function StatCard({
       </div>
       <div
         className={cn(
-          "text-2xl font-bold text-gray-900 dark:text-white",
+          "text-2xl font-bold text-zinc-900 dark:text-white",
           number,
         )}
       >
         {value}
       </div>
-      <span className="text-xs text-gray-500 dark:text-zinc-400">{label}</span>
+      <span className="text-xs text-zinc-500 dark:text-zinc-400">{label}</span>
     </div>
   );
 

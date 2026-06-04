@@ -153,14 +153,14 @@ export default function NestlingItem({
                 : "hover:bg-black/5 dark:hover:bg-white/5"
               : nestling.id === activeNestling?.id
                 ? "bg-teal-50 font-medium text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
-                : "hover:bg-gray-50 dark:hover:bg-zinc-700/50",
+                : "hover:bg-zinc-50 dark:hover:bg-zinc-700/50",
           )}
         >
           <div className="flex min-w-0 flex-1 items-center gap-1.5">
             <button
               ref={emojiButtonRef}
               onClick={toggleEmojiPicker}
-              className="flex w-5 items-center justify-center py-0.75 transition-opacity duration-100 hover:opacity-70"
+              className="flex w-5 items-center justify-center transition-opacity duration-100 hover:opacity-70"
             >
               {nestling.icon ? (
                 <span>{nestling.icon}</span>
@@ -206,9 +206,9 @@ export default function NestlingItem({
               {...listeners}
               {...attributes}
               onClick={(e) => e.stopPropagation()}
-              className="cursor-grab py-0.75 opacity-0 transition-opacity group-hover:opacity-100"
+              className="cursor-grab opacity-0 transition-opacity group-hover:opacity-100"
             >
-              <GripVertical className="size-4 flex-shrink-0 text-gray-500 dark:text-zinc-200" />
+              <GripVertical className="size-4 flex-shrink-0 text-zinc-500 dark:text-zinc-200" />
             </div>
           )}
         </div>

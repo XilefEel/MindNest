@@ -62,10 +62,10 @@ export default function BackgroundSection() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
-          <h2 className="text-base font-semibold text-gray-900 dark:text-zinc-100">
+          <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
             Background
           </h2>
-          <p className="text-sm text-gray-600 dark:text-zinc-400">
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
             Customize your nest background
           </p>
         </div>
@@ -78,7 +78,7 @@ export default function BackgroundSection() {
             className={cn(
               "ml-auto rounded p-2 transition-colors",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-              "hover:bg-gray-50 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
+              "hover:bg-zinc-50 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
               "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
               activeBackgroundId &&
                 "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
@@ -92,7 +92,7 @@ export default function BackgroundSection() {
       <div className="max-h-72 overflow-y-auto">
         <div className="grid grid-cols-2 gap-3 p-1 sm:grid-cols-3">
           {backgrounds.length === 0 ? (
-            <p className="col-span-full text-sm text-gray-500 dark:text-zinc-400">
+            <p className="col-span-full text-sm text-zinc-500 dark:text-zinc-400">
               No images yet
             </p>
           ) : (
@@ -106,7 +106,7 @@ export default function BackgroundSection() {
                     ? "ring-teal-500 dark:ring-teal-400"
                     : activeBackgroundId
                       ? "ring-black/10 hover:ring-black/20 dark:ring-white/10 dark:hover:ring-white/20"
-                      : "ring-gray-200 hover:ring-gray-300 dark:ring-gray-700 dark:hover:ring-gray-600",
+                      : "ring-zinc-200 hover:ring-zinc-300 dark:ring-zinc-700 dark:hover:ring-zinc-600",
                 )}
               >
                 <img
@@ -126,7 +126,7 @@ export default function BackgroundSection() {
                   className={cn(
                     "absolute top-2 right-2 rounded-full p-1.5 opacity-0 shadow-md transition-all group-hover:opacity-100",
                     "bg-white/80 hover:bg-red-50 dark:bg-zinc-900/80 dark:hover:bg-red-950",
-                    "text-gray-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400",
+                    "text-zinc-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400",
                   )}
                 >
                   <Trash2 size={14} />
@@ -139,16 +139,16 @@ export default function BackgroundSection() {
 
       <div
         className={cn(
-          "flex items-center gap-3 rounded-lg bg-gray-50 p-3 dark:bg-zinc-700/30",
+          "flex items-center gap-3 rounded-lg bg-zinc-50 p-3 dark:bg-zinc-700/30",
           activeBackgroundId && "bg-white/30 dark:bg-black/30",
         )}
       >
         {brightness > 1.33 ? (
-          <Sun className="h-4 w-4 text-gray-600 dark:text-zinc-400" />
+          <Sun className="h-4 w-4 text-zinc-600 dark:text-zinc-400" />
         ) : brightness > 0.67 ? (
-          <SunMedium className="h-4 w-4 text-gray-600 dark:text-zinc-400" />
+          <SunMedium className="h-4 w-4 text-zinc-600 dark:text-zinc-400" />
         ) : (
-          <SunDim className="h-4 w-4 text-gray-600 dark:text-zinc-400" />
+          <SunDim className="h-4 w-4 text-zinc-600 dark:text-zinc-400" />
         )}
         <Slider
           value={[brightness * 100]}
@@ -157,17 +157,17 @@ export default function BackgroundSection() {
           step={1}
           className="flex-1"
         />
-        <span className="text-sm text-gray-600 dark:text-zinc-400">
+        <span className="text-sm text-zinc-600 dark:text-zinc-400">
           {Math.round(brightness * 100)}%
         </span>
       </div>
 
       <div className="flex items-center justify-between pt-2">
         <div className="flex flex-col">
-          <p className="text-sm text-gray-800 dark:text-zinc-300">
+          <p className="text-sm text-zinc-800 dark:text-zinc-300">
             Choose a photo
           </p>
-          <p className="text-xs text-gray-500 dark:text-zinc-400">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
             PNG, JPEG, GIF, WebP, or BMP
           </p>
         </div>

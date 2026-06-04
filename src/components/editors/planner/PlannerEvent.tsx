@@ -132,7 +132,7 @@ export default function PlannerEvent({
           )}
         >
           <h3 className="truncate font-semibold">{event.title}</h3>
-          <p className="text-xs leading-tight text-gray-100">
+          <p className="text-xs leading-tight text-zinc-100">
             {event.duration < 1
               ? formatTime(event.startTime)
               : `${formatTime(event.startTime)} – ${formatTime(event.startTime + event.duration)}`}
@@ -144,7 +144,7 @@ export default function PlannerEvent({
         side="right"
         align="start"
         className={cn(
-          "w-80 border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800",
+          "w-80 border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800",
           activeBackgroundId &&
             cn(
               "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30",
