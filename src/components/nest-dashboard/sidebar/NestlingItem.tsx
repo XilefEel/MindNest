@@ -165,7 +165,7 @@ export default function NestlingItem({
               {nestling.icon ? (
                 <span>{nestling.icon}</span>
               ) : (
-                <Icon className="size-4 flex-shrink-0" />
+                <Icon className="size-4 shrink-0" />
               )}
             </button>
 
@@ -208,7 +208,7 @@ export default function NestlingItem({
               onClick={(e) => e.stopPropagation()}
               className="cursor-grab opacity-0 transition-opacity group-hover:opacity-100"
             >
-              <GripVertical className="size-4 flex-shrink-0 text-zinc-500 dark:text-zinc-200" />
+              <GripVertical className="size-4 shrink-0 text-zinc-500 dark:text-zinc-200" />
             </div>
           )}
         </div>

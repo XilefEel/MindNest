@@ -29,7 +29,7 @@ export default function RecentSection() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Clock className="size-6 flex-shrink-0" />
+          <Clock className="size-6 shrink-0" />
           <div className="flex justify-between">
             <h2 className="text-lg font-semibold md:text-xl">
               Recent Nestlings

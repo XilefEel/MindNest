@@ -30,7 +30,7 @@ export default function DiscoverCard() {
         <p className="text-xs text-zinc-400 dark:text-zinc-500">3d ago</p>
       </div>
 
-      <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r from-blue-400 to-blue-500 transition-all duration-500 group-hover:w-full" />
+      <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-linear-to-r from-blue-400 to-blue-500 transition-all duration-500 group-hover:w-full" />
     </div>
   );
 }

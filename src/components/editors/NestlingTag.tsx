@@ -20,7 +20,7 @@ export function NestlingTag({
     <div
       onClick={onClick}
       className={cn(
-        "group relative flex items-center rounded-full px-1.5 py-[1px] shadow-xs transition-all select-none",
+        "group relative flex items-center rounded-full px-1.5 py-px shadow-xs transition-all select-none",
         (onClick || onRemove) && "hover:scale-105 hover:shadow-sm",
       )}
       style={{

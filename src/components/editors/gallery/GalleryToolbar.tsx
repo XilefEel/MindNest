@@ -64,7 +64,7 @@ export default function GalleryToolbar({
               "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
           )}
         >
-          <FolderOpen className="size-4 flex-shrink-0" />
+          <FolderOpen className="size-4 shrink-0" />
         </button>
       </BaseToolTip>
 
@@ -81,7 +81,7 @@ export default function GalleryToolbar({
               "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
           )}
         >
-          <Download className="size-4 flex-shrink-0" />
+          <Download className="size-4 shrink-0" />
         </button>
       </BaseToolTip>
 
@@ -99,9 +99,9 @@ export default function GalleryToolbar({
           )}
         >
           {isUploading ? (
-            <Loader className="size-4 flex-shrink-0 animate-spin" />
+            <Loader className="size-4 shrink-0 animate-spin" />
           ) : (
-            <Upload className="size-4 flex-shrink-0" />
+            <Upload className="size-4 shrink-0" />
           )}
         </button>
       </BaseToolTip>

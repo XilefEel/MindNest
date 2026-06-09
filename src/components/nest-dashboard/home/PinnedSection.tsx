@@ -11,7 +11,7 @@ export default function PinnedSection() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
-        <Pin className="size-6 flex-shrink-0" />
+        <Pin className="size-6 shrink-0" />
         <h2 className="text-lg font-semibold md:text-xl">Pinned Nestlings</h2>
       </div>
 

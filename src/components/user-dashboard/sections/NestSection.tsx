@@ -40,7 +40,7 @@ export default function NestSection() {
 
         <AddNestModal userId={userId}>
           <button className="flex items-center gap-1.5 rounded-lg bg-teal-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600">
-            <Plus size={14} className="flex-shrink-0" />
+            <Plus size={14} className="shrink-0" />
             <span>Create Nest</span>
           </button>
         </AddNestModal>

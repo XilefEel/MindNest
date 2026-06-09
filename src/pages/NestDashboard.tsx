@@ -127,7 +127,7 @@ export default function NestDashboardPage() {
       >
         <nav
           className={cn(
-            "mx-3 flex-shrink-0 transition-[height] duration-300 ease-in-out",
+            "mx-3 shrink-0 transition-[height] duration-300 ease-in-out",
             topbarHidden ? "h-0" : "h-17",
           )}
         >
@@ -161,7 +161,7 @@ export default function NestDashboardPage() {
 
           <aside
             className={cn(
-              "flex-shrink-0 transition-[width] duration-300 ease-in-out",
+              "shrink-0 transition-[width] duration-300 ease-in-out",
               sidebarHidden ? "md:w-0" : "md:w-75",
             )}
           >

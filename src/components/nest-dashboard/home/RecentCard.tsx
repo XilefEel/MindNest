@@ -28,7 +28,7 @@ export default function RecentCard({
       <div
         onClick={() => onClick(nestling.id)}
         className={cn(
-          "group relative min-h-[120px] rounded-xl border p-4 shadow-sm hover:shadow-md",
+          "group relative min-h-30 rounded-xl border p-4 shadow-sm hover:shadow-md",
           "bg-white dark:bg-zinc-800",
           "border-zinc-100 dark:border-zinc-700",
           "transition-[scale,border] hover:scale-[1.02]",
@@ -89,7 +89,7 @@ export default function RecentCard({
 
         <ArrowRight
           className={cn(
-            "absolute top-4 right-4 size-4 flex-shrink-0 text-zinc-500 opacity-0 transition-opacity group-hover:opacity-100 dark:text-zinc-300",
+            "absolute top-4 right-4 size-4 shrink-0 text-zinc-500 opacity-0 transition-opacity group-hover:opacity-100 dark:text-zinc-300",
             activeBackgroundId && "text-zinc-400",
           )}
         />

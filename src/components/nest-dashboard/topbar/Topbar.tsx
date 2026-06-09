@@ -114,7 +114,7 @@ export default function Topbar({
           side="bottom"
           width="w-72"
           trigger={
-            <button className="hidden rounded-md p-1 text-3xl transition-[opacity] hover:opacity-80 sm:block">
+            <button className="hidden rounded-md p-1 text-3xl transition-opacity hover:opacity-80 sm:block">
               🪹
             </button>
           }

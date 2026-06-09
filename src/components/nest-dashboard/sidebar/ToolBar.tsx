@@ -54,7 +54,7 @@ export default function ToolBar({ nestId }: { nestId: number }) {
               activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
             )}
           >
-            <btn.Icon className="size-4 flex-shrink-0" />
+            <btn.Icon className="size-4 shrink-0" />
           </button>
         </BaseToolTip>
       ))}

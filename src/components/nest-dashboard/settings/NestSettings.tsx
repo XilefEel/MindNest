@@ -73,7 +73,7 @@ export default function NestSettings() {
             )}
           >
             <div className="flex flex-row items-center justify-start gap-2">
-              <tab.Icon className="size-4 flex-shrink-0" />
+              <tab.Icon className="size-4 shrink-0" />
               <span className="hidden md:block">{tab.label}</span>
             </div>
           </button>

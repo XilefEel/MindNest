@@ -113,7 +113,7 @@ export default function BoardEditor() {
               <button
                 onClick={handleAddColumn}
                 className={cn(
-                  "flex w-72 flex-shrink-0 items-center justify-center gap-2 rounded-lg py-5 transition-colors",
+                  "flex w-72 shrink-0 items-center justify-center gap-2 rounded-lg py-5 transition-colors",
                   "text-zinc-600 dark:text-zinc-400",
                   "border-2 border-dashed border-zinc-600 dark:border-zinc-400",
                   "hover:bg-zinc-100 dark:hover:bg-zinc-800",

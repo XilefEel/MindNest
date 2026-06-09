@@ -20,7 +20,7 @@ export default function MindmapToolbar({
         onClick={onAddNode}
         className="flex items-center justify-center gap-2 rounded-lg px-3 py-2 transition hover:bg-teal-100/50 hover:text-teal-500 active:scale-98 dark:hover:bg-teal-700/20"
       >
-        <CirclePlus className="size-4 flex-shrink-0" />
+        <CirclePlus className="size-4 shrink-0" />
         <span className="text-xs font-medium">Add Node</span>
       </button>
 
@@ -28,7 +28,7 @@ export default function MindmapToolbar({
         onClick={onDeleteAll}
         className="flex items-center justify-center gap-2 rounded-lg px-3 py-2 transition hover:bg-red-100/50 hover:text-red-500 active:scale-98 dark:hover:bg-red-900/20"
       >
-        <Trash2 className="size-4 flex-shrink-0" />
+        <Trash2 className="size-4 shrink-0" />
         <span className="text-xs font-medium">Delete All</span>
       </button>
 
@@ -36,7 +36,7 @@ export default function MindmapToolbar({
         onClick={() => zoomOut({ duration: 300 })}
         className="rounded-lg p-2 transition hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50"
       >
-        <Minus className="size-4 flex-shrink-0" />
+        <Minus className="size-4 shrink-0" />
       </button>
 
       <div className="flex items-center px-2">
@@ -54,7 +54,7 @@ export default function MindmapToolbar({
         onClick={() => zoomIn({ duration: 300 })}
         className="rounded-lg p-2 transition hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50"
       >
-        <Plus className="size-4 flex-shrink-0" />
+        <Plus className="size-4 shrink-0" />
       </button>
 
       <button
@@ -71,7 +71,7 @@ export default function MindmapToolbar({
         onClick={() => fitView({ duration: 300 })}
         className="rounded-lg p-2 transition hover:bg-zinc-100/50 dark:hover:bg-zinc-800/50"
       >
-        <Maximize className="size-4 flex-shrink-0" />
+        <Maximize className="size-4 shrink-0" />
       </button>
     </Panel>
   );

@@ -55,7 +55,7 @@ export default function NoteToolbarPopover({
             "border-none bg-white/30 backdrop-blur-sm dark:bg-black/30",
         )}
       >
-        <Link className="size-4 flex-shrink-0 text-zinc-400" />
+        <Link className="size-4 shrink-0 text-zinc-400" />
 
         <input
           value={linkUrl}
@@ -83,7 +83,7 @@ export default function NoteToolbarPopover({
               activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
             )}
           >
-            <Check className="size-4 flex-shrink-0" />
+            <Check className="size-4 shrink-0" />
           </button>
 
           <button
@@ -93,7 +93,7 @@ export default function NoteToolbarPopover({
               activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
             )}
           >
-            <X className="size-4 flex-shrink-0" />
+            <X className="size-4 shrink-0" />
           </button>
         </div>
       </PopoverContent>

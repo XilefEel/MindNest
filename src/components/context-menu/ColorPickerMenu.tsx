@@ -22,7 +22,7 @@ export default function ColorPickerMenu<T extends { color: string }>({
       width="min-w-[160px]"
       trigger={
         <>
-          <Icon className="size-4 flex-shrink-0" />
+          <Icon className="size-4 shrink-0" />
           <span>{label}</span>
           <div
             className="ml-auto h-3 w-3 rounded-full border border-zinc-300 dark:border-zinc-600"

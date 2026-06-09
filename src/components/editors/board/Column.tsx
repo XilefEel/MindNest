@@ -106,7 +106,7 @@ export default function Column({ column }: { column: BoardColumn }) {
         ref={setNodeRef}
         key={column.id}
         style={style}
-        className="flex w-72 flex-shrink-0 flex-col overflow-hidden rounded-2xl border border-black/5 shadow-lg"
+        className="flex w-72 shrink-0 flex-col overflow-hidden rounded-2xl border border-black/5 shadow-lg"
       >
         <div
           className="flex cursor-grab items-center gap-1 bg-black/5 px-4 py-2.5 active:cursor-grabbing"
@@ -157,7 +157,7 @@ export default function Column({ column }: { column: BoardColumn }) {
               ))}
             </SortableContext>
           ) : (
-            <div className="flex min-h-[120px] items-center justify-center rounded-xl border-2 border-dashed border-white/30 text-sm font-medium text-white/70">
+            <div className="flex min-h-30 items-center justify-center rounded-xl border-2 border-dashed border-white/30 text-sm font-medium text-white/70">
               Drop cards here
             </div>
           )}

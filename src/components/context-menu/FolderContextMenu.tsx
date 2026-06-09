@@ -80,7 +80,7 @@ export default function FolderContextMenu({
           <ContextSubMenu
             trigger={
               <>
-                <FolderInput className="size-4 flex-shrink-0" />
+                <FolderInput className="size-4 shrink-0" />
                 <span>Move to Folder</span>
                 <ChevronRight className="ml-auto" size={16} />
               </>

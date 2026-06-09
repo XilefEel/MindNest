@@ -112,7 +112,7 @@ export default function TagPopover({ nestlingId }: { nestlingId: number }) {
             "hover:bg-zinc-50 dark:hover:bg-zinc-700/50",
           )}
         >
-          <Plus className="size-4 flex-shrink-0 text-zinc-700 dark:text-zinc-200" />
+          <Plus className="size-4 shrink-0 text-zinc-700 dark:text-zinc-200" />
           Create "{searchQuery}"
         </button>
       )}

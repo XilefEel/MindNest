@@ -46,7 +46,7 @@ function createToast(
         activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/50",
       )}
     >
-      <div className={cn("flex-shrink-0 rounded-full p-2", bg)}>{icon}</div>
+      <div className={cn("shrink-0 rounded-full p-2", bg)}>{icon}</div>
 
       <p className="flex-1 text-sm font-medium text-zinc-900 select-none dark:text-zinc-100">
         {message}
@@ -63,7 +63,7 @@ function createToast(
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-black/30",
         )}
       >
-        <X className="size-4 flex-shrink-0" />
+        <X className="size-4 shrink-0" />
       </button>
     </div>
   ));
@@ -89,7 +89,7 @@ export const toast = {
             activeBackgroundId && "hover:bg-black/5 dark:hover:bg-black/30",
           )}
         >
-          <FolderOpen className="size-4 flex-shrink-0" />
+          <FolderOpen className="size-4 shrink-0" />
         </button>
       ),
     ),

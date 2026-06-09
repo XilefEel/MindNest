@@ -36,7 +36,7 @@ export default function BookmarkToolbar({
   return (
     <div className="flex flex-row items-center justify-between gap-2">
       <div className="flex flex-1 text-sm">
-        <div className="relative w-full md:w-[350px]">
+        <div className="relative w-full md:w-87.5">
           <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400" />
           <input
             type="text"
@@ -73,7 +73,7 @@ export default function BookmarkToolbar({
                     "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
                 )}
               >
-                <BookmarkPlus className="size-4 flex-shrink-0" />
+                <BookmarkPlus className="size-4 shrink-0" />
               </button>
             </BaseToolTip>
           </div>
@@ -92,7 +92,7 @@ export default function BookmarkToolbar({
                 "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
             )}
           >
-            <ExternalLink className="size-4 flex-shrink-0" />
+            <ExternalLink className="size-4 shrink-0" />
           </button>
         </BaseToolTip>
 
@@ -109,7 +109,7 @@ export default function BookmarkToolbar({
                 "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
             )}
           >
-            <Download className="size-4 flex-shrink-0" />
+            <Download className="size-4 shrink-0" />
           </button>
         </BaseToolTip>
 

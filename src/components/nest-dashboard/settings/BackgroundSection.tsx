@@ -84,7 +84,7 @@ export default function BackgroundSection() {
                 "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
             )}
           >
-            <FolderOpen className="size-4 flex-shrink-0" />
+            <FolderOpen className="size-4 shrink-0" />
           </button>
         </BaseToolTip>
       </div>
@@ -116,7 +116,7 @@ export default function BackgroundSection() {
                   loading="lazy"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
 
                 <button
                   onClick={(e) => {

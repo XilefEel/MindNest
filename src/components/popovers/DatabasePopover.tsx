@@ -78,7 +78,7 @@ export default function DatabasePopover({
             >
               <type.Icon
                 className={cn(
-                  "size-4 flex-shrink-0 text-zinc-600 dark:text-zinc-300",
+                  "size-4 shrink-0 text-zinc-600 dark:text-zinc-300",
                   column.columnType === type.value &&
                     "text-teal-600 dark:text-zinc-300",
                 )}
@@ -98,7 +98,7 @@ export default function DatabasePopover({
             activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
           )}
         >
-          <ChevronLeft className="size-4 flex-shrink-0 text-zinc-600 dark:text-zinc-300" />
+          <ChevronLeft className="size-4 shrink-0 text-zinc-600 dark:text-zinc-300" />
           Move left
         </button>
 
@@ -110,7 +110,7 @@ export default function DatabasePopover({
             activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
           )}
         >
-          <ChevronRight className="size-4 flex-shrink-0 text-zinc-600 dark:text-zinc-300" />
+          <ChevronRight className="size-4 shrink-0 text-zinc-600 dark:text-zinc-300" />
           Move right
         </button>
       </div>

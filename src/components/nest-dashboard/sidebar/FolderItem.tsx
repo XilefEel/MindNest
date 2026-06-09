@@ -92,13 +92,13 @@ export default function FolderItem({
             {folderArrow && (
               <ChevronDown
                 className={cn(
-                  "size-4 flex-shrink-0 transition-transform",
+                  "size-4 shrink-0 transition-transform",
                   isFolderOpen ? "rotate-0" : "-rotate-90",
                 )}
               />
             )}
 
-            <FolderIcon className="size-4 flex-shrink-0" />
+            <FolderIcon className="size-4 shrink-0" />
 
             <div
               className={cn(
@@ -138,7 +138,7 @@ export default function FolderItem({
             onClick={(e) => e.stopPropagation()}
             className="cursor-grab opacity-0 transition-opacity group-hover:opacity-100"
           >
-            <GripVertical className="size-4 flex-shrink-0 text-zinc-500 dark:text-zinc-200" />
+            <GripVertical className="size-4 shrink-0 text-zinc-500 dark:text-zinc-200" />
           </div>
         </div>
       </div>

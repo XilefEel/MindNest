@@ -41,7 +41,7 @@ export default function KeyboardShortcutsSection() {
                   )}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex-shrink-0 text-zinc-500 dark:text-zinc-400">
+                    <div className="shrink-0 text-zinc-500 dark:text-zinc-400">
                       <shortcut.Icon size={16} />
                     </div>
                     <span className="text-sm text-zinc-800 dark:text-zinc-200">

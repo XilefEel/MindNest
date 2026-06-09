@@ -33,7 +33,7 @@ export default function SearchItem({
           {nestling.icon ? (
             <p>{nestling.icon}</p>
           ) : (
-            <Icon className="size-4 flex-shrink-0" />
+            <Icon className="size-4 shrink-0" />
           )}
         </div>
 

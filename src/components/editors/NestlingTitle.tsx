@@ -123,7 +123,7 @@ export default function NestlingTitle({
             ) : (
               <Icon
                 size={compactNestlingTitle ? 24 : 32}
-                className="flex-shrink-0"
+                className="shrink-0"
               />
             )}
           </button>
@@ -170,7 +170,7 @@ export default function NestlingTitle({
           compactNestlingTitle && "hidden",
         )}
       >
-        <Folder className="size-4 flex-shrink-0" />
+        <Folder className="size-4 shrink-0" />
 
         <span className="text-sm">
           {findFolderPath(nestling.folderId, folders) || "No folder"}

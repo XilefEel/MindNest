@@ -83,7 +83,7 @@ export default function MusicSection() {
                 "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
             )}
           >
-            <FolderOpen className="size-4 flex-shrink-0" />
+            <FolderOpen className="size-4 shrink-0" />
           </button>
         </BaseToolTip>
       </div>
@@ -125,11 +125,11 @@ export default function MusicSection() {
         )}
       >
         {volume > 0.5 ? (
-          <Volume2 className="size-4 flex-shrink-0 text-zinc-600 dark:text-zinc-400" />
+          <Volume2 className="size-4 shrink-0 text-zinc-600 dark:text-zinc-400" />
         ) : volume > 0 ? (
-          <Volume1 className="size-4 flex-shrink-0 text-zinc-600 dark:text-zinc-400" />
+          <Volume1 className="size-4 shrink-0 text-zinc-600 dark:text-zinc-400" />
         ) : (
-          <VolumeX className="size-4 flex-shrink-0 text-zinc-400 dark:text-zinc-500" />
+          <VolumeX className="size-4 shrink-0 text-zinc-400 dark:text-zinc-500" />
         )}
 
         <Slider

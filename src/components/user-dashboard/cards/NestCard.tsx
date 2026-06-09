@@ -42,7 +42,7 @@ export default function NestCard({ nest }: { nest: Nest }) {
         </p>
       </div>
 
-      <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r from-teal-400 to-teal-500 transition-all duration-500 group-hover:w-full" />
+      <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-linear-to-r from-teal-400 to-teal-500 transition-all duration-500 group-hover:w-full" />
     </div>
   );
 }

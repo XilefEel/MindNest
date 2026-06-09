@@ -61,7 +61,7 @@ export default function BookmarkCard({
               />
             </div>
           ) : (
-            <div className="aspect-video w-full bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-700 dark:to-zinc-800" />
+            <div className="aspect-video w-full bg-linear-to-br from-zinc-100 to-zinc-200 dark:from-zinc-700 dark:to-zinc-800" />
           )}
 
           <div className="w-full p-4">
@@ -136,7 +136,7 @@ export default function BookmarkCard({
         )}
       >
         {bookmark.imageUrl && (
-          <div className="h-32 w-32 flex-shrink-0 overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-700">
+          <div className="h-32 w-32 shrink-0 overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-700">
             <img
               src={bookmark.imageUrl}
               alt={bookmark.title || "Bookmark"}

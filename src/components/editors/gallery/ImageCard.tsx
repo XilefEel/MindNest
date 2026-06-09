@@ -46,7 +46,7 @@ export default function ImageCard({
           className="h-full w-full transition-transform duration-300 group-hover:scale-105"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent opacity-0 transition-all duration-200 group-hover:opacity-100">
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/30 to-transparent opacity-0 transition-all duration-200 group-hover:opacity-100">
           <button
             onClick={(e) => {
               e.stopPropagation();

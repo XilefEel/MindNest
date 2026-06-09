@@ -77,7 +77,7 @@ export default function GeneralSettings() {
                   ),
             )}
           >
-            <PanelLeft className="size-4 flex-shrink-0" />
+            <PanelLeft className="size-4 shrink-0" />
           </button>
           <button
             onClick={() => setSetting("sidebarPosition", "right")}
@@ -91,7 +91,7 @@ export default function GeneralSettings() {
                   ),
             )}
           >
-            <PanelRight className="size-4 flex-shrink-0" />
+            <PanelRight className="size-4 shrink-0" />
           </button>
         </div>
       ),
@@ -146,7 +146,7 @@ export default function GeneralSettings() {
           >
             <Select.Value />
             <Select.Icon>
-              <ChevronDown className="size-3 flex-shrink-0" />
+              <ChevronDown className="size-3 shrink-0" />
             </Select.Icon>
           </Select.Trigger>
 
@@ -157,7 +157,7 @@ export default function GeneralSettings() {
               side="bottom"
               sideOffset={4}
               className={cn(
-                "z-[100] w-28 overflow-hidden rounded-lg border shadow-sm",
+                "z-100 w-28 overflow-hidden rounded-lg border shadow-sm",
                 "data-[state=open]:animate-in data-[state=closed]:animate-out",
                 "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
                 "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -176,8 +176,8 @@ export default function GeneralSettings() {
                       "flex cursor-default items-center justify-between px-3 py-1.5 text-sm capitalize transition-colors outline-none select-none",
                       "text-zinc-800 dark:text-zinc-200",
                       activeBackgroundId
-                        ? "data-[highlighted]:bg-white/20 dark:data-[highlighted]:bg-white/10"
-                        : "data-[highlighted]:bg-zinc-50 dark:data-[highlighted]:bg-zinc-700/50",
+                        ? "data-highlighted:bg-white/20 dark:data-highlighted:bg-white/10"
+                        : "data-highlighted:bg-zinc-50 dark:data-highlighted:bg-zinc-700/50",
                     )}
                   >
                     <Select.ItemText>{level}</Select.ItemText>

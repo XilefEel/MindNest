@@ -113,7 +113,7 @@ export default function NestlingModal() {
                     >
                       <Icon
                         className={cn(
-                          "size-5 flex-shrink-0 text-white",
+                          "size-5 shrink-0 text-white",
                           !isSelected && "text-zinc-700 dark:text-zinc-300",
                         )}
                       />
