@@ -2,9 +2,15 @@
 
 > Your mind deserves a cozy nest. 🪺
 
-MindNest is an all-in-one desktop productivity app where you create **Nests** (workspaces) and fill them with whatever **Nestlings** (tools) you need, like notes, boards, planners, galleries, bookmarks, mind maps, and more.
+MindNest is a cozy desktop productivity app where you create **Nests** (workspaces) and fill them with whatever **Nestlings** (tools) you need, like notes, boards, planners, galleries, bookmarks, mind maps, and more.
 
-Built with Tauri and React for beautiful UI and native performance.
+Built with Tauri and React for a lightweight, native feel.
+
+## Why MindNest?
+
+Most productivity apps nowadays are incredibly powerful, but I only ever used them to make some simple notes, quick to-do lists, and maybe a few bookmarks. In the end, I only use like 5% of their features, and the rest just adds to the complexity.
+
+MindNest is built around one idea: give me a handful of simple, focused tools that I'll actually use, without having to manage an entire ecosystem.
 
 ## Screenshots
 
@@ -14,7 +20,7 @@ Built with Tauri and React for beautiful UI and native performance.
 
 ## Tech Stack
 
-**Frontend:** React, TypeScript, Tailwind, shadcn/ui
+**Frontend:** React, TypeScript, TailwindCSS, shadcn/ui
 
 **State Management:** Zustand
 
@@ -32,15 +38,13 @@ Built with Tauri and React for beautiful UI and native performance.
   - 🖼️ Galleries
   - 🔖 Bookmarks
   - 🧠 Mind Maps
-  - 🗄️ Databases _(coming soon)_
+  - 🗄️ Databases _(work in progress)_
 - Folders and Tags
 - Sidebar with Drag & Drop
 - Emoji Icons Picker for Nestlings
 - Upload Background Image and Music to Nests
-- Adaptive Glassmorphism Design
-- Keyboard Shortcuts
-- Context Menus
-- Light, Dark and System Theme
+- Light, Dark, and System Theme
+- **Adaptive Glassmorphism**: Cards, modals, and menus turn translucent when a background image is set
 
 ## Requirements
 
@@ -62,6 +66,7 @@ npm run tauri dev
 - Database Nestlings
 - Export Nests
 - Share and Discover Nests
+- Web and Mobile Versions
 - Cross Device Sync
 
 ## License
