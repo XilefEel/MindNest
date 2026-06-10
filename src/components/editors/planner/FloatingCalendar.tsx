@@ -21,6 +21,8 @@ import BasePopover from "@/components/popovers/BasePopover";
 import { getWeekRange } from "@/lib/utils/date";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 
+const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
+
 export default function FloatingCalendar({
   selectedDate,
   onDateSelect,
@@ -41,8 +43,6 @@ export default function FloatingCalendar({
   const monthEnd = endOfMonth(currentMonth);
   const startDate = startOfWeek(monthStart);
   const endDate = endOfWeek(monthEnd);
-
-  const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
 
   const days: Date[] = [];
   for (let day = startDate; day <= endDate; day = addDays(day, 1)) {

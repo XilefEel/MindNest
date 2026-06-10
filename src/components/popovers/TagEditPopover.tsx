@@ -7,6 +7,10 @@ import { toast } from "@/lib/utils/toast";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 
+const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === "Enter") e.currentTarget.blur();
+};
+
 export default function TagEditPopover({ tag }: { tag: Tag }) {
   const { updateTag } = useNestlingActions();
   const activeBackgroundId = useActiveBackgroundId();
@@ -26,10 +30,6 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
     } catch (error) {
       toast.error("Failed to update tag name.");
     }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") e.currentTarget.blur();
   };
 
   const handleChangeColor = (color: string) => {

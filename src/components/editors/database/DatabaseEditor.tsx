@@ -22,6 +22,7 @@ import DatabaseHeader from "./DatabaseHeader";
 import DatabaseCell from "./DatabaseCell";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
+import { Plus } from "lucide-react";
 
 export default function DatabaseEditor() {
   const activeNestling = useActiveNestling();
@@ -50,12 +51,12 @@ export default function DatabaseEditor() {
         nestling={activeNestling}
       />
 
-      <Table>
+      <Table className="min-w-max">
         <TableHeader>
           <TableRow>
             {columns.map((col, index) => (
               <DatabaseHeader
-                key={index}
+                key={col.id}
                 column={col}
                 isFirst={index === 0}
                 isLast={index === columns.length - 1}
@@ -65,12 +66,15 @@ export default function DatabaseEditor() {
             <TableHead
               onClick={() => createColumn(activeNestling.id!, "Name", "text")}
               className={cn(
-                "w-5 border-zinc-300 text-zinc-400 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
+                "border-zinc-300 text-zinc-400 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
                 activeBackgroundId &&
                   "border-black/30 text-zinc-500 hover:bg-black/5 dark:border-white/30 dark:text-zinc-400 dark:hover:bg-white/5",
               )}
             >
-              <button>+ Add column</button>
+              <button className="flex items-center gap-1">
+                <Plus className="size-4 shrink-0" />
+                New Column
+              </button>
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -116,7 +120,10 @@ export default function DatabaseEditor() {
                   "border-black/30 text-zinc-600 hover:bg-black/5 dark:border-white/30 dark:text-zinc-300 dark:hover:bg-white/5",
               )}
             >
-              <button>+ Add row</button>
+              <button className="flex items-center gap-1">
+                <Plus className="size-4 shrink-0" />
+                New row
+              </button>
             </TableCell>
           </TableRow>
         </TableBody>

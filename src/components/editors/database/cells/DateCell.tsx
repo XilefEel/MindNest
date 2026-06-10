@@ -16,6 +16,8 @@ import { cn } from "@/lib/utils/general";
 import BasePopover from "@/components/popovers/BasePopover";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 
+const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
+
 export default function DateCell({
   value,
   onSave,
@@ -34,8 +36,6 @@ export default function DateCell({
   const monthEnd = endOfMonth(currentMonth);
   const startDate = startOfWeek(monthStart);
   const endDate = endOfWeek(monthEnd);
-
-  const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
 
   const days: Date[] = [];
   for (let day = startDate; day <= endDate; day = addDays(day, 1)) {
@@ -99,7 +99,7 @@ export default function DateCell({
           <div className="mt-4 mb-2 grid grid-cols-7 gap-2">
             {weekDays.map((day, i) => (
               <div
-                key={i}
+                key={day.toString() + i}
                 className="flex h-8 items-center justify-center text-xs font-medium text-zinc-500"
               >
                 {day}

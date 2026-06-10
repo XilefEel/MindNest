@@ -28,7 +28,7 @@ export default function KeyboardShortcutsSection() {
               .filter((shortcut) => shortcut.category === category)
               .map((shortcut, index) => (
                 <div
-                  key={index}
+                  key={shortcut.id}
                   className={cn(
                     "flex items-center justify-between rounded-lg px-3 py-2",
                     activeBackgroundId
@@ -50,9 +50,9 @@ export default function KeyboardShortcutsSection() {
                   </div>
 
                   <div className="flex gap-1">
-                    {shortcut.keys.map((key, i) => (
+                    {shortcut.keys.map((key) => (
                       <kbd
-                        key={i}
+                        key={key}
                         className={cn(
                           "rounded px-2 py-1 text-xs font-semibold shadow-sm",
                           activeBackgroundId

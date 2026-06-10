@@ -11,8 +11,7 @@ function getStore() {
 
 export async function setItem<T>(key: string, value: T) {
   const store = await getStore();
-  await store.set(key, value);
-  await store.save();
+  Promise.all([await store.set(key, value), await store.save()]);
 }
 
 export async function getItem<T>(key: string): Promise<T | null> {
@@ -22,8 +21,7 @@ export async function getItem<T>(key: string): Promise<T | null> {
 
 export async function deleteItem(key: string) {
   const store = await getStore();
-  await store.delete(key);
-  await store.save();
+  Promise.all([await store.delete(key), await store.save()]);
 }
 
 export async function getMap<T extends Record<string, any>>(

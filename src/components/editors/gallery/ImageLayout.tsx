@@ -79,13 +79,15 @@ export default function ImageLayout({
     setIsUploading(true);
 
     try {
-      for (const file of imageFiles) {
-        const uint8Array = new Uint8Array(await file.arrayBuffer());
-        await uploadImage({
-          nestlingId: activeNestling.id,
-          file: { name: file.name, data: uint8Array },
-        });
-      }
+      await Promise.all(
+        imageFiles.map(async (file) => {
+          const uint8Array = new Uint8Array(await file.arrayBuffer());
+          await uploadImage({
+            nestlingId: activeNestling.id,
+            file: { name: file.name, data: uint8Array },
+          });
+        }),
+      );
       toast.success("Image uploaded successfully!");
     } catch (error) {
       toast.error("Failed to upload image.");

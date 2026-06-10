@@ -36,21 +36,19 @@ export default function CalendarEditor() {
     [events, start, end],
   );
 
-  const duplicateWeek = () => {
+  const duplicateWeek = async () => {
     try {
       if (weekEvents.length === 0) {
         toast.error("No events to duplicate for this week.");
         return;
       }
 
-      weekEvents.forEach(async (event) => {
-        const newEvent = {
-          ...event,
-          date: addDaysToDate(event.date, 7),
-        };
-
-        await createEvent(newEvent);
-      });
+      await Promise.all(
+        weekEvents.map(async (event) => {
+          const newEvent = { ...event, date: addDaysToDate(event.date, 7) };
+          await createEvent(newEvent);
+        }),
+      );
 
       toast.success("Week duplicated successfully!");
     } catch (error) {

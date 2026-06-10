@@ -61,12 +61,14 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
 
     const files = Array.isArray(selected) ? selected : [selected];
 
-    for (const filePath of files) {
-      await get().uploadImage({
-        nestlingId,
-        file: { path: filePath },
-      });
-    }
+    await Promise.all(
+      files.map((filePath) =>
+        get().uploadImage({
+          nestlingId,
+          file: { path: filePath },
+        }),
+      ),
+    );
 
     return true;
   }),

@@ -12,6 +12,12 @@ import { Music, Pause, Play, Trash2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "@/lib/utils/toast";
 
+const formatTime = (seconds: number) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = String(Math.floor(seconds % 60)).padStart(2, "0");
+  return `${mins}:${secs}`;
+};
+
 export default function MusicItem({ track }: { track: BackgroundMusic }) {
   const { deleteMusic, setActiveMusicId, setAudioIsPaused, updateMusic } =
     useNestActions();
@@ -47,12 +53,6 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
     transform: transform ? `translateY(${transform.y}px)` : undefined,
     transition,
     opacity: isDragging ? 0.5 : 1,
-  };
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = String(Math.floor(seconds % 60)).padStart(2, "0");
-    return `${mins}:${secs}`;
   };
 
   const handlePlayMusic = () => {

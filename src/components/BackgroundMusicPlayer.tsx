@@ -63,7 +63,7 @@ export default function BackgroundMusicPlayer() {
       if (musicLooped) return;
 
       if (activeMusic && music.length > 0) {
-        const sortedMusic = [...music].sort(
+        const sortedMusic = music.toSorted(
           (a, b) => a.orderIndex - b.orderIndex,
         );
         const currentIndex = sortedMusic.findIndex(

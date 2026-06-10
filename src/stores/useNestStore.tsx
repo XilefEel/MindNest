@@ -186,18 +186,16 @@ export const useNestStore = create<NestState>((set, get) => ({
 
     const files = Array.isArray(selected) ? selected : [selected];
 
-    for (const filePath of files) {
-      const newBackground = await backgroundApi.importBackground(
-        nestId,
-        filePath,
-      );
-      await get().setActiveBackgroundId(newBackground.id);
-      if (newBackground) {
-        set((state) => ({
-          backgrounds: [newBackground, ...state.backgrounds],
-        }));
-      }
-    }
+    const newBackgrounds = await Promise.all(
+      files.map((filePath) => backgroundApi.importBackground(nestId, filePath)),
+    );
+
+    set((state) => ({
+      backgrounds: [...newBackgrounds, ...state.backgrounds],
+    }));
+
+    await get().setActiveBackgroundId(newBackgrounds[0].id);
+
     return true;
   }),
 
@@ -302,18 +300,16 @@ export const useNestStore = create<NestState>((set, get) => ({
 
     const files = Array.isArray(selected) ? selected : [selected];
 
-    for (const filePath of files) {
-      const newMusic = await musicApi.importMusic(
-        nestId,
-        filePath,
-        get().music.length + 1,
-      );
-      if (newMusic) {
-        set((state) => ({
-          music: [...state.music, newMusic],
-        }));
-      }
-    }
+    const newTracks = await Promise.all(
+      files.map((filePath, index) =>
+        musicApi.importMusic(nestId, filePath, get().music.length + 1 + index),
+      ),
+    );
+
+    set((state) => ({
+      music: [...state.music, ...newTracks.filter(Boolean)],
+    }));
+
     return true;
   }),
 

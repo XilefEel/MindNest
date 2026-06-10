@@ -6,17 +6,17 @@ import BaseModal from "./BaseModal";
 import { useActiveBackgroundId, useActiveNestId } from "@/stores/useNestStore";
 import { useSettingsModal } from "@/stores/useModalStore";
 
+const tabs = [
+  { id: "general", label: "General Settings" },
+  { id: "nest", label: "Nest Settings" },
+];
+
 export default function SettingsModal() {
   const { isSettingsOpen, settingsTab, setIsSettingsOpen } = useSettingsModal();
 
   const [activeTab, setActiveTab] = useState("general");
   const activeNestId = useActiveNestId();
   const activeBackgroundId = useActiveBackgroundId();
-
-  const tabs = [
-    { id: "general", label: "General Settings" },
-    { id: "nest", label: "Nest Settings" },
-  ];
 
   useEffect(() => {
     if (isSettingsOpen && settingsTab) {

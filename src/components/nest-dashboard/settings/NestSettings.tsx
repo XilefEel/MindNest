@@ -7,35 +7,35 @@ import { useActiveBackgroundId, useNestActions } from "@/stores/useNestStore";
 import KeyboardShortcutsSection from "./KeyboardShorcutsSection";
 import { useSettingsModal } from "@/stores/useModalStore";
 
+const tabs = [
+  {
+    id: "background",
+    label: "Background",
+    Icon: ImageIcon,
+  },
+  {
+    id: "music",
+    label: "Music",
+    Icon: Music,
+  },
+  {
+    id: "shortcuts",
+    label: "Shortcuts",
+    Icon: Keyboard,
+  },
+  {
+    id: "reset",
+    label: "Reset",
+    Icon: RotateCcw,
+  },
+];
+
 export default function NestSettings() {
   const [activeTab, setActiveTab] = useState("background");
   const activeBackgroundId = useActiveBackgroundId();
   const { settingsSubTab } = useSettingsModal();
   const { clearActiveBackgroundId, setBackgroundBrightness, setMusicVolume } =
     useNestActions();
-
-  const tabs = [
-    {
-      id: "background",
-      label: "Background",
-      Icon: ImageIcon,
-    },
-    {
-      id: "music",
-      label: "Music",
-      Icon: Music,
-    },
-    {
-      id: "shortcuts",
-      label: "Shortcuts",
-      Icon: Keyboard,
-    },
-    {
-      id: "reset",
-      label: "Reset",
-      Icon: RotateCcw,
-    },
-  ];
 
   const handleReset = () => {
     clearActiveBackgroundId();
