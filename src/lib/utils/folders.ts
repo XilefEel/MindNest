@@ -1,21 +1,23 @@
 import { Folder } from "../types/folder";
 
-export const findFolderPath = (folderId: number | null, folders: Folder[]) => {
+export const findFolderPath = (
+  folderId: number | null,
+  folderMap: Map<number, Folder>,
+) => {
   if (folderId === null) return null;
 
   const folderPath: string[] = [];
   const visitedFolders = new Set<number>();
-  let current = folders.find((f) => f.id === folderId);
+  let current = folderMap.get(folderId);
 
   while (current) {
     if (visitedFolders.has(current.id)) break;
-    visitedFolders.add(current.id);
 
+    visitedFolders.add(current.id);
     folderPath.unshift(current.name);
 
     if (current.parentId === null) break;
-
-    current = folders.find((f) => f.id === current!.parentId);
+    current = folderMap.get(current.parentId);
   }
 
   return folderPath.join("/");

@@ -1,14 +1,14 @@
 import { Nestling } from "@/lib/types/nestling";
 import { findFolderPath } from "@/lib/utils/folders";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
-import { useNestlingStore, useNestlingTags } from "@/stores/useNestlingStore";
+import { useFolderMap, useNestlingTags } from "@/stores/useNestlingStore";
 import { Folder } from "lucide-react";
 import { NestlingTag } from "../editors/NestlingTag";
 
 export default function SearchItem({ nestling }: { nestling: Nestling }) {
   const Icon = getNestlingIcon(nestling.nestlingType);
   const nestlingTags = useNestlingTags(nestling.id);
-  const { folders } = useNestlingStore();
+  const folderMap = useFolderMap();
   return (
     <>
       <div className="flex items-center gap-1">
@@ -32,7 +32,9 @@ export default function SearchItem({ nestling }: { nestling: Nestling }) {
 
       <div className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
         <Folder />
-        <span>{findFolderPath(nestling.folderId, folders) || "No Folder"}</span>
+        <span>
+          {findFolderPath(nestling.folderId, folderMap) || "No Folder"}
+        </span>
       </div>
     </>
   );

@@ -4,7 +4,7 @@ import { Nestling } from "@/lib/types/nestling";
 import { findFolderPath } from "@/lib/utils/folders";
 import { cn } from "@/lib/utils/general";
 import { getNestlingIcon, getNestlingTypeColor } from "@/lib/utils/nestlings";
-import { useNestlingTags, useFolders } from "@/stores/useNestlingStore";
+import { useFolderMap, useNestlingTags } from "@/stores/useNestlingStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { formatDistanceToNow } from "date-fns";
 import { Folder, ArrowRight, Dot } from "lucide-react";
@@ -18,7 +18,7 @@ export default function RecentCard({
 }) {
   const Icon = getNestlingIcon(nestling.nestlingType);
   const nestlingTags = useNestlingTags(nestling.id);
-  const folders = useFolders();
+  const folderMap = useFolderMap();
   const activeBackgroundId = useActiveBackgroundId();
 
   const { color, border } = getNestlingTypeColor(nestling.nestlingType);
@@ -63,7 +63,7 @@ export default function RecentCard({
           <div className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
             <Folder className="size-3.5" />
             <span>
-              {findFolderPath(nestling.folderId, folders) || "No Folder"}
+              {findFolderPath(nestling.folderId, folderMap) || "No Folder"}
             </span>
             <Dot size={16} />
             <span>

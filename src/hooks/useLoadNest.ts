@@ -98,17 +98,17 @@ export default function useLoadNest({
           setActiveNestlingId(lastNestling.id);
 
           if (lastNestling.folderId) {
-            let currentFolderId: number | null = lastNestling.folderId;
+            const folderMap = useNestlingStore.getState().folderMap;
 
+            let currentFolderId: number | null = lastNestling.folderId;
             while (currentFolderId) {
               setFolderOpen(currentFolderId, true);
-              const currentFolder = useNestlingStore
-                .getState()
-                .folders.find((f) => f.id === currentFolderId);
-              currentFolderId = currentFolder?.parentId || null;
+              currentFolderId =
+                folderMap.get(currentFolderId)?.parentId ?? null;
             }
 
             setActiveFolderId(lastNestling.folderId);
+            setFolderOpen(lastNestling.folderId, true);
           }
         }
 

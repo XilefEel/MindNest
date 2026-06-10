@@ -32,7 +32,7 @@ export default function SettingsModal() {
       showCancel={false}
       isLarge
       body={
-        <div className="flex h-[500px] flex-col">
+        <div className="flex h-125 flex-col">
           {activeNestId && (
             <div
               className={cn(

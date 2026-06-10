@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils/general";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
 import { toast } from "@/lib/utils/toast";
 import {
-  useFolders,
+  useFolderMap,
   useNestlingActions,
   useNestlingTags,
 } from "@/stores/useNestlingStore";
@@ -39,7 +39,7 @@ export default function NestlingTitle({
   nestling: Nestling;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
-  const folders = useFolders();
+  const folderMap = useFolderMap();
   const nestlingTags = useNestlingTags(nestling.id);
   const { updateNestling, detachTag } = useNestlingActions();
 
@@ -173,7 +173,7 @@ export default function NestlingTitle({
         <Folder className="size-4 shrink-0" />
 
         <span className="text-sm">
-          {findFolderPath(nestling.folderId, folders) || "No folder"}
+          {findFolderPath(nestling.folderId, folderMap) || "No folder"}
         </span>
 
         {nestlingTags.length > 0 && <Dot size={20} />}

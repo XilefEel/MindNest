@@ -3,7 +3,7 @@ import { Nestling } from "@/lib/types/nestling";
 import { findFolderPath } from "@/lib/utils/folders";
 import { cn } from "@/lib/utils/general";
 import { getNestlingIcon } from "@/lib/utils/nestlings";
-import { useFolders, useNestlingTags } from "@/stores/useNestlingStore";
+import { useFolderMap, useNestlingTags } from "@/stores/useNestlingStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { Folder } from "lucide-react";
 
@@ -15,7 +15,7 @@ export default function SearchItem({
   handleClick: (nestlingId: number) => void;
 }) {
   const Icon = getNestlingIcon(nestling.nestlingType);
-  const folders = useFolders();
+  const folderMap = useFolderMap();
   const nestlingTags = useNestlingTags(nestling.id);
   const activeBackgroundId = useActiveBackgroundId();
 
@@ -54,7 +54,7 @@ export default function SearchItem({
       <div className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
         <Folder className="h-3.5 w-5" />
         <span className="text-xs">
-          {findFolderPath(nestling.folderId, folders) || "No Folder"}
+          {findFolderPath(nestling.folderId, folderMap) || "No Folder"}
         </span>
       </div>
     </div>

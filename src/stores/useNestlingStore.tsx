@@ -15,12 +15,15 @@ import { isCircularReference } from "@/lib/utils/folders.ts";
 type NestlingState = {
   nestlings: Nestling[];
   activeNestlingId: number | null;
+
   folders: Folder[];
+  folderMap: Map<number, Folder>;
   activeFolderId: number | null;
+  openFolders: Record<number, boolean>;
+
   tags: Tag[];
   nestlingTagsMap: Record<number, Tag[]>;
 
-  openFolders: Record<number, boolean>;
   activeDraggingNestlingId: number | null;
   loading: boolean;
 
@@ -62,6 +65,7 @@ type NestlingState = {
 export const useNestlingStore = create<NestlingState>((set, get) => ({
   nestlings: [],
   folders: [],
+  folderMap: new Map<number, Folder>(),
   loading: false,
 
   activeNestlingId: null,
@@ -142,23 +146,30 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
   addFolder: withStoreErrorHandler(set, async (folder) => {
     const newFolder = await folderApi.createFolder(folder);
-    set((state) => ({
-      folders: [...state.folders, newFolder].sort((a, b) =>
+    set((state) => {
+      const folders = [...state.folders, newFolder].sort((a, b) =>
         a.name.localeCompare(b.name),
-      ),
-    }));
+      );
+      return {
+        folders,
+        folderMap: new Map(folders.map((f) => [f.id, f])),
+      };
+    });
   }),
 
   duplicateFolder: withStoreErrorHandler(set, async (folderId) => {
     const originalFolder = get().folders.find((f) => f.id === folderId)!;
     const newFolder = await folderApi.createFolder(originalFolder);
 
-    set((state) => ({
-      folders: [...state.folders, newFolder].sort((a, b) =>
+    set((state) => {
+      const folders = [...state.folders, newFolder].sort((a, b) =>
         a.name.localeCompare(b.name),
-      ),
-      loading: false,
-    }));
+      );
+      return {
+        folders,
+        folderMap: new Map(folders.map((f) => [f.id, f])),
+      };
+    });
   }),
 
   updateFolder: withStoreErrorHandler(set, async (id, updates) => {
@@ -172,18 +183,29 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
     await folderApi.updateFolder(id, updated.parentId, updated.name);
 
-    set((state) => ({
-      folders: state.folders
+    set((state) => {
+      const folders = state.folders
         .map((f) => (f.id === id ? updated : f))
-        .sort((a, b) => a.name.localeCompare(b.name)),
-    }));
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      return {
+        folders,
+        folderMap: new Map(folders.map((f) => [f.id, f])),
+      };
+    });
   }),
 
   deleteFolder: withStoreErrorHandler(set, async (folderId) => {
     await folderApi.deleteFolder(folderId);
-    set((state) => ({
-      folders: state.folders.filter((f) => f.id !== folderId),
-    }));
+
+    set((state) => {
+      const folders = state.folders.filter((f) => f.id !== folderId);
+
+      return {
+        folders,
+        folderMap: new Map(folders.map((f) => [f.id, f])),
+      };
+    });
   }),
 
   fetchSidebar: withStoreErrorHandler(set, async (nestId) => {
@@ -193,10 +215,11 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     ]);
 
     set({
-      folders: fetchedFolders.sort((a, b) => a.name.localeCompare(b.name)),
       nestlings: fetchedNestlings.sort((a, b) =>
         a.title.localeCompare(b.title),
       ),
+      folders: fetchedFolders.sort((a, b) => a.name.localeCompare(b.name)),
+      folderMap: new Map(fetchedFolders.map((f) => [f.id, f])),
     });
   }),
 
@@ -409,6 +432,8 @@ export const useActiveNestling = () =>
   });
 
 export const useFolders = () => useNestlingStore((state) => state.folders);
+
+export const useFolderMap = () => useNestlingStore((state) => state.folderMap);
 
 export const useActiveFolderId = () =>
   useNestlingStore((state) => state.activeFolderId);

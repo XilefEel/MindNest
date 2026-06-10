@@ -45,15 +45,15 @@ export default function SessionRestorer() {
 
         if (lastNestling) {
           setActiveNestlingId(lastNestling.id);
-          if (lastNestling.folderId) {
-            let currentFolderId: number | null = lastNestling.folderId;
 
+          if (lastNestling.folderId) {
+            const folderMap = useNestlingStore.getState().folderMap;
+
+            let currentFolderId: number | null = lastNestling.folderId;
             while (currentFolderId) {
               setFolderOpen(currentFolderId, true);
-              const currentFolder = useNestlingStore
-                .getState()
-                .folders.find((f) => f.id === currentFolderId);
-              currentFolderId = currentFolder?.parentId || null;
+              currentFolderId =
+                folderMap.get(currentFolderId)?.parentId ?? null;
             }
 
             setFolderOpen(lastNestling.folderId, true);
