@@ -22,7 +22,7 @@ type NestlingState = {
   openFolders: Record<number, boolean>;
 
   tags: Tag[];
-  nestlingTagsMap: Record<number, Tag[]>;
+  nestlingTagsMap: Map<number, Tag[]>;
 
   activeDraggingNestlingId: number | null;
   loading: boolean;
@@ -74,7 +74,7 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
   activeDraggingNestlingId: null,
 
   tags: [],
-  nestlingTagsMap: {},
+  nestlingTagsMap: new Map<number, Tag[]>(),
 
   setActiveNestlingId: (nestlingId) => set({ activeNestlingId: nestlingId }),
 
@@ -322,61 +322,80 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
 
   updateTag: withStoreErrorHandler(set, async (id, name, color) => {
     await tagApi.updateTag(id, name, color);
-    set((state) => ({
-      tags: state.tags.map((t) => (t.id === id ? { ...t, name, color } : t)),
-      nestlingTagsMap: Object.fromEntries(
-        Object.entries(state.nestlingTagsMap).map(([nestlingId, tags]) => [
-          Number(nestlingId),
+    set((state) => {
+      const nestlingTagsMap = new Map(state.nestlingTagsMap);
+
+      for (const [nestlingId, tags] of nestlingTagsMap) {
+        nestlingTagsMap.set(
+          nestlingId,
           tags.map((t) => (t.id === id ? { ...t, name, color } : t)),
-        ]),
-      ),
-    }));
+        );
+      }
+
+      return {
+        tags: state.tags.map((t) => (t.id === id ? { ...t, name, color } : t)),
+        nestlingTagsMap,
+      };
+    });
   }),
 
   deleteTag: withStoreErrorHandler(set, async (id) => {
     await tagApi.deleteTag(id);
-    set((state) => ({
-      tags: state.tags.filter((t) => t.id !== id),
-      nestlingTagsMap: Object.fromEntries(
-        Object.entries(state.nestlingTagsMap).map(([nestlingId, tags]) => [
-          Number(nestlingId),
+    set((state) => {
+      const nestlingTagsMap = new Map(state.nestlingTagsMap);
+
+      for (const [nestlingId, tags] of nestlingTagsMap) {
+        nestlingTagsMap.set(
+          nestlingId,
           tags.filter((t) => t.id !== id),
-        ]),
-      ),
-    }));
+        );
+      }
+
+      return {
+        tags: state.tags.filter((t) => t.id !== id),
+        nestlingTagsMap,
+      };
+    });
   }),
 
   attachTag: withStoreErrorHandler(set, async (nestlingId, tagId) => {
     await tagApi.attachTag(nestlingId, tagId);
+
     set((state) => {
       const tagToAttach = state.tags.find((t) => t.id === tagId);
       if (!tagToAttach) return state;
 
-      const currentTags = state.nestlingTagsMap[nestlingId] || [];
-      return {
-        nestlingTagsMap: {
-          ...state.nestlingTagsMap,
-          [nestlingId]: [...currentTags, tagToAttach],
-        },
-      };
+      const nestlingTagsMap = new Map(state.nestlingTagsMap);
+      const currentTags = nestlingTagsMap.get(nestlingId) || [];
+
+      nestlingTagsMap.set(nestlingId, [...currentTags, tagToAttach]);
+
+      return { nestlingTagsMap };
     });
   }),
 
   detachTag: withStoreErrorHandler(set, async (nestlingId, tagId) => {
     await tagApi.detachTag(nestlingId, tagId);
     set((state) => {
-      const currentTags = state.nestlingTagsMap[nestlingId] || [];
-      return {
-        nestlingTagsMap: {
-          ...state.nestlingTagsMap,
-          [nestlingId]: currentTags.filter((t) => t.id !== tagId),
-        },
-      };
+      const nestlingTagsMap = new Map(state.nestlingTagsMap);
+      const currentTags = nestlingTagsMap.get(nestlingId) || [];
+
+      nestlingTagsMap.set(
+        nestlingId,
+        currentTags.filter((t) => t.id !== tagId),
+      );
+
+      return { nestlingTagsMap };
     });
   }),
 
   getAllNestlingTags: withStoreErrorHandler(set, async (nestId) => {
-    const nestlingTagsMap = await tagApi.getAllNestlingTags(nestId);
+    const rawMap = await tagApi.getAllNestlingTags(nestId);
+
+    const nestlingTagsMap = new Map<number, Tag[]>(
+      Object.entries(rawMap).map(([k, v]) => [Number(k), v]),
+    );
+
     set({ nestlingTagsMap });
   }),
 }));
@@ -445,5 +464,5 @@ export const useNestlingTagsMap = () =>
 
 export const useNestlingTags = (nestlingId: number) =>
   useNestlingStore(
-    useShallow((state) => state.nestlingTagsMap[nestlingId] || []),
+    useShallow((state) => state.nestlingTagsMap.get(nestlingId) ?? []),
   );

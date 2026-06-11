@@ -13,7 +13,7 @@ export function useNestlingSearch() {
 
   const filteredNestlings = nestlings.filter((nestling) => {
     if (isTagSearch) {
-      const nestlingTags = nestlingTagsMap[nestling.id] || [];
+      const nestlingTags = nestlingTagsMap.get(nestling.id) || [];
       return nestlingTags.some((tag) => tag.name.toLowerCase().includes(query));
     }
     return nestling.title.toLowerCase().includes(query);
