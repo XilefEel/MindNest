@@ -75,7 +75,7 @@ export default function ToolBar({ title }: { title: string }) {
   });
 
   return (
-    <div className="flex gap-2 overflow-x-scroll md:overflow-x-hidden">
+    <div className="sticky top-0 z-10 mb-4 flex w-full flex-wrap gap-2 rounded-md bg-zinc-50/80 px-2 py-1 backdrop-blur-sm dark:bg-zinc-900/80">
       <ToolBarItem
         Icon={Undo2}
         label="Undo"

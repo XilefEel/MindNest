@@ -132,22 +132,25 @@ export default function NoteEditor() {
         nestling={activeNestling}
       />
 
-      <EditorContext.Provider value={providerValue}>
-        <ToolBar title={activeNestling.title} />
-        <div className="flex-1 overflow-auto">
-          <EditorContent editor={editor} className="w-full" />
-        </div>
-      </EditorContext.Provider>
+      <div className="mx-auto flex h-full w-full max-w-200 flex-col">
+        <EditorContext.Provider value={providerValue}>
+          <ToolBar title={activeNestling.title} />
 
-      <div
-        className={cn(
-          "flex justify-between rounded-lg px-3",
-          activeBackgroundId
-            ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
-            : "bg-white dark:bg-zinc-800",
-        )}
-      >
-        <BottomBar autoSaveStatus={autoSaveStatus} wordCount={wordCount} />
+          <div className="w-full flex-1 overflow-auto">
+            <EditorContent editor={editor} className="w-full" />
+          </div>
+        </EditorContext.Provider>
+
+        <div
+          className={cn(
+            "flex justify-between rounded-lg px-3",
+            activeBackgroundId
+              ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
+              : "bg-white dark:bg-zinc-800",
+          )}
+        >
+          <BottomBar autoSaveStatus={autoSaveStatus} wordCount={wordCount} />
+        </div>
       </div>
     </div>
   );
