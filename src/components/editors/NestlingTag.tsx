@@ -32,7 +32,7 @@ export function NestlingTag({
       <span className="text-xs font-medium">{tag.name}</span>
 
       {onRemove && (
-        <button
+        <div
           onClick={(e) => {
             e.stopPropagation();
             onRemove(tag.id);
@@ -44,7 +44,7 @@ export function NestlingTag({
           }}
         >
           {removeIcon}
-        </button>
+        </div>
       )}
     </div>
   );

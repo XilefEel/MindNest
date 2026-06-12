@@ -43,7 +43,7 @@ export default function ToolBar({ nestId }: { nestId: number }) {
       className="mb-2.5 flex items-center border-b border-zinc-800 dark:border-zinc-200"
     >
       {buttons.map((btn) => (
-        <BaseToolTip label={btn.label}>
+        <BaseToolTip label={btn.label} key={btn.label}>
           <button
             onClick={btn.onClick}
             onDoubleClick={(e) => e.stopPropagation()}

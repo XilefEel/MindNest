@@ -20,7 +20,7 @@ export default function Titlebar() {
       >
         <div
           className={cn(
-            "flex h-6 items-center justify-center px-4 transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-700",
+            "flex h-6 items-center justify-center px-4 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800",
             activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
           )}
           onClick={() => appWindow.minimize()}
@@ -30,7 +30,7 @@ export default function Titlebar() {
 
         <div
           className={cn(
-            "flex h-6 items-center justify-center px-4 transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-700",
+            "flex h-6 items-center justify-center px-4 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800",
             activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
           )}
           onClick={() => appWindow.toggleMaximize()}
@@ -39,10 +39,10 @@ export default function Titlebar() {
         </div>
 
         <div
-          className="flex h-6 items-center justify-center px-4 transition-colors hover:bg-red-500"
+          className="group flex h-6 items-center justify-center px-4 transition-colors hover:bg-red-500"
           onClick={() => appWindow.close()}
         >
-          <X className="size-4 shrink-0" />
+          <X className="size-4 shrink-0 group-hover:text-white" />
         </div>
       </div>
     </div>

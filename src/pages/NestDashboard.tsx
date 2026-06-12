@@ -106,7 +106,7 @@ export default function NestDashboardPage() {
   return (
     <div
       style={{ scrollbarGutter: "stable" }}
-      className="flex h-screen flex-col bg-zinc-50 pb-3 select-none dark:bg-zinc-900"
+      className="flex h-screen flex-col bg-zinc-50 pb-2 select-none dark:bg-zinc-900"
       onContextMenu={(e) => e.preventDefault()}
     >
       <div
@@ -127,8 +127,8 @@ export default function NestDashboardPage() {
       >
         <nav
           className={cn(
-            "mx-3 shrink-0 transition-[height] duration-300 ease-in-out",
-            topbarHidden ? "h-0" : "h-17",
+            "mx-2 shrink-0 transition-[height] duration-300 ease-in-out",
+            topbarHidden ? "h-0" : "h-16",
           )}
         >
           <div
@@ -185,7 +185,7 @@ export default function NestDashboardPage() {
 
           <main
             className={cn(
-              "relative flex-1 overflow-y-auto px-5 py-3 md:mx-3",
+              "relative flex-1 overflow-y-auto px-5 py-3 md:px-8",
               activeBackgroundId &&
                 cn(
                   "rounded-2xl bg-white/30 dark:bg-black/30",

@@ -113,7 +113,5 @@ export const openAppFolder = async (
     ? await join(base, options.subfolder)
     : base;
 
-  console.log("local dir:", base);
-
   await openPath(targetPath);
 };

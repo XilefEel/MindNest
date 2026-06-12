@@ -78,7 +78,7 @@ export default function NoteTemplatePopover() {
           <ToolBarItem
             Icon={FilePen}
             label="Use Template"
-            onFormat={() => console.log("Use Template")}
+            onFormat={() => {}}
           />
         </button>
       }

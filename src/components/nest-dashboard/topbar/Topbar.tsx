@@ -73,7 +73,7 @@ export default function Topbar({
   return (
     <nav
       className={cn(
-        "flex w-full items-center gap-3 border-b border-zinc-900 pt-6 pb-2 transition-[border] dark:border-zinc-100",
+        "flex w-full items-center gap-3 border-b border-zinc-900 px-6 pt-6 pb-2 transition-[border] dark:border-zinc-100",
         topbarHidden && "border-transparent dark:border-transparent",
       )}
     >
@@ -114,7 +114,7 @@ export default function Topbar({
           side="bottom"
           width="w-72"
           trigger={
-            <button className="hidden rounded-md p-1 text-3xl transition-opacity hover:opacity-80 sm:block">
+            <button className="hidden rounded-md p-1 text-2xl transition-opacity hover:opacity-80 sm:block">
               🪹
             </button>
           }
@@ -134,7 +134,7 @@ export default function Topbar({
             ref={inputRef}
             id="text"
             className={cn(
-              "w-full truncate bg-transparent text-2xl font-bold tracking-tight focus:outline-none sm:text-3xl",
+              "w-full truncate bg-transparent text-xl font-bold tracking-tight focus:outline-none sm:text-2xl",
               !isEditing && "pointer-events-none",
             )}
             value={title}
@@ -151,7 +151,7 @@ export default function Topbar({
 
       <div
         className={cn(
-          "ml-auto flex items-center justify-center gap-2 p-1 px-2",
+          "ml-auto flex items-center justify-center gap-6",
           activeBackgroundId &&
             cn(
               "rounded-lg bg-white/30 dark:bg-black/30",
@@ -159,11 +159,7 @@ export default function Topbar({
             ),
         )}
       >
-        <TopbarButton
-          label={"Share"}
-          action={() => console.log("share nest")}
-          Icon={Link}
-        />
+        <TopbarButton label={"Share"} action={() => {}} Icon={Link} />
 
         <TopbarButton
           label={"Settings"}
@@ -173,7 +169,7 @@ export default function Topbar({
 
         <TopbarButton
           label={"Profile"}
-          action={() => console.log("profile")}
+          action={() => {}}
           Icon={CircleUserRound}
         />
       </div>
