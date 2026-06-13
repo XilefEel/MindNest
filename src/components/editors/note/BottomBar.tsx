@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils/general";
+import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { Loader2, Check, AlertCircle } from "lucide-react";
 
 export default function BottomBar({
@@ -7,8 +9,15 @@ export default function BottomBar({
   autoSaveStatus: "idle" | "saving" | "saved" | "error";
   wordCount: number;
 }) {
+  const activeBackgroundId = useActiveBackgroundId();
+
   return (
-    <div className="flex w-full items-center justify-between px-3 py-2 text-xs">
+    <div
+      className={cn(
+        "sticky bottom-0 z-10 flex w-full items-center justify-between rounded-lg bg-zinc-50/80 px-3 py-2 text-xs backdrop-blur-sm dark:bg-zinc-900/80",
+        activeBackgroundId && "bg-white/50 dark:bg-black/50",
+      )}
+    >
       <div className="flex items-center gap-2">
         {autoSaveStatus === "saving" && (
           <>
@@ -33,7 +42,7 @@ export default function BottomBar({
           </>
         )}
         {autoSaveStatus === "idle" && (
-          <span className="text-zinc-400 dark:text-zinc-500">Ready</span>
+          <span className="text-zinc-500 dark:text-zinc-400">Ready</span>
         )}
       </div>
 

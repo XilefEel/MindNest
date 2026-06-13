@@ -19,9 +19,7 @@ import {
   useNestlingActions,
 } from "@/stores/useNestlingStore";
 import NestlingTitle from "../NestlingTitle";
-import { cn } from "@/lib/utils/general";
 import BottomBar from "./BottomBar";
-import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useNoteStore } from "@/stores/useNoteStore";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { TaskItem, TaskList } from "@tiptap/extension-list";
@@ -32,8 +30,6 @@ export default function NoteEditor() {
 
   const { updateNestling } = useNestlingActions();
   const { getTemplates } = useNoteStore();
-  const activeBackgroundId = useActiveBackgroundId();
-
   const [title, setTitle] = useState(activeNestling.title);
   const [content, setContent] = useState({});
 
@@ -132,25 +128,16 @@ export default function NoteEditor() {
         nestling={activeNestling}
       />
 
-      <div className="mx-auto flex h-full w-full max-w-200 flex-col">
+      <div className="mx-auto flex h-full min-h-0 w-full max-w-200 flex-col">
         <EditorContext.Provider value={providerValue}>
           <ToolBar title={activeNestling.title} />
 
-          <div className="w-full flex-1 overflow-auto">
+          <div className="mt-2 w-full flex-1 overflow-auto">
             <EditorContent editor={editor} className="w-full" />
           </div>
         </EditorContext.Provider>
 
-        <div
-          className={cn(
-            "flex justify-between rounded-lg px-3",
-            activeBackgroundId
-              ? "bg-white/30 backdrop-blur-sm dark:bg-black/30"
-              : "bg-white dark:bg-zinc-800",
-          )}
-        >
-          <BottomBar autoSaveStatus={autoSaveStatus} wordCount={wordCount} />
-        </div>
+        <BottomBar autoSaveStatus={autoSaveStatus} wordCount={wordCount} />
       </div>
     </div>
   );
