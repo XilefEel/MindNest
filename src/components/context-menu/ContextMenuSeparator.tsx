@@ -7,8 +7,8 @@ export default function ContextMenuSeparator() {
   return (
     <ContextMenu.Separator
       className={cn(
-        "mx-2 my-1 h-px bg-zinc-200 dark:bg-zinc-700",
-        activeBackgroundId && "bg-black/30 dark:bg-white/30",
+        "mx-2 my-1 shrink-0 border-t border-zinc-200 dark:border-zinc-700",
+        activeBackgroundId && "border-black/30 dark:border-white/30",
       )}
     />
   );

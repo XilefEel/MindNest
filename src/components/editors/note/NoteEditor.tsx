@@ -132,7 +132,7 @@ export default function NoteEditor() {
         <EditorContext.Provider value={providerValue}>
           <ToolBar title={activeNestling.title} />
 
-          <div className="mt-2 w-full flex-1 overflow-auto">
+          <div className="w-full flex-1 overflow-auto">
             <EditorContent editor={editor} className="w-full" />
           </div>
         </EditorContext.Provider>

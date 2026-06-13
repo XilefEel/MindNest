@@ -94,8 +94,8 @@ export default function ToolBar({ title }: { title: string }) {
 
       <div
         className={cn(
-          "w-px rounded-full bg-zinc-200 dark:bg-zinc-700",
-          activeBackgroundId && "bg-black/30 dark:bg-white/30",
+          "rounded-full border-r border-zinc-200 dark:border-zinc-700",
+          activeBackgroundId && "border-black/30 dark:border-white/30",
         )}
       />
 
@@ -144,8 +144,8 @@ export default function ToolBar({ title }: { title: string }) {
 
       <div
         className={cn(
-          "w-px rounded-full bg-zinc-200 dark:bg-zinc-700",
-          activeBackgroundId && "bg-black/30 dark:bg-white/30",
+          "rounded-full border-r border-zinc-200 dark:border-zinc-700",
+          activeBackgroundId && "border-black/30 dark:border-white/30",
         )}
       />
 
@@ -186,8 +186,8 @@ export default function ToolBar({ title }: { title: string }) {
 
       <div
         className={cn(
-          "w-px rounded-full bg-zinc-200 dark:bg-zinc-700",
-          activeBackgroundId && "bg-black/30 dark:bg-white/30",
+          "rounded-full border-r border-zinc-200 dark:border-zinc-700",
+          activeBackgroundId && "border-black/30 dark:border-white/30",
         )}
       />
 
@@ -218,8 +218,8 @@ export default function ToolBar({ title }: { title: string }) {
 
       <div
         className={cn(
-          "w-px rounded-full bg-zinc-200 dark:bg-zinc-700",
-          activeBackgroundId && "bg-black/30 dark:bg-white/30",
+          "rounded-full border-r border-zinc-200 dark:border-zinc-700",
+          activeBackgroundId && "border-black/30 dark:border-white/30",
         )}
       />
 
@@ -253,8 +253,8 @@ export default function ToolBar({ title }: { title: string }) {
 
       <div
         className={cn(
-          "w-px rounded-full bg-zinc-200 dark:bg-zinc-700",
-          activeBackgroundId && "bg-black/30 dark:bg-white/30",
+          "rounded-full border-r border-zinc-200 dark:border-zinc-700",
+          activeBackgroundId && "border-black/30 dark:border-white/30",
         )}
       />
 

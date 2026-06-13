@@ -13,7 +13,6 @@ import { useActiveBackgroundId } from "@/stores/useNestStore";
 import ToolBar from "./ToolBar";
 import PinnedNestlings from "./PinnedNestlings";
 import HomeItem from "./HomeItem";
-import { AnimatePresence } from "framer-motion";
 import {
   useSidebarPosition,
   useSidebarToolbarHidden,
@@ -78,12 +77,10 @@ export default function Sidebar({
 
         <HomeItem nestId={nestId} setIsSidebarOpen={setIsSidebarOpen} />
 
-        <AnimatePresence initial={false}>
-          <PinnedNestlings
-            pinnedNestlings={pinnedNestlings}
-            setIsSidebarOpen={setIsSidebarOpen}
-          />
-        </AnimatePresence>
+        <PinnedNestlings
+          pinnedNestlings={pinnedNestlings}
+          setIsSidebarOpen={setIsSidebarOpen}
+        />
 
         <DndContext
           collisionDetection={rectIntersection}

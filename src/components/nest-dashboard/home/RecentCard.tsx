@@ -45,6 +45,7 @@ export default function RecentCard({
             <div
               className={cn(
                 "flex size-8 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-700",
+                activeBackgroundId && "bg-white/50 dark:bg-black/50",
                 !nestling.icon && color,
               )}
             >

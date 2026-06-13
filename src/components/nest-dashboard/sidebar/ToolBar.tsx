@@ -40,7 +40,7 @@ export default function ToolBar({ nestId }: { nestId: number }) {
         e.preventDefault();
         e.stopPropagation();
       }}
-      className="mb-2.5 flex items-center border-b border-zinc-800 dark:border-zinc-200"
+      className="mb-2.5 flex items-center border-b border-zinc-400 dark:border-zinc-500"
     >
       {buttons.map((btn) => (
         <BaseToolTip label={btn.label} key={btn.label}>
