@@ -1,6 +1,6 @@
 import { Folder } from "@/lib/types/folder";
 import NestlingItem from "../sidebar/NestlingItem";
-import { useDroppable } from "@dnd-kit/core";
+import { useDroppable } from "@dnd-kit/react";
 import { cn } from "@/lib/utils/general";
 import FolderContextMenu from "../../context-menu/FolderContextMenu";
 import {
@@ -33,7 +33,7 @@ export default function FolderTree({
 
   const isFolderOpen = openFolders[folder.id] || false;
 
-  const { setNodeRef, isOver } = useDroppable({
+  const { ref, isDropTarget } = useDroppable({
     id: `folder-${folder.id}`,
   });
 
@@ -43,10 +43,10 @@ export default function FolderTree({
   return (
     <FolderContextMenu folderId={folder.id}>
       <div
-        ref={setNodeRef}
+        ref={ref}
         className={cn(
           "flex flex-col rounded pt-0.5",
-          isOver &&
+          isDropTarget &&
             cn(
               activeBackgroundId
                 ? "bg-teal-200/50 dark:bg-teal-300/50"

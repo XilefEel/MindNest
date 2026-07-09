@@ -1,6 +1,6 @@
 import { Folder } from "@/lib/types/folder";
 import { cn } from "@/lib/utils/general";
-import { useDraggable } from "@dnd-kit/core";
+import { useDraggable } from "@dnd-kit/react";
 import {
   ChevronDown,
   Folder as FolderClose,
@@ -36,17 +36,10 @@ export default function FolderItem({
     toggleFolder(folder.id);
   };
 
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
+  const { ref, handleRef } =
     useDraggable({
       id: `folder-${folder.id}`,
     });
-
-  const style = {
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-      : undefined,
-    opacity: isDragging ? 0.5 : 1,
-  };
 
   const {
     value: name,
@@ -75,12 +68,13 @@ export default function FolderItem({
       handleRename={() => setIsEditing(true)}
     >
       <div
+        key={folder.id}
+        ref={ref}
         onClick={handleClick}
         onDoubleClick={(e) => e.stopPropagation()}
         className="transition-[scale] active:scale-[0.98]"
       >
         <div
-          style={style}
           className={cn(
             "group flex items-center justify-between gap-1 rounded px-2 py-1 transition-[background] hover:bg-teal-50 dark:hover:bg-zinc-700",
             activeBackgroundId
@@ -132,9 +126,7 @@ export default function FolderItem({
           </div>
 
           <div
-            ref={setNodeRef}
-            {...listeners}
-            {...attributes}
+            ref={handleRef}
             onClick={(e) => e.stopPropagation()}
             className="cursor-grab opacity-0 transition-opacity group-hover:opacity-100"
           >

@@ -5,7 +5,7 @@ import {
 import { Nestling } from "@/lib/types/nestling";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
-import { useDraggable } from "@dnd-kit/core";
+import { useDraggable } from "@dnd-kit/react";
 import { GripVertical } from "lucide-react";
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
 import { useState, useRef, useEffect } from "react";
@@ -63,19 +63,12 @@ export default function NestlingItem({
     openNestling(nestling);
   };
 
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
+  const { ref, handleRef } =
     useDraggable(
       isPinnedShortcut
         ? { id: `non-draggable-${nestling.id}`, disabled: true }
         : { id: `nestling-${nestling.id}` },
     );
-
-  const style = {
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-      : undefined,
-    opacity: isDragging ? 0.5 : 1,
-  };
 
   const handleEmojiClick = async (emojiData: EmojiClickData) => {
     try {
@@ -119,7 +112,7 @@ export default function NestlingItem({
   }, [isEditing]);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         pickerRef.current &&
         !pickerRef.current.contains(event.target as Node) &&
@@ -128,6 +121,7 @@ export default function NestlingItem({
       )
         setShowPicker(false);
     }
+
     if (showPicker) document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showPicker]);
@@ -139,12 +133,12 @@ export default function NestlingItem({
     >
       <div
         key={nestling.id}
+        ref={ref}
         onDoubleClick={(e) => e.stopPropagation()}
         className="transition-[scale] active:scale-[0.98]"
       >
         <div
           onClick={handleSelect}
-          style={style}
           className={cn(
             "group flex w-full max-w-full items-center justify-between gap-1 truncate rounded px-2 py-1 transition-[background]",
             activeBackgroundId
@@ -202,9 +196,7 @@ export default function NestlingItem({
 
           {!isPinnedShortcut && (
             <div
-              ref={setNodeRef}
-              {...listeners}
-              {...attributes}
+              ref={handleRef}
               onClick={(e) => e.stopPropagation()}
               className="cursor-grab opacity-0 transition-opacity group-hover:opacity-100"
             >

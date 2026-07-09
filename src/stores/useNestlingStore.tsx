@@ -4,11 +4,11 @@ import * as folderApi from "@/lib/api/folder";
 import * as tagApi from "@/lib/api/tag";
 import { Folder, NewFolder } from "@/lib/types/folder";
 import { Nestling, NewNestling } from "@/lib/types/nestling";
-import { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
+import { DragEndEvent } from "@dnd-kit/react";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { useShallow } from "zustand/react/shallow";
 import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
-import { saveRecentNestling, saveLastNestling } from "@/lib/storage/nestling";
+import { saveRecentNestling } from "@/lib/storage/nestling";
 import { NewTag, Tag } from "@/lib/types/tag";
 import { isCircularReference } from "@/lib/utils/folders.ts";
 
@@ -49,7 +49,6 @@ type NestlingState = {
   toggleAllFolders: (toggle: boolean) => void;
   moveFolder: (folderId: number, newParentId: number | null) => Promise<void>;
 
-  handleDragStart: (event: DragStartEvent) => void;
   handleDragEnd: (event: DragEndEvent, nestId: number) => Promise<void>;
 
   getTags: (nestId: number) => Promise<void>;
@@ -113,7 +112,6 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
       updatedAt: new Date().toISOString(),
     };
 
-    // optimistic update
     set((state) => ({
       nestlings: state.nestlings
         .map((n) => (n.id === id ? updated : n))
@@ -181,8 +179,6 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
       updatedAt: new Date().toISOString(),
     };
 
-    await folderApi.updateFolder(id, updated.parentId, updated.name);
-
     set((state) => {
       const folders = state.folders
         .map((f) => (f.id === id ? updated : f))
@@ -193,6 +189,8 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
         folderMap: new Map(folders.map((f) => [f.id, f])),
       };
     });
+
+    await folderApi.updateFolder(id, updated.parentId, updated.name);
   }),
 
   deleteFolder: withStoreErrorHandler(set, async (folderId) => {
@@ -273,34 +271,30 @@ export const useNestlingStore = create<NestlingState>((set, get) => ({
     await get().updateFolder(folderId, { parentId: newParentId });
   }),
 
-  handleDragStart: (event) => {
-    set({ activeDraggingNestlingId: event.active.id as number });
-  },
+  handleDragEnd: async (event) => {
+    const { source, target } = event.operation;
+    if (event.canceled || !target || !source || source.id === target.id) return;
 
-  handleDragEnd: async (event, nestId) => {
-    const { active, over } = event;
-    set({ activeDraggingNestlingId: null });
-    if (!over || active.id === over.id) return;
-
-    const [activeType, activeIdStr] = String(active.id).split("-");
-    const [overType, overIdStr] = String(over.id).split("-");
+    const [activeType, activeIdStr] = String(source.id).split("-");
+    const [overType, overIdStr] = String(target.id).split("-");
 
     try {
       if (activeType === "nestling") {
         const nestlingId = Number(activeIdStr);
         const newFolderId = overType === "folder" ? Number(overIdStr) : null;
 
-        await Promise.all([
-          get().updateNestling(nestlingId, { folderId: newFolderId }),
-          saveLastNestling(nestId, nestlingId),
-        ]);
+        if (newFolderId !== null) {
+          get().setFolderOpen(newFolderId, true);
+        }
+        await get().updateNestling(nestlingId, { folderId: newFolderId });
       } else if (activeType === "folder") {
         const folderId = Number(activeIdStr);
         const newParentId = overType === "folder" ? Number(overIdStr) : null;
 
-        if (isCircularReference(folderId, newParentId, get().folders)) return;
-
-        await get().updateFolder(folderId, { parentId: newParentId });
+        if (newParentId !== null) {
+          get().setFolderOpen(newParentId, true);
+        }
+        await get().moveFolder(folderId, newParentId);
       }
     } catch (error) {
       throw error;
@@ -425,7 +419,6 @@ export const useNestlingActions = () =>
       toggleAllFolders: state.toggleAllFolders,
       moveFolder: state.moveFolder,
 
-      handleDragStart: state.handleDragStart,
       handleDragEnd: state.handleDragEnd,
 
       getTags: state.getTags,

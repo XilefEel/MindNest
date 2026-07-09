@@ -1,5 +1,4 @@
 import FolderTree from "./FolderTree";
-import { DndContext, rectIntersection } from "@dnd-kit/core";
 import LooseNestlings from "./LooseNestlings";
 import { useEffect, useMemo } from "react";
 import {
@@ -17,6 +16,7 @@ import {
   useSidebarPosition,
   useSidebarToolbarHidden,
 } from "@/stores/useSettingsStore";
+import { DragDropProvider } from "@dnd-kit/react";
 
 export default function Sidebar({
   nestId,
@@ -27,7 +27,7 @@ export default function Sidebar({
 }) {
   const nestlings = useNestlings();
   const folders = useFolders();
-  const { handleDragStart, handleDragEnd, fetchSidebar } = useNestlingActions();
+  const { handleDragEnd, fetchSidebar } = useNestlingActions();
 
   const activeBackgroundId = useActiveBackgroundId();
   const sidebarPosition = useSidebarPosition();
@@ -82,9 +82,7 @@ export default function Sidebar({
           setIsSidebarOpen={setIsSidebarOpen}
         />
 
-        <DndContext
-          collisionDetection={rectIntersection}
-          onDragStart={handleDragStart}
+        <DragDropProvider
           onDragEnd={(e) => handleDragEnd(e, nestId)}
         >
           {folderGroups.map((folder) => (
@@ -99,7 +97,7 @@ export default function Sidebar({
             looseNestlings={looseNestlings}
             setIsSidebarOpen={setIsSidebarOpen}
           />
-        </DndContext>
+        </DragDropProvider>
       </aside>
     </SidebarContextMenu>
   );
