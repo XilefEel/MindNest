@@ -13,7 +13,6 @@ pub async fn import_music(
     app_handle: tauri::AppHandle,
     nest_id: i64,
     file_path: String,
-    order_index: i64,
 ) -> AppResult<BackgroundMusic> {
     let (title, duration_seconds) = extract_metadata(&file_path)?;
 
@@ -28,7 +27,6 @@ pub async fn import_music(
         title,
         file_path: new_path,
         duration_seconds,
-        order_index,
     };
 
     add_music_into_db(&db, new_music)
@@ -44,9 +42,8 @@ pub fn update_music(
     db: tauri::State<AppDb>,
     id: i64,
     title: String,
-    order_index: i64,
 ) -> AppResult<()> {
-    update_music_in_db(&db, id, title, order_index)
+    update_music_in_db(&db, id, title)
 }
 
 #[tauri::command]

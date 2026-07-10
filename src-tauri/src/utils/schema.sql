@@ -78,7 +78,6 @@ CREATE TABLE IF NOT EXISTS background_music (
     title TEXT NOT NULL,
     file_path TEXT NOT NULL,
     duration_seconds INTEGER NOT NULL,
-    order_index INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
     FOREIGN KEY (nest_id) REFERENCES nests(id) ON DELETE CASCADE

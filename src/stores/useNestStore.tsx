@@ -38,8 +38,6 @@ type NestState = {
   audioIsPaused: boolean;
   musicVolume: number;
 
-  activeDraggingId: string | null;
-
   loading: boolean;
 
   // Nest
@@ -71,7 +69,7 @@ type NestState = {
   clearActiveMusicId: () => void;
   selectMusic: (nestId: number) => Promise<boolean>;
   getMusic: (nestId: number) => Promise<void>;
-  updateMusic: (id: number, title: string, orderIndex: number) => Promise<void>;
+  updateMusic: (id: number, title: string) => Promise<void>;
   deleteMusic: (id: number) => Promise<void>;
 };
 
@@ -91,8 +89,6 @@ export const useNestStore = create<NestState>((set, get) => ({
   audioIsPlaying: false,
   audioIsPaused: false,
   musicVolume: 0.5,
-
-  activeDraggingId: null,
 
   loading: false,
 
@@ -259,8 +255,7 @@ export const useNestStore = create<NestState>((set, get) => ({
     const files = Array.isArray(selected) ? selected : [selected];
 
     const newTracks = await Promise.all(
-      files.map((filePath, index) =>
-        musicApi.importMusic(nestId, filePath, get().music.length + 1 + index),
+        files.map((filePath) => musicApi.importMusic(nestId, filePath),
       ),
     );
 
@@ -278,14 +273,14 @@ export const useNestStore = create<NestState>((set, get) => ({
 
   updateMusic: withStoreErrorHandler(
     set,
-    async (id: number, title: string, orderIndex: number) => {
+    async (id: number, title: string) => {
       set((state) => ({
         music: state.music.map((m) =>
-          m.id === id ? { ...m, title, orderIndex } : m,
+          m.id === id ? { ...m, title } : m,
         ),
       }));
 
-      await musicApi.updateMusic(id, title, orderIndex);
+      await musicApi.updateMusic(id, title);
     },
   ),
 

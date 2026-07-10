@@ -63,7 +63,7 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
     }
     if (title !== track.title) {
       try {
-        await updateMusic(track.id, title, track.orderIndex);
+        await updateMusic(track.id, title);
         toast.success("Music title updated successfully!");
       } catch (error) {
         toast.error("Failed to update music title.");

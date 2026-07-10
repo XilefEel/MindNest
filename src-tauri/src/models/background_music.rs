@@ -7,7 +7,6 @@ pub struct NewBackgroundMusic {
     pub title: String,
     pub file_path: String,
     pub duration_seconds: i64,
-    pub order_index: i64,
 }
 
 #[derive(Debug, Serialize)]
@@ -18,7 +17,6 @@ pub struct BackgroundMusic {
     pub title: String,
     pub file_path: String,
     pub duration_seconds: i64,
-    pub order_index: i64,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -33,9 +31,8 @@ impl TryFrom<&rusqlite::Row<'_>> for BackgroundMusic {
             title: row.get(2)?,
             file_path: row.get(3)?,
             duration_seconds: row.get(4)?,
-            order_index: row.get(5)?,
-            created_at: row.get(6)?,
-            updated_at: row.get(7)?,
+            created_at: row.get(5)?,
+            updated_at: row.get(6)?,
         })
     }
 }

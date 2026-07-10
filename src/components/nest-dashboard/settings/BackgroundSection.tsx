@@ -89,52 +89,51 @@ export default function BackgroundSection() {
         </BaseToolTip>
       </div>
 
-      <div className="max-h-72 overflow-y-auto">
-        <div className="grid grid-cols-2 gap-3 p-1 sm:grid-cols-3">
-          {backgrounds.length === 0 ? (
-            <p className="col-span-full text-sm text-zinc-500 dark:text-zinc-400">
-              No images yet
-            </p>
-          ) : (
-            backgrounds.map((image) => (
-              <div
-                key={image.id}
-                onClick={() => handleSelectBackground(image.id)}
+
+      <div className="grid grid-cols-2 gap-3 p-1 sm:grid-cols-3">
+        {backgrounds.length === 0 ? (
+          <p className="col-span-full text-sm text-zinc-500 dark:text-zinc-400">
+            No images yet
+          </p>
+        ) : (
+          backgrounds.map((image) => (
+            <div
+              key={image.id}
+              onClick={() => handleSelectBackground(image.id)}
+              className={cn(
+                "group relative aspect-video overflow-hidden rounded-lg ring-2 transition-all",
+                activeBackgroundId === image.id
+                  ? "ring-teal-500 dark:ring-teal-400"
+                  : activeBackgroundId
+                    ? "ring-black/10 hover:ring-black/20 dark:ring-white/10 dark:hover:ring-white/20"
+                    : "ring-zinc-200 hover:ring-zinc-300 dark:ring-zinc-700 dark:hover:ring-zinc-600",
+              )}
+            >
+              <img
+                src={convertFileSrc(image.filePath)}
+                alt="Background"
+                className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                loading="lazy"
+              />
+
+              <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteBackground(image.id);
+                }}
                 className={cn(
-                  "group relative aspect-video overflow-hidden rounded-lg ring-2 transition-all",
-                  activeBackgroundId === image.id
-                    ? "ring-teal-500 dark:ring-teal-400"
-                    : activeBackgroundId
-                      ? "ring-black/10 hover:ring-black/20 dark:ring-white/10 dark:hover:ring-white/20"
-                      : "ring-zinc-200 hover:ring-zinc-300 dark:ring-zinc-700 dark:hover:ring-zinc-600",
+                  "absolute top-2 right-2 rounded-full p-1.5 opacity-0 shadow-md transition-all group-hover:opacity-100",
+                  "bg-white/80 hover:bg-red-50 dark:bg-zinc-900/80 dark:hover:bg-red-950",
+                  "text-zinc-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400",
                 )}
               >
-                <img
-                  src={convertFileSrc(image.filePath)}
-                  alt="Background"
-                  className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                  loading="lazy"
-                />
-
-                <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteBackground(image.id);
-                  }}
-                  className={cn(
-                    "absolute top-2 right-2 rounded-full p-1.5 opacity-0 shadow-md transition-all group-hover:opacity-100",
-                    "bg-white/80 hover:bg-red-50 dark:bg-zinc-900/80 dark:hover:bg-red-950",
-                    "text-zinc-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400",
-                  )}
-                >
-                  <Trash2 size={14} />
-                </button>
-              </div>
-            ))
-          )}
-        </div>
+                <Trash2 size={14} />
+              </button>
+            </div>
+          ))
+        )}
       </div>
 
       <div

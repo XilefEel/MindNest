@@ -10,9 +10,9 @@ pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> AppResult<Back
 
     let mut statement = connection
         .prepare("
-            INSERT INTO background_music (nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at)
-            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
-            RETURNING id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at"
+            INSERT INTO background_music (nest_id, title, file_path, duration_seconds, created_at, updated_at)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+            RETURNING id, nest_id, title, file_path, duration_seconds, created_at, updated_at"
         )?;
 
     let music = statement
@@ -22,7 +22,6 @@ pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> AppResult<Back
                 data.title,
                 data.file_path,
                 data.duration_seconds,
-                data.order_index,
                 created_at,
                 created_at
             ],
@@ -36,13 +35,12 @@ pub fn add_music_into_db(db: &AppDb, data: NewBackgroundMusic) -> AppResult<Back
 pub fn get_music_from_db(db: &AppDb, nest_id: i64) -> AppResult<Vec<BackgroundMusic>> {
     let connection = db.conn()?;
 
-    let mut statement = connection
-        .prepare("
-            SELECT id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at
+    let mut statement = connection.prepare(
+        "
+            SELECT id, nest_id, title, file_path, duration_seconds, created_at, updated_at
             FROM background_music
-            WHERE nest_id = ?1
-            ORDER BY order_index ASC"
-        )?;
+            WHERE nest_id = ?1",
+    )?;
 
     let music = statement
         .query_map([nest_id], |row| BackgroundMusic::try_from(row))
@@ -55,12 +53,12 @@ pub fn get_music_from_db(db: &AppDb, nest_id: i64) -> AppResult<Vec<BackgroundMu
 pub fn get_music_by_id(db: &AppDb, id: i64) -> AppResult<BackgroundMusic> {
     let connection = db.conn()?;
 
-    let mut statement = connection
-        .prepare("
-            SELECT id, nest_id, title, file_path, duration_seconds, order_index, created_at, updated_at
+    let mut statement = connection.prepare(
+        "
+            SELECT id, nest_id, title, file_path, duration_seconds, created_at, updated_at
             FROM background_music
-            WHERE id = ?1"
-        )?;
+            WHERE id = ?1",
+    )?;
 
     let music = statement
         .query_row([id], |row| BackgroundMusic::try_from(row))
@@ -69,7 +67,7 @@ pub fn get_music_by_id(db: &AppDb, id: i64) -> AppResult<BackgroundMusic> {
     Ok(music)
 }
 
-pub fn update_music_in_db(db: &AppDb, id: i64, title: String, order_index: i64) -> AppResult<()> {
+pub fn update_music_in_db(db: &AppDb, id: i64, title: String) -> AppResult<()> {
     let connection = db.conn()?;
     let updated_at = Utc::now().to_rfc3339();
 
@@ -77,9 +75,9 @@ pub fn update_music_in_db(db: &AppDb, id: i64, title: String, order_index: i64) 
         .execute(
             "
             UPDATE background_music
-            SET title = ?1, order_index = ?2, updated_at = ?3
-            WHERE id = ?4",
-            params![title, order_index, updated_at, id],
+            SET title = ?1, updated_at = ?2
+            WHERE id = ?3",
+            params![title, updated_at, id],
         )
         .log_err("update_music_in_db")?;
 
