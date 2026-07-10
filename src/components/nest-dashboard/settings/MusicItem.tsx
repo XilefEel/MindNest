@@ -1,13 +1,11 @@
 import { BackgroundMusic } from "@/lib/types/background-music";
 import { cn } from "@/lib/utils/general";
 import {
-  useActiveBackgroundId,
   useActiveMusicId,
   useAudioCurrentTime,
   useAudioIsPaused,
   useNestActions,
 } from "@/stores/useNestStore";
-import { useSortable } from "@dnd-kit/sortable";
 import { Music, Pause, Play, Trash2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "@/lib/utils/toast";
@@ -22,7 +20,6 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
   const { deleteMusic, setActiveMusicId, setAudioIsPaused, updateMusic } =
     useNestActions();
   const activeMusicId = useActiveMusicId();
-  const activeBackgroundId = useActiveBackgroundId();
   const audioIsPaused = useAudioIsPaused();
   const audioCurrentTime = useAudioCurrentTime();
 
@@ -35,25 +32,10 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
   const isActive = activeMusicId === track.id;
   const isPlaying = isActive && !audioIsPaused;
   const currentTime = isActive ? audioCurrentTime : 0;
-  const progress = (currentTime / track.durationSeconds) * 100;
-
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: track.id,
-    data: { type: "music", music: track },
-  });
-
-  const style = {
-    transform: transform ? `translateY(${transform.y}px)` : undefined,
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
+  const progress = Math.min(
+    100,
+    (currentTime / track.durationSeconds) * 100 || 0,
+  );
 
   const handlePlayMusic = () => {
     if (activeMusicId === track.id) {
@@ -101,7 +83,8 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
     }
   };
 
-  const handleDeleteMusic = async () => {
+  const handleDeleteMusic = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     try {
       await deleteMusic(track.id);
       toast.success("Music deleted successfully!");
@@ -111,96 +94,101 @@ export default function MusicItem({ track }: { track: BackgroundMusic }) {
   };
 
   useEffect(() => setTitle(track.title), [track.title]);
+
   useEffect(() => {
     if (isEditing) inputRef.current?.focus();
   }, [isEditing]);
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
+      onClick={handlePlayMusic}
       className={cn(
-        "group rounded-md p-2 transition-colors",
+        "group relative flex aspect-square w-full cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border p-3 transition-colors",
         isActive
-          ? activeBackgroundId
-            ? "bg-teal-200/50 dark:bg-teal-900/50"
-            : "bg-teal-100 dark:bg-teal-900/50"
-          : activeBackgroundId
-            ? "hover:bg-black/5 dark:hover:bg-white/5"
-            : "hover:bg-zinc-100 dark:hover:bg-zinc-700",
+          ? "border-teal-400 bg-teal-50 dark:border-teal-500/60 dark:bg-teal-950/40"
+          : "border-zinc-200 bg-white hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700/50",
       )}
     >
-      <div className="flex items-center gap-2" {...listeners} {...attributes}>
-        <button
-          onClick={handlePlayMusic}
-          className="flex size-11 items-center justify-center rounded-md bg-teal-500 text-white transition hover:bg-teal-600"
-        >
-          {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-        </button>
+      <button
+        onClick={handleDeleteMusic}
+        className={cn(
+          "absolute top-2 right-2 rounded-full p-1.5 opacity-0 shadow-md transition-all group-hover:opacity-100",
+          "bg-white/80 hover:bg-red-50 dark:bg-zinc-900/80 dark:hover:bg-red-950",
+          "text-zinc-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400",
+        )}
+      >
+        <Trash2 className="size-3.5 shrink-0" />
+      </button>
 
-        <div className="flex flex-1 items-center gap-2">
-          <Music size={16} className="text-zinc-400" />
-
-          <div className="flex flex-col" onDoubleClick={handleDoubleClick}>
-            <div
-              className={cn(
-                "truncate rounded text-sm font-medium text-zinc-900 transition-all duration-200 dark:text-zinc-100",
-                isActive && "text-teal-600 dark:text-teal-400",
-                isEditing &&
-                  cn(
-                    "px-2 py-0.5 shadow ring-2 ring-teal-500",
-                    activeBackgroundId
-                      ? "bg-white/10 backdrop-blur-sm dark:bg-black/10"
-                      : "bg-white dark:bg-zinc-800",
-                  ),
-              )}
-            >
-              <input
-                ref={inputRef}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                onBlur={handleBlur}
-                onKeyDown={handleKeyDown}
-                readOnly={!isEditing}
-                autoComplete="off"
-                autoCorrect="off"
-                spellCheck={false}
-                className={cn(
-                  "w-full truncate bg-transparent focus:outline-none",
-                  !isEditing && "pointer-events-none",
-                )}
-              />
-            </div>
-            <span className="text-xs text-zinc-500 tabular-nums dark:text-zinc-400">
-              {formatTime(track.durationSeconds)}
-            </span>
-          </div>
-        </div>
-
-        <button
-          onClick={handleDeleteMusic}
-          className="rounded-md p-1.5 text-zinc-400 opacity-0 transition group-hover:opacity-100 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
-        >
-          <Trash2 size={16} />
-        </button>
+      <div
+        className={cn(
+          "flex size-12 items-center justify-center rounded-full transition-colors",
+          isActive
+            ? "bg-teal-500 text-white"
+            : "bg-zinc-100 text-zinc-500 group-hover:bg-teal-500 group-hover:text-white dark:bg-zinc-700 dark:text-zinc-300",
+        )}
+      >
+        {isPlaying ? (
+          <Pause size={20} fill="currentColor" />
+        ) : isActive ? (
+          <Play size={20} fill="currentColor" className="ml-0.5" />
+        ) : (
+          <>
+            <Music size={18} className="group-hover:hidden" />
+            <Play
+              size={18}
+              fill="currentColor"
+              className="ml-0.5 hidden group-hover:block"
+            />
+          </>
+        )}
       </div>
 
-      {isActive && (
-        <div className="flex items-center gap-2 p-2 pb-1">
-          <span className="text-xs text-zinc-500 tabular-nums dark:text-zinc-400">
-            {formatTime(currentTime)}
-          </span>
-          <div className="h-1 flex-1 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
-            <div
-              className="h-full rounded-full bg-teal-500 transition-all duration-100 dark:bg-teal-400"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <span className="text-xs text-zinc-500 tabular-nums dark:text-zinc-400">
-            {formatTime(track.durationSeconds)}
-          </span>
+      <div
+        className="flex w-full flex-col items-center"
+        onDoubleClick={handleDoubleClick}
+      >
+        <div
+          className={cn(
+            "max-w-full truncate rounded text-center text-sm font-medium text-zinc-700 dark:text-zinc-200",
+            isActive && "text-teal-700 dark:text-teal-300",
+            isEditing &&
+              "bg-white px-2 py-0.5 shadow ring-2 ring-teal-500 dark:bg-zinc-900",
+          )}
+          onClick={(e) => isEditing && e.stopPropagation()}
+        >
+          <input
+            ref={inputRef}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            onClick={(e) => e.stopPropagation()}
+            readOnly={!isEditing}
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
+            className={cn(
+              "w-full truncate bg-transparent text-center focus:outline-none",
+              !isEditing && "pointer-events-none",
+            )}
+          />
         </div>
-      )}
+
+        <span className="text-xs text-zinc-400 tabular-nums dark:text-zinc-500">
+          {formatTime(track.durationSeconds)}
+        </span>
+      </div>
+
+      <div className="absolute inset-x-0 bottom-0 h-1 bg-zinc-100 dark:bg-zinc-700">
+        <div
+          style={isActive ? { width: `${progress}%` } : undefined}
+          className={cn(
+            "h-full bg-teal-500 transition-all duration-100 dark:bg-teal-400",
+            !isActive && "w-0",
+          )}
+        />
+      </div>
     </div>
   );
 }

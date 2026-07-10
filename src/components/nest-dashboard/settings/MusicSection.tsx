@@ -70,7 +70,7 @@ export default function MusicSection() {
       <div
         style={{ scrollbarGutter: "stable" }}
         className={cn(
-          "max-h-72 overflow-y-auto rounded-lg bg-zinc-50 p-2 dark:bg-zinc-700/30",
+          "grid grid-cols-3 gap-3 p-1",
           activeBackgroundId && "bg-white/30 dark:bg-black/30",
         )}
       >
@@ -141,10 +141,10 @@ export default function MusicSection() {
         <button
           onClick={() => setSetting("musicLooped", !musicLooped)}
           className={cn(
-            "rounded-lg p-2 shadow-sm transition hover:brightness-95 active:scale-95",
+            "rounded-lg p-2 shadow-sm transition-colors",
             musicLooped
-              ? "bg-teal-100 text-teal-700 dark:bg-teal-500 dark:text-teal-100"
-              : "bg-zinc-100 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-400",
+              ? "bg-teal-500 text-white hover:bg-teal-600"
+              : "bg-zinc-100 text-zinc-500 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-600",
           )}
         >
           <Repeat size={16} />

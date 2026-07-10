@@ -62,7 +62,7 @@ export default function NestSettings() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              "w-full rounded-lg px-2 py-2 text-sm transition-colors md:px-4",
+              "w-full rounded-lg px-2 py-1.5 text-sm transition-colors md:px-4",
               activeBackgroundId
                 ? activeTab === tab.id
                   ? "bg-teal-100/40 font-medium text-teal-600 dark:bg-teal-400/10 dark:text-teal-400"
@@ -79,6 +79,7 @@ export default function NestSettings() {
           </button>
         ))}
       </div>
+
       <div className="flex-1 overflow-y-auto">
         {activeTab === "background" && <BackgroundSection />}
         {activeTab === "music" && <MusicSection />}

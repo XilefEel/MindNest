@@ -20,9 +20,6 @@ import {
   clearLastBackgroundMusic,
   saveLastMusicVolume,
 } from "@/lib/storage/background-music";
-import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
-import { parseDragData } from "@/lib/utils/general";
-import { arrayMove } from "@dnd-kit/sortable";
 
 type NestState = {
   nests: Nest[];
@@ -69,9 +66,6 @@ type NestState = {
   setAudioIsPlaying: (playing: boolean) => void;
   setAudioIsPaused: (paused: boolean) => void;
   setMusicVolume: (volume: number) => void;
-
-  handleDragStart: (event: DragStartEvent) => void;
-  handleDragEnd: (event: DragEndEvent) => Promise<void>;
 
   setActiveMusicId: (musicId: number | null) => Promise<void>;
   clearActiveMusicId: () => void;
@@ -254,42 +248,6 @@ export const useNestStore = create<NestState>((set, get) => ({
     set({ activeMusicId: null });
   },
 
-  handleDragStart: (event) => {
-    set({ activeDraggingId: event.active.id as string });
-  },
-
-  handleDragEnd: async (event) => {
-    const { active, over } = event;
-    set({ activeDraggingId: null });
-
-    if (!over || active.id === over.id) return;
-
-    const activeData = parseDragData(active);
-    const targetData = parseDragData(over);
-
-    if (!activeData || !targetData) return;
-
-    const { music } = get();
-    const activeIdx = music.findIndex((c) => c.id === activeData.id);
-    const targetIdx = music.findIndex((c) => c.id === targetData.id);
-
-    const reorderedMusic = arrayMove(music, activeIdx, targetIdx);
-    const musicWithNewIndexes = reorderedMusic.map((col, i) => ({
-      ...col,
-      orderIndex: i,
-    }));
-
-    set({ music: musicWithNewIndexes });
-
-    await Promise.all(
-      musicWithNewIndexes.map((music) =>
-        musicApi.updateMusic(music.id, music.title, music.orderIndex),
-      ),
-    );
-
-    return;
-  },
-
   selectMusic: withStoreErrorHandler(set, async (nestId: number) => {
     const selected = await open({
       multiple: true,
@@ -364,9 +322,6 @@ export const useNestActions = () =>
       setAudioIsPlaying: state.setAudioIsPlaying,
       setAudioIsPaused: state.setAudioIsPaused,
       setMusicVolume: state.setMusicVolume,
-
-      handleDragStart: state.handleDragStart,
-      handleDragEnd: state.handleDragEnd,
 
       setActiveMusicId: state.setActiveMusicId,
       clearActiveMusicId: state.clearActiveMusicId,
