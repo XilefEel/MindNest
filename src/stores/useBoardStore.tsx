@@ -3,29 +3,25 @@ import {
   BoardCard,
   BoardColumn,
   BoardData,
+  CardsByColumn,
   NewBoardCard,
   NewBoardColumn,
 } from "@/lib/types/board";
 import {
   mergeWithCurrent,
-  parseDragData,
   withStoreErrorHandler,
 } from "@/lib/utils/general";
-import { DragEndEvent, DragStartEvent, DragMoveEvent } from "@dnd-kit/core";
+import { DragEndEvent, DragStartEvent, DragMoveEvent } from "@dnd-kit/react";
 import { create } from "zustand";
-import { sortCards } from "@/lib/utils/boards";
 import { useShallow } from "zustand/react/shallow";
-import { arrayMove } from "@dnd-kit/sortable";
+import { move } from "@dnd-kit/helpers";
 import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
+
+let snapshot: CardsByColumn = {};
 
 type BoardState = {
   columns: BoardColumn[];
-  cards: BoardCard[];
-
-  boardData: BoardData | null;
-  activeDraggingId: string | null;
-  activeColumn: BoardColumn | null;
-  activeCard: BoardCard | null;
+  cardsByColumn: CardsByColumn;
   loading: boolean;
 
   getBoard: (nestlingId: number) => Promise<void>;
@@ -36,45 +32,44 @@ type BoardState = {
   removeColumn: (columnId: number) => Promise<void>;
 
   createCard: (card: NewBoardCard) => Promise<void>;
-  duplicateCard: (card: BoardCard) => Promise<void>;
-  updateCard: (id: number, updates: Partial<BoardCard>) => Promise<void>;
-  deleteCard: (cardId: number) => Promise<void>;
+  updateCard: (id: number, columnId: number, updates: Partial<BoardCard>) => Promise<void>;
+  deleteCard: (cardId: number, columnId: number) => Promise<void>;
 
   handleDragStart: (event: DragStartEvent) => void;
-  handleDragMove: (event: DragMoveEvent) => void;
-  handleDragEnd: (event: DragEndEvent) => Promise<void>;
+  handleDragOver: (event: DragMoveEvent) => void;
+  handleDragEnd: (event: DragEndEvent) => void;
 };
 
 export const useBoardStore = create<BoardState>((set, get) => ({
   columns: [],
-  cards: [],
-  boardData: null,
+  cardsByColumn: {},
   loading: false,
 
-  activeDraggingId: null,
-  activeColumn: null,
-  activeCard: null,
-
   getBoard: withStoreErrorHandler(set, async (nestlingId) => {
-    const data = await boardApi.getBoard(nestlingId);
+    const data: BoardData = await boardApi.getBoard(nestlingId);
 
     const columns: BoardColumn[] = data.columns.map((col) => col.column);
-    const cards: BoardCard[] = data.columns.flatMap((col) => col.cards);
+    const cardsByColumn: CardsByColumn = Object.fromEntries(
+      data.columns.map((c) => [String(c.column.id), c.cards]),
+    );
 
-    set({ boardData: data, columns, cards });
+    set({ columns, cardsByColumn });
   }),
 
   createColumn: withStoreErrorHandler(set, async (column) => {
     const newColumn = await boardApi.createBoardColumn(column);
     set((state) => ({
       columns: [...state.columns, newColumn],
+      cardsByColumn: {
+        ...state.cardsByColumn,
+        [newColumn.id]: [],
+      },
     }));
     await updateNestlingTimestamp(newColumn.nestlingId);
   }),
 
   duplicateColumn: withStoreErrorHandler(set, async (column) => {
-    const { columns, cards } = get();
-
+    const { columns, cardsByColumn } = get();
     const originalIdx = columns.findIndex((c) => c.id === column.id);
     if (originalIdx === -1) return;
 
@@ -85,7 +80,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       color: column.color,
     });
 
-    const originalCards = cards.filter((c) => c.columnId === column.id);
+    const originalCards = cardsByColumn[column.id] ?? [];
+
     const duplicatedCards = await Promise.all(
       originalCards.map((card, index) =>
         boardApi.createBoardCard({
@@ -103,17 +99,19 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       ...columns.slice(originalIdx + 1),
     ].map((col, i) => ({ ...col, orderIndex: i }));
 
-    set({
+    set((state) => ({
       columns: updatedColumns,
-      cards: [...cards, ...duplicatedCards],
-    });
+      cardsByColumn: {
+        ...state.cardsByColumn,
+        [newColumn.id]: duplicatedCards,
+      },
+    }));
 
     await Promise.all(
       updatedColumns
         .slice(originalIdx + 1)
         .map((col) => boardApi.updateBoardColumn(col)),
     );
-
     await updateNestlingTimestamp(newColumn.nestlingId);
   }),
 
@@ -152,50 +150,21 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     const newCard = await boardApi.createBoardCard(card);
 
     set((state) => ({
-      cards: [...state.cards, newCard],
+      cardsByColumn: {
+        ...state.cardsByColumn,
+        [card.columnId]: [...(state.cardsByColumn[card.columnId] ?? []), newCard],
+      },
     }));
     await updateNestlingTimestamp(
       get().columns.find((col) => col.id === card.columnId)!.nestlingId,
     );
   }),
 
-  duplicateCard: withStoreErrorHandler(set, async (card) => {
-    const { cards } = get();
-
-    const originalIdx = cards.findIndex((c) => c.id === card.id);
-    if (originalIdx === -1) return;
-
-    const newCard = await boardApi.createBoardCard({
-      columnId: card.columnId,
-      title: `Copy of ${card.title}`,
-      description: card.description,
-      orderIndex: card.orderIndex + 1,
-    });
-
-    const updatedCards = [
-      ...cards.slice(0, originalIdx + 1),
-      newCard,
-      ...cards.slice(originalIdx + 1),
-    ].map((card, i) => ({ ...card, orderIndex: i }));
-
-    set({ cards: sortCards(updatedCards) });
-
-    await Promise.all(
-      updatedCards
-        .slice(originalIdx + 1)
-        .map((card) => boardApi.updateBoardCard(card)),
-    );
-
-    await updateNestlingTimestamp(
-      get().columns.find((col) => col.id === card.columnId)!.nestlingId,
-    );
-  }),
-
-  updateCard: withStoreErrorHandler(set, async (id, updates) => {
-    const current = get().cards.find((c) => c.id === id);
+  updateCard: withStoreErrorHandler(set, async (id, columnId, updates) => {
+    const current = get().cardsByColumn[columnId]?.find((c) => c.id === id);
     if (!current) throw new Error("Card not found");
 
-    const column = get().columns.find((col) => col.id === current.columnId);
+    const column = get().columns.find((col) => col.id === columnId);
     if (!column) throw new Error("Column not found");
 
     const updated = {
@@ -209,128 +178,79 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     ]);
 
     set((state) => ({
-      cards: state.cards.map((card) => (card.id === id ? updated : card)),
+      cardsByColumn: {
+        ...state.cardsByColumn,
+        [columnId]: state.cardsByColumn[columnId].map((card) =>
+          card.id === id ? updated : card,
+        ),
+      },
     }));
   }),
 
-  deleteCard: withStoreErrorHandler(set, async (cardId) => {
-    await boardApi.deleteBoardCard(cardId);
+  deleteCard: withStoreErrorHandler(set, async (id, columnId) => {
+    const current = get().cardsByColumn[columnId]?.find((c) => c.id === id);
+    if (!current) throw new Error("Card not found");
 
-    const currentCard = get().cards.find((card) => card.id === cardId)!;
+    const column = get().columns.find((col) => col.id === columnId);
+    if (!column) throw new Error("Column not found");
+
+    await boardApi.deleteBoardCard(id);
 
     set((state) => ({
-      cards: state.cards.filter((card) => card.id !== cardId),
+      cardsByColumn: {
+        ...state.cardsByColumn,
+        [columnId]: state.cardsByColumn[columnId].filter((card) => card.id !== id),
+      },
     }));
 
-    await updateNestlingTimestamp(
-      get().columns.find((col) => col.id === currentCard.columnId)!.nestlingId,
-    );
+    await updateNestlingTimestamp(column.nestlingId);
   }),
 
-  handleDragStart: (event) => {
-    const activeData = parseDragData(event.active);
-
-    if (!activeData) {
-      set({ activeDraggingId: null, activeColumn: null, activeCard: null });
-      return;
-    }
-
-    set({ activeDraggingId: event.active.id as string });
-
-    if (activeData.type === "column") {
-      set({ activeColumn: activeData.column, activeCard: null });
-      return;
-    }
-
-    if (activeData.type === "card") {
-      set({ activeCard: activeData.card, activeColumn: null });
-      return;
-    }
+  handleDragStart: () => {
+    snapshot = structuredClone(get().cardsByColumn);
   },
 
-  handleDragMove: (event) => {
-    const { active, over } = event;
+  handleDragOver: (event) => {
+    const { source } = event.operation;
 
-    if (!over || active.id === over.id) return;
-
-    const activeData = parseDragData(active);
-    const overData = parseDragData(over);
-
-    if (!activeData || !overData || activeData.type !== "card") return;
-
-    const { cards } = get();
-
-    if (overData.type === "card") {
-      const activeIndex = cards.findIndex((c) => c.id === active.id);
-      const overIndex = cards.findIndex((c) => c.id === over.id);
-
-      if (activeIndex === -1 || overIndex === -1) return;
-
-      if (cards[activeIndex].columnId !== cards[overIndex].columnId) {
-        cards[activeIndex].columnId = cards[overIndex].columnId;
-      }
-
-      set({ cards: arrayMove(cards, activeIndex, overIndex) });
+    if (source && source.type === "column") {
+      set((state) => ({ columns: move(state.columns, event) }));
       return;
-    }
+    };
 
-    if (overData.type === "column") {
-      const activeIndex = cards.findIndex((c) => c.id === active.id);
-      if (activeIndex === -1) return;
-
-      cards[activeIndex].columnId = over.id as number;
-
-      set({ cards: arrayMove(cards, activeIndex, activeIndex) });
-    }
+    set((state) => ({ cardsByColumn: move(state.cardsByColumn, event) }));
   },
 
   handleDragEnd: async (event) => {
-    const { active, over } = event;
-    set({ activeDraggingId: null, activeColumn: null, activeCard: null });
+    const { source } = event.operation;
+    if (!source) return;
 
-    const activeData = parseDragData(active);
-    if (!activeData) return;
-
-    if (activeData.type === "column") {
-      if (!over || active.id === over.id) return;
-
-      set((state) => {
-        const activeIndex = state.columns.findIndex((c) => c.id === active.id);
-        const overIndex = state.columns.findIndex((c) => c.id === over.id);
-
-        return { columns: arrayMove(state.columns, activeIndex, overIndex) };
-      });
-
-      const indexed = get().columns.map((col, i) => ({
-        ...col,
-        orderIndex: i,
-      }));
-
-      set({ columns: indexed });
-
-      await Promise.all(indexed.map((col) => boardApi.updateBoardColumn(col)));
-      await updateNestlingTimestamp(indexed[0].nestlingId);
-
+    if (event.canceled) {
+      set({ cardsByColumn: snapshot });
       return;
     }
 
-    if (activeData.type === "card") {
-      const { cards, columns } = get();
+    if (source.type === "column") {
+      const indexed = get().columns.map((col, i) => ({ ...col, orderIndex: i }));
+      set({ columns: indexed });
+      await Promise.all(indexed.map((col) => boardApi.updateBoardColumn(col)));
+      await updateNestlingTimestamp(indexed[0].nestlingId);
+      return;
+    }
 
-      const indexed = cards.map((card) => {
-        const cardsInColumn = cards.filter((c) => c.columnId === card.columnId);
-        return {
-          ...card,
-          orderIndex: cardsInColumn.findIndex((c) => c.id === card.id),
-        };
-      });
+    if (source.type === "card") {
+      const { cardsByColumn, columns } = get();
+      const updates: BoardCard[] = [];
 
-      set({ cards: indexed });
+      for (const [columnId, cards] of Object.entries(cardsByColumn)) {
+        cards.forEach((card, i) => {
+          updates.push({ ...card, columnId: Number(columnId), orderIndex: i });
+        });
+      }
 
-      await Promise.all(indexed.map((card) => boardApi.updateBoardCard(card)));
+      await Promise.all(updates.map((card) => boardApi.updateBoardCard(card)));
 
-      const movedCard = indexed.find((c) => c.id === active.id)!;
-
+      const movedCard = updates.find((c) => c.id === Number(source.id))!;
       await updateNestlingTimestamp(
         columns.find((col) => col.id === movedCard.columnId)!.nestlingId,
       );
@@ -340,14 +260,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
 export const useBoardColumns = () => useBoardStore((state) => state.columns);
 
-export const useBoardCards = () => useBoardStore((state) => state.cards);
-
-export const setActiveDraggingId = (id: string | null) => {
-  useBoardStore.setState({ activeDraggingId: id });
-};
-
-export const useActiveDraggingId = () =>
-  useBoardStore((state) => state.activeDraggingId);
+export const useCardsByColumn = () => useBoardStore((state) => state.cardsByColumn);
 
 export const useBoardActions = () =>
   useBoardStore(
@@ -360,12 +273,11 @@ export const useBoardActions = () =>
       removeColumn: state.removeColumn,
 
       createCard: state.createCard,
-      duplicateCard: state.duplicateCard,
       updateCard: state.updateCard,
       deleteCard: state.deleteCard,
 
       handleDragStart: state.handleDragStart,
-      handleDragMove: state.handleDragMove,
+      handleDragOver: state.handleDragOver,
       handleDragEnd: state.handleDragEnd,
     })),
   );

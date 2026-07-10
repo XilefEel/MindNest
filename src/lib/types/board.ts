@@ -28,3 +28,5 @@ export type BoardColumnData = {
   column: BoardColumn;
   cards: BoardCard[];
 };
+
+export type CardsByColumn = Record<number, BoardCard[]>;

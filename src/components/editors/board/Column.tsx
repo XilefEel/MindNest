@@ -1,60 +1,37 @@
 import { Trash, Plus } from "lucide-react";
-import {
-  setActiveDraggingId,
-  useBoardActions,
-  useBoardCards,
-} from "@/stores/useBoardStore";
+import { useSortable } from "@dnd-kit/react/sortable";
+import { CollisionPriority } from "@dnd-kit/abstract";
 import ColumnCard from "./ColumnCard";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useSortable } from "@dnd-kit/sortable";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { useBoardActions } from "@/stores/useBoardStore";
 import { toast } from "@/lib/utils/toast";
-import { BoardColumn } from "@/lib/types/board";
+import { BoardColumn, BoardCard } from "@/lib/types/board";
 import ColumnContextMenu from "@/components/context-menu/ColumnContextMenu";
+import { useState, useRef, useEffect } from "react";
 
-export default function Column({ column }: { column: BoardColumn }) {
+export default function Column({
+  column,
+  index,
+  cards,
+}: {
+  column: BoardColumn;
+  index: number;
+  cards: BoardCard[];
+}) {
   const [title, setTitle] = useState(column.title);
   const [isEditing, setIsEditing] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const { createCard, removeColumn, updateColumn } = useBoardActions();
 
-  const { createCard, updateColumn, removeColumn } = useBoardActions();
-
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+  const { ref } = useSortable({
     id: column.id,
-    data: {
-      type: "column",
-      column: column,
-    },
+    accept: ["column", "card"],
+    collisionPriority: CollisionPriority.Low,
+    type: "column",
+    index,
   });
 
-  const style = {
-    backgroundColor: column.color,
-    transform: transform ? `translateX(${transform.x}px)` : undefined,
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  const cards = useBoardCards();
-  const filteredCards = useMemo(
-    () => cards.filter((card) => card.columnId === column.id),
-    [cards, column.id],
-  );
-
-  const cardIds = filteredCards.map((card) => card.id);
-
   const handleAddCard = async () => {
-    setActiveDraggingId("adding");
     try {
       await createCard({
         columnId: column.id,
@@ -64,8 +41,6 @@ export default function Column({ column }: { column: BoardColumn }) {
       });
     } catch (error) {
       toast.error("Error adding card to column.");
-    } finally {
-      setActiveDraggingId(null);
     }
   };
 
@@ -103,16 +78,11 @@ export default function Column({ column }: { column: BoardColumn }) {
   return (
     <ColumnContextMenu column={column}>
       <div
-        ref={setNodeRef}
-        key={column.id}
-        style={style}
+        ref={ref as any}
+        style={{ backgroundColor: column.color }}
         className="flex w-72 shrink-0 flex-col overflow-hidden rounded-2xl border border-black/5 shadow-lg"
       >
-        <div
-          className="flex cursor-grab items-center gap-1 bg-black/5 px-4 py-2.5 active:cursor-grabbing"
-          {...listeners}
-          {...attributes}
-        >
+        <div className="flex items-center gap-1 bg-black/5 px-4 py-2.5 active:cursor-grabbing">
           {isEditing ? (
             <input
               ref={inputRef}
@@ -135,27 +105,27 @@ export default function Column({ column }: { column: BoardColumn }) {
           )}
 
           <span className="flex size-6 items-center justify-center rounded-full bg-black/20 text-xs font-bold text-white shadow-sm">
-            {filteredCards.length}
+            {cards.length}
           </span>
 
           <button
             onClick={() => removeColumn(column.id)}
             className="flex size-8 items-center justify-center rounded-lg text-white/80 transition hover:bg-black/10 hover:text-white"
           >
-            <Trash className="size-4" />
+            <Trash className="size-4 shrink-0" />
           </button>
         </div>
 
         <div className="flex flex-1 flex-col gap-2 px-2 py-3">
-          {filteredCards.length > 0 ? (
-            <SortableContext
-              items={cardIds}
-              strategy={verticalListSortingStrategy}
-            >
-              {filteredCards.map((card) => (
-                <ColumnCard key={card.id} card={card} />
-              ))}
-            </SortableContext>
+          {cards.length > 0 ? (
+            cards.map((card, i) => (
+              <ColumnCard
+                key={card.id}
+                card={card}
+                columnId={column.id}
+                index={i}
+              />
+            ))
           ) : (
             <div className="flex min-h-30 items-center justify-center rounded-xl border-2 border-dashed border-white/30 text-sm font-medium text-white/70">
               Drop cards here
@@ -167,7 +137,7 @@ export default function Column({ column }: { column: BoardColumn }) {
           onClick={handleAddCard}
           className="flex items-center gap-2 bg-black/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-black/15"
         >
-          <Plus className="size-4" />
+          <Plus className="size-4 shrink-0" />
           New
         </button>
       </div>

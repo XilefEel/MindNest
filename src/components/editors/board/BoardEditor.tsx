@@ -1,35 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
 import NestlingTitle from "@/components/editors/NestlingTitle";
 import {
-  useActiveDraggingId,
   useBoardActions,
-  useBoardCards,
   useBoardColumns,
+  useCardsByColumn,
 } from "@/stores/useBoardStore";
 import Column from "@/components/editors/board/Column";
 import useAutoSave from "@/hooks/useAutoSave";
-import {
-  DndContext,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragOverlay,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  horizontalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import {
   useActiveNestling,
   useNestlingActions,
 } from "@/stores/useNestlingStore";
 import { COLORS } from "@/lib/utils/constants";
 import { cn, getRandomElement } from "@/lib/utils/general";
-import ColumnCard from "./ColumnCard";
-import { createPortal } from "react-dom";
 import { Plus } from "lucide-react";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { toast } from "@/lib/utils/toast";
+import { DragDropProvider } from "@dnd-kit/react";
 
 export default function BoardEditor() {
   const activeNestling = useActiveNestling();
@@ -37,30 +24,17 @@ export default function BoardEditor() {
 
   const activeBackgroundId = useActiveBackgroundId();
   const columns = useBoardColumns();
-  const cards = useBoardCards();
-  const activeDraggingId = useActiveDraggingId();
+  const cardsByColumn = useCardsByColumn();
+
   const {
     getBoard,
     createColumn,
     handleDragStart,
-    handleDragMove,
+    handleDragOver,
     handleDragEnd,
   } = useBoardActions();
-
   const { updateNestling } = useNestlingActions();
-
   const [title, setTitle] = useState(activeNestling.title);
-
-  const columnIds = useMemo(() => columns.map((col) => col.id), [columns]);
-  const activeCard = cards.find((card) => card.id === Number(activeDraggingId));
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 10,
-      },
-    }),
-  );
 
   const handleAddColumn = async () => {
     try {
@@ -87,54 +61,43 @@ export default function BoardEditor() {
   }, [activeNestling.title]);
 
   return (
-    <div className="relative flex h-full flex-col gap-3">
+    <div className="flex h-full flex-col gap-3">
       <NestlingTitle
         title={title}
         setTitle={setTitle}
         nestling={activeNestling}
       />
 
-      <div className="flex-1 overflow-x-auto overflow-y-visible">
-        <DndContext
-          sensors={sensors}
-          onDragStart={handleDragStart}
-          onDragMove={handleDragMove}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={columnIds}
-            strategy={horizontalListSortingStrategy}
+      <DragDropProvider
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="flex h-full flex-row items-start gap-4 overflow-x-auto pt-2">
+          {columns.map((col, i) => (
+            <Column
+              key={col.id}
+              column={col}
+              cards={cardsByColumn[col.id]}
+              index={i}
+            />
+          ))}
+
+          <button
+            onClick={handleAddColumn}
+            className={cn(
+              "flex w-72 shrink-0 items-center justify-center gap-2 rounded-lg py-5 transition-colors",
+              "text-zinc-600 dark:text-zinc-400",
+              "border-2 border-dashed border-zinc-600 dark:border-zinc-400",
+              "hover:bg-zinc-100 dark:hover:bg-zinc-800",
+              activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
+            )}
           >
-            <div className="flex flex-row items-start gap-4 pt-2">
-              {columns.map((col) => (
-                <Column key={col.id} column={col} />
-              ))}
-
-              <button
-                onClick={handleAddColumn}
-                className={cn(
-                  "flex w-72 shrink-0 items-center justify-center gap-2 rounded-lg py-5 transition-colors",
-                  "text-zinc-600 dark:text-zinc-400",
-                  "border-2 border-dashed border-zinc-600 dark:border-zinc-400",
-                  "hover:bg-zinc-100 dark:hover:bg-zinc-800",
-                  activeBackgroundId &&
-                    "hover:bg-black/5 dark:hover:bg-white/5",
-                )}
-              >
-                <Plus size={16} />
-                Add column
-              </button>
-            </div>
-          </SortableContext>
-
-          {createPortal(
-            <DragOverlay dropAnimation={null}>
-              {activeCard && <ColumnCard card={activeCard} />}
-            </DragOverlay>,
-            document.body,
-          )}
-        </DndContext>
-      </div>
+            <Plus size={16} />
+            Add column
+          </button>
+        </div>
+      </DragDropProvider>
     </div>
   );
 }

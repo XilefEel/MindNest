@@ -1,102 +1,72 @@
-import { Trash } from "lucide-react";
 import { BoardCard } from "@/lib/types/board";
-import { setActiveDraggingId, useBoardActions } from "@/stores/useBoardStore";
+import { useSortable } from "@dnd-kit/react/sortable";
 import { useState } from "react";
-import { useSortable } from "@dnd-kit/sortable";
-import CardContextMenu from "@/components/context-menu/CardContextMenu";
-import CardPopover from "../../popovers/CardPopover";
 import BasePopover from "@/components/popovers/BasePopover.tsx";
-import { toast } from "@/lib/utils/toast";
+import CardPopover from "../../popovers/CardPopover";
+import { useBoardActions } from "@/stores/useBoardStore";
+import { Trash } from "lucide-react";
+import { toast } from "sonner";
 
-export default function ColumnCard({ card }: { card: BoardCard }) {
+export default function ColumnCard({
+  card,
+  columnId,
+  index,
+}: {
+  card: BoardCard;
+  columnId: number;
+  index: number;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const { deleteCard } = useBoardActions();
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+  const { ref, isDragging } = useSortable({
     id: card.id,
-    data: {
-      type: "card",
-      card: card,
-    },
+    group: columnId,
+    accept: "card",
+    type: "card",
+    index,
+    data: { group: columnId },
   });
 
-  console.log(transform);
-
-  const style = {
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
   const handleDelete = async () => {
-    setActiveDraggingId("deleting");
     try {
-      await deleteCard(card.id);
+      await deleteCard(card.id, columnId);
     } catch (err) {
       toast.error("Failed to delete card.");
-    } finally {
-      setActiveDraggingId(null);
     }
   };
 
   return (
-    <CardContextMenu card={card}>
-      <BasePopover
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        align="start"
-        side="right"
-        width="w-96"
-        trigger={
-          <div
-            ref={setNodeRef}
-            style={style}
-            onContextMenu={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-            className="group relative rounded-lg bg-white p-3 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-700 dark:bg-zinc-700"
-          >
-            <div
-              {...attributes}
-              {...listeners}
-              className="cursor-grab active:cursor-grabbing"
-              onClick={(e) => {
-                if (isDragging) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }
-              }}
-            >
-              <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
-                {card.title}
-              </h3>
-              {card.description && (
-                <p className="mt-1 line-clamp-2 text-xs text-zinc-500 dark:text-zinc-400">
-                  {card.description}
-                </p>
-              )}
-            </div>
+    <BasePopover
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      align="start"
+      side="right"
+      width="w-96"
+      trigger={
+        <div
+          ref={ref as any}
+          data-shadow={isDragging || undefined}
+          className="group relative rounded-md bg-white p-2 shadow-md"
+        >
+          <h3 className="text-sm font-semibold">{card.title}</h3>
 
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete();
-              }}
-              className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 items-center justify-center rounded-lg text-zinc-400 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/30"
-            >
-              <Trash className="size-3.5" />
-            </button>
-          </div>
-        }
-        content={<CardPopover card={card} onClose={() => setIsOpen(false)} />}
-      />
-    </CardContextMenu>
+          {card.description && (
+            <p className="text-xs text-zinc-500">{card.description}</p>
+          )}
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete();
+            }}
+            className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 items-center justify-center rounded-lg text-zinc-400 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-500"
+          >
+            <Trash className="size-3.5" />
+          </button>
+        </div>
+      }
+      content={<CardPopover card={card} onClose={() => setIsOpen(false)} />}
+    />
   );
 }
