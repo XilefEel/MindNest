@@ -31,11 +31,6 @@ export default function FolderItem({
 
   const FolderIcon = isFolderOpen ? FolderOpen : FolderClose;
 
-  const handleClick = () => {
-    if (isEditing) return;
-    toggleFolder(folder.id);
-  };
-
   const { ref, handleRef } =
     useDraggable({
       id: `folder-${folder.id}`,
@@ -52,6 +47,11 @@ export default function FolderItem({
     initialValue: folder.name,
     onSave: (name) => updateFolder(folder.id, { name }),
   });
+
+  const handleClick = () => {
+    if (isEditing) return;
+    toggleFolder(folder.id);
+  };
 
   useEffect(() => {
     if (isEditing && inputRef.current) {

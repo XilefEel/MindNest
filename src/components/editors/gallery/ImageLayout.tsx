@@ -26,6 +26,18 @@ import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import ImageCard from "./ImageCard";
 
+const LightboxIcon = ({
+  Icon,
+  size = "size-6",
+}: {
+  Icon: LucideIcon;
+  size?: string;
+}) => (
+  <Icon
+    className={cn(size, "text-zinc-200 transition-colors hover:text-white")}
+  />
+);
+
 export default function ImageLayout({
   layoutMode,
 }: {
@@ -108,17 +120,7 @@ export default function ImageLayout({
     }
   };
 
-  const LightboxIcon = ({
-    icon: Icon,
-    size = "size-6",
-  }: {
-    icon: LucideIcon;
-    size?: string;
-  }) => (
-    <Icon
-      className={cn(size, "text-zinc-200 transition-colors hover:text-white")}
-    />
-  );
+
 
   return (
     <div
@@ -196,13 +198,13 @@ export default function ImageLayout({
         open={index >= 0}
         close={() => setIndex(-1)}
         render={{
-          iconPrev: () => <LightboxIcon icon={ChevronLeft} size="size-10" />,
-          iconNext: () => <LightboxIcon icon={ChevronRight} size="size-10" />,
-          iconClose: () => <LightboxIcon icon={XIcon} />,
-          iconThumbnailsVisible: () => <LightboxIcon icon={PanelBottomClose} />,
-          iconThumbnailsHidden: () => <LightboxIcon icon={PanelBottomOpen} />,
-          iconZoomIn: () => <LightboxIcon icon={ZoomIn} />,
-          iconZoomOut: () => <LightboxIcon icon={ZoomOut} />,
+          iconPrev: () => <LightboxIcon Icon={ChevronLeft} size="size-10" />,
+          iconNext: () => <LightboxIcon Icon={ChevronRight} size="size-10" />,
+          iconClose: () => <LightboxIcon Icon={XIcon} />,
+          iconThumbnailsVisible: () => <LightboxIcon Icon={PanelBottomClose} />,
+          iconThumbnailsHidden: () => <LightboxIcon Icon={PanelBottomOpen} />,
+          iconZoomIn: () => <LightboxIcon Icon={ZoomIn} />,
+          iconZoomOut: () => <LightboxIcon Icon={ZoomOut} />,
 
           slideFooter: ({ slide }: { slide: any }) => (
             <div className="absolute inset-x-0 bottom-0 bg-black/50 p-1 text-center">

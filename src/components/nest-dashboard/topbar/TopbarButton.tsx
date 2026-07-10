@@ -3,7 +3,7 @@ import { LucideIcon } from "lucide-react";
 import BaseToolTip from "@/components/BaseToolTip.tsx";
 import { useActiveBackgroundId } from "@/stores/useNestStore.tsx";
 
-export default function ({
+export default function TopbarButton({
   label,
   action,
   Icon,

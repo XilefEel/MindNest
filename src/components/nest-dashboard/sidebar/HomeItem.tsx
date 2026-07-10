@@ -47,6 +47,7 @@ export default function HomeItem({
       <div className="rounded-lg bg-linear-to-r from-teal-500 to-teal-600 p-1.5 text-white">
         <Home className="size-4 shrink-0" />
       </div>
+
       <span>Home</span>
     </div>
   );

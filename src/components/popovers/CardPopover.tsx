@@ -32,7 +32,7 @@ export default function CardPopover({
     const newTitle = title.trim();
 
     try {
-      updateCard(card.id, { title: newTitle });
+      updateCard(card.id, card.columnId, { title: newTitle });
       setIsEditingTitle(false);
     } catch (error) {
       toast.error("Failed to update card title.");
@@ -43,7 +43,7 @@ export default function CardPopover({
   const handleSaveDescription = () => {
     const newDescription = description.trim();
     try {
-      updateCard(card.id, { description: newDescription });
+      updateCard(card.id, card.columnId, { description: newDescription });
       setIsEditingDescription(false);
     } catch (error) {
       toast.error("Failed to update card description.");

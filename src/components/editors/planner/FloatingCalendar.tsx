@@ -127,9 +127,8 @@ export default function FloatingCalendar({
           <div className="grid grid-cols-7 gap-2">
             {days.map((day) => {
               return (
-                <div className="relative flex flex-col items-center">
+                <div key={day.toString()} className="relative flex flex-col items-center">
                   <button
-                    key={day.toString()}
                     onClick={() => handleDateClick(day)}
                     className={cn(
                       "flex size-8 items-center justify-center rounded-full text-sm transition-colors",

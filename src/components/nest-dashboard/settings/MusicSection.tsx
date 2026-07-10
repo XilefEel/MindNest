@@ -8,18 +8,6 @@ import {
 import { toast } from "@/lib/utils/toast";
 import { cn, openAppFolder } from "@/lib/utils/general";
 import MusicItem from "./MusicItem";
-import {
-  DndContext,
-  PointerSensor,
-  rectIntersection,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { AnimatePresence } from "framer-motion";
 import { FolderOpen, Repeat, Volume1, Volume2, VolumeX } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { useMusicLooped, useSettingsActions } from "@/stores/useSettingsStore";
@@ -30,19 +18,10 @@ export default function MusicSection() {
   const activeBackgroundId = useActiveBackgroundId();
   const music = useMusic();
   const volume = useMusicVolume();
-  const { selectMusic, handleDragStart, handleDragEnd, setMusicVolume } =
-    useNestActions();
-
-  const musicIds = music.map((m) => m.id);
+  const { selectMusic, setMusicVolume } = useNestActions();
 
   const musicLooped = useMusicLooped();
   const { setSetting } = useSettingsActions();
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 8 },
-    }),
-  );
 
   const handleUploadMusic = async () => {
     try {
@@ -88,35 +67,21 @@ export default function MusicSection() {
         </BaseToolTip>
       </div>
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={rectIntersection}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
+      <div
+        style={{ scrollbarGutter: "stable" }}
+        className={cn(
+          "max-h-72 overflow-y-auto rounded-lg bg-zinc-50 p-2 dark:bg-zinc-700/30",
+          activeBackgroundId && "bg-white/30 dark:bg-black/30",
+        )}
       >
-        <div
-          style={{ scrollbarGutter: "stable" }}
-          className={cn(
-            "max-h-72 overflow-y-auto rounded-lg bg-zinc-50 p-2 dark:bg-zinc-700/30",
-            activeBackgroundId && "bg-white/30 dark:bg-black/30",
-          )}
-        >
-          <SortableContext
-            items={musicIds}
-            strategy={verticalListSortingStrategy}
-          >
-            <AnimatePresence mode="popLayout">
-              {music.length === 0 ? (
-                <p className="p-4 text-center text-sm text-zinc-500 dark:text-zinc-400">
-                  No music yet.
-                </p>
-              ) : (
-                music.map((track) => <MusicItem key={track.id} track={track} />)
-              )}
-            </AnimatePresence>
-          </SortableContext>
-        </div>
-      </DndContext>
+        {music.length === 0 ? (
+          <p className="p-4 text-center text-sm text-zinc-500 dark:text-zinc-400">
+            No music yet.
+          </p>
+        ) : (
+          music.map((track) => <MusicItem key={track.id} track={track} />)
+        )}
+      </div>
 
       <div
         className={cn(
@@ -139,6 +104,7 @@ export default function MusicSection() {
           step={1}
           className="flex-1"
         />
+
         <span className="text-sm text-zinc-600 dark:text-zinc-400">
           {Math.round(volume * 100)}%
         </span>

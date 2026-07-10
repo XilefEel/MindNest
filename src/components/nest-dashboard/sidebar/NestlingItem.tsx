@@ -45,6 +45,13 @@ export default function NestlingItem({
 
   const Icon = getNestlingIcon(nestling.nestlingType);
 
+  const { ref, handleRef } =
+    useDraggable(
+      isPinnedShortcut
+        ? { id: `non-draggable-${nestling.id}`, disabled: true }
+        : { id: `nestling-${nestling.id}` },
+    );
+
   const {
     value: title,
     setValue: setTitle,
@@ -62,13 +69,6 @@ export default function NestlingItem({
     setIsSidebarOpen(false);
     openNestling(nestling);
   };
-
-  const { ref, handleRef } =
-    useDraggable(
-      isPinnedShortcut
-        ? { id: `non-draggable-${nestling.id}`, disabled: true }
-        : { id: `nestling-${nestling.id}` },
-    );
 
   const handleEmojiClick = async (emojiData: EmojiClickData) => {
     try {
