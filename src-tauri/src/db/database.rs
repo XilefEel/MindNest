@@ -258,6 +258,17 @@ pub fn update_db_select_option_in_db(
 
 pub fn delete_db_select_option_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.conn()?;
+    let updated_at = Utc::now().to_rfc3339();
+
+    connection
+        .execute(
+            "UPDATE db_cells
+            SET value = NULL, updated_at = ?1
+            WHERE column_id = (SELECT column_id FROM db_select_options WHERE id = ?2)
+            AND value = ?2",
+            params![updated_at, id.to_string()],
+        )
+        .log_err("delete_db_select_option_from_db - clear cells")?;
 
     connection
         .execute("DELETE FROM db_select_options WHERE id = ?1", params![id])

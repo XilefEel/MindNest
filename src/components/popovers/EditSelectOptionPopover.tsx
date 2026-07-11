@@ -44,7 +44,7 @@ export default function EditOptionMenu({ option }: { option: DbSelectOption }) {
         )}
       />
 
-      <div>
+      <div className="border-b border-zinc-200 pb-4 dark:border-zinc-700">
         <label className="flex items-center gap-1 text-xs font-medium text-zinc-700 dark:text-zinc-200">
           <Palette size={14} />
           <span>Color</span>
@@ -73,9 +73,11 @@ export default function EditOptionMenu({ option }: { option: DbSelectOption }) {
 
       <button
         onClick={() => deleteSelectOption(option.columnId, option.id)}
-        className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-sm text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40"
+        className={cn(
+          "flex items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-sm text-red-600 hover:bg-red-300/30 dark:text-red-400 dark:hover:bg-red-800/30",
+        )}
       >
-        <Trash2 className="size-3.5 shrink-0" />
+        <Trash2 className="size-4 shrink-0" />
         Delete option
       </button>
     </div>
