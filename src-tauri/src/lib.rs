@@ -48,8 +48,9 @@ use handler::tag::{
 };
 
 use handler::database::{
-    clear_cells_by_column, create_db_column, create_db_row, delete_db_column, delete_db_row,
-    get_db_data, insert_db_cell, update_db_column,
+    clear_cells_by_column, create_column_option, create_db_column, create_db_row,
+    delete_column_option, delete_db_column, delete_db_row, get_db_data, insert_db_cell,
+    update_column_option, update_db_column,
 };
 
 use crate::utils::db::{get_db_path, init_db, AppDb};
@@ -187,7 +188,10 @@ pub fn run() {
             create_db_row,
             delete_db_row,
             insert_db_cell,
-            get_db_data
+            get_db_data,
+            create_column_option,
+            update_column_option,
+            delete_column_option,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

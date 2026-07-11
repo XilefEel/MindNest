@@ -8,6 +8,7 @@ pub struct NewDbColumn {
     pub name: String,
     pub column_type: String,
     pub order_index: i64,
+    pub options: Vec<DbColumnOption>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -18,6 +19,7 @@ pub struct DbColumn {
     pub name: String,
     pub column_type: String,
     pub order_index: i64,
+    pub options: Vec<DbColumnOption>,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -73,6 +75,27 @@ pub struct DbRowData {
     pub cells: Vec<DbCell>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NewDbColumnOption {
+    pub column_id: i64,
+    pub label: String,
+    pub color: String,
+    pub order_index: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DbColumnOption {
+    pub id: i64,
+    pub column_id: i64,
+    pub label: String,
+    pub color: String,
+    pub order_index: i64,
+    pub created_at: String,
+    pub updated_at: String,
+}
+
 impl TryFrom<&rusqlite::Row<'_>> for DbColumn {
     type Error = rusqlite::Error;
     fn try_from(row: &rusqlite::Row<'_>) -> Result<Self, Self::Error> {
@@ -84,6 +107,7 @@ impl TryFrom<&rusqlite::Row<'_>> for DbColumn {
             order_index: row.get(4)?,
             created_at: row.get(5)?,
             updated_at: row.get(6)?,
+            options: Vec::new(),
         })
     }
 }
@@ -111,6 +135,21 @@ impl TryFrom<&rusqlite::Row<'_>> for DbCell {
             value: row.get(3)?,
             created_at: row.get(4)?,
             updated_at: row.get(5)?,
+        })
+    }
+}
+
+impl TryFrom<&rusqlite::Row<'_>> for DbColumnOption {
+    type Error = rusqlite::Error;
+    fn try_from(row: &rusqlite::Row<'_>) -> Result<Self, Self::Error> {
+        Ok(DbColumnOption {
+            id: row.get(0)?,
+            column_id: row.get(1)?,
+            label: row.get(2)?,
+            color: row.get(3)?,
+            order_index: row.get(4)?,
+            created_at: row.get(5)?,
+            updated_at: row.get(6)?,
         })
     }
 }

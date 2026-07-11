@@ -214,3 +214,14 @@ CREATE TABLE IF NOT EXISTS db_cells (
     FOREIGN KEY (column_id) REFERENCES db_columns(id) ON DELETE CASCADE,
     UNIQUE(row_id, column_id)
 );
+
+CREATE TABLE IF NOT EXISTS db_column_options (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    column_id INTEGER NOT NULL,
+    label TEXT NOT NULL,
+    color TEXT NOT NULL,
+    order_index INTEGER NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY (column_id) REFERENCES db_columns(id) ON DELETE CASCADE
+);
