@@ -34,6 +34,7 @@ export default function BasePopover({
       <PopoverContent
         align={align}
         side={side}
+        onClick={(e) => e.stopPropagation()}
         onDoubleClick={(e) => e.stopPropagation()}
         className={cn(
           "rounded-xl border-zinc-200 bg-white select-none dark:border-zinc-700 dark:bg-zinc-800",

@@ -47,6 +47,7 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
           <TagIcon size={14} />
           <span>Name</span>
         </label>
+
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -74,6 +75,7 @@ export default function TagEditPopover({ tag }: { tag: Tag }) {
           <Palette size={14} />
           <span>Color</span>
         </label>
+
         <div className="mt-2 grid grid-cols-5 gap-2">
           {COLORS.map((color) => (
             <button

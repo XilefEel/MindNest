@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, GripVertical, Ellipsis, Check } from "lucide-react";
 import { cn } from "@/lib/utils/general";
 import { DbSelectOption } from "@/lib/types/database";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import BasePopover from "@/components/popovers/BasePopover";
 import { COLORS } from "@/lib/utils/constants";
+import EditSelectOptionPopover from "@/components/popovers/EditSelectOptionPopover";
 
 function pickNextColor(existing: DbSelectOption[]) {
   return COLORS[existing.length % COLORS.length];
@@ -116,15 +117,39 @@ export default function SelectCell({
           </div>
 
           {availableOptions.length > 0 && (
-            <div className="flex flex-row flex-wrap gap-1.5">
+            <div className="flex flex-col">
               {availableOptions.map((option) => (
-                <button
+                <div
                   key={option.id}
                   onClick={() => handleSelect(option.id)}
-                  className="flex items-center gap-1"
+                  className="flex items-center gap-1 rounded-lg p-1.5 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-700/50"
                 >
-                  <SelectPill option={option} />
-                </button>
+                  <div className="flex items-center gap-1">
+                    <GripVertical
+                      onClick={(e) => e.stopPropagation()}
+                      className="size-4 shrink-0 text-zinc-400 dark:text-zinc-500"
+                    />
+                    <SelectPill option={option} />
+
+                    {selected?.id === option.id && (
+                      <Check className="size-4 shrink-0 text-teal-500" />
+                    )}
+                  </div>
+
+                  <BasePopover
+                    width="w-60"
+                    side="right"
+                    trigger={
+                      <button
+                        onClick={(e) => e.stopPropagation()}
+                        className="ml-auto"
+                      >
+                        <Ellipsis className="size-4 shrink-0 text-zinc-400 dark:text-zinc-500" />
+                      </button>
+                    }
+                    content={<EditSelectOptionPopover option={option} />}
+                  />
+                </div>
               ))}
             </div>
           )}
