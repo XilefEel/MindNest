@@ -4,6 +4,8 @@ import CheckboxCell from "./cells/CheckboxCell";
 import { DbCell, DbColumn, DbRow } from "@/lib/types/database";
 import { format } from "date-fns";
 import DateCell from "./cells/DateCell";
+import SelectCell from "./cells/SelectCell";
+import { useDbActions } from "@/stores/useDatabaseStore";
 
 export default function DatabaseCell({
   column,
@@ -16,6 +18,8 @@ export default function DatabaseCell({
   cell: DbCell | undefined;
   onSave: (value: string | null) => void;
 }) {
+  const { createColumnOption } = useDbActions();
+
   switch (column.columnType) {
     case "text":
       return <TextCell value={cell?.value ?? null} onSave={onSave} />;
@@ -28,6 +32,18 @@ export default function DatabaseCell({
 
     case "date":
       return <DateCell value={cell?.value ?? null} onSave={onSave} />;
+
+    case "select":
+      return (
+        <SelectCell
+          value={cell?.value ?? null}
+          options={column.options}
+          onSave={onSave}
+          onCreateOption={(label, color) =>
+            createColumnOption(column.id, label, color)
+          }
+        />
+      );
 
     case "created_at":
       return (

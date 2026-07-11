@@ -8,7 +8,6 @@ pub struct NewDbColumn {
     pub name: String,
     pub column_type: String,
     pub order_index: i64,
-    pub options: Vec<DbColumnOption>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
