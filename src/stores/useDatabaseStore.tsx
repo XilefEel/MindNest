@@ -4,6 +4,8 @@ import { create } from "zustand";
 import * as dbApi from "@/lib/api/database";
 import { useShallow } from "zustand/react/shallow";
 import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
+import { DragEndEvent } from "@dnd-kit/react";
+import { isSortable } from "@dnd-kit/react/sortable";
 
 type DatabaseState = {
   columns: DbColumn[];
@@ -31,6 +33,10 @@ type DatabaseState = {
     updates: { label?: string; color?: string; orderIndex?: number },
   ) => Promise<void>;
   deleteSelectOption: (columnId: number, optionId: number) => Promise<void>;
+  reorderSelectOptions: (
+    columnId: number,
+    event: DragEndEvent,
+  ) => Promise<void>;
 
   createRow: (nestlingId: number) => Promise<void>;
   deleteRow: (id: number) => Promise<void>;
@@ -243,6 +249,41 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
     },
   ),
 
+  reorderSelectOptions: withStoreErrorHandler(
+    set,
+    async (columnId: number, event: DragEndEvent) => {
+      const { source } = event.operation;
+      if (!source) return;
+
+      const column = get().columns.find((col) => col.id === columnId);
+      if (!column) throw new Error("Column not found");
+
+      if (isSortable(source)) {
+        const { initialIndex, index } = source;
+
+        if (initialIndex === index) return;
+
+        const updatedOptions = [...column.options];
+        const [movedOption] = updatedOptions.splice(initialIndex, 1);
+        updatedOptions.splice(index, 0, movedOption);
+
+        await Promise.all(
+          updatedOptions.map((opt, idx) =>
+            dbApi.updateSelectOption(opt.id, opt.label, opt.color, idx),
+          ),
+        );
+
+        set((state) => ({
+          columns: state.columns.map((col) =>
+            col.id === columnId ? { ...col, options: updatedOptions } : col,
+          ),
+        }));
+
+        await updateNestlingTimestamp(column.nestlingId);
+      }
+    },
+  ),
+
   createRow: withStoreErrorHandler(set, async (nestlingId: number) => {
     const orderIndex = get().rows.length;
     const row = await dbApi.createDbRow({ nestlingId, orderIndex });
@@ -301,6 +342,7 @@ export const useDbActions = () =>
       createSelectOption: state.createSelectOption,
       updateSelectOption: state.updateSelectOption,
       deleteSelectOption: state.deleteSelectOption,
+      reorderSelectOptions: state.reorderSelectOptions,
 
       createRow: state.createRow,
       deleteRow: state.deleteRow,

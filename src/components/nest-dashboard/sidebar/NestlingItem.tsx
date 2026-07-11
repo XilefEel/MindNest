@@ -45,12 +45,11 @@ export default function NestlingItem({
 
   const Icon = getNestlingIcon(nestling.nestlingType);
 
-  const { ref, handleRef } =
-    useDraggable(
-      isPinnedShortcut
-        ? { id: `non-draggable-${nestling.id}`, disabled: true }
-        : { id: `nestling-${nestling.id}` },
-    );
+  const { ref, handleRef } = useDraggable(
+    isPinnedShortcut
+      ? { id: `non-draggable-${nestling.id}`, disabled: true }
+      : { id: `nestling-${nestling.id}` },
+  );
 
   const {
     value: title,
@@ -120,7 +119,7 @@ export default function NestlingItem({
         !emojiButtonRef.current.contains(event.target as Node)
       )
         setShowPicker(false);
-    }
+    };
 
     if (showPicker) document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);

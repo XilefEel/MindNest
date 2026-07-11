@@ -36,6 +36,7 @@ export default function DatabaseCell({
     case "select":
       return (
         <SelectCell
+          column={column}
           value={cell?.value ?? null}
           options={column.options}
           onSave={onSave}

@@ -1,41 +1,27 @@
 import { useState } from "react";
-import { Search, Plus, GripVertical, Ellipsis, Check } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { cn } from "@/lib/utils/general";
-import { DbSelectOption } from "@/lib/types/database";
+import { DbColumn, DbSelectOption } from "@/lib/types/database";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import BasePopover from "@/components/popovers/BasePopover";
 import { COLORS } from "@/lib/utils/constants";
-import EditSelectOptionPopover from "@/components/popovers/EditSelectOptionPopover";
+import { DragDropProvider } from "@dnd-kit/react";
+import SelectOptionPill from "./SelectOptionPill";
+import SelectCellRow from "./SelectCellRow";
+import { useDbActions } from "@/stores/useDatabaseStore";
 
 function pickNextColor(existing: DbSelectOption[]) {
   return COLORS[existing.length % COLORS.length];
 }
 
-function SelectPill({ option }: { option: DbSelectOption }) {
-  const activeBackgroundId = useActiveBackgroundId();
-
-  return (
-    <span
-      style={{
-        backgroundColor: activeBackgroundId
-          ? `${option.color}`
-          : `${option.color}30`,
-        color: activeBackgroundId ? "#ffffff" : option.color,
-        border: `1px solid ${option.color}`,
-      }}
-      className="rounded-full px-2 py-0.5 text-xs font-medium text-white"
-    >
-      {option.label}
-    </span>
-  );
-}
-
 export default function SelectCell({
+  column,
   value,
   options,
   onSave,
   onCreateOption,
 }: {
+  column: DbColumn;
   value: string | null;
   options: DbSelectOption[];
   onSave: (value: string | null) => void;
@@ -44,6 +30,7 @@ export default function SelectCell({
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const activeBackgroundId = useActiveBackgroundId();
+  const { reorderSelectOptions } = useDbActions();
 
   const selected = options.find((o) => String(o.id) === value) ?? null;
 
@@ -80,7 +67,7 @@ export default function SelectCell({
       trigger={
         <div>
           {selected ? (
-            <SelectPill option={selected} />
+            <SelectOptionPill option={selected} />
           ) : (
             <span
               className={cn(
@@ -117,41 +104,24 @@ export default function SelectCell({
           </div>
 
           {availableOptions.length > 0 && (
-            <div className="flex flex-col">
-              {availableOptions.map((option) => (
-                <div
-                  key={option.id}
-                  onClick={() => handleSelect(option.id)}
-                  className="flex items-center gap-1 rounded-lg p-1.5 transition-[background] hover:bg-zinc-100 dark:hover:bg-zinc-700/50"
-                >
-                  <div className="flex items-center gap-1">
-                    <GripVertical
-                      onClick={(e) => e.stopPropagation()}
-                      className="size-4 shrink-0 text-zinc-400 dark:text-zinc-500"
-                    />
-                    <SelectPill option={option} />
-
-                    {selected?.id === option.id && (
-                      <Check className="size-4 shrink-0 text-teal-500" />
-                    )}
-                  </div>
-
-                  <BasePopover
-                    width="w-60"
-                    side="right"
-                    trigger={
-                      <button
-                        onClick={(e) => e.stopPropagation()}
-                        className="ml-auto rounded-lg p-1 transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-700"
-                      >
-                        <Ellipsis className="size-4 shrink-0 text-zinc-400 dark:text-zinc-500" />
-                      </button>
-                    }
-                    content={<EditSelectOptionPopover option={option} />}
+            <DragDropProvider
+              onDragEnd={(event) => {
+                if (searchQuery) return;
+                reorderSelectOptions(column.id, event);
+              }}
+            >
+              <div className="flex flex-col">
+                {availableOptions.map((option, index) => (
+                  <SelectCellRow
+                    key={option.id}
+                    option={option}
+                    selected={selected}
+                    index={index}
+                    handleSelect={handleSelect}
                   />
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </DragDropProvider>
           )}
 
           {!searchQuery && availableOptions.length === 0 && (
