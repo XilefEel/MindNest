@@ -18,7 +18,7 @@ pub struct DbColumn {
     pub name: String,
     pub column_type: String,
     pub order_index: i64,
-    pub options: Vec<DbColumnOption>,
+    pub options: Vec<DbSelectOption>,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -76,7 +76,7 @@ pub struct DbRowData {
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct NewDbColumnOption {
+pub struct NewDbSelectOption {
     pub column_id: i64,
     pub label: String,
     pub color: String,
@@ -85,7 +85,7 @@ pub struct NewDbColumnOption {
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct DbColumnOption {
+pub struct DbSelectOption {
     pub id: i64,
     pub column_id: i64,
     pub label: String,
@@ -138,10 +138,10 @@ impl TryFrom<&rusqlite::Row<'_>> for DbCell {
     }
 }
 
-impl TryFrom<&rusqlite::Row<'_>> for DbColumnOption {
+impl TryFrom<&rusqlite::Row<'_>> for DbSelectOption {
     type Error = rusqlite::Error;
     fn try_from(row: &rusqlite::Row<'_>) -> Result<Self, Self::Error> {
-        Ok(DbColumnOption {
+        Ok(DbSelectOption {
             id: row.get(0)?,
             column_id: row.get(1)?,
             label: row.get(2)?,

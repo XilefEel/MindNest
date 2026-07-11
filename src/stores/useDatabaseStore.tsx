@@ -1,4 +1,4 @@
-import { DbColumn, DbRowData } from "@/lib/types/database";
+import { DbColumn, DbSelectOption, DbRowData } from "@/lib/types/database";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
 import * as dbApi from "@/lib/api/database";
@@ -20,17 +20,17 @@ type DatabaseState = {
   moveColumn: (id: number, direction: "left" | "right") => Promise<void>;
   deleteColumn: (id: number) => Promise<void>;
 
-  createColumnOption: (
+  createSelectOption: (
     columnId: number,
     label: string,
     color: string,
-  ) => Promise<void>;
-  updateColumnOption: (
+  ) => Promise<DbSelectOption>;
+  updateSelectOption: (
     columnId: number,
     optionId: number,
     updates: { label?: string; color?: string; orderIndex?: number },
   ) => Promise<void>;
-  deleteColumnOption: (columnId: number, optionId: number) => Promise<void>;
+  deleteSelectOption: (columnId: number, optionId: number) => Promise<void>;
 
   createRow: (nestlingId: number) => Promise<void>;
   deleteRow: (id: number) => Promise<void>;
@@ -146,13 +146,13 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
     );
   }),
 
-  createColumnOption: withStoreErrorHandler(
+  createSelectOption: withStoreErrorHandler(
     set,
     async (columnId: number, label: string, color: string) => {
       const column = get().columns.find((col) => col.id === columnId);
       if (!column) throw new Error("Column not found");
 
-      const option = await dbApi.createColumnOption({
+      const option = await dbApi.createSelectOption({
         columnId,
         label,
         color,
@@ -168,10 +168,11 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
       }));
 
       await updateNestlingTimestamp(column.nestlingId);
+      return option;
     },
   ),
 
-  updateColumnOption: withStoreErrorHandler(
+  updateSelectOption: withStoreErrorHandler(
     set,
     async (
       columnId: number,
@@ -186,7 +187,7 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
 
       const updated = mergeWithCurrent(currentOption, updates);
 
-      await dbApi.updateColumnOption(
+      await dbApi.updateSelectOption(
         optionId,
         updated.label,
         updated.color,
@@ -210,13 +211,13 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
     },
   ),
 
-  deleteColumnOption: withStoreErrorHandler(
+  deleteSelectOption: withStoreErrorHandler(
     set,
     async (columnId: number, optionId: number) => {
       const column = get().columns.find((col) => col.id === columnId);
       if (!column) throw new Error("Column not found");
 
-      await dbApi.deleteColumnOption(optionId);
+      await dbApi.deleteSelectOption(optionId);
 
       set((state) => ({
         columns: state.columns.map((col) =>
@@ -297,9 +298,9 @@ export const useDbActions = () =>
       moveColumn: state.moveColumn,
       deleteColumn: state.deleteColumn,
 
-      createColumnOption: state.createColumnOption,
-      updateColumnOption: state.updateColumnOption,
-      deleteColumnOption: state.deleteColumnOption,
+      createSelectOption: state.createSelectOption,
+      updateSelectOption: state.updateSelectOption,
+      deleteSelectOption: state.deleteSelectOption,
 
       createRow: state.createRow,
       deleteRow: state.deleteRow,

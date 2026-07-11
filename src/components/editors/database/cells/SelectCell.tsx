@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { Search, Plus } from "lucide-react";
 import { cn } from "@/lib/utils/general";
-import { DbColumnOption } from "@/lib/types/database";
+import { DbSelectOption } from "@/lib/types/database";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import BasePopover from "@/components/popovers/BasePopover";
 import { COLORS } from "@/lib/utils/constants";
 
-function pickNextColor(existing: DbColumnOption[]) {
+function pickNextColor(existing: DbSelectOption[]) {
   return COLORS[existing.length % COLORS.length];
 }
 
-function SelectPill({ option }: { option: DbColumnOption }) {
+function SelectPill({ option }: { option: DbSelectOption }) {
   const activeBackgroundId = useActiveBackgroundId();
 
   return (
@@ -36,9 +36,9 @@ export default function SelectCell({
   onCreateOption,
 }: {
   value: string | null;
-  options: DbColumnOption[];
+  options: DbSelectOption[];
   onSave: (value: string | null) => void;
-  onCreateOption: (label: string, color: string) => void;
+  onCreateOption: (label: string, color: string) => Promise<DbSelectOption>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,11 +60,11 @@ export default function SelectCell({
     setSearchQuery("");
   };
 
-  const handleCreateAndSelect = () => {
+  const handleCreateAndSelect = async () => {
     const label = searchQuery.trim();
     if (!label) return;
-    onCreateOption(label, pickNextColor(options));
-    setSearchQuery("");
+    const newOption = await onCreateOption(label, pickNextColor(options));
+    handleSelect(newOption.id);
   };
 
   return (
@@ -77,11 +77,16 @@ export default function SelectCell({
       align="start"
       width="w-64"
       trigger={
-        <div className="flex min-h-6 w-full cursor-pointer items-center">
+        <div>
           {selected ? (
             <SelectPill option={selected} />
           ) : (
-            <span className="text-sm text-zinc-300 dark:text-zinc-600">
+            <span
+              className={cn(
+                "text-zinc-400 dark:text-zinc-500",
+                activeBackgroundId && "text-zinc-500 dark:text-zinc-400",
+              )}
+            >
               Empty
             </span>
           )}

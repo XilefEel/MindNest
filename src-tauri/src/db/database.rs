@@ -1,8 +1,8 @@
 use crate::{
     db::nestling::get_nestling_by_id,
     models::database::{
-        DbCell, DbColumn, DbColumnOption, DbData, DbRow, DbRowData, NewDbCell, NewDbColumn,
-        NewDbColumnOption, NewDbRow,
+        DbCell, DbColumn, DbData, DbRow, DbRowData, DbSelectOption, NewDbCell, NewDbColumn,
+        NewDbRow, NewDbSelectOption,
     },
     utils::{
         db::AppDb,
@@ -203,16 +203,16 @@ fn get_all_cells_by_nestling(db: &AppDb, nestling_id: i64) -> AppResult<Vec<DbCe
     Ok(cells)
 }
 
-pub fn insert_db_column_option_into_db(
+pub fn insert_db_select_option_into_db(
     db: &AppDb,
-    data: NewDbColumnOption,
-) -> AppResult<DbColumnOption> {
+    data: NewDbSelectOption,
+) -> AppResult<DbSelectOption> {
     let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
 
     let mut statement = connection.prepare(
         "
-        INSERT INTO db_column_options (column_id, label, color, order_index, created_at, updated_at)
+        INSERT INTO db_select_options (column_id, label, color, order_index, created_at, updated_at)
         VALUES (?1, ?2, ?3, ?4, ?5, ?6)
         RETURNING id, column_id, label, color, order_index, created_at, updated_at",
     )?;
@@ -227,14 +227,14 @@ pub fn insert_db_column_option_into_db(
                 created_at,
                 created_at
             ],
-            |row| DbColumnOption::try_from(row),
+            |row| DbSelectOption::try_from(row),
         )
-        .log_err("insert_db_column_option_into_db")?;
+        .log_err("insert_db_select_option_into_db")?;
 
     Ok(option)
 }
 
-pub fn update_db_column_option_in_db(
+pub fn update_db_select_option_in_db(
     db: &AppDb,
     id: i64,
     label: String,
@@ -246,44 +246,44 @@ pub fn update_db_column_option_in_db(
 
     connection
         .execute(
-            "UPDATE db_column_options
+            "UPDATE db_select_options
             SET label = ?1, color = ?2, order_index = ?3, updated_at = ?4
             WHERE id = ?5",
             params![label, color, order_index, updated_at, id],
         )
-        .log_err("update_db_column_option_in_db")?;
+        .log_err("update_db_select_option_in_db")?;
 
     Ok(())
 }
 
-pub fn delete_db_column_option_from_db(db: &AppDb, id: i64) -> AppResult<()> {
+pub fn delete_db_select_option_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.conn()?;
 
     connection
-        .execute("DELETE FROM db_column_options WHERE id = ?1", params![id])
-        .log_err("delete_db_column_option_from_db")?;
+        .execute("DELETE FROM db_select_options WHERE id = ?1", params![id])
+        .log_err("delete_db_select_option_from_db")?;
 
     Ok(())
 }
 
-fn get_all_column_options_by_nestling(
+fn get_all_select_options_by_nestling(
     db: &AppDb,
     nestling_id: i64,
-) -> AppResult<Vec<DbColumnOption>> {
+) -> AppResult<Vec<DbSelectOption>> {
     let connection = db.conn()?;
 
     let mut statement = connection.prepare(
         "
         SELECT opts.id, opts.column_id, opts.label, opts.color, opts.order_index, opts.created_at, opts.updated_at
-        FROM db_column_options opts
+        FROM db_select_options opts
         JOIN db_columns cols ON opts.column_id = cols.id
         WHERE cols.nestling_id = ?1
         ORDER BY opts.order_index ASC",
     )?;
 
     let options = statement
-        .query_map([nestling_id], |row| DbColumnOption::try_from(row))
-        .log_err("get_all_column_options_by_nestling")?
+        .query_map([nestling_id], |row| DbSelectOption::try_from(row))
+        .log_err("get_all_select_options_by_nestling")?
         .collect::<Result<Vec<_>, _>>()?;
 
     Ok(options)
@@ -295,7 +295,7 @@ pub fn get_db_data_from_db(db: &AppDb, nestling_id: i64) -> AppResult<DbData> {
     let mut columns = get_db_columns_by_nestling(&db, nestling_id)?;
     let rows = get_db_rows_by_nestling(&db, nestling_id)?;
     let all_cells = get_all_cells_by_nestling(&db, nestling_id)?;
-    let all_options = get_all_column_options_by_nestling(&db, nestling_id)?;
+    let all_options = get_all_select_options_by_nestling(&db, nestling_id)?;
 
     let mut cells_by_row: HashMap<i64, Vec<DbCell>> = HashMap::new();
     for cell in all_cells {
@@ -313,7 +313,7 @@ pub fn get_db_data_from_db(db: &AppDb, nestling_id: i64) -> AppResult<DbData> {
         })
         .collect();
 
-    let mut options_by_column: HashMap<i64, Vec<DbColumnOption>> = HashMap::new();
+    let mut options_by_column: HashMap<i64, Vec<DbSelectOption>> = HashMap::new();
     for option in all_options {
         options_by_column
             .entry(option.column_id)

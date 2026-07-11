@@ -18,7 +18,7 @@ export default function DatabaseCell({
   cell: DbCell | undefined;
   onSave: (value: string | null) => void;
 }) {
-  const { createColumnOption } = useDbActions();
+  const { createSelectOption } = useDbActions();
 
   switch (column.columnType) {
     case "text":
@@ -40,7 +40,7 @@ export default function DatabaseCell({
           options={column.options}
           onSave={onSave}
           onCreateOption={(label, color) =>
-            createColumnOption(column.id, label, color)
+            createSelectOption(column.id, label, color)
           }
         />
       );

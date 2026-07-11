@@ -9,7 +9,7 @@ export type NewDbColumn = {
 };
 
 export type DbColumn = WithBase<NewDbColumn> & {
-  options: DbColumnOption[];
+  options: DbSelectOption[];
 };
 
 export type NewDbRow = {
@@ -27,14 +27,14 @@ export type NewDbCell = {
 
 export type DbCell = WithBase<NewDbCell>;
 
-export type NewDbColumnOption = {
+export type NewDbSelectOption = {
   columnId: number;
   label: string;
   color: string;
   orderIndex: number;
 };
 
-export type DbColumnOption = WithBase<NewDbColumnOption>;
+export type DbSelectOption = WithBase<NewDbSelectOption>;
 
 export type DbRowData = {
   row: DbRow;

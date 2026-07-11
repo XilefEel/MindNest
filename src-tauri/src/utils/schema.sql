@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS db_cells (
     UNIQUE(row_id, column_id)
 );
 
-CREATE TABLE IF NOT EXISTS db_column_options (
+CREATE TABLE IF NOT EXISTS db_select_options (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     column_id INTEGER NOT NULL,
     label TEXT NOT NULL,
