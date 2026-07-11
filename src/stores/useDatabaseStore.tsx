@@ -20,6 +20,18 @@ type DatabaseState = {
   moveColumn: (id: number, direction: "left" | "right") => Promise<void>;
   deleteColumn: (id: number) => Promise<void>;
 
+  createColumnOption: (
+    columnId: number,
+    label: string,
+    color: string,
+  ) => Promise<void>;
+  updateColumnOption: (
+    columnId: number,
+    optionId: number,
+    updates: { label?: string; color?: string; orderIndex?: number },
+  ) => Promise<void>;
+  deleteColumnOption: (columnId: number, optionId: number) => Promise<void>;
+
   createRow: (nestlingId: number) => Promise<void>;
   deleteRow: (id: number) => Promise<void>;
 
@@ -134,6 +146,102 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
     );
   }),
 
+  createColumnOption: withStoreErrorHandler(
+    set,
+    async (columnId: number, label: string, color: string) => {
+      const column = get().columns.find((col) => col.id === columnId);
+      if (!column) throw new Error("Column not found");
+
+      const option = await dbApi.createColumnOption({
+        columnId,
+        label,
+        color,
+        orderIndex: column.options.length,
+      });
+
+      set((state) => ({
+        columns: state.columns.map((col) =>
+          col.id === columnId
+            ? { ...col, options: [...col.options, option] }
+            : col,
+        ),
+      }));
+
+      await updateNestlingTimestamp(column.nestlingId);
+    },
+  ),
+
+  updateColumnOption: withStoreErrorHandler(
+    set,
+    async (
+      columnId: number,
+      optionId: number,
+      updates: { label?: string; color?: string; orderIndex?: number },
+    ) => {
+      const column = get().columns.find((col) => col.id === columnId);
+      if (!column) throw new Error("Column not found");
+
+      const currentOption = column.options.find((opt) => opt.id === optionId);
+      if (!currentOption) throw new Error("Option not found");
+
+      const updated = mergeWithCurrent(currentOption, updates);
+
+      await dbApi.updateColumnOption(
+        optionId,
+        updated.label,
+        updated.color,
+        updated.orderIndex,
+      );
+
+      set((state) => ({
+        columns: state.columns.map((col) =>
+          col.id === columnId
+            ? {
+                ...col,
+                options: col.options.map((opt) =>
+                  opt.id === optionId ? updated : opt,
+                ),
+              }
+            : col,
+        ),
+      }));
+
+      await updateNestlingTimestamp(column.nestlingId);
+    },
+  ),
+
+  deleteColumnOption: withStoreErrorHandler(
+    set,
+    async (columnId: number, optionId: number) => {
+      const column = get().columns.find((col) => col.id === columnId);
+      if (!column) throw new Error("Column not found");
+
+      await dbApi.deleteColumnOption(optionId);
+
+      set((state) => ({
+        columns: state.columns.map((col) =>
+          col.id === columnId
+            ? {
+                ...col,
+                options: col.options.filter((opt) => opt.id !== optionId),
+              }
+            : col,
+        ),
+
+        rows: state.rows.map((rowData) => ({
+          ...rowData,
+          cells: rowData.cells.map((cell) =>
+            cell.columnId === columnId && cell.value === String(optionId)
+              ? { ...cell, value: null }
+              : cell,
+          ),
+        })),
+      }));
+
+      await updateNestlingTimestamp(column.nestlingId);
+    },
+  ),
+
   createRow: withStoreErrorHandler(set, async (nestlingId: number) => {
     const orderIndex = get().rows.length;
     const row = await dbApi.createDbRow({ nestlingId, orderIndex });
@@ -188,6 +296,11 @@ export const useDbActions = () =>
       updateColumn: state.updateColumn,
       moveColumn: state.moveColumn,
       deleteColumn: state.deleteColumn,
+
+      createColumnOption: state.createColumnOption,
+      updateColumnOption: state.updateColumnOption,
+      deleteColumnOption: state.deleteColumnOption,
+
       createRow: state.createRow,
       deleteRow: state.deleteRow,
       insertCell: state.insertCell,

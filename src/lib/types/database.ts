@@ -8,7 +8,9 @@ export type NewDbColumn = {
   orderIndex: number;
 };
 
-export type DbColumn = WithBase<NewDbColumn>;
+export type DbColumn = WithBase<NewDbColumn> & {
+  options: DbColumnOption[];
+};
 
 export type NewDbRow = {
   nestlingId: number;
@@ -24,6 +26,15 @@ export type NewDbCell = {
 };
 
 export type DbCell = WithBase<NewDbCell>;
+
+export type NewDbColumnOption = {
+  columnId: number;
+  label: string;
+  color: string;
+  orderIndex: number;
+};
+
+export type DbColumnOption = WithBase<NewDbColumnOption>;
 
 export type DbRowData = {
   row: DbRow;

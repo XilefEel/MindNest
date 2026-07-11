@@ -7,6 +7,8 @@ import {
   NewDbCell,
   DbCell,
   DbData,
+  DbColumnOption,
+  NewDbColumnOption,
 } from "../types/database";
 
 export async function getDbData(nestlingId: number) {
@@ -49,4 +51,21 @@ export async function deleteDbRow(id: number) {
 
 export async function insertDbCell(data: NewDbCell) {
   return await invoke<DbCell>("insert_db_cell", { data });
+}
+
+export async function createColumnOption(data: NewDbColumnOption) {
+  return await invoke<DbColumnOption>("create_column_option", { data });
+}
+
+export async function updateColumnOption(
+  id: number,
+  label: string,
+  color: string,
+  orderIndex: number,
+) {
+  await invoke<void>("update_column_option", { id, label, color, orderIndex });
+}
+
+export async function deleteColumnOption(optionId: number) {
+  await invoke<void>("delete_column_option", { optionId });
 }
