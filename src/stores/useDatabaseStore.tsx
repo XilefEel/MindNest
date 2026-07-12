@@ -46,12 +46,19 @@ type DatabaseState = {
     columnId: number,
     value: string | null,
   ) => Promise<void>;
+
+  sortColumnId: number | null;
+  sortDirection: "asc" | "desc" | null;
+  setSort: (columnId: number | null, order: "asc" | "desc" | null) => void;
 };
 export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
   nestlingId: null,
   columns: [],
   rows: [],
   loading: false,
+
+  sortColumnId: null,
+  sortDirection: "asc",
 
   getDbData: withStoreErrorHandler(set, async (nestlingId: number) => {
     const data = await dbApi.getDbData(nestlingId);
@@ -328,6 +335,10 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
       );
     },
   ),
+
+  setSort: (columnId, direction) => {
+    set({ sortColumnId: columnId, sortDirection: direction });
+  },
 }));
 
 export const useDbActions = () =>
@@ -347,9 +358,70 @@ export const useDbActions = () =>
       createRow: state.createRow,
       deleteRow: state.deleteRow,
       insertCell: state.insertCell,
+
+      setSort: state.setSort,
     })),
   );
 
 export const useDbColumns = () => useDatabaseStore((state) => state.columns);
 
 export const useDbRows = () => useDatabaseStore((state) => state.rows);
+
+export const useSortedDbRows = () =>
+  useDatabaseStore(
+    useShallow((state) => {
+      if (!state.sortColumnId || !state.sortDirection) return state.rows;
+
+      const column = state.columns.find((col) => col.id === state.sortColumnId);
+      if (!column) return state.rows;
+
+      const dir = state.sortDirection === "asc" ? 1 : -1;
+
+      return state.rows.toSorted((a, b) => {
+        if (column.columnType === "created_at") {
+          return dir * a.row.createdAt.localeCompare(b.row.createdAt);
+        }
+
+        if (column.columnType === "last_modified") {
+          return dir * a.row.updatedAt.localeCompare(b.row.updatedAt);
+        }
+
+        const aCell = a.cells.find((c) => c.columnId === column.id);
+        const bCell = b.cells.find((c) => c.columnId === column.id);
+
+        switch (column.columnType) {
+          case "number": {
+            const aNum = parseFloat(aCell?.value ?? "");
+            const bNum = parseFloat(bCell?.value ?? "");
+            if (isNaN(aNum) && isNaN(bNum)) return 0;
+            if (isNaN(aNum)) return 1;
+            if (isNaN(bNum)) return -1;
+            return dir * (aNum - bNum);
+          }
+
+          case "select": {
+            const aOption = column.options.find(
+              (o) => String(o.id) === aCell?.value,
+            );
+            const bOption = column.options.find(
+              (o) => String(o.id) === bCell?.value,
+            );
+            if (!aOption && !bOption) return 0;
+            if (!aOption) return 1;
+            if (!bOption) return -1;
+            return dir * (aOption.orderIndex - bOption.orderIndex);
+          }
+
+          case "checkbox": {
+            const aVal = aCell?.value === "true" ? 1 : 0;
+            const bVal = bCell?.value === "true" ? 1 : 0;
+            return dir * (aVal - bVal);
+          }
+
+          default: {
+            return dir * (aCell?.value ?? "").localeCompare(bCell?.value ?? "");
+          }
+        }
+      });
+    }),
+  );

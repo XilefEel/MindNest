@@ -15,14 +15,15 @@ import {
 } from "@/components/ui/table";
 import {
   useDbColumns,
-  useDbRows,
   useDbActions,
+  useSortedDbRows,
 } from "@/stores/useDatabaseStore";
 import DatabaseHeader from "./DatabaseHeader";
 import DatabaseCell from "./DatabaseCell";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 import { Plus } from "lucide-react";
+import DatabaseToolbar from "./DatabaseToolbar";
 
 export default function DatabaseEditor() {
   const activeNestling = useActiveNestling();
@@ -36,7 +37,7 @@ export default function DatabaseEditor() {
   useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
   const columns = useDbColumns();
-  const rows = useDbRows();
+  const rows = useSortedDbRows();
   const { getDbData, createColumn, createRow, insertCell } = useDbActions();
 
   useEffect(() => {
@@ -51,83 +52,87 @@ export default function DatabaseEditor() {
         nestling={activeNestling}
       />
 
-      <Table className="min-w-max">
-        <TableHeader>
-          <TableRow>
-            {columns.map((col, index) => (
-              <DatabaseHeader
-                key={col.id}
-                column={col}
-                isFirst={index === 0}
-                isLast={index === columns.length - 1}
-              />
+      <div>
+        <DatabaseToolbar />
+
+        <Table className="min-w-max">
+          <TableHeader>
+            <TableRow>
+              {columns.map((col, index) => (
+                <DatabaseHeader
+                  key={col.id}
+                  column={col}
+                  isFirst={index === 0}
+                  isLast={index === columns.length - 1}
+                />
+              ))}
+
+              <TableHead
+                onClick={() => createColumn(activeNestling.id!, "Name", "text")}
+                className={cn(
+                  "border-zinc-300 text-zinc-400 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
+                  activeBackgroundId &&
+                    "border-black/30 text-zinc-500 hover:bg-black/5 dark:border-white/30 dark:text-zinc-400 dark:hover:bg-white/5",
+                )}
+              >
+                <button className="flex items-center gap-1">
+                  <Plus className="size-4 shrink-0" />
+                  New Column
+                </button>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {rows.map((rowData) => (
+              <TableRow
+                key={rowData.row.id}
+                className={cn(
+                  "border-zinc-300 dark:border-zinc-600",
+                  activeBackgroundId && "border-black/30 dark:border-white/30",
+                )}
+              >
+                {columns.map((col) => (
+                  <TableCell
+                    key={col.id}
+                    className={cn(
+                      "border-zinc-300 align-middle dark:border-zinc-600",
+                      activeBackgroundId &&
+                        "border-black/30 dark:border-white/30",
+                    )}
+                  >
+                    <DatabaseCell
+                      column={col}
+                      row={rowData.row}
+                      cell={rowData.cells.find((c) => c.columnId === col.id)}
+                      onSave={(value) =>
+                        insertCell(rowData.row.id, col.id, value)
+                      }
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
             ))}
 
-            <TableHead
-              onClick={() => createColumn(activeNestling.id!, "Name", "text")}
-              className={cn(
-                "border-zinc-300 text-zinc-400 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
-                activeBackgroundId &&
-                  "border-black/30 text-zinc-500 hover:bg-black/5 dark:border-white/30 dark:text-zinc-400 dark:hover:bg-white/5",
-              )}
-            >
-              <button className="flex items-center gap-1">
-                <Plus className="size-4 shrink-0" />
-                New Column
-              </button>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {rows.map((rowData) => (
-            <TableRow
-              key={rowData.row.id}
-              className={cn(
-                "border-zinc-300 dark:border-zinc-600",
-                activeBackgroundId && "border-black/30 dark:border-white/30",
-              )}
-            >
-              {columns.map((col) => (
-                <TableCell
-                  key={col.id}
-                  className={cn(
-                    "border-zinc-300 align-middle dark:border-zinc-600",
-                    activeBackgroundId &&
-                      "border-black/30 dark:border-white/30",
-                  )}
-                >
-                  <DatabaseCell
-                    column={col}
-                    row={rowData.row}
-                    cell={rowData.cells.find((c) => c.columnId === col.id)}
-                    onSave={(value) =>
-                      insertCell(rowData.row.id, col.id, value)
-                    }
-                  />
-                </TableCell>
-              ))}
+            <TableRow>
+              <TableCell
+                colSpan={columns.length + 1}
+                onClick={() => createRow(activeNestling.id!)}
+                className={cn(
+                  "border-zinc-300 text-zinc-400 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
+                  activeBackgroundId &&
+                    "border-black/30 text-zinc-600 hover:bg-black/5 dark:border-white/30 dark:text-zinc-300 dark:hover:bg-white/5",
+                )}
+              >
+                <button className="flex items-center gap-1">
+                  <Plus className="size-4 shrink-0" />
+                  New row
+                </button>
+              </TableCell>
             </TableRow>
-          ))}
-
-          <TableRow>
-            <TableCell
-              colSpan={columns.length + 1}
-              onClick={() => createRow(activeNestling.id!)}
-              className={cn(
-                "border-zinc-300 text-zinc-400 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
-                activeBackgroundId &&
-                  "border-black/30 text-zinc-600 hover:bg-black/5 dark:border-white/30 dark:text-zinc-300 dark:hover:bg-white/5",
-              )}
-            >
-              <button className="flex items-center gap-1">
-                <Plus className="size-4 shrink-0" />
-                New row
-              </button>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
