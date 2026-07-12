@@ -24,6 +24,7 @@ import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 import { Plus } from "lucide-react";
 import DatabaseToolbar from "./DatabaseToolbar";
+import { ColumnType } from "@/lib/types/database";
 
 export default function DatabaseEditor() {
   const activeNestling = useActiveNestling();
@@ -68,7 +69,9 @@ export default function DatabaseEditor() {
               ))}
 
               <TableHead
-                onClick={() => createColumn(activeNestling.id!, "Name", "text")}
+                onClick={() =>
+                  createColumn(activeNestling.id!, "Name", "text" as ColumnType)
+                }
                 className={cn(
                   "border-zinc-300 text-zinc-400 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
                   activeBackgroundId &&

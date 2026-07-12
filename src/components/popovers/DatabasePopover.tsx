@@ -1,4 +1,4 @@
-import { DbColumn } from "@/lib/types/database";
+import { ColumnType, DbColumn } from "@/lib/types/database";
 import { COLUMN_TYPES } from "@/lib/utils/database";
 import { cn } from "@/lib/utils/general";
 import { useDbActions } from "@/stores/useDatabaseStore";
@@ -29,7 +29,7 @@ export default function DatabasePopover({
     }
   };
 
-  const handleTypeChange = (type: string) => {
+  const handleTypeChange = (type: ColumnType) => {
     updateColumn(column.id, { columnType: type });
     setIsOpen(false);
   };
@@ -64,15 +64,15 @@ export default function DatabasePopover({
           {COLUMN_TYPES.map((type) => (
             <button
               key={type.value}
-              onClick={() => handleTypeChange(type.value)}
+              onClick={() => handleTypeChange(type.value as ColumnType)}
               className={cn(
-                "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors",
+                "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-[background]",
                 activeBackgroundId
                   ? column.columnType === type.value
-                    ? "bg-white/30 font-medium text-zinc-800 dark:bg-black/30 dark:text-zinc-100"
+                    ? "bg-teal-100/40 font-medium text-teal-600 dark:bg-teal-400/10 dark:text-teal-400"
                     : "hover:bg-black/5 dark:hover:bg-white/5"
                   : column.columnType === type.value
-                    ? "bg-teal-50 font-medium text-teal-600 dark:bg-zinc-700 dark:text-zinc-100"
+                    ? "bg-teal-50 font-medium text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
                     : "hover:bg-zinc-50 dark:hover:bg-zinc-700/50",
               )}
             >

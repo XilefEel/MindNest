@@ -1,10 +1,19 @@
 import { WithBase } from "./base";
 import { Nestling } from "./nestling";
 
+export type ColumnType =
+  | "text"
+  | "number"
+  | "checkbox"
+  | "date"
+  | "select"
+  | "created_at"
+  | "last_modified";
+
 export type NewDbColumn = {
   nestlingId: number;
   name: string;
-  columnType: string;
+  columnType: ColumnType;
   orderIndex: number;
 };
 

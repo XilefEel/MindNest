@@ -7,8 +7,13 @@ import {
   Tag,
   Type,
 } from "lucide-react";
+import { ColumnType } from "../types/database";
 
-export const COLUMN_TYPES = [
+export const COLUMN_TYPES: {
+  value: ColumnType;
+  label: string;
+  Icon: React.ComponentType<{ className?: string }>;
+}[] = [
   { value: "text", label: "Text", Icon: Type },
   { value: "number", label: "Number", Icon: Hash },
   { value: "checkbox", label: "Checkbox", Icon: SquareCheckBig },

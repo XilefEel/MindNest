@@ -1,4 +1,9 @@
-import { DbColumn, DbSelectOption, DbRowData } from "@/lib/types/database";
+import {
+  DbColumn,
+  DbSelectOption,
+  DbRowData,
+  ColumnType,
+} from "@/lib/types/database";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
 import * as dbApi from "@/lib/api/database";
@@ -16,7 +21,7 @@ type DatabaseState = {
   createColumn: (
     nestlingId: number,
     name: string,
-    columnType: string,
+    columnType: ColumnType,
   ) => Promise<void>;
   updateColumn: (id: number, updates: Partial<DbColumn>) => Promise<void>;
   moveColumn: (id: number, direction: "left" | "right") => Promise<void>;
@@ -67,7 +72,7 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
 
   createColumn: withStoreErrorHandler(
     set,
-    async (nestlingId: number, name: string, columnType: string) => {
+    async (nestlingId: number, name: string, columnType: ColumnType) => {
       const orderIndex = get().columns.length;
       const column = await dbApi.createDbColumn({
         nestlingId,
@@ -378,14 +383,6 @@ export const useSortedDbRows = () =>
       const dir = state.sortDirection === "asc" ? 1 : -1;
 
       return state.rows.toSorted((a, b) => {
-        if (column.columnType === "created_at") {
-          return dir * a.row.createdAt.localeCompare(b.row.createdAt);
-        }
-
-        if (column.columnType === "last_modified") {
-          return dir * a.row.updatedAt.localeCompare(b.row.updatedAt);
-        }
-
         const aCell = a.cells.find((c) => c.columnId === column.id);
         const bCell = b.cells.find((c) => c.columnId === column.id);
 
@@ -397,6 +394,12 @@ export const useSortedDbRows = () =>
             if (isNaN(aNum)) return 1;
             if (isNaN(bNum)) return -1;
             return dir * (aNum - bNum);
+          }
+
+          case "checkbox": {
+            const aVal = aCell?.value === "true" ? 1 : 0;
+            const bVal = bCell?.value === "true" ? 1 : 0;
+            return dir * (aVal - bVal);
           }
 
           case "select": {
@@ -412,10 +415,12 @@ export const useSortedDbRows = () =>
             return dir * (aOption.orderIndex - bOption.orderIndex);
           }
 
-          case "checkbox": {
-            const aVal = aCell?.value === "true" ? 1 : 0;
-            const bVal = bCell?.value === "true" ? 1 : 0;
-            return dir * (aVal - bVal);
+          case "created_at": {
+            return dir * a.row.createdAt.localeCompare(b.row.createdAt);
+          }
+
+          case "last_modified": {
+            return dir * a.row.updatedAt.localeCompare(b.row.updatedAt);
           }
 
           default: {
@@ -425,3 +430,9 @@ export const useSortedDbRows = () =>
       });
     }),
   );
+
+export const useSortColumnId = () =>
+  useDatabaseStore((state) => state.sortColumnId);
+
+export const useSortDirection = () =>
+  useDatabaseStore((state) => state.sortDirection);
