@@ -61,29 +61,29 @@ export default function DatabasePopover({
         <p className="mb-1 px-2 text-xs">Field type</p>
 
         <div className="flex flex-col gap-0.5">
-          {COLUMN_TYPES.map((type) => (
+          {Object.entries(COLUMN_TYPES).map(([value, { label, Icon }]) => (
             <button
-              key={type.value}
-              onClick={() => handleTypeChange(type.value as ColumnType)}
+              key={value}
+              onClick={() => handleTypeChange(value as ColumnType)}
               className={cn(
                 "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-[background]",
                 activeBackgroundId
-                  ? column.columnType === type.value
+                  ? column.columnType === value
                     ? "bg-teal-100/40 font-medium text-teal-600 dark:bg-teal-400/10 dark:text-teal-400"
                     : "hover:bg-black/5 dark:hover:bg-white/5"
-                  : column.columnType === type.value
+                  : column.columnType === value
                     ? "bg-teal-50 font-medium text-teal-600 dark:bg-teal-500/10 dark:text-teal-400"
                     : "hover:bg-zinc-50 dark:hover:bg-zinc-700/50",
               )}
             >
-              <type.Icon
+              <Icon
                 className={cn(
                   "size-4 shrink-0 text-zinc-600 dark:text-zinc-300",
-                  column.columnType === type.value &&
+                  column.columnType === value &&
                     "text-teal-600 dark:text-zinc-300",
                 )}
               />
-              {type.label}
+              {label}
             </button>
           ))}
         </div>

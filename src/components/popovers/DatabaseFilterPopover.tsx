@@ -1,3 +1,4 @@
+import { DbColumn, FilterCondition } from "@/lib/types/database";
 import { COLUMN_TYPES } from "@/lib/utils/database";
 import { cn } from "@/lib/utils/general";
 import {
@@ -31,10 +32,7 @@ export default function DatabaseFilterPopover() {
         const column = columns.find((c) => c.id === filter.columnId);
         if (!column) return null;
 
-        const currentType = COLUMN_TYPES.find(
-          (t) => t.value === column.columnType,
-        );
-        const Icon = currentType?.Icon ?? COLUMN_TYPES[0].Icon;
+        const Icon = COLUMN_TYPES[column.columnType].Icon;
 
         return (
           <div
@@ -49,36 +47,11 @@ export default function DatabaseFilterPopover() {
             <Icon className="size-4 shrink-0 text-zinc-600 dark:text-zinc-300" />
             <span className="shrink-0">{column.name}</span>
 
-            {column.columnType === "checkbox" ? (
-              <select
-                value={filter.value}
-                onChange={(e) => updateFilter(filter.id, e.target.value)}
-                className="ml-auto rounded border-none bg-transparent text-xs text-zinc-500 focus:outline-none dark:text-zinc-400"
-              >
-                <option value="true">Checked</option>
-                <option value="false">Unchecked</option>
-              </select>
-            ) : column.columnType === "select" ? (
-              <select
-                value={filter.value}
-                onChange={(e) => updateFilter(filter.id, e.target.value)}
-                className="ml-auto rounded border-none bg-transparent text-xs text-zinc-500 focus:outline-none dark:text-zinc-400"
-              >
-                <option value="">Any</option>
-                {column.options.map((opt) => (
-                  <option key={opt.id} value={String(opt.id)}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                value={filter.value}
-                onChange={(e) => updateFilter(filter.id, e.target.value)}
-                placeholder="Value..."
-                className="ml-auto w-20 rounded border-none bg-transparent text-xs text-zinc-500 focus:outline-none dark:text-zinc-400"
-              />
-            )}
+            <FilterValueInput
+              column={column}
+              filter={filter}
+              onChange={(value) => updateFilter(filter.id, value)}
+            />
 
             <button
               onClick={() => removeFilter(filter.id)}
@@ -97,10 +70,7 @@ export default function DatabaseFilterPopover() {
       {columns
         .filter((col) => !filters.some((f) => f.columnId === col.id))
         .map((column) => {
-          const currentType = COLUMN_TYPES.find(
-            (t) => t.value === column.columnType,
-          );
-          const Icon = currentType?.Icon ?? COLUMN_TYPES[0].Icon;
+          const Icon = COLUMN_TYPES[column.columnType].Icon;
 
           return (
             <button
@@ -120,4 +90,58 @@ export default function DatabaseFilterPopover() {
         })}
     </div>
   );
+}
+
+const baseClass =
+  "ml-auto rounded border-none bg-transparent text-xs text-zinc-500 focus:outline-none dark:text-zinc-400";
+
+function FilterValueInput({
+  column,
+  filter,
+  onChange,
+}: {
+  column: DbColumn;
+  filter: FilterCondition;
+  onChange: (value: string) => void;
+}) {
+  switch (column.columnType) {
+    case "checkbox":
+      return (
+        <select
+          value={filter.value}
+          onChange={(e) => onChange(e.target.value)}
+          className={baseClass}
+        >
+          <option value="true">Checked</option>
+          <option value="false">Unchecked</option>
+        </select>
+      );
+
+    case "select":
+      return (
+        <select
+          value={filter.value}
+          onChange={(e) => onChange(e.target.value)}
+          className={baseClass}
+        >
+          <option value="">Any</option>
+          {column.options.map((opt) => (
+            <option key={opt.id} value={String(opt.id)}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      );
+
+    // text, number, date, created_at, last_modified
+    default:
+      return (
+        <input
+          value={filter.value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Value..."
+          className={cn(baseClass, "w-20")}
+        />
+      );
+  }
 }

@@ -30,10 +30,7 @@ export default function DatabaseSortPopover() {
 
       {columns.map((column) => {
         const isActive = sortColumnId === column.id;
-        const currentType = COLUMN_TYPES.find(
-          (t) => t.value === column.columnType,
-        );
-        const HeaderIcon = currentType?.Icon ?? COLUMN_TYPES[0].Icon;
+        const Icon = COLUMN_TYPES[column.columnType].Icon;
 
         return (
           <button
@@ -55,7 +52,7 @@ export default function DatabaseSortPopover() {
                   : "hover:bg-zinc-50 dark:hover:bg-zinc-700/50",
             )}
           >
-            <HeaderIcon className="size-4 shrink-0 text-zinc-600 dark:text-zinc-300" />
+            <Icon className="size-4 shrink-0 text-zinc-600 dark:text-zinc-300" />
 
             <span>{column.name}</span>
 

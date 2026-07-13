@@ -19,8 +19,7 @@ export default function DatabaseHead({
   const [isOpen, setIsOpen] = useState(false);
   const activeBackgroundId = useActiveBackgroundId();
 
-  const currentType = COLUMN_TYPES.find((t) => t.value === column.columnType);
-  const HeaderIcon = currentType?.Icon ?? COLUMN_TYPES[0].Icon;
+  const HeaderIcon = COLUMN_TYPES[column.columnType].Icon;
 
   return (
     <TableHead
