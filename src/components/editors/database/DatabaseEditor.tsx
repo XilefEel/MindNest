@@ -16,7 +16,7 @@ import {
 import {
   useDbColumns,
   useDbActions,
-  useSortedDbRows,
+  useVisibleDbRows,
 } from "@/stores/useDatabaseStore";
 import DatabaseHeader from "./DatabaseHeader";
 import DatabaseCell from "./DatabaseCell";
@@ -38,7 +38,7 @@ export default function DatabaseEditor() {
   useAutoSave(activeNestling.id!, nestlingData, updateNestling);
 
   const columns = useDbColumns();
-  const rows = useSortedDbRows();
+  const rows = useVisibleDbRows();
   const { getDbData, createColumn, createRow, insertCell } = useDbActions();
 
   useEffect(() => {

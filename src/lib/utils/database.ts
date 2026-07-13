@@ -3,16 +3,22 @@ import {
   Clock,
   ClockPlus,
   Hash,
+  LucideIcon,
   SquareCheckBig,
   Tag,
   Type,
 } from "lucide-react";
-import { ColumnType } from "../types/database";
+import {
+  ColumnType,
+  DbCell,
+  DbColumn,
+  FilterCondition,
+} from "../types/database";
 
 export const COLUMN_TYPES: {
   value: ColumnType;
   label: string;
-  Icon: React.ComponentType<{ className?: string }>;
+  Icon: LucideIcon;
 }[] = [
   { value: "text", label: "Text", Icon: Type },
   { value: "number", label: "Number", Icon: Hash },
@@ -22,3 +28,22 @@ export const COLUMN_TYPES: {
   { value: "created_at", label: "Created at", Icon: Clock },
   { value: "last_modified", label: "Last modified", Icon: ClockPlus },
 ];
+
+export const matchesFilter = (
+  column: DbColumn,
+  cell: DbCell | undefined,
+  filter: FilterCondition,
+): boolean => {
+  const raw = cell?.value ?? "";
+
+  switch (column.columnType) {
+    case "number":
+      return parseFloat(raw) === parseFloat(filter.value);
+    case "select":
+      return raw === filter.value;
+    case "checkbox":
+      return raw === filter.value;
+    default:
+      return raw.toLowerCase().includes(filter.value.toLowerCase());
+  }
+};

@@ -3,6 +3,7 @@ import {
   DbSelectOption,
   DbRowData,
   ColumnType,
+  FilterCondition,
 } from "@/lib/types/database";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
@@ -11,6 +12,7 @@ import { useShallow } from "zustand/react/shallow";
 import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 import { DragEndEvent } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
+import { matchesFilter } from "@/lib/utils/database";
 
 type DatabaseState = {
   columns: DbColumn[];
@@ -55,6 +57,12 @@ type DatabaseState = {
   sortColumnId: number | null;
   sortDirection: "asc" | "desc" | null;
   setSort: (columnId: number | null, order: "asc" | "desc" | null) => void;
+
+  filters: FilterCondition[];
+  addFilter: (columnId: number) => void;
+  updateFilter: (id: string, value: string) => void;
+  removeFilter: (id: string) => void;
+  clearFilters: () => void;
 };
 export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
   nestlingId: null,
@@ -64,6 +72,8 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
 
   sortColumnId: null,
   sortDirection: "asc",
+
+  filters: [],
 
   getDbData: withStoreErrorHandler(set, async (nestlingId: number) => {
     const data = await dbApi.getDbData(nestlingId);
@@ -344,6 +354,29 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
   setSort: (columnId, direction) => {
     set({ sortColumnId: columnId, sortDirection: direction });
   },
+
+  addFilter: (columnId: number) => {
+    set((state) => ({
+      filters: [
+        ...state.filters,
+        { id: crypto.randomUUID(), columnId, value: "" },
+      ],
+    }));
+  },
+
+  updateFilter: (id: string, value: string) => {
+    set((state) => ({
+      filters: state.filters.map((f) => (f.id === id ? { ...f, value } : f)),
+    }));
+  },
+
+  removeFilter: (id: string) => {
+    set((state) => ({ filters: state.filters.filter((f) => f.id !== id) }));
+  },
+
+  clearFilters: () => {
+    set({ filters: [] });
+  },
 }));
 
 export const useDbActions = () =>
@@ -365,6 +398,11 @@ export const useDbActions = () =>
       insertCell: state.insertCell,
 
       setSort: state.setSort,
+
+      addFilter: state.addFilter,
+      updateFilter: state.updateFilter,
+      removeFilter: state.removeFilter,
+      clearFilters: state.clearFilters,
     })),
   );
 
@@ -372,62 +410,93 @@ export const useDbColumns = () => useDatabaseStore((state) => state.columns);
 
 export const useDbRows = () => useDatabaseStore((state) => state.rows);
 
-export const useSortedDbRows = () =>
+export const useDbFilters = () => useDatabaseStore((state) => state.filters);
+
+export const useVisibleDbRows = () =>
   useDatabaseStore(
     useShallow((state) => {
-      if (!state.sortColumnId || !state.sortDirection) return state.rows;
+      let result = state.rows;
 
-      const column = state.columns.find((col) => col.id === state.sortColumnId);
-      if (!column) return state.rows;
+      if (state.filters.length > 0) {
+        result = result.filter((rowData) =>
+          state.filters.every((filter) => {
+            if (!filter.value) return true;
 
-      const dir = state.sortDirection === "asc" ? 1 : -1;
+            const column = state.columns.find((c) => c.id === filter.columnId);
+            if (!column) return true;
 
-      return state.rows.toSorted((a, b) => {
-        const aCell = a.cells.find((c) => c.columnId === column.id);
-        const bCell = b.cells.find((c) => c.columnId === column.id);
-
-        switch (column.columnType) {
-          case "number": {
-            const aNum = parseFloat(aCell?.value ?? "");
-            const bNum = parseFloat(bCell?.value ?? "");
-            if (isNaN(aNum) && isNaN(bNum)) return 0;
-            if (isNaN(aNum)) return 1;
-            if (isNaN(bNum)) return -1;
-            return dir * (aNum - bNum);
-          }
-
-          case "checkbox": {
-            const aVal = aCell?.value === "true" ? 1 : 0;
-            const bVal = bCell?.value === "true" ? 1 : 0;
-            return dir * (aVal - bVal);
-          }
-
-          case "select": {
-            const aOption = column.options.find(
-              (o) => String(o.id) === aCell?.value,
+            const cell = rowData.cells.find(
+              (c) => c.columnId === filter.columnId,
             );
-            const bOption = column.options.find(
-              (o) => String(o.id) === bCell?.value,
-            );
-            if (!aOption && !bOption) return 0;
-            if (!aOption) return 1;
-            if (!bOption) return -1;
-            return dir * (aOption.orderIndex - bOption.orderIndex);
-          }
+            return matchesFilter(column, cell, filter);
+          }),
+        );
+      }
 
-          case "created_at": {
-            return dir * a.row.createdAt.localeCompare(b.row.createdAt);
-          }
+      if (state.sortColumnId) {
+        const column = state.columns.find(
+          (col) => col.id === state.sortColumnId,
+        );
 
-          case "last_modified": {
-            return dir * a.row.updatedAt.localeCompare(b.row.updatedAt);
-          }
+        if (column) {
+          const dir = state.sortDirection === "asc" ? 1 : -1;
 
-          default: {
-            return dir * (aCell?.value ?? "").localeCompare(bCell?.value ?? "");
-          }
+          result = result.toSorted((a, b) => {
+            if (column.columnType === "created_at") {
+              return dir * a.row.createdAt.localeCompare(b.row.createdAt);
+            }
+            if (column.columnType === "last_modified") {
+              return dir * a.row.updatedAt.localeCompare(b.row.updatedAt);
+            }
+
+            const aCell = a.cells.find((c) => c.columnId === column.id);
+            const bCell = b.cells.find((c) => c.columnId === column.id);
+
+            switch (column.columnType) {
+              case "number": {
+                const aNum = parseFloat(aCell?.value ?? "");
+                const bNum = parseFloat(bCell?.value ?? "");
+                if (isNaN(aNum) && isNaN(bNum)) return 0;
+                if (isNaN(aNum)) return 1;
+                if (isNaN(bNum)) return -1;
+                return dir * (aNum - bNum);
+              }
+
+              case "select": {
+                const aOption = column.options.find(
+                  (o) => String(o.id) === aCell?.value,
+                );
+                const bOption = column.options.find(
+                  (o) => String(o.id) === bCell?.value,
+                );
+                if (!aOption && !bOption) return 0;
+                if (!aOption) return 1;
+                if (!bOption) return -1;
+                return dir * (aOption.orderIndex - bOption.orderIndex);
+              }
+
+              case "checkbox": {
+                const aVal = aCell?.value === "true" ? 1 : 0;
+                const bVal = bCell?.value === "true" ? 1 : 0;
+                return dir * (aVal - bVal);
+              }
+
+              default: {
+                const aVal = aCell?.value ?? "";
+                const bVal = bCell?.value ?? "";
+                if (!aVal && !bVal) return 0;
+                if (!aVal) return 1;
+                if (!bVal) return -1;
+                return (
+                  dir * aVal.localeCompare(bVal, undefined, { numeric: true })
+                );
+              }
+            }
+          });
         }
-      });
+      }
+
+      return result;
     }),
   );
 

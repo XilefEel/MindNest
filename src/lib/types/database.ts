@@ -55,3 +55,9 @@ export type DbData = {
   columns: DbColumn[];
   rows: DbRowData[];
 };
+
+export type FilterCondition = {
+  id: string;
+  columnId: number;
+  value: string;
+};
