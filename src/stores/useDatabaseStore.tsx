@@ -285,13 +285,23 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
 
         if (initialIndex === index) return;
 
-        const updatedOptions = [...column.options];
-        const [movedOption] = updatedOptions.splice(initialIndex, 1);
-        updatedOptions.splice(index, 0, movedOption);
+        const reordered = [...column.options];
+        const [movedOption] = reordered.splice(initialIndex, 1);
+        reordered.splice(index, 0, movedOption);
+
+        const updatedOptions = reordered.map((opt, idx) => ({
+          ...opt,
+          orderIndex: idx,
+        }));
 
         await Promise.all(
-          updatedOptions.map((opt, idx) =>
-            dbApi.updateSelectOption(opt.id, opt.label, opt.color, idx),
+          updatedOptions.map((opt) =>
+            dbApi.updateSelectOption(
+              opt.id,
+              opt.label,
+              opt.color,
+              opt.orderIndex,
+            ),
           ),
         );
 

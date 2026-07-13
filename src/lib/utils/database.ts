@@ -41,6 +41,7 @@ export const compareRowsByColumn = (
   if (column.columnType === "created_at") {
     return dir * a.row.createdAt.localeCompare(b.row.createdAt);
   }
+
   if (column.columnType === "last_modified") {
     return dir * a.row.updatedAt.localeCompare(b.row.updatedAt);
   }
@@ -95,8 +96,10 @@ export const filterRows = (
   return rows.filter((rowData) =>
     filters.every((filter) => {
       if (!filter.value) return true;
+
       const column = columns.find((c) => c.id === filter.columnId);
       if (!column) return true;
+
       const cell = rowData.cells.find((c) => c.columnId === filter.columnId);
       return matchesFilter(column, cell, filter);
     }),
@@ -113,10 +116,14 @@ export const matchesFilter = (
   switch (column.columnType) {
     case "number":
       return parseFloat(raw) === parseFloat(filter.value);
+
     case "select":
       return raw === filter.value;
+
     case "checkbox":
-      return raw === filter.value;
+      const isChecked = raw === "true";
+      return String(isChecked) === filter.value;
+
     default:
       return raw.toLowerCase().includes(filter.value.toLowerCase());
   }

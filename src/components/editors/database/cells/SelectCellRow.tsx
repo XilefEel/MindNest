@@ -24,12 +24,13 @@ export default function SelectCellRow({
       onClick={() => handleSelect(option.id)}
       className="flex items-center gap-1 rounded-lg p-1.5 transition-[background] hover:bg-zinc-100 dark:hover:bg-zinc-700/50"
     >
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-2">
         <GripVertical
           ref={handleRef}
           onClick={(e) => e.stopPropagation()}
           className="size-4 shrink-0 cursor-grab text-zinc-400 dark:text-zinc-500"
         />
+
         <SelectOptionPill option={option} />
 
         {selected?.id === option.id && (
