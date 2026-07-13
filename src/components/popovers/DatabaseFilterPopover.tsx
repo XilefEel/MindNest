@@ -8,6 +8,7 @@ import {
 } from "@/stores/useDatabaseStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { X } from "lucide-react";
+import BaseSelectMenu from "../select/BaseSelectMenu";
 
 export default function DatabaseFilterPopover() {
   const columns = useDbColumns();
@@ -45,7 +46,7 @@ export default function DatabaseFilterPopover() {
             )}
           >
             <Icon className="size-4 shrink-0 text-zinc-600 dark:text-zinc-300" />
-            <span className="shrink-0">{column.name}</span>
+            <span className="mr-auto shrink-0">{column.name}</span>
 
             <FilterValueInput
               column={column}
@@ -92,9 +93,6 @@ export default function DatabaseFilterPopover() {
   );
 }
 
-const baseClass =
-  "ml-auto rounded border-none bg-transparent text-xs text-zinc-500 focus:outline-none dark:text-zinc-400";
-
 function FilterValueInput({
   column,
   filter,
@@ -107,30 +105,31 @@ function FilterValueInput({
   switch (column.columnType) {
     case "checkbox":
       return (
-        <select
+        <BaseSelectMenu
           value={filter.value}
-          onChange={(e) => onChange(e.target.value)}
-          className={baseClass}
-        >
-          <option value="true">Checked</option>
-          <option value="false">Unchecked</option>
-        </select>
+          onChange={onChange}
+          options={[
+            { value: "true", label: "Checked" },
+            { value: "false", label: "Unchecked" },
+          ]}
+          size="text-xs"
+        />
       );
 
     case "select":
       return (
-        <select
+        <BaseSelectMenu
           value={filter.value}
-          onChange={(e) => onChange(e.target.value)}
-          className={baseClass}
-        >
-          <option value="">Any</option>
-          {column.options.map((opt) => (
-            <option key={opt.id} value={String(opt.id)}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+          onChange={onChange}
+          options={[
+            { value: "__any__", label: "Any" },
+            ...column.options.map((opt) => ({
+              value: String(opt.id),
+              label: opt.label,
+            })),
+          ]}
+          size="text-xs"
+        />
       );
 
     // text, number, date, created_at, last_modified
@@ -140,7 +139,7 @@ function FilterValueInput({
           value={filter.value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Value..."
-          className={cn(baseClass, "w-20")}
+          className="ml-auto w-20 rounded border-none bg-transparent text-xs text-zinc-500 focus:outline-none dark:text-zinc-400"
         />
       );
   }

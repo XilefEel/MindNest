@@ -15,7 +15,6 @@ export default function DatabaseToolbar() {
 
       <div className="flex flex-row gap-1">
         <BasePopover
-          width="w-72"
           side="left"
           trigger={
             <div>

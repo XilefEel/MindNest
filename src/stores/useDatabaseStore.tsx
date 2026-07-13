@@ -412,6 +412,12 @@ export const useDbRows = () => useDatabaseStore((state) => state.rows);
 
 export const useDbFilters = () => useDatabaseStore((state) => state.filters);
 
+export const useSortColumnId = () =>
+  useDatabaseStore((state) => state.sortColumnId);
+
+export const useSortDirection = () =>
+  useDatabaseStore((state) => state.sortDirection);
+
 export const useVisibleDbRows = () =>
   useDatabaseStore(
     useShallow((state) => {
@@ -428,9 +434,3 @@ export const useVisibleDbRows = () =>
       );
     }),
   );
-
-export const useSortColumnId = () =>
-  useDatabaseStore((state) => state.sortColumnId);
-
-export const useSortDirection = () =>
-  useDatabaseStore((state) => state.sortDirection);
