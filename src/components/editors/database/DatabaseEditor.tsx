@@ -22,9 +22,11 @@ import DatabaseHeader from "./DatabaseHeader";
 import DatabaseCell from "./DatabaseCell";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
-import { Plus } from "lucide-react";
+import { GripVertical, Plus } from "lucide-react";
 import DatabaseToolbar from "./DatabaseToolbar";
 import { ColumnType } from "@/lib/types/database";
+import BasePopover from "@/components/popovers/BasePopover";
+import DatabaseRowPopover from "@/components/popovers/DatabaseRowPopover";
 
 export default function DatabaseEditor() {
   const activeNestling = useActiveNestling();
@@ -59,6 +61,8 @@ export default function DatabaseEditor() {
         <Table className="min-w-max">
           <TableHeader>
             <TableRow>
+              <TableHead className="border-transparent" />
+
               {columns.map((col, index) => (
                 <DatabaseHeader
                   key={col.id}
@@ -88,18 +92,29 @@ export default function DatabaseEditor() {
 
           <TableBody>
             {rows.map((rowData) => (
-              <TableRow
-                key={rowData.row.id}
-                className={cn(
-                  "border-zinc-300 dark:border-zinc-600",
-                  activeBackgroundId && "border-black/30 dark:border-white/30",
-                )}
-              >
-                {columns.map((col) => (
+              <TableRow key={rowData.row.id} className="border-transparent">
+                <TableCell className="group border-transparent p-0">
+                  <div className="flex w-8 shrink-0 items-center justify-center">
+                    <BasePopover
+                      align="start"
+                      side="right"
+                      width="w-60"
+                      trigger={
+                        <button>
+                          <GripVertical className="size-3.5 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
+                        </button>
+                      }
+                      content={<DatabaseRowPopover rowData={rowData} />}
+                    />
+                  </div>
+                </TableCell>
+
+                {columns.map((col, index) => (
                   <TableCell
                     key={col.id}
                     className={cn(
                       "border-zinc-300 align-middle dark:border-zinc-600",
+                      index === 0 && "border-l-0",
                       activeBackgroundId &&
                         "border-black/30 dark:border-white/30",
                     )}
@@ -118,11 +133,13 @@ export default function DatabaseEditor() {
             ))}
 
             <TableRow>
+              <TableCell className="border-transparent" />
+
               <TableCell
                 colSpan={columns.length + 1}
                 onClick={() => createRow(activeNestling.id!)}
                 className={cn(
-                  "border-zinc-300 text-zinc-400 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
+                  "border-l-0 border-zinc-300 text-zinc-400 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
                   activeBackgroundId &&
                     "border-black/30 text-zinc-600 hover:bg-black/5 dark:border-white/30 dark:text-zinc-300 dark:hover:bg-white/5",
                 )}

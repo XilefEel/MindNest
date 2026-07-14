@@ -25,6 +25,7 @@ export default function DatabaseHead({
     <TableHead
       className={cn(
         "border-border w-48 border-x border-zinc-300 p-0 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800",
+        isFirst && "border-l-0",
         activeBackgroundId &&
           "border-black/30 hover:bg-black/5 dark:border-white/30 dark:hover:bg-white/5",
       )}
