@@ -87,7 +87,7 @@ export default function SelectCell({
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search or create a tag..."
+              placeholder="Search or create an option..."
               autoComplete="off"
               autoCorrect="off"
               spellCheck={false}
@@ -126,7 +126,7 @@ export default function SelectCell({
 
           {!searchQuery && availableOptions.length === 0 && (
             <p className="py-2 text-xs text-zinc-700 dark:text-zinc-200">
-              No available tags
+              No available options
             </p>
           )}
 

@@ -1,6 +1,10 @@
 import { DbRowData } from "@/lib/types/database";
 import { cn } from "@/lib/utils/general";
-import { useDbActions } from "@/stores/useDatabaseStore";
+import {
+  useDbActions,
+  useDbFilters,
+  useSortColumnId,
+} from "@/stores/useDatabaseStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { ArrowDown, ArrowUp, Copy, Plus, Trash2 } from "lucide-react";
 
@@ -9,15 +13,21 @@ export default function DatabaseRowPopover({
 }: {
   rowData: DbRowData;
 }) {
-  const { deleteRow } = useDbActions();
+  const { deleteRow, moveRow } = useDbActions();
   const activeBackgroundId = useActiveBackgroundId();
+  const sortColumnId = useSortColumnId();
+  const filters = useDbFilters();
+
+  const isDraggable = sortColumnId === null && filters.length === 0;
 
   return (
     <div className="flex flex-col gap-0.5 text-zinc-800 dark:text-zinc-200">
       <button
-        onClick={() => {}}
+        onClick={() => moveRow(rowData.row.id, "up")}
+        disabled={!isDraggable}
         className={cn(
           "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
+          "disabled:opacity-50 disabled:hover:bg-transparent dark:disabled:opacity-50 dark:disabled:hover:bg-transparent",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
         )}
       >
@@ -26,9 +36,11 @@ export default function DatabaseRowPopover({
       </button>
 
       <button
-        onClick={() => {}}
+        onClick={() => moveRow(rowData.row.id, "down")}
+        disabled={!isDraggable}
         className={cn(
           "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
+          "disabled:opacity-50 disabled:hover:bg-transparent dark:disabled:opacity-50 dark:disabled:hover:bg-transparent",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
         )}
       >
@@ -38,8 +50,10 @@ export default function DatabaseRowPopover({
 
       <button
         onClick={() => {}}
+        disabled={!isDraggable}
         className={cn(
           "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
+          "disabled:opacity-50 disabled:hover:bg-transparent dark:disabled:opacity-50 dark:disabled:hover:bg-transparent",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
         )}
       >
@@ -49,8 +63,10 @@ export default function DatabaseRowPopover({
 
       <button
         onClick={() => {}}
+        disabled={!isDraggable}
         className={cn(
           "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
+          "disabled:opacity-50 disabled:hover:bg-transparent dark:disabled:opacity-50 dark:disabled:hover:bg-transparent",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
         )}
       >

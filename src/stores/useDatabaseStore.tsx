@@ -12,7 +12,11 @@ import { useShallow } from "zustand/react/shallow";
 import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 import { DragEndEvent } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
-import { compareRowsByColumn, filterRows } from "@/lib/utils/database";
+import {
+  compareRowsByColumn,
+  filterRows,
+  reorderRowsAt,
+} from "@/lib/utils/database";
 
 type DatabaseState = {
   columns: DbColumn[];
@@ -47,7 +51,8 @@ type DatabaseState = {
 
   createRow: (nestlingId: number) => Promise<void>;
   deleteRow: (id: number) => Promise<void>;
-  reorderRows: (event: DragEndEvent) => Promise<void>;
+  moveRow: (id: number, direction: "up" | "down") => Promise<void>;
+  handleRowDragEnd: (event: DragEndEvent) => Promise<void>;
 
   insertCell: (
     rowId: number,
@@ -338,22 +343,39 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
     );
   }),
 
-  reorderRows: withStoreErrorHandler(set, async (event: DragEndEvent) => {
+  moveRow: withStoreErrorHandler(
+    set,
+    async (id: number, direction: "up" | "down") => {
+      const rows = get().rows;
+      const index = rows.findIndex((r) => r.row.id === id);
+      if (index === -1) return;
+
+      const swapIndex = direction === "up" ? index - 1 : index + 1;
+      if (swapIndex < 0 || swapIndex >= rows.length) return;
+
+      const withNewIndices = reorderRowsAt(rows, index, swapIndex);
+
+      await Promise.all(
+        withNewIndices.map((rowData) =>
+          dbApi.updateDbRowOrder(rowData.row.id, rowData.row.orderIndex),
+        ),
+      );
+
+      set({ rows: withNewIndices });
+
+      const nestlingId = withNewIndices[0]?.row.nestlingId;
+      if (nestlingId) await updateNestlingTimestamp(nestlingId);
+    },
+  ),
+
+  handleRowDragEnd: withStoreErrorHandler(set, async (event: DragEndEvent) => {
     const { source } = event.operation;
     if (!source || !isSortable(source)) return;
 
     const { initialIndex, index } = source;
     if (initialIndex === index) return;
 
-    const rows = get().rows;
-    const reordered = [...rows];
-    const [movedRow] = reordered.splice(initialIndex, 1);
-    reordered.splice(index, 0, movedRow);
-
-    const withNewIndices = reordered.map((rowData, idx) => ({
-      ...rowData,
-      row: { ...rowData.row, orderIndex: idx },
-    }));
+    const withNewIndices = reorderRowsAt(get().rows, initialIndex, index);
 
     await Promise.all(
       withNewIndices.map((rowData) =>
@@ -439,7 +461,9 @@ export const useDbActions = () =>
 
       createRow: state.createRow,
       deleteRow: state.deleteRow,
-      reorderRows: state.reorderRows,
+      moveRow: state.moveRow,
+      handleRowDragEnd: state.handleRowDragEnd,
+
       insertCell: state.insertCell,
 
       setSort: state.setSort,

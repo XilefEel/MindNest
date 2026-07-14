@@ -3,11 +3,14 @@ import BasePopover from "@/components/popovers/BasePopover";
 import DatabaseFilterPopover from "@/components/popovers/DatabaseFilterPopover";
 import DatabaseSortPopover from "@/components/popovers/DatabaseSortPopover";
 import { cn } from "@/lib/utils/general";
+import { useSortColumnId, useDbFilters } from "@/stores/useDatabaseStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { ArrowDownUp, Filter } from "lucide-react";
 
 export default function DatabaseToolbar() {
   const activeBackgroundId = useActiveBackgroundId();
+  const sortColumnId = useSortColumnId();
+  const filters = useDbFilters();
 
   return (
     <div className="flex flex-row justify-between px-4">
@@ -26,6 +29,7 @@ export default function DatabaseToolbar() {
                     "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
                     activeBackgroundId &&
                       "hover:bg-black/5 dark:hover:bg-white/5",
+                    filters.length > 0 && "text-teal-500 dark:text-teal-400",
                   )}
                 >
                   <Filter className="size-4 shrink-0" />
@@ -49,6 +53,7 @@ export default function DatabaseToolbar() {
                     "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
                     activeBackgroundId &&
                       "hover:bg-black/5 dark:hover:bg-white/5",
+                    sortColumnId && "text-teal-500 dark:text-teal-400",
                   )}
                 >
                   <ArrowDownUp className="size-4 shrink-0" />

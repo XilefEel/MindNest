@@ -128,3 +128,18 @@ export const matchesFilter = (
       return raw.toLowerCase().includes(filter.value.toLowerCase());
   }
 };
+
+export const reorderRowsAt = (
+  rows: DbRowData[],
+  fromIndex: number,
+  toIndex: number,
+): DbRowData[] => {
+  const reordered = [...rows];
+  const [moved] = reordered.splice(fromIndex, 1);
+  reordered.splice(toIndex, 0, moved);
+
+  return reordered.map((rowData, idx) => ({
+    ...rowData,
+    row: { ...rowData.row, orderIndex: idx },
+  }));
+};

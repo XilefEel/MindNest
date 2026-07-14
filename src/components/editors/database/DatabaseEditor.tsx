@@ -40,7 +40,8 @@ export default function DatabaseEditor() {
 
   const columns = useDbColumns();
   const rows = useVisibleDbRows();
-  const { getDbData, createColumn, createRow, reorderRows } = useDbActions();
+  const { getDbData, createColumn, createRow, handleRowDragEnd } =
+    useDbActions();
 
   useEffect(() => {
     getDbData(activeNestling.id!);
@@ -89,7 +90,7 @@ export default function DatabaseEditor() {
             </TableRow>
           </TableHeader>
 
-          <DragDropProvider onDragEnd={(event) => reorderRows(event)}>
+          <DragDropProvider onDragEnd={(event) => handleRowDragEnd(event)}>
             <TableBody>
               {rows.map((rowData, index) => (
                 <DatabaseRow

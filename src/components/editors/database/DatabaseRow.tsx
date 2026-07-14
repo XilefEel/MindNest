@@ -5,7 +5,12 @@ import { cn } from "@/lib/utils/general";
 import { EllipsisVertical, GripVertical } from "lucide-react";
 import DatabaseCell from "./DatabaseCell";
 import { DbRowData } from "@/lib/types/database";
-import { useDbActions, useDbColumns } from "@/stores/useDatabaseStore";
+import {
+  useDbActions,
+  useDbColumns,
+  useDbFilters,
+  useSortColumnId,
+} from "@/stores/useDatabaseStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useSortable } from "@dnd-kit/react/sortable";
 
@@ -20,9 +25,15 @@ export default function DatabaseRow({
   const { insertCell } = useDbActions();
   const activeBackgroundId = useActiveBackgroundId();
 
+  const sortColumnId = useSortColumnId();
+  const filters = useDbFilters();
+
+  const isDraggable = sortColumnId === null && filters.length === 0;
+
   const { ref, handleRef } = useSortable({
     id: rowData.row.id,
     index,
+    disabled: !isDraggable,
   });
 
   return (
@@ -31,7 +42,10 @@ export default function DatabaseRow({
         <div className="flex w-10 shrink-0 items-center justify-center gap-1">
           <div
             ref={handleRef}
-            className="flex size-5 cursor-grab items-center justify-center active:cursor-grabbing"
+            className={cn(
+              "flex size-5 cursor-grab items-center justify-center active:cursor-grabbing",
+              !isDraggable && "pointer-events-none opacity-50 dark:opacity-50",
+            )}
           >
             <GripVertical className="size-3.5 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
           </div>
