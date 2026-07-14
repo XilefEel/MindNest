@@ -7,10 +7,7 @@ import {
   NewBoardCard,
   NewBoardColumn,
 } from "@/lib/types/board";
-import {
-  mergeWithCurrent,
-  withStoreErrorHandler,
-} from "@/lib/utils/general";
+import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { DragEndEvent, DragStartEvent, DragMoveEvent } from "@dnd-kit/react";
 import { create } from "zustand";
 import { useShallow } from "zustand/react/shallow";
@@ -32,7 +29,11 @@ type BoardState = {
   removeColumn: (columnId: number) => Promise<void>;
 
   createCard: (card: NewBoardCard) => Promise<void>;
-  updateCard: (id: number, columnId: number, updates: Partial<BoardCard>) => Promise<void>;
+  updateCard: (
+    id: number,
+    columnId: number,
+    updates: Partial<BoardCard>,
+  ) => Promise<void>;
   deleteCard: (cardId: number, columnId: number) => Promise<void>;
 
   handleDragStart: (event: DragStartEvent) => void;
@@ -152,7 +153,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     set((state) => ({
       cardsByColumn: {
         ...state.cardsByColumn,
-        [card.columnId]: [...(state.cardsByColumn[card.columnId] ?? []), newCard],
+        [card.columnId]: [
+          ...(state.cardsByColumn[card.columnId] ?? []),
+          newCard,
+        ],
       },
     }));
     await updateNestlingTimestamp(
@@ -199,7 +203,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     set((state) => ({
       cardsByColumn: {
         ...state.cardsByColumn,
-        [columnId]: state.cardsByColumn[columnId].filter((card) => card.id !== id),
+        [columnId]: state.cardsByColumn[columnId].filter(
+          (card) => card.id !== id,
+        ),
       },
     }));
 
@@ -216,7 +222,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     if (source && source.type === "column") {
       set((state) => ({ columns: move(state.columns, event) }));
       return;
-    };
+    }
 
     set((state) => ({ cardsByColumn: move(state.cardsByColumn, event) }));
   },
@@ -231,7 +237,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     }
 
     if (source.type === "column") {
-      const indexed = get().columns.map((col, i) => ({ ...col, orderIndex: i }));
+      const indexed = get().columns.map((col, i) => ({
+        ...col,
+        orderIndex: i,
+      }));
       set({ columns: indexed });
       await Promise.all(indexed.map((col) => boardApi.updateBoardColumn(col)));
       await updateNestlingTimestamp(indexed[0].nestlingId);
@@ -260,7 +269,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
 export const useBoardColumns = () => useBoardStore((state) => state.columns);
 
-export const useCardsByColumn = () => useBoardStore((state) => state.cardsByColumn);
+export const useCardsByColumn = () =>
+  useBoardStore((state) => state.cardsByColumn);
 
 export const useBoardActions = () =>
   useBoardStore(

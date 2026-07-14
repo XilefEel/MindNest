@@ -47,6 +47,7 @@ type DatabaseState = {
 
   createRow: (nestlingId: number) => Promise<void>;
   deleteRow: (id: number) => Promise<void>;
+  reorderRows: (event: DragEndEvent) => Promise<void>;
 
   insertCell: (
     rowId: number,
@@ -337,6 +338,35 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
     );
   }),
 
+  reorderRows: withStoreErrorHandler(set, async (event: DragEndEvent) => {
+    const { source } = event.operation;
+    if (!source || !isSortable(source)) return;
+
+    const { initialIndex, index } = source;
+    if (initialIndex === index) return;
+
+    const rows = get().rows;
+    const reordered = [...rows];
+    const [movedRow] = reordered.splice(initialIndex, 1);
+    reordered.splice(index, 0, movedRow);
+
+    const withNewIndices = reordered.map((rowData, idx) => ({
+      ...rowData,
+      row: { ...rowData.row, orderIndex: idx },
+    }));
+
+    await Promise.all(
+      withNewIndices.map((rowData) =>
+        dbApi.updateDbRowOrder(rowData.row.id, rowData.row.orderIndex),
+      ),
+    );
+
+    set({ rows: withNewIndices });
+
+    const nestlingId = withNewIndices[0]?.row.nestlingId;
+    if (nestlingId) await updateNestlingTimestamp(nestlingId);
+  }),
+
   insertCell: withStoreErrorHandler(
     set,
     async (rowId: number, columnId: number, value: string | null) => {
@@ -351,7 +381,11 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
             ? rowData.cells.map((c) => (c.columnId === columnId ? cell : c))
             : [...rowData.cells, cell];
 
-          return { ...rowData, cells };
+          return {
+            ...rowData,
+            row: { ...rowData.row, updatedAt: cell.createdAt },
+            cells,
+          };
         }),
       }));
 
@@ -405,6 +439,7 @@ export const useDbActions = () =>
 
       createRow: state.createRow,
       deleteRow: state.deleteRow,
+      reorderRows: state.reorderRows,
       insertCell: state.insertCell,
 
       setSort: state.setSort,

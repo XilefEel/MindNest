@@ -49,6 +49,10 @@ export async function deleteDbRow(id: number) {
   await invoke<void>("delete_db_row", { id });
 }
 
+export async function updateDbRowOrder(id: number, orderIndex: number) {
+  await invoke<void>("update_row_order", { id, orderIndex });
+}
+
 export async function insertDbCell(data: NewDbCell) {
   return await invoke<DbCell>("insert_db_cell", { data });
 }

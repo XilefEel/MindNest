@@ -2,7 +2,7 @@ use crate::db::database::{
     clear_cells_by_column_from_db, delete_db_column_from_db, delete_db_row_from_db,
     delete_db_select_option_from_db, get_db_data_from_db, insert_db_cell_in_db,
     insert_db_column_into_db, insert_db_row_into_db, insert_db_select_option_into_db,
-    update_db_column_in_db, update_db_select_option_in_db,
+    update_db_column_in_db, update_db_select_option_in_db, update_db_row_order_in_db,
 };
 use crate::models::database::{
     DbCell, DbColumn, DbData, DbRow, DbSelectOption, NewDbCell, NewDbColumn, NewDbRow,
@@ -45,6 +45,11 @@ pub fn create_db_row(db: tauri::State<AppDb>, data: NewDbRow) -> AppResult<DbRow
 #[tauri::command]
 pub fn delete_db_row(db: tauri::State<AppDb>, id: i64) -> AppResult<()> {
     delete_db_row_from_db(&db, id)
+}
+
+#[tauri::command]
+pub fn update_row_order(db: tauri::State<AppDb>, id: i64, order_index: i64) -> AppResult<()> {
+    update_db_row_order_in_db(&db, id, order_index)
 }
 
 #[tauri::command]

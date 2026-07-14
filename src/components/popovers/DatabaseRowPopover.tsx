@@ -15,7 +15,7 @@ export default function DatabaseRowPopover({
   return (
     <div className="flex flex-col gap-0.5 text-zinc-800 dark:text-zinc-200">
       <button
-        onClick={() => deleteRow(rowData.row.id)}
+        onClick={() => {}}
         className={cn(
           "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
@@ -26,7 +26,7 @@ export default function DatabaseRowPopover({
       </button>
 
       <button
-        onClick={() => deleteRow(rowData.row.id)}
+        onClick={() => {}}
         className={cn(
           "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
@@ -37,7 +37,7 @@ export default function DatabaseRowPopover({
       </button>
 
       <button
-        onClick={() => deleteRow(rowData.row.id)}
+        onClick={() => {}}
         className={cn(
           "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
@@ -48,7 +48,7 @@ export default function DatabaseRowPopover({
       </button>
 
       <button
-        onClick={() => deleteRow(rowData.row.id)}
+        onClick={() => {}}
         className={cn(
           "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
           activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",

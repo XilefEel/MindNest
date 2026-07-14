@@ -50,7 +50,7 @@ use handler::tag::{
 use handler::database::{
     clear_cells_by_column, create_db_column, create_db_row, create_select_option, delete_db_column,
     delete_db_row, delete_select_option, get_db_data, insert_db_cell, update_db_column,
-    update_select_option,
+    update_select_option, update_row_order
 };
 
 use crate::utils::db::{get_db_path, init_db, AppDb};
@@ -187,6 +187,7 @@ pub fn run() {
             clear_cells_by_column,
             create_db_row,
             delete_db_row,
+            update_row_order,
             insert_db_cell,
             get_db_data,
             create_select_option,

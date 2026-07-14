@@ -117,6 +117,20 @@ pub fn delete_db_row_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     Ok(())
 }
 
+pub fn update_db_row_order_in_db(db: &AppDb, id: i64, order_index: i64) -> AppResult<()> {
+    let connection = db.conn()?;
+    let updated_at = Utc::now().to_rfc3339();
+
+    connection
+        .execute(
+            "UPDATE db_rows SET order_index = ?1, updated_at = ?2 WHERE id = ?3",
+            params![order_index, updated_at, id],
+        )
+        .log_err("update_db_row_order_in_db")?;
+
+    Ok(())
+}
+
 pub fn insert_db_cell_in_db(db: &AppDb, data: NewDbCell) -> AppResult<DbCell> {
     let connection = db.conn()?;
     let created_at = Utc::now().to_rfc3339();
@@ -143,6 +157,15 @@ pub fn insert_db_cell_in_db(db: &AppDb, data: NewDbCell) -> AppResult<DbCell> {
             |row| DbCell::try_from(row),
         )
         .log_err("insert_db_cell_in_db")?;
+
+    connection
+        .execute(
+            "UPDATE db_rows
+            SET updated_at = ?1
+            WHERE id = ?2",
+            params![created_at, data.row_id],
+        )
+        .log_err("insert_db_cell_in_db - update row")?;
 
     Ok(cell)
 }
