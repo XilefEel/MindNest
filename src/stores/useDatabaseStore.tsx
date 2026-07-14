@@ -50,6 +50,8 @@ type DatabaseState = {
   ) => Promise<void>;
 
   createRow: (nestlingId: number) => Promise<void>;
+  addRowBelow: (rowId: number) => Promise<void>;
+  duplicateRow: (rowId: number) => Promise<void>;
   deleteRow: (id: number) => Promise<void>;
   moveRow: (id: number, direction: "up" | "down") => Promise<void>;
   handleRowDragEnd: (event: DragEndEvent) => Promise<void>;
@@ -331,6 +333,80 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
     await updateNestlingTimestamp(nestlingId);
   }),
 
+  addRowBelow: withStoreErrorHandler(set, async (rowId: number) => {
+    const rows = get().rows;
+    const index = rows.findIndex((r) => r.row.id === rowId);
+    if (index === -1) return;
+
+    const nestlingId = rows[index].row.nestlingId;
+    const newRow = await dbApi.createDbRow({
+      nestlingId,
+      orderIndex: index + 1,
+    });
+
+    const withInserted = [
+      ...rows.slice(0, index + 1),
+      { row: newRow, cells: [] },
+      ...rows.slice(index + 1),
+    ].map((rowData, idx) => ({
+      ...rowData,
+      row: { ...rowData.row, orderIndex: idx },
+    }));
+
+    set({ rows: withInserted });
+
+    await Promise.all(
+      withInserted.map((rowData) =>
+        dbApi.updateDbRowOrder(rowData.row.id, rowData.row.orderIndex),
+      ),
+    );
+
+    await updateNestlingTimestamp(nestlingId);
+  }),
+
+  duplicateRow: withStoreErrorHandler(set, async (rowId: number) => {
+    const rows = get().rows;
+    const index = rows.findIndex((r) => r.row.id === rowId);
+    if (index === -1) return;
+
+    const original = rows[index];
+    const nestlingId = original.row.nestlingId;
+
+    const newRow = await dbApi.createDbRow({
+      nestlingId,
+      orderIndex: index + 1,
+    });
+
+    const newCells = await Promise.all(
+      original.cells.map((cell) =>
+        dbApi.insertDbCell({
+          rowId: newRow.id,
+          columnId: cell.columnId,
+          value: cell.value,
+        }),
+      ),
+    );
+
+    const withInserted = [
+      ...rows.slice(0, index + 1),
+      { row: newRow, cells: newCells },
+      ...rows.slice(index + 1),
+    ].map((rowData, idx) => ({
+      ...rowData,
+      row: { ...rowData.row, orderIndex: idx },
+    }));
+
+    set({ rows: withInserted });
+
+    await Promise.all(
+      withInserted.map((rowData) =>
+        dbApi.updateDbRowOrder(rowData.row.id, rowData.row.orderIndex),
+      ),
+    );
+
+    await updateNestlingTimestamp(nestlingId);
+  }),
+
   deleteRow: withStoreErrorHandler(set, async (id: number) => {
     await dbApi.deleteDbRow(id);
 
@@ -460,6 +536,8 @@ export const useDbActions = () =>
       reorderSelectOptions: state.reorderSelectOptions,
 
       createRow: state.createRow,
+      addRowBelow: state.addRowBelow,
+      duplicateRow: state.duplicateRow,
       deleteRow: state.deleteRow,
       moveRow: state.moveRow,
       handleRowDragEnd: state.handleRowDragEnd,

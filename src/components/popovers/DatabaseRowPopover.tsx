@@ -13,7 +13,7 @@ export default function DatabaseRowPopover({
 }: {
   rowData: DbRowData;
 }) {
-  const { deleteRow, moveRow } = useDbActions();
+  const { deleteRow, moveRow, addRowBelow, duplicateRow } = useDbActions();
   const activeBackgroundId = useActiveBackgroundId();
   const sortColumnId = useSortColumnId();
   const filters = useDbFilters();
@@ -49,7 +49,7 @@ export default function DatabaseRowPopover({
       </button>
 
       <button
-        onClick={() => {}}
+        onClick={() => addRowBelow(rowData.row.id)}
         disabled={!isDraggable}
         className={cn(
           "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
@@ -62,7 +62,7 @@ export default function DatabaseRowPopover({
       </button>
 
       <button
-        onClick={() => {}}
+        onClick={() => duplicateRow(rowData.row.id)}
         disabled={!isDraggable}
         className={cn(
           "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
