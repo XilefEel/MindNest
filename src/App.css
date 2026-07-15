@@ -4,6 +4,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
+html,
+body {
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+}
+
 @layer base {
   @font-face {
     font-family: "PlusJakartaSans";
@@ -89,24 +95,140 @@
 }
 
 .tiptap {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: theme("colors.zinc.800");
+
+  .dark & {
+    color: theme("colors.zinc.100");
+  }
+
   :first-child {
     margin-top: 0;
   }
 
+  p {
+    margin: 0.75rem 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 700;
+    line-height: 1.2;
+    scroll-margin-top: 6rem;
+  }
+
+  h1 {
+    font-size: 1.875rem;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 0.6rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  h4 {
+    font-size: 1.125rem;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
   ul,
   ol {
-    padding: 0 1rem;
-    margin: 1.25rem 1rem 1.25rem 0.4rem;
+    padding-left: 1.5rem;
+    margin: 0.75rem 0;
 
-    li p {
-      margin-top: 0;
-      margin-bottom: 0;
+    li {
+      margin: 0.2rem 0;
+
+      p {
+        margin: 0;
+      }
+    }
+  }
+
+  hr {
+    margin: 2rem 0;
+    border: none;
+    border-top: 1px solid theme("colors.zinc.200");
+
+    .dark & {
+      border-top-color: theme("colors.zinc.700");
+    }
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+    border-radius: 0.75rem;
+    margin: 1.5rem auto;
+  }
+
+  blockquote {
+    margin: 1.25rem 0;
+    padding-left: 1rem;
+    border-left: 4px solid theme("colors.teal.400");
+    color: theme("colors.zinc.600");
+    font-style: normal;
+
+    .dark & {
+      border-left-color: theme("colors.teal.500");
+      color: theme("colors.zinc.400");
+    }
+  }
+
+  code {
+    font-family: inherit;
+    font-size: 0.9em;
+    background: theme("colors.zinc.100");
+    padding: 0.15rem 0.35rem;
+    border-radius: 0.375rem;
+
+    .dark & {
+      background: theme("colors.zinc.800");
+    }
+  }
+
+  pre {
+    margin: 1.25rem 0;
+    padding: 1rem;
+    overflow-x: auto;
+    border-radius: 0.75rem;
+    background: theme("colors.zinc.900");
+
+    code {
+      background: transparent;
+      padding: 0;
+      color: inherit;
+      font-size: 0.9rem;
+    }
+  }
+
+  mark {
+    background-color: theme("colors.teal.100");
+    color: inherit;
+    border-radius: 0.25rem;
+    padding: 0.05rem 0.15rem;
+
+    .dark & {
+      background-color: theme("colors.teal.700");
     }
   }
 
   ul[data-type="taskList"] {
     list-style: none;
-    margin-left: 0;
+    margin: 0.75rem 0;
     padding: 0;
 
     li {
@@ -115,7 +237,7 @@
       gap: 0.5rem;
 
       > div {
-        flex: 1 1 auto;
+        flex: 1;
       }
 
       > label {
@@ -178,30 +300,7 @@
     }
 
     ul[data-type="taskList"] {
-      margin: 0;
-      margin-left: 1.5rem;
-      margin-top: 0.25rem;
-    }
-  }
-
-  blockquote {
-    border-left: 3px solid theme("colors.teal.400");
-    color: theme("colors.zinc.500");
-    margin: 1rem 0;
-
-    .dark & {
-      border-left-color: theme("colors.teal.500");
-      color: theme("colors.zinc.400");
-    }
-  }
-
-  mark {
-    background-color: theme("colors.teal.100");
-    color: inherit;
-    border-radius: 3px;
-
-    .dark & {
-      background-color: theme("colors.teal.700");
+      margin: 0.25rem 0 0 1.5rem;
     }
   }
 }

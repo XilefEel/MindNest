@@ -23,54 +23,90 @@ export const exportNoteToHTML = async (editor: Editor, title: string) => {
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 1rem;
       max-width: 800px;
       margin: 40px auto;
       padding: 20px;
-      line-height: 1.6;
+      line-height: 1.75;
+      color: #27272a; /* zinc-800 */
     }
-    h1 { font-size: 2em; margin-top: 0.67em; }
-    h2 { font-size: 1.5em; }
-    h3 { font-size: 1.17em; }
-    ul, ol { padding-left: 1.5em; }
+    h1, h2, h3, h4 {
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    h1 { font-size: 1.875rem; margin-top: 2.5rem; margin-bottom: 0.75rem; }
+    h2 { font-size: 1.5rem; margin-top: 2rem; margin-bottom: 0.6rem; }
+    h3 { font-size: 1.25rem; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+    h4 { font-size: 1.0625rem; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+    h1:first-child, h2:first-child, h3:first-child, h4:first-child {
+      margin-top: 0;
+    }
+    p { margin: 0.75rem 0; }
+    ul, ol {
+      padding-left: 1.5rem;
+      margin: 0.75rem 0;
+    }
+    li { margin: 0.2rem 0; }
+    li p { margin: 0; }
+    hr {
+      margin: 2rem 0;
+      border: none;
+      border-top: 1px solid #e4e4e7;
+    }
     blockquote {
-      border-left: 3px solid #ccc;
+      border-left: 4px solid #2dd4bf;
+      margin: 1.25rem 0;
       margin-left: 0;
-      padding-left: 1em;
-      color: #555;
+      padding-left: 1rem;
+      color: #52525b;
+      font-style: normal;
     }
     code {
-      background: #f4f4f4;
-      padding: 2px 6px;
-      border-radius: 3px;
+      font-family: inherit;
+      font-size: 0.9em;
+      background: #f4f4f5;
+      padding: 0.15rem 0.35rem;
+      border-radius: 0.375rem;
     }
     pre {
-      background: #f4f4f4;
-      padding: 12px;
-      border-radius: 6px;
+      margin: 1.25rem 0;
+      background: #18181b;
+      color: #e4e4e7;
+      padding: 1rem;
+      border-radius: 0.75rem;
       overflow-x: auto;
     }
     pre code {
       background: none;
       padding: 0;
+      font-size: 0.9rem;
+      color: inherit;
     }
-    img { max-width: 100%; height: auto; }
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 0.75rem;
+      margin: 1.5rem auto;
+    }
     mark {
-      background: #fef08a;
-      padding: 1px 2px;
-      border-radius: 2px;
+      background: #ccfbf1;
+      color: inherit;
+      padding: 0.05rem 0.15rem;
+      border-radius: 0.25rem;
     }
     iframe {
       max-width: 100%;
       aspect-ratio: 16/9;
     }
-
     @media (prefers-color-scheme: dark) {
-      body { background: #1a1a1a; color: #e0e0e0; }
-      blockquote { border-left-color: #555; color: #aaa; }
-      code, pre { background: #2a2a2a; }
-      mark { background: #854d0e; color: #fef9c3; }
+      body { background: #1a1a1a; color: #f4f4f5;
+      hr { border-top-color: #3f3f46; }
+      blockquote { border-left-color: #14b8a6; color: #a1a1aa; }
+      code { background: #27272a; }
+      pre { background: #18181b; }
+      mark { background: #0f766e; color: #fef9c3; }
     }
-
   </style>
 </head>
 <body>
