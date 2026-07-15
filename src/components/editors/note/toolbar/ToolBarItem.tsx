@@ -26,8 +26,8 @@ export default function ToolBarItem({
         className={cn(
           "rounded p-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
           isActive
-            ? "bg-teal-100 text-teal-600 dark:bg-teal-900 dark:text-teal-300"
-            : "hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-white",
+            ? "bg-teal-50 text-teal-700 dark:bg-teal-500/10 dark:text-teal-400"
+            : "hover:text-teal-500 dark:hover:bg-zinc-700/50 dark:hover:text-white",
           activeBackgroundId &&
             !isActive &&
             "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",

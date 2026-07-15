@@ -3,6 +3,13 @@ import { Editor } from "@tiptap/react";
 import { writeTextFile } from "@tauri-apps/plugin-fs";
 import { toast } from "@/lib/utils/toast";
 
+export const getActiveIcon = <T>(
+  items: readonly { active: boolean; icon: T }[],
+  fallback: T,
+) => {
+  return items.find((item) => item.active)?.icon ?? fallback;
+};
+
 export const exportNoteToHTML = async (editor: Editor, title: string) => {
   const htmlContent = editor.getHTML();
 

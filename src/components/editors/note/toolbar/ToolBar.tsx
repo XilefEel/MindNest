@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import ToolBarItem from "./ToolBarItem.tsx";
 import { useCurrentEditor, useEditorState } from "@tiptap/react";
-import { exportNoteToHTML } from "@/lib/utils/note";
+import { exportNoteToHTML, getActiveIcon } from "@/lib/utils/note";
 import { useState } from "react";
 import NoteToolbarPopover from "../../../popovers/NoteToolbarPopover.tsx";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
@@ -68,6 +68,52 @@ export default function ToolBar({ title }: { title: string }) {
     }),
   });
 
+  const HeadingIcon = getActiveIcon(
+    [
+      { active: state.isH1, icon: Heading1 },
+      { active: state.isH2, icon: Heading2 },
+      { active: state.isH3, icon: Heading3 },
+      { active: state.isH4, icon: Heading4 },
+    ],
+    Heading,
+  );
+
+  const isHeadingActive = [state.isH1, state.isH2, state.isH3, state.isH4].some(
+    Boolean,
+  );
+
+  const ListIcon = getActiveIcon(
+    [
+      { active: state.isBulletList, icon: List },
+      { active: state.isOrderedList, icon: ListOrdered },
+      { active: state.isTaskList, icon: ListTodo },
+    ],
+    List,
+  );
+
+  const isListActive = [
+    state.isBulletList,
+    state.isOrderedList,
+    state.isTaskList,
+  ].some(Boolean);
+
+  const AlignIcon = getActiveIcon(
+    [
+      { active: state.isAlignLeft, icon: AlignLeft },
+      { active: state.isAlignCenter, icon: AlignCenter },
+      { active: state.isAlignRight, icon: AlignRight },
+      { active: state.isAlignJustify, icon: AlignJustify },
+    ],
+    AlignLeft,
+  );
+
+  const isAlignActive = [
+    state.isAlignLeft,
+    state.isAlignCenter,
+    state.isAlignRight,
+    state.isAlignJustify,
+  ].some(Boolean);
+
   return (
     <div
       className={cn(
@@ -92,8 +138,15 @@ export default function ToolBar({ title }: { title: string }) {
         width="w-36"
         padding="p-2"
         trigger={
-          <button className="flex items-center rounded p-1 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-white">
-            <Heading className="size-4 shrink-0" />
+          <button
+            className={cn(
+              "flex items-center rounded p-1",
+              isHeadingActive
+                ? "bg-teal-50 text-teal-700 dark:bg-teal-500/10 dark:text-teal-400"
+                : "hover:text-teal-500 dark:hover:bg-zinc-700/50 dark:hover:text-white",
+            )}
+          >
+            <HeadingIcon className="size-4 shrink-0" />
             <ChevronDown className="size-3 shrink-0" />
           </button>
         }
@@ -139,8 +192,15 @@ export default function ToolBar({ title }: { title: string }) {
         width="w-40"
         padding="p-2"
         trigger={
-          <button className="flex items-center rounded p-1 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-white">
-            <List className="size-4 shrink-0" />
+          <button
+            className={cn(
+              "flex items-center rounded p-1",
+              isListActive
+                ? "bg-teal-50 text-teal-700 dark:bg-teal-500/10 dark:text-teal-400"
+                : "hover:text-teal-500 dark:hover:bg-zinc-700/50 dark:hover:text-white",
+            )}
+          >
+            <ListIcon className="size-4 shrink-0" />
             <ChevronDown className="size-3 shrink-0" />
           </button>
         }
@@ -219,8 +279,15 @@ export default function ToolBar({ title }: { title: string }) {
         width="w-40"
         padding="p-2"
         trigger={
-          <button className="flex items-center rounded p-1 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-white">
-            <AlignLeft className="size-4 shrink-0" />
+          <button
+            className={cn(
+              "flex items-center rounded p-1",
+              isAlignActive
+                ? "bg-teal-50 text-teal-700 dark:bg-teal-500/10 dark:text-teal-400"
+                : "hover:text-teal-500 dark:hover:bg-zinc-700/50 dark:hover:text-white",
+            )}
+          >
+            <AlignIcon className="size-4 shrink-0" />
             <ChevronDown className="size-3 shrink-0" />
           </button>
         }
