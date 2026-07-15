@@ -107,6 +107,74 @@ pub fn insert_db_row_into_db(db: &AppDb, data: NewDbRow) -> AppResult<DbRow> {
     Ok(row)
 }
 
+pub fn duplicate_db_row_into_db(db: &AppDb, row_id: i64) -> AppResult<DbRowData> {
+    let mut connection = db.conn()?;
+    let tx = connection
+        .transaction()
+        .log_err("duplicate_db_row_into_db - transaction")?;
+
+    let created_at = Utc::now().to_rfc3339();
+
+    let (nestling_id, order_index) = tx
+        .query_row(
+            "
+            SELECT nestling_id, order_index
+            FROM db_rows
+            WHERE id = ?1",
+            params![row_id],
+            |row| Ok((row.get::<_, i64>(0)?, row.get::<_, i64>(1)?)),
+        )
+        .log_err("duplicate_db_row_into_db - get original row")?;
+
+    tx.execute(
+        "
+        UPDATE db_rows
+        SET order_index = order_index + 1
+        WHERE nestling_id = ?1
+        AND order_index > ?2",
+        params![nestling_id, order_index],
+    )
+    .log_err("duplicate_db_row_into_db - shift rows")?;
+
+    let duplicated_row = tx
+        .query_row(
+            "
+            INSERT INTO db_rows (nestling_id, order_index, created_at, updated_at)
+            VALUES (?1, ?2, ?3, ?4)
+            RETURNING id, nestling_id, order_index, created_at, updated_at",
+            params![nestling_id, order_index + 1, created_at, created_at],
+            |row| DbRow::try_from(row),
+        )
+        .log_err("duplicate_db_row_into_db - insert duplicate")?;
+
+    let cells = {
+        let mut statement = tx.prepare(
+            "
+            INSERT INTO db_cells (row_id, column_id, value, created_at, updated_at)
+            SELECT ?1, column_id, value, ?2, ?3
+            FROM db_cells
+            WHERE row_id = ?4
+            RETURNING id, row_id, column_id, value, created_at, updated_at",
+        )?;
+
+        let rows = statement.query_map(
+            params![duplicated_row.id, created_at, created_at, row_id],
+            |row| DbCell::try_from(row),
+        )?;
+
+        let cells = rows.collect::<Result<Vec<_>, _>>()?;
+
+        cells
+    };
+
+    tx.commit().log_err("duplicate_db_row_into_db - commit")?;
+
+    Ok(DbRowData {
+        row: duplicated_row,
+        cells,
+    })
+}
+
 pub fn delete_db_row_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     let connection = db.conn()?;
 

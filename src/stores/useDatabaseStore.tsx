@@ -365,46 +365,28 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
   }),
 
   duplicateRow: withStoreErrorHandler(set, async (rowId: number) => {
-    const rows = get().rows;
-    const index = rows.findIndex((r) => r.row.id === rowId);
-    if (index === -1) return;
+    const original = get().rows.find((r) => r.row.id === rowId);
+    if (!original) return;
 
-    const original = rows[index];
-    const nestlingId = original.row.nestlingId;
+    const newRowData = await dbApi.duplicateDbRow(rowId);
 
-    const newRow = await dbApi.createDbRow({
-      nestlingId,
-      orderIndex: index + 1,
+    set((state) => {
+      const shifted = state.rows.map((rowData) =>
+        rowData.row.orderIndex > original.row.orderIndex
+          ? {
+              ...rowData,
+              row: { ...rowData.row, orderIndex: rowData.row.orderIndex + 1 },
+            }
+          : rowData,
+      );
+      return {
+        rows: [...shifted, newRowData].sort(
+          (a, b) => a.row.orderIndex - b.row.orderIndex,
+        ),
+      };
     });
 
-    const newCells = await Promise.all(
-      original.cells.map((cell) =>
-        dbApi.insertDbCell({
-          rowId: newRow.id,
-          columnId: cell.columnId,
-          value: cell.value,
-        }),
-      ),
-    );
-
-    const withInserted = [
-      ...rows.slice(0, index + 1),
-      { row: newRow, cells: newCells },
-      ...rows.slice(index + 1),
-    ].map((rowData, idx) => ({
-      ...rowData,
-      row: { ...rowData.row, orderIndex: idx },
-    }));
-
-    set({ rows: withInserted });
-
-    await Promise.all(
-      withInserted.map((rowData) =>
-        dbApi.updateDbRowOrder(rowData.row.id, rowData.row.orderIndex),
-      ),
-    );
-
-    await updateNestlingTimestamp(nestlingId);
+    await updateNestlingTimestamp(newRowData.row.nestlingId);
   }),
 
   deleteRow: withStoreErrorHandler(set, async (id: number) => {

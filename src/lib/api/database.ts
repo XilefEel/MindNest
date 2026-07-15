@@ -9,6 +9,7 @@ import {
   DbData,
   DbSelectOption,
   NewDbSelectOption,
+  DbRowData,
 } from "../types/database";
 
 export async function getDbData(nestlingId: number) {
@@ -43,6 +44,10 @@ export async function clearCellsByColumn(columnId: number) {
 
 export async function createDbRow(data: NewDbRow) {
   return await invoke<DbRow>("create_db_row", { data });
+}
+
+export async function duplicateDbRow(id: number) {
+  return await invoke<DbRowData>("duplicate_db_row", { id });
 }
 
 export async function deleteDbRow(id: number) {
