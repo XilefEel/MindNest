@@ -61,7 +61,7 @@ export default function DatabaseEditor() {
         <Table className="min-w-max">
           <TableHeader>
             <TableRow>
-              <TableHead className="border-transparent" />
+              <TableHead className="w-10 border-transparent" />
 
               {columns.map((col, index) => (
                 <DatabaseHeader
@@ -101,7 +101,7 @@ export default function DatabaseEditor() {
               ))}
 
               <TableRow>
-                <TableCell className="border-transparent" />
+                <TableCell className="w-10 border-transparent" />
 
                 <TableCell
                   colSpan={columns.length + 1}

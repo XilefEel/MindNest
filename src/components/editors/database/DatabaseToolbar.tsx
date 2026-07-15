@@ -5,22 +5,52 @@ import DatabaseSortPopover from "@/components/popovers/DatabaseSortPopover";
 import { cn } from "@/lib/utils/general";
 import { useSortColumnId, useDbFilters } from "@/stores/useDatabaseStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
-import { ArrowDownUp, Filter } from "lucide-react";
+import { ArrowDownUp, Filter, Search, SquareKanban, Table } from "lucide-react";
+import { useState } from "react";
 
 export default function DatabaseToolbar() {
   const activeBackgroundId = useActiveBackgroundId();
   const sortColumnId = useSortColumnId();
   const filters = useDbFilters();
 
+  const [tableView, setTableView] = useState<"table" | "board">("table");
+
   return (
-    <div className="flex flex-row justify-between px-4">
-      <div></div>
+    <div className="flex flex-row justify-between pr-4 pl-14">
+      <div className="flex items-center gap-1">
+        <button
+          onClick={() => setTableView("table")}
+          className={cn(
+            "flex items-center gap-2 rounded-t-md border-b-2 px-3 py-1 text-sm transition-colors",
+            tableView === "table"
+              ? "border-teal-500 text-zinc-800 dark:text-zinc-100"
+              : "border-transparent text-zinc-600 hover:bg-zinc-100 hover:text-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700/50 dark:hover:text-zinc-100",
+          )}
+        >
+          <Table className="size-4 shrink-0" />
+          Table
+        </button>
+
+        <button
+          onClick={() => setTableView("board")}
+          className={cn(
+            "flex items-center gap-2 rounded-t-md border-b-2 px-3 py-1 text-sm transition-colors",
+            tableView === "board"
+              ? "border-teal-500 text-zinc-800 dark:text-zinc-100"
+              : "border-transparent text-zinc-600 hover:bg-zinc-100 hover:text-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700/50 dark:hover:text-zinc-100",
+          )}
+        >
+          <SquareKanban className="size-4 shrink-0" />
+          Board
+        </button>
+      </div>
 
       <div className="flex flex-row gap-1">
         <BasePopover
           side="left"
+          padding="p-2"
           trigger={
-            <div>
+            <div className="flex items-center justify-center">
               <BaseToolTip label="Filter">
                 <button
                   className={cn(
@@ -42,9 +72,10 @@ export default function DatabaseToolbar() {
 
         <BasePopover
           width="w-60"
+          padding="p-2"
           side="left"
           trigger={
-            <div>
+            <div className="flex items-center justify-center">
               <BaseToolTip label="Sort">
                 <button
                   className={cn(
@@ -63,6 +94,22 @@ export default function DatabaseToolbar() {
           }
           content={<DatabaseSortPopover />}
         />
+
+        <div className="flex items-center justify-center">
+          <BaseToolTip label="Search">
+            <button
+              className={cn(
+                "rounded-lg p-1 text-zinc-800 transition-colors dark:text-zinc-200",
+                "hover:text-teal-500 dark:hover:text-teal-400",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
+                activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
+                sortColumnId && "text-teal-500 dark:text-teal-400",
+              )}
+            >
+              <Search className="size-4 shrink-0" />
+            </button>
+          </BaseToolTip>
+        </div>
       </div>
     </div>
   );

@@ -54,6 +54,7 @@ export default function DatabaseRow({
             align="start"
             side="right"
             width="w-60"
+            padding="p-2"
             trigger={
               <button className="flex h-full w-full items-center justify-center">
                 <EllipsisVertical className="size-3.5 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />

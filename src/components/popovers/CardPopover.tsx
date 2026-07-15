@@ -83,7 +83,7 @@ export default function CardPopover({
               spellCheck={false}
               placeholder="Event title"
               className={cn(
-                "w-full rounded border border-teal-500 px-2 py-1 text-lg font-semibold focus:ring-2 focus:ring-teal-500 focus:outline-none",
+                "w-full rounded px-2 py-1 text-lg font-semibold focus:ring-2 focus:ring-teal-500 focus:outline-none",
                 activeBackgroundId && "bg-white/30 dark:bg-black/30",
               )}
             />
@@ -91,7 +91,7 @@ export default function CardPopover({
             <h3
               onClick={() => setIsEditingTitle(true)}
               className={cn(
-                "truncate rounded px-2 py-1 text-lg font-semibold transition-colors hover:bg-zinc-50 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
+                "truncate rounded px-2 py-1 text-lg font-semibold transition-colors hover:bg-zinc-50 hover:text-teal-500 dark:hover:bg-zinc-700/50 dark:hover:text-teal-400",
                 activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
               )}
             >
@@ -114,7 +114,7 @@ export default function CardPopover({
               spellCheck={false}
               placeholder="Add description..."
               className={cn(
-                "w-full resize-none rounded border border-teal-500 px-2 py-1 text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none",
+                "w-full resize-none rounded px-2 py-1 text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none",
                 activeBackgroundId && "bg-white/30 dark:bg-black/30",
               )}
             />
@@ -122,7 +122,7 @@ export default function CardPopover({
             <p
               onClick={() => setIsEditingDescription(true)}
               className={cn(
-                "line-clamp-3 rounded px-2 py-1 text-sm text-zinc-700 transition-colors hover:bg-zinc-50 hover:text-teal-500 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
+                "line-clamp-3 rounded px-2 py-1 text-sm text-zinc-700 transition-colors hover:bg-zinc-50 hover:text-teal-500 dark:text-zinc-300 dark:hover:bg-zinc-700/50 dark:hover:text-teal-400",
                 activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
               )}
             >

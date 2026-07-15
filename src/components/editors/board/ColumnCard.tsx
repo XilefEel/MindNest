@@ -49,7 +49,7 @@ export default function ColumnCard({
           data-shadow={isDragging || undefined}
           className="group relative rounded-md bg-white p-2 shadow-md"
         >
-          <h3 className="text-sm font-semibold">{card.title}</h3>
+          <h3 className="text-sm font-semibold text-zinc-800">{card.title}</h3>
 
           {card.description && (
             <p className="text-xs text-zinc-500">{card.description}</p>

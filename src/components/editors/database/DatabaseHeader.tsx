@@ -34,10 +34,10 @@ export default function DatabaseHead({
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         width="w-60"
+        padding="p-2"
         trigger={
-          <button className="flex h-full w-full items-center gap-2 px-2 text-left text-sm font-medium">
-            <HeaderIcon className="size-4 shrink-0 text-zinc-800 dark:text-zinc-100" />{" "}
-            {column.name}
+          <button className="flex h-full w-full items-center gap-2 px-2 text-left text-sm font-medium text-zinc-800 dark:text-zinc-100">
+            <HeaderIcon className="size-4 shrink-0" /> {column.name}
           </button>
         }
         content={

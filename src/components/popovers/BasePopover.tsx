@@ -16,6 +16,7 @@ export default function BasePopover({
   align = "start",
   side = "bottom",
   width = "w-80",
+  padding = "p-4",
 }: {
   trigger: React.ReactNode;
   content: React.ReactNode;
@@ -24,6 +25,7 @@ export default function BasePopover({
   align?: "start" | "center" | "end";
   side?: "top" | "right" | "bottom" | "left";
   width?: string;
+  padding?: string;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
   const blurStrength = useBlurStrength();
@@ -39,6 +41,7 @@ export default function BasePopover({
         className={cn(
           "rounded-xl border-zinc-200 bg-white select-none dark:border-zinc-700 dark:bg-zinc-800",
           width,
+          padding,
           activeBackgroundId &&
             cn(
               "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30",
