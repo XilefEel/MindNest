@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils/general";
 import {
   useDbActions,
   useDbFilters,
+  useDbRows,
   useSortColumnId,
 } from "@/stores/useDatabaseStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
@@ -10,13 +11,16 @@ import { ArrowDown, ArrowUp, Copy, Plus, Trash2 } from "lucide-react";
 
 export default function DatabaseRowPopover({
   rowData,
+  index,
 }: {
   rowData: DbRowData;
+  index: number;
 }) {
   const { deleteRow, moveRow, addRowBelow, duplicateRow } = useDbActions();
   const activeBackgroundId = useActiveBackgroundId();
   const sortColumnId = useSortColumnId();
   const filters = useDbFilters();
+  const rows = useDbRows();
 
   const isDraggable = sortColumnId === null && filters.length === 0;
 
@@ -24,7 +28,7 @@ export default function DatabaseRowPopover({
     <div className="flex flex-col gap-0.5 text-zinc-800 dark:text-zinc-200">
       <button
         onClick={() => moveRow(rowData.row.id, "up")}
-        disabled={!isDraggable}
+        disabled={!isDraggable || index === 0}
         className={cn(
           "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
           "disabled:opacity-50 disabled:hover:bg-transparent dark:disabled:opacity-50 dark:disabled:hover:bg-transparent",
@@ -37,7 +41,7 @@ export default function DatabaseRowPopover({
 
       <button
         onClick={() => moveRow(rowData.row.id, "down")}
-        disabled={!isDraggable}
+        disabled={!isDraggable || index === rows.length - 1}
         className={cn(
           "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:hover:bg-zinc-700/50",
           "disabled:opacity-50 disabled:hover:bg-transparent dark:disabled:opacity-50 dark:disabled:hover:bg-transparent",

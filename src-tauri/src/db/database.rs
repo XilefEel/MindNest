@@ -185,16 +185,22 @@ pub fn delete_db_row_from_db(db: &AppDb, id: i64) -> AppResult<()> {
     Ok(())
 }
 
-pub fn update_db_row_order_in_db(db: &AppDb, id: i64, order_index: i64) -> AppResult<()> {
-    let connection = db.conn()?;
+pub fn reorder_db_rows_in_db(db: &AppDb, row_ids_in_order: Vec<i64>) -> AppResult<()> {
+    let mut connection = db.conn()?;
+    let tx = connection
+        .transaction()
+        .log_err("reorder_db_rows_in_db - transaction")?;
     let updated_at = Utc::now().to_rfc3339();
 
-    connection
-        .execute(
+    for (idx, row_id) in row_ids_in_order.iter().enumerate() {
+        tx.execute(
             "UPDATE db_rows SET order_index = ?1, updated_at = ?2 WHERE id = ?3",
-            params![order_index, updated_at, id],
+            params![idx as i64, updated_at, row_id],
         )
-        .log_err("update_db_row_order_in_db")?;
+        .log_err("reorder_db_rows_in_db")?;
+    }
+
+    tx.commit().log_err("reorder_db_rows_in_db - commit")?;
 
     Ok(())
 }

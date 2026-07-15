@@ -354,12 +354,7 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
     }));
 
     set({ rows: withInserted });
-
-    await Promise.all(
-      withInserted.map((rowData) =>
-        dbApi.updateDbRowOrder(rowData.row.id, rowData.row.orderIndex),
-      ),
-    );
+    await dbApi.reorderDbRows(withInserted.map((r) => r.row.id));
 
     await updateNestlingTimestamp(nestlingId);
   }),
@@ -413,13 +408,8 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
 
       const withNewIndices = reorderRowsAt(rows, index, swapIndex);
 
-      await Promise.all(
-        withNewIndices.map((rowData) =>
-          dbApi.updateDbRowOrder(rowData.row.id, rowData.row.orderIndex),
-        ),
-      );
-
       set({ rows: withNewIndices });
+      await dbApi.reorderDbRows(withNewIndices.map((r) => r.row.id));
 
       const nestlingId = withNewIndices[0]?.row.nestlingId;
       if (nestlingId) await updateNestlingTimestamp(nestlingId);
@@ -434,14 +424,9 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
     if (initialIndex === index) return;
 
     const withNewIndices = reorderRowsAt(get().rows, initialIndex, index);
-
-    await Promise.all(
-      withNewIndices.map((rowData) =>
-        dbApi.updateDbRowOrder(rowData.row.id, rowData.row.orderIndex),
-      ),
-    );
-
     set({ rows: withNewIndices });
+
+    await dbApi.reorderDbRows(withNewIndices.map((r) => r.row.id));
 
     const nestlingId = withNewIndices[0]?.row.nestlingId;
     if (nestlingId) await updateNestlingTimestamp(nestlingId);

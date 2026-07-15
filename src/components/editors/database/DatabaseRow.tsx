@@ -59,7 +59,7 @@ export default function DatabaseRow({
                 <EllipsisVertical className="size-3.5 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
               </button>
             }
-            content={<DatabaseRowPopover rowData={rowData} />}
+            content={<DatabaseRowPopover rowData={rowData} index={index} />}
           />
         </div>
       </TableCell>
