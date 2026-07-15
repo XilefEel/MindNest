@@ -1,6 +1,6 @@
 import BasePopover from "@/components/popovers/BasePopover.tsx";
 import { useEffect, useRef, useState } from "react";
-import ToolBarItem from "@/components/editors/note/ToolBarItem.tsx";
+import ToolBarItem from "@/components/editors/note/toolbar/ToolBarItem";
 import { FilePen, Trash2, Check } from "lucide-react";
 import { useNoteActions, useTemplates } from "@/stores/useNoteStore.tsx";
 import { useActiveNestling } from "@/stores/useNestlingStore.tsx";

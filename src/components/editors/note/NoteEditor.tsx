@@ -6,7 +6,7 @@ import {
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useMemo, useState } from "react";
-import ToolBar from "./ToolBar";
+import ToolBar from "./toolbar/ToolBar";
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import Image from "@tiptap/extension-image";

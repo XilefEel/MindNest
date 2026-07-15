@@ -1,6 +1,7 @@
 import BaseToolTip from "@/components/BaseToolTip";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
+import { LucideIcon } from "lucide-react";
 
 export default function ToolBarItem({
   Icon,
@@ -8,7 +9,7 @@ export default function ToolBarItem({
   onFormat,
   isActive,
 }: {
-  Icon: any;
+  Icon: LucideIcon;
   label: string;
   onFormat?: () => void;
   isActive?: boolean;
@@ -32,7 +33,7 @@ export default function ToolBarItem({
             "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
         )}
       >
-        <Icon className="size-4" />
+        <Icon className="size-4 shrink-0" />
       </button>
     </BaseToolTip>
   );
