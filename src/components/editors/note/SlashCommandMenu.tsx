@@ -135,7 +135,7 @@ export const SlashCommandMenu = forwardRef<
                   onSelect={() => selectItem(index)}
                   onMouseEnter={() => setSelectedIndex(index)}
                   className={cn(
-                    "flex items-center transition-[background]",
+                    "flex items-center text-zinc-800 transition-[background] dark:text-zinc-200",
                     index === selectedIndex
                       ? activeBackgroundId
                         ? "bg-black/5 dark:bg-white/5"

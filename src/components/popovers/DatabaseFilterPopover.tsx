@@ -18,7 +18,7 @@ export default function DatabaseFilterPopover() {
   const activeBackgroundId = useActiveBackgroundId();
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 text-zinc-800 dark:text-zinc-200">
       {filters.length > 0 && (
         <button
           onClick={clearFilters}
@@ -45,8 +45,8 @@ export default function DatabaseFilterPopover() {
                 : "hover:bg-zinc-50 dark:hover:bg-zinc-700/50",
             )}
           >
-            <Icon className="size-4 shrink-0 text-zinc-600 dark:text-zinc-300" />
-            <span className="mr-auto shrink-0">{column.name}</span>
+            <Icon className="size-4 shrink-0" />
+            <span className="mr-auto text-sm leading-tight">{column.name}</span>
 
             <FilterValueInput
               column={column}
@@ -85,7 +85,7 @@ export default function DatabaseFilterPopover() {
               )}
             >
               <Icon className="size-4 shrink-0" />
-              <span>{column.name}</span>
+              <span className="text-sm leading-tight">{column.name}</span>
             </button>
           );
         })}

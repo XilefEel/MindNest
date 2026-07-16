@@ -66,7 +66,7 @@ export default function DatabasePopover({
               key={value}
               onClick={() => handleTypeChange(value as ColumnType)}
               className={cn(
-                "flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-[background]",
+                "flex w-full items-center gap-2 rounded-md px-2 py-1 transition-[background]",
                 activeBackgroundId
                   ? column.columnType === value
                     ? "bg-teal-100/40 font-medium text-teal-600 dark:bg-teal-400/10 dark:text-teal-400"
@@ -76,14 +76,8 @@ export default function DatabasePopover({
                     : "hover:bg-zinc-50 dark:hover:bg-zinc-700/50",
               )}
             >
-              <Icon
-                className={cn(
-                  "size-4 shrink-0 text-zinc-600 dark:text-zinc-300",
-                  column.columnType === value &&
-                    "text-teal-600 dark:text-zinc-300",
-                )}
-              />
-              {label}
+              <Icon className="size-4 shrink-0" />
+              <span className="text-sm leading-tight">{label}</span>
             </button>
           ))}
         </div>
@@ -98,8 +92,8 @@ export default function DatabasePopover({
             activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
           )}
         >
-          <ChevronLeft className="size-4 shrink-0 text-zinc-600 dark:text-zinc-300" />
-          Move left
+          <ChevronLeft className="size-4 shrink-0" />
+          <span className="text-sm leading-tight">Move left</span>
         </button>
 
         <button
@@ -110,8 +104,8 @@ export default function DatabasePopover({
             activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
           )}
         >
-          <ChevronRight className="size-4 shrink-0 text-zinc-600 dark:text-zinc-300" />
-          Move right
+          <ChevronRight className="size-4 shrink-0" />
+          <span className="text-sm leading-tight">Move right</span>
         </button>
       </div>
 
@@ -122,7 +116,8 @@ export default function DatabasePopover({
         }}
         className="flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm text-red-600 transition-colors hover:bg-red-300/30 dark:text-red-400 dark:hover:bg-red-800/30"
       >
-        <Trash2 className="size-4" /> Delete
+        <Trash2 className="size-4" />{" "}
+        <span className="text-sm leading-tight">Delete</span>
       </button>
     </div>
   );

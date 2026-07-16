@@ -97,7 +97,7 @@ body {
 .tiptap {
   font-size: 1rem;
   line-height: 1.75;
-  color: theme("colors.zinc.800");
+  color: theme("colors.zinc.900");
 
   .dark & {
     color: theme("colors.zinc.100");

@@ -24,7 +24,7 @@ export default function ToolBarItem({
           onFormat?.();
         }}
         className={cn(
-          "rounded p-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
+          "rounded p-1 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
           isActive
             ? "bg-teal-50 text-teal-700 dark:bg-teal-500/10 dark:text-teal-400"
             : "hover:text-teal-500 dark:hover:bg-zinc-700/50 dark:hover:text-white",

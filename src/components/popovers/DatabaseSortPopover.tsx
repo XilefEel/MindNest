@@ -17,7 +17,7 @@ export default function DatabaseSortPopover() {
   const activeBackgroundId = useActiveBackgroundId();
 
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className="flex flex-col gap-0.5 text-zinc-800 dark:text-zinc-200">
       {sortColumnId && (
         <button
           onClick={() => setSort(null, "asc")}
@@ -42,7 +42,7 @@ export default function DatabaseSortPopover() {
               )
             }
             className={cn(
-              "flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-[background]",
+              "flex w-full items-center gap-2 rounded-md px-2 py-1 transition-[background]",
               activeBackgroundId
                 ? isActive
                   ? "bg-teal-100/40 font-medium text-teal-600 dark:bg-teal-400/10 dark:text-teal-400"
@@ -52,9 +52,8 @@ export default function DatabaseSortPopover() {
                   : "hover:bg-zinc-50 dark:hover:bg-zinc-700/50",
             )}
           >
-            <Icon className="size-4 shrink-0 text-zinc-600 dark:text-zinc-300" />
-
-            <span>{column.name}</span>
+            <Icon className="size-4 shrink-0" />
+            <span className="text-sm leading-tight">{column.name}</span>
 
             {isActive &&
               (sortDirection === "asc" ? (
