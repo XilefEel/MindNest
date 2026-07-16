@@ -136,7 +136,11 @@ export default function NoteEditor() {
         <EditorContext.Provider value={providerValue}>
           <ToolBar title={activeNestling.title} />
 
-          <div className="w-full flex-1 overflow-auto">
+          <div
+            style={{ scrollbarGutter: "stable" }}
+            className="w-full flex-1 overflow-auto"
+            data-editor-scroll-container
+          >
             <EditorContent editor={editor} className="tiptap w-full" />
           </div>
         </EditorContext.Provider>

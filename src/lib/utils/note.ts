@@ -151,14 +151,14 @@ export const exportNoteToHTML = async (editor: Editor, title: string) => {
 
 export type CommandItemType = {
   title: string;
-  icon: LucideIcon;
+  Icon: LucideIcon;
   command: (opts: { editor: Editor; range: Range }) => void;
 };
 
 export const suggestionItems: CommandItemType[] = [
   {
     title: "Heading 1",
-    icon: Heading1,
+    Icon: Heading1,
     command: ({ editor, range }) =>
       editor
         .chain()
@@ -169,7 +169,7 @@ export const suggestionItems: CommandItemType[] = [
   },
   {
     title: "Heading 2",
-    icon: Heading2,
+    Icon: Heading2,
     command: ({ editor, range }) =>
       editor
         .chain()
@@ -180,7 +180,7 @@ export const suggestionItems: CommandItemType[] = [
   },
   {
     title: "Heading 3",
-    icon: Heading3,
+    Icon: Heading3,
     command: ({ editor, range }) =>
       editor
         .chain()
@@ -191,37 +191,37 @@ export const suggestionItems: CommandItemType[] = [
   },
   {
     title: "Bullet List",
-    icon: List,
+    Icon: List,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).toggleBulletList().run(),
   },
   {
     title: "Numbered List",
-    icon: ListOrdered,
+    Icon: ListOrdered,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).toggleOrderedList().run(),
   },
   {
     title: "Task List",
-    icon: ListTodo,
+    Icon: ListTodo,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).toggleTaskList().run(),
   },
   {
     title: "Quote",
-    icon: Quote,
+    Icon: Quote,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).toggleBlockquote().run(),
   },
   {
     title: "Code Block",
-    icon: Code,
+    Icon: Code,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).toggleCodeBlock().run(),
   },
   {
     title: "Divider",
-    icon: Minus,
+    Icon: Minus,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).setHorizontalRule().run(),
   },

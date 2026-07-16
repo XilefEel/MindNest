@@ -43,7 +43,7 @@ export default function SearchModal() {
       open={isSearchOpen}
       onOpenChange={setIsSearchOpen}
       className={cn(
-        "rounded-lg border-0 bg-white p-0 shadow-md select-none md:min-w-[600px] dark:bg-zinc-800",
+        "rounded-lg border-0 bg-white p-0 shadow-md select-none md:min-w-150 dark:bg-zinc-800",
         activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/30",
       )}
     >
