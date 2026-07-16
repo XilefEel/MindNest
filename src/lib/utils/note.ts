@@ -9,10 +9,11 @@ import {
   List,
   ListOrdered,
   ListTodo,
-  Quote,
-  Code,
   Minus,
   LucideIcon,
+  Heading4,
+  Code2,
+  TextQuote,
 } from "lucide-react";
 import { Extension } from "@tiptap/core";
 import Suggestion, { SuggestionOptions } from "@tiptap/suggestion";
@@ -21,6 +22,13 @@ import {
   SlashCommandMenu,
   SlashCommandMenuHandle,
 } from "@/components/editors/note/SlashCommandMenu";
+
+export type CommandItemType = {
+  title: string;
+  group: string;
+  Icon: LucideIcon;
+  command: (opts: { editor: Editor; range: Range }) => void;
+};
 
 export const getActiveIcon = <T>(
   items: readonly { active: boolean; icon: T }[],
@@ -149,78 +157,93 @@ export const exportNoteToHTML = async (editor: Editor, title: string) => {
   }
 };
 
-export type CommandItemType = {
-  title: string;
-  Icon: LucideIcon;
-  command: (opts: { editor: Editor; range: Range }) => void;
-};
-
 export const suggestionItems: CommandItemType[] = [
   {
     title: "Heading 1",
+    group: "Text",
     Icon: Heading1,
     command: ({ editor, range }) =>
       editor
         .chain()
         .focus()
         .deleteRange(range)
-        .setNode("heading", { level: 1 })
+        .toggleHeading({ level: 1 })
         .run(),
   },
   {
     title: "Heading 2",
+    group: "Text",
     Icon: Heading2,
     command: ({ editor, range }) =>
       editor
         .chain()
         .focus()
         .deleteRange(range)
-        .setNode("heading", { level: 2 })
+        .toggleHeading({ level: 2 })
         .run(),
   },
   {
     title: "Heading 3",
+    group: "Text",
     Icon: Heading3,
     command: ({ editor, range }) =>
       editor
         .chain()
         .focus()
         .deleteRange(range)
-        .setNode("heading", { level: 3 })
+        .toggleHeading({ level: 3 })
+        .run(),
+  },
+  {
+    title: "Heading 4",
+    group: "Text",
+    Icon: Heading4,
+    command: ({ editor, range }) =>
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .toggleHeading({ level: 4 })
         .run(),
   },
   {
     title: "Bullet List",
+    group: "Lists",
     Icon: List,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).toggleBulletList().run(),
   },
   {
     title: "Numbered List",
+    group: "Lists",
     Icon: ListOrdered,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).toggleOrderedList().run(),
   },
   {
     title: "Task List",
+    group: "Lists",
     Icon: ListTodo,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).toggleTaskList().run(),
   },
   {
     title: "Quote",
-    Icon: Quote,
+    group: "Blocks",
+    Icon: TextQuote,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).toggleBlockquote().run(),
   },
   {
     title: "Code Block",
-    Icon: Code,
+    group: "Blocks",
+    Icon: Code2,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).toggleCodeBlock().run(),
   },
   {
     title: "Divider",
+    group: "Blocks",
     Icon: Minus,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).setHorizontalRule().run(),
@@ -237,7 +260,7 @@ export const SlashCommand = Extension.create({
         startOfLine: false,
         items: ({ query }: { query: string }) =>
           suggestionItems.filter((item) =>
-            item.title.toLowerCase().startsWith(query.toLowerCase()),
+            item.title.toLowerCase().includes(query.toLowerCase()),
           ),
         command: ({ editor, range, props }: any) => {
           props.command({ editor, range });
