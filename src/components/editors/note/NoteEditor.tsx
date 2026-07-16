@@ -13,6 +13,7 @@ import Image from "@tiptap/extension-image";
 import { Dropcursor } from "@tiptap/extensions";
 import Youtube from "@tiptap/extension-youtube";
 import { CharacterCount } from "@tiptap/extensions";
+import Typography from "@tiptap/extension-typography";
 import useAutoSave from "@/hooks/useAutoSave";
 import {
   useActiveNestling,
@@ -23,6 +24,7 @@ import BottomBar from "./BottomBar";
 import { useNoteStore } from "@/stores/useNoteStore";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { TaskItem, TaskList } from "@tiptap/extension-list";
+import { SlashCommand } from "@/lib/utils/note";
 
 export default function NoteEditor() {
   const activeNestling = useActiveNestling();
@@ -56,6 +58,8 @@ export default function NoteEditor() {
         nocookie: true,
       }),
       Dropcursor,
+      Typography,
+      SlashCommand,
     ],
     content: "<p>Start writing here...</p>",
     editorProps: {

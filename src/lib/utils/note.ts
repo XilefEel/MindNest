@@ -1,7 +1,26 @@
 import { save } from "@tauri-apps/plugin-dialog";
-import { Editor } from "@tiptap/react";
+import type { Editor, Range } from "@tiptap/react";
 import { writeTextFile } from "@tauri-apps/plugin-fs";
 import { toast } from "@/lib/utils/toast";
+import {
+  Heading1,
+  Heading2,
+  Heading3,
+  List,
+  ListOrdered,
+  ListTodo,
+  Quote,
+  Code,
+  Minus,
+  LucideIcon,
+} from "lucide-react";
+import { Extension } from "@tiptap/core";
+import Suggestion, { SuggestionOptions } from "@tiptap/suggestion";
+import { ReactRenderer } from "@tiptap/react";
+import {
+  SlashCommandMenu,
+  SlashCommandMenuHandle,
+} from "@/components/editors/note/SlashCommandMenu";
 
 export const getActiveIcon = <T>(
   items: readonly { active: boolean; icon: T }[],
@@ -129,3 +148,136 @@ export const exportNoteToHTML = async (editor: Editor, title: string) => {
     toast.error("Error exporting note.");
   }
 };
+
+export type CommandItemType = {
+  title: string;
+  icon: LucideIcon;
+  command: (opts: { editor: Editor; range: Range }) => void;
+};
+
+export const suggestionItems: CommandItemType[] = [
+  {
+    title: "Heading 1",
+    icon: Heading1,
+    command: ({ editor, range }) =>
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setNode("heading", { level: 1 })
+        .run(),
+  },
+  {
+    title: "Heading 2",
+    icon: Heading2,
+    command: ({ editor, range }) =>
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setNode("heading", { level: 2 })
+        .run(),
+  },
+  {
+    title: "Heading 3",
+    icon: Heading3,
+    command: ({ editor, range }) =>
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setNode("heading", { level: 3 })
+        .run(),
+  },
+  {
+    title: "Bullet List",
+    icon: List,
+    command: ({ editor, range }) =>
+      editor.chain().focus().deleteRange(range).toggleBulletList().run(),
+  },
+  {
+    title: "Numbered List",
+    icon: ListOrdered,
+    command: ({ editor, range }) =>
+      editor.chain().focus().deleteRange(range).toggleOrderedList().run(),
+  },
+  {
+    title: "Task List",
+    icon: ListTodo,
+    command: ({ editor, range }) =>
+      editor.chain().focus().deleteRange(range).toggleTaskList().run(),
+  },
+  {
+    title: "Quote",
+    icon: Quote,
+    command: ({ editor, range }) =>
+      editor.chain().focus().deleteRange(range).toggleBlockquote().run(),
+  },
+  {
+    title: "Code Block",
+    icon: Code,
+    command: ({ editor, range }) =>
+      editor.chain().focus().deleteRange(range).toggleCodeBlock().run(),
+  },
+  {
+    title: "Divider",
+    icon: Minus,
+    command: ({ editor, range }) =>
+      editor.chain().focus().deleteRange(range).setHorizontalRule().run(),
+  },
+];
+
+export const SlashCommand = Extension.create({
+  name: "slashCommand",
+
+  addOptions() {
+    return {
+      suggestion: {
+        char: "/",
+        startOfLine: false,
+        items: ({ query }: { query: string }) =>
+          suggestionItems.filter((item) =>
+            item.title.toLowerCase().startsWith(query.toLowerCase()),
+          ),
+        command: ({ editor, range, props }: any) => {
+          props.command({ editor, range });
+        },
+        render: () => {
+          let component: ReactRenderer<SlashCommandMenuHandle> | null = null;
+
+          return {
+            onStart: (props) => {
+              component = new ReactRenderer(SlashCommandMenu, {
+                props,
+                editor: props.editor,
+              });
+            },
+            onUpdate: (props) => {
+              component?.updateProps(props);
+            },
+            onKeyDown: (props) => {
+              if (props.event.key === "Escape") {
+                component?.destroy();
+                return true;
+              }
+              return component?.ref?.onKeyDown(props) ?? false;
+            },
+            onExit: () => {
+              component?.destroy();
+              component = null;
+            },
+          };
+        },
+      } satisfies Partial<SuggestionOptions<CommandItemType>>,
+    };
+  },
+
+  addProseMirrorPlugins() {
+    return [
+      Suggestion({
+        editor: this.editor,
+        ...this.options.suggestion,
+      }),
+    ];
+  },
+});
