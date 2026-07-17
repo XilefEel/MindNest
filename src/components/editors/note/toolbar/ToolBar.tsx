@@ -189,7 +189,7 @@ export default function ToolBar({ title }: { title: string }) {
       />
 
       <BasePopover
-        width="w-40"
+        width="w-45"
         padding="p-2"
         trigger={
           <button

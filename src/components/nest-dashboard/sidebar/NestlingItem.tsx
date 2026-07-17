@@ -6,12 +6,16 @@ import { Nestling } from "@/lib/types/nestling";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useDraggable } from "@dnd-kit/react";
-import { GripVertical } from "lucide-react";
+import { GripVertical, X } from "lucide-react";
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { getNestlingIcon, openNestling } from "@/lib/utils/nestlings";
-import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
+import EmojiPicker, {
+  Categories,
+  EmojiClickData,
+  Theme,
+} from "emoji-picker-react";
 import { toast } from "@/lib/utils/toast";
 import { useTheme } from "next-themes";
 import { useInlineEdit } from "@/hooks/useInlineEdit";
@@ -223,15 +227,34 @@ export default function NestlingItem({
                 onEmojiClick={handleEmojiClick}
                 theme={themeMap[theme ?? "system"]}
                 height={400}
+                width={300}
                 previewConfig={{ showPreview: false }}
                 skinTonesDisabled
                 lazyLoadEmojis
+                categoryIcons={{
+                  [Categories.SUGGESTED]: <span className="text-lg">🕒</span>,
+                  [Categories.SMILEYS_PEOPLE]: (
+                    <span className="text-lg">😀</span>
+                  ),
+                  [Categories.ANIMALS_NATURE]: (
+                    <span className="text-lg">🐻</span>
+                  ),
+                  [Categories.FOOD_DRINK]: <span className="text-lg">🍔</span>,
+                  [Categories.TRAVEL_PLACES]: (
+                    <span className="text-lg">✈️</span>
+                  ),
+                  [Categories.ACTIVITIES]: <span className="text-lg">⚽</span>,
+                  [Categories.OBJECTS]: <span className="text-lg">💡</span>,
+                  [Categories.SYMBOLS]: <span className="text-lg">🔣</span>,
+                  [Categories.FLAGS]: <span className="text-lg">🏳️</span>,
+                }}
               />
               {nestling.icon && (
                 <button
                   onClick={handleClearEmoji}
-                  className="absolute top-4 right-4 z-50 rounded-lg bg-red-500 px-3 py-1 text-sm text-white shadow-sm transition hover:bg-red-600"
+                  className="absolute top-3 right-3 z-50 flex items-center gap-1.5 px-2 py-1 text-xs text-zinc-500 transition-colors hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400"
                 >
+                  <X className="size-3 shrink-0" />
                   Clear
                 </button>
               )}

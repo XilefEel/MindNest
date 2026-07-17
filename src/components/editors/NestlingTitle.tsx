@@ -14,8 +14,12 @@ import {
   useNestlingTitleHidden,
   useSettingsActions,
 } from "@/stores/useSettingsStore";
-import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
-import { ChevronDown, Dot, Folder, Plus } from "lucide-react";
+import EmojiPicker, {
+  Categories,
+  EmojiClickData,
+  Theme,
+} from "emoji-picker-react";
+import { ChevronDown, Dot, Folder, Plus, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
 import BasePopover from "../popovers/BasePopover";
@@ -134,15 +138,34 @@ export default function NestlingTitle({
                 onEmojiClick={handleEmojiClick}
                 theme={themeMap[theme ?? "system"]}
                 height={400}
+                width={300}
                 previewConfig={{ showPreview: false }}
                 skinTonesDisabled
                 lazyLoadEmojis
+                categoryIcons={{
+                  [Categories.SUGGESTED]: <span className="text-lg">🕒</span>,
+                  [Categories.SMILEYS_PEOPLE]: (
+                    <span className="text-lg">😀</span>
+                  ),
+                  [Categories.ANIMALS_NATURE]: (
+                    <span className="text-lg">🐻</span>
+                  ),
+                  [Categories.FOOD_DRINK]: <span className="text-lg">🍔</span>,
+                  [Categories.TRAVEL_PLACES]: (
+                    <span className="text-lg">✈️</span>
+                  ),
+                  [Categories.ACTIVITIES]: <span className="text-lg">⚽</span>,
+                  [Categories.OBJECTS]: <span className="text-lg">💡</span>,
+                  [Categories.SYMBOLS]: <span className="text-lg">🔣</span>,
+                  [Categories.FLAGS]: <span className="text-lg">🏳️</span>,
+                }}
               />
               {nestling.icon && (
                 <button
                   onClick={handleClearEmoji}
-                  className="absolute top-4 right-4 z-50 rounded-lg bg-red-500 px-3 py-1 text-sm text-white shadow-sm transition hover:bg-red-600"
+                  className="absolute top-3 right-3 z-50 flex items-center gap-1.5 px-2 py-1 text-xs text-zinc-500 transition-colors hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400"
                 >
+                  <X className="size-3 shrink-0" />
                   Clear
                 </button>
               )}
