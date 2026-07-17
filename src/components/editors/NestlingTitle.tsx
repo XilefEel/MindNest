@@ -14,24 +14,13 @@ import {
   useNestlingTitleHidden,
   useSettingsActions,
 } from "@/stores/useSettingsStore";
-import EmojiPicker, {
-  Categories,
-  EmojiClickData,
-  Theme,
-} from "emoji-picker-react";
-import { ChevronDown, Dot, Folder, Plus, X } from "lucide-react";
-import { useTheme } from "next-themes";
-import { useEffect, useRef, useState } from "react";
+import { ChevronDown, Dot, Folder, Plus } from "lucide-react";
+import { useRef, useState } from "react";
 import BasePopover from "../popovers/BasePopover";
 import TagEditPopover from "../popovers/TagEditPopover";
 import TagPopover from "../popovers/TagPopover";
 import { NestlingTag } from "./NestlingTag";
-
-const themeMap: Record<string, Theme> = {
-  light: Theme.LIGHT,
-  dark: Theme.DARK,
-  system: Theme.AUTO,
-};
+import EmojiMenu from "../EmojiMenu";
 
 export default function NestlingTitle({
   title,
@@ -45,36 +34,17 @@ export default function NestlingTitle({
   const activeBackgroundId = useActiveBackgroundId();
   const folderMap = useFolderMap();
   const nestlingTags = useNestlingTags(nestling.id);
-  const { updateNestling, detachTag } = useNestlingActions();
+  const { detachTag } = useNestlingActions();
 
   const [isOpen, setIsOpen] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
 
   const nestlingTitleHidden = useNestlingTitleHidden();
   const compactNestlingTitle = useCompactNestlingTitle();
   const { setSetting } = useSettingsActions();
 
-  const pickerRef = useRef<HTMLDivElement>(null);
   const Icon = getNestlingIcon(nestling.nestlingType);
-  const { theme } = useTheme();
-
-  const handleEmojiClick = async (emojiData: EmojiClickData) => {
-    try {
-      await updateNestling(nestling.id, { icon: emojiData.emoji });
-      setShowPicker(false);
-    } catch (error) {
-      toast.error("Failed to update nestling icon.");
-    }
-  };
-
-  const handleClearEmoji = async () => {
-    try {
-      await updateNestling(nestling.id, { icon: null });
-      setShowPicker(false);
-    } catch (error) {
-      toast.error("Failed to clear nestling icon.");
-    }
-  };
 
   const handleDetachTag = async (tagId: number) => {
     try {
@@ -84,24 +54,11 @@ export default function NestlingTitle({
     }
   };
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        pickerRef.current &&
-        !pickerRef.current.contains(event.target as Node)
-      )
-        setShowPicker(false);
-    }
-
-    if (showPicker) document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showPicker]);
-
   if (nestlingTitleHidden) return null;
 
   return (
-    <div className="flex flex-col">
-      <div className="group relative flex flex-row items-center text-zinc-900 transition-all dark:text-zinc-100">
+    <div className="relative flex flex-col">
+      <div className="group flex flex-row items-center text-zinc-900 transition-all dark:text-zinc-100">
         <button
           onClick={() =>
             setSetting("compactNestlingTitle", !compactNestlingTitle)
@@ -114,64 +71,19 @@ export default function NestlingTitle({
           />
         </button>
 
-        <div className="relative" ref={pickerRef}>
-          <button
-            onClick={() => setShowPicker(!showPicker)}
-            className={cn(
-              "flex w-8 items-center justify-center text-2xl font-bold transition-opacity hover:opacity-70",
-              compactNestlingTitle && "w-6 text-lg",
-            )}
-          >
-            {nestling.icon ? (
-              <p>{nestling.icon}</p>
-            ) : (
-              <Icon
-                size={compactNestlingTitle ? 24 : 32}
-                className="shrink-0"
-              />
-            )}
-          </button>
-
-          {showPicker && (
-            <div className="absolute top-10 left-0 z-50">
-              <EmojiPicker
-                onEmojiClick={handleEmojiClick}
-                theme={themeMap[theme ?? "system"]}
-                height={400}
-                width={300}
-                previewConfig={{ showPreview: false }}
-                skinTonesDisabled
-                lazyLoadEmojis
-                categoryIcons={{
-                  [Categories.SUGGESTED]: <span className="text-lg">🕒</span>,
-                  [Categories.SMILEYS_PEOPLE]: (
-                    <span className="text-lg">😀</span>
-                  ),
-                  [Categories.ANIMALS_NATURE]: (
-                    <span className="text-lg">🐻</span>
-                  ),
-                  [Categories.FOOD_DRINK]: <span className="text-lg">🍔</span>,
-                  [Categories.TRAVEL_PLACES]: (
-                    <span className="text-lg">✈️</span>
-                  ),
-                  [Categories.ACTIVITIES]: <span className="text-lg">⚽</span>,
-                  [Categories.OBJECTS]: <span className="text-lg">💡</span>,
-                  [Categories.SYMBOLS]: <span className="text-lg">🔣</span>,
-                  [Categories.FLAGS]: <span className="text-lg">🏳️</span>,
-                }}
-              />
-              {nestling.icon && (
-                <button
-                  onClick={handleClearEmoji}
-                  className="absolute top-3 right-3 z-50 flex items-center gap-1.5 px-2 py-1 text-xs text-zinc-500 transition-colors hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400"
-                >
-                  <X className="size-3 shrink-0" />
-                  Clear
-                </button>
-              )}
-            </div>
+        <button
+          onClick={() => setShowPicker(!showPicker)}
+          className={cn(
+            "flex w-8 items-center justify-center text-2xl font-bold transition-opacity hover:opacity-70",
+            compactNestlingTitle && "w-6 text-lg",
           )}
-        </div>
+        >
+          {nestling.icon ? (
+            <p>{nestling.icon}</p>
+          ) : (
+            <Icon size={compactNestlingTitle ? 24 : 32} className="shrink-0" />
+          )}
+        </button>
 
         <input
           value={title}
@@ -241,6 +153,19 @@ export default function NestlingTitle({
           content={<TagPopover nestlingId={nestling.id} />}
         />
       </div>
+
+      {showPicker && (
+        <div className="absolute top-10 left-0 z-50">
+          <EmojiMenu
+            nestling={nestling}
+            showPicker={showPicker}
+            setShowPicker={setShowPicker}
+            pickerRef={pickerRef}
+            width={300}
+            height={400}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -6,25 +6,18 @@ import { Nestling } from "@/lib/types/nestling";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { useDraggable } from "@dnd-kit/react";
-import { GripVertical, X } from "lucide-react";
+import { GripVertical } from "lucide-react";
 import NestlingContextMenu from "@/components/context-menu/NestlingContextMenu";
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { getNestlingIcon, openNestling } from "@/lib/utils/nestlings";
-import EmojiPicker, {
-  Categories,
-  EmojiClickData,
-  Theme,
-} from "emoji-picker-react";
-import { toast } from "@/lib/utils/toast";
-import { useTheme } from "next-themes";
-import { useInlineEdit } from "@/hooks/useInlineEdit";
 
-const themeMap: Record<string, Theme> = {
-  light: Theme.LIGHT,
-  dark: Theme.DARK,
-  system: Theme.AUTO,
-};
+import { useInlineEdit } from "@/hooks/useInlineEdit";
+import EmojiMenu from "@/components/EmojiMenu";
+
+const HEIGHT = 400;
+const WIDTH = 300;
+const MARGIN = 8;
 
 export default function NestlingItem({
   nestling,
@@ -39,11 +32,11 @@ export default function NestlingItem({
   const activeNestling = useActiveNestling();
   const activeBackgroundId = useActiveBackgroundId();
 
-  const { theme } = useTheme();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [showPicker, setShowPicker] = useState(false);
   const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
+
   const pickerRef = useRef<HTMLDivElement>(null);
   const emojiButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -73,34 +66,24 @@ export default function NestlingItem({
     openNestling(nestling);
   };
 
-  const handleEmojiClick = async (emojiData: EmojiClickData) => {
-    try {
-      await updateNestling(nestling.id, { icon: emojiData.emoji });
-      setShowPicker(false);
-    } catch (error) {
-      toast.error("Failed to update emoji.");
-    }
-  };
-
-  const handleClearEmoji = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    try {
-      await updateNestling(nestling.id, { icon: null });
-      setShowPicker(false);
-    } catch (error) {
-      toast.error("Failed to clear emoji.");
-    }
-  };
-
   const toggleEmojiPicker = (e: React.MouseEvent) => {
     e.stopPropagation();
 
     if (!showPicker && emojiButtonRef.current) {
       const rect = emojiButtonRef.current.getBoundingClientRect();
-      setPickerPosition({
-        top: rect.top - 225,
-        left: rect.left + 100,
-      });
+
+      let top = rect.top - HEIGHT / 2 - MARGIN;
+      let left = rect.left + WIDTH / 5;
+
+      if (top < MARGIN) {
+        top = rect.bottom + MARGIN;
+      }
+
+      if (top + HEIGHT > window.innerHeight - MARGIN) {
+        top = Math.max(MARGIN, window.innerHeight - HEIGHT - MARGIN);
+      }
+
+      setPickerPosition({ top, left });
     }
     setShowPicker((prev) => !prev);
   };
@@ -113,21 +96,6 @@ export default function NestlingItem({
       }, 1);
     }
   }, [isEditing]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        pickerRef.current &&
-        !pickerRef.current.contains(event.target as Node) &&
-        emojiButtonRef.current &&
-        !emojiButtonRef.current.contains(event.target as Node)
-      )
-        setShowPicker(false);
-    };
-
-    if (showPicker) document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showPicker]);
 
   return (
     <NestlingContextMenu
@@ -223,41 +191,14 @@ export default function NestlingItem({
                 e.preventDefault();
               }}
             >
-              <EmojiPicker
-                onEmojiClick={handleEmojiClick}
-                theme={themeMap[theme ?? "system"]}
-                height={400}
-                width={300}
-                previewConfig={{ showPreview: false }}
-                skinTonesDisabled
-                lazyLoadEmojis
-                categoryIcons={{
-                  [Categories.SUGGESTED]: <span className="text-lg">🕒</span>,
-                  [Categories.SMILEYS_PEOPLE]: (
-                    <span className="text-lg">😀</span>
-                  ),
-                  [Categories.ANIMALS_NATURE]: (
-                    <span className="text-lg">🐻</span>
-                  ),
-                  [Categories.FOOD_DRINK]: <span className="text-lg">🍔</span>,
-                  [Categories.TRAVEL_PLACES]: (
-                    <span className="text-lg">✈️</span>
-                  ),
-                  [Categories.ACTIVITIES]: <span className="text-lg">⚽</span>,
-                  [Categories.OBJECTS]: <span className="text-lg">💡</span>,
-                  [Categories.SYMBOLS]: <span className="text-lg">🔣</span>,
-                  [Categories.FLAGS]: <span className="text-lg">🏳️</span>,
-                }}
+              <EmojiMenu
+                nestling={nestling}
+                showPicker={showPicker}
+                setShowPicker={setShowPicker}
+                pickerRef={pickerRef}
+                width={WIDTH}
+                height={HEIGHT}
               />
-              {nestling.icon && (
-                <button
-                  onClick={handleClearEmoji}
-                  className="absolute top-3 right-3 z-50 flex items-center gap-1.5 px-2 py-1 text-xs text-zinc-500 transition-colors hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400"
-                >
-                  <X className="size-3 shrink-0" />
-                  Clear
-                </button>
-              )}
             </div>,
             document.body,
           )}
