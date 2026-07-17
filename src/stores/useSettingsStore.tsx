@@ -92,3 +92,5 @@ export const useBlurStrength = () =>
 
 export const useMusicLooped = () =>
   useSettingsStore((state) => state.musicLooped);
+
+export const useFontMode = () => useSettingsStore((state) => state.fontMode);

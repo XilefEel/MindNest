@@ -13,9 +13,10 @@ import {
   useTopbarHidden,
   useBlurStrength,
   useSidebarToolbarHidden,
+  useFontMode,
 } from "@/stores/useSettingsStore.tsx";
 import { useActiveBackgroundId } from "@/stores/useNestStore.tsx";
-import { BlurStrength } from "@/lib/storage/settings.ts";
+import { BlurStrength, FontMode } from "@/lib/storage/settings.ts";
 import BaseSelectMenu from "@/components/select/BaseSelectMenu.tsx";
 
 type Setting = {
@@ -29,6 +30,7 @@ type Setting = {
 export default function GeneralSettings() {
   const activeBackgroundId = useActiveBackgroundId();
 
+  const fontMode = useFontMode();
   const topbarHidden = useTopbarHidden();
   const sidebarHidden = useSidebarHidden();
   const sidebarPosition = useSidebarPosition();
@@ -156,6 +158,26 @@ export default function GeneralSettings() {
           </p>
         </div>
         <ThemeToggle />
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div>
+          <label className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+            Theme
+          </label>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            Choose your preferred theme
+          </p>
+        </div>
+
+        <BaseSelectMenu
+          value={fontMode}
+          onChange={(value) => setSetting("fontMode", value as FontMode)}
+          options={[
+            { value: "sans", label: "Sans" },
+            { value: "mono", label: "Mono" },
+          ]}
+        />
       </div>
 
       {settings.map((setting) => (

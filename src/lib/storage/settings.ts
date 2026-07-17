@@ -2,6 +2,8 @@ import { getMap, saveMap } from "./storage";
 
 export type BlurStrength = "low" | "medium" | "high";
 
+export type FontMode = "sans" | "mono";
+
 export type Settings = {
   topbarHidden: boolean;
   sidebarHidden: boolean;
@@ -13,6 +15,7 @@ export type Settings = {
   folderArrow: boolean;
   blurStrength: BlurStrength;
   musicLooped: boolean;
+  fontMode: FontMode;
 };
 
 export const DEFAULT_UI_SETTINGS: Settings = {
@@ -26,6 +29,7 @@ export const DEFAULT_UI_SETTINGS: Settings = {
   folderArrow: true,
   blurStrength: "low",
   musicLooped: false,
+  fontMode: "sans",
 };
 
 const KEY = "uiSettings";

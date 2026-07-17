@@ -17,7 +17,6 @@ import {
   useNestlingStore,
 } from "@/stores/useNestlingStore";
 import { useNestActions } from "@/stores/useNestStore";
-import { useSettingsActions } from "@/stores/useSettingsStore";
 import { useEffect } from "react";
 
 export default function useLoadNest({
@@ -50,8 +49,6 @@ export default function useLoadNest({
     getAllNestlingTags,
   } = useNestlingActions();
 
-  const { loadSettings } = useSettingsActions();
-
   useEffect(() => {
     if (!id) return;
 
@@ -81,7 +78,6 @@ export default function useLoadNest({
         ]);
 
         await Promise.all([
-          loadSettings(),
           fetchSidebar(lastNest.id),
           getNests(lastNest.userId),
           getBackgrounds(lastNest.id),

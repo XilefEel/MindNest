@@ -10,15 +10,23 @@ body {
   overscroll-behavior-x: none;
 }
 
-@layer base {
-  @font-face {
-    font-family: "PlusJakartaSans";
-    src: url("./assets/fonts/PlusJakartaSans.ttf") format("truetype");
-  }
+@font-face {
+  font-family: "PlusJakartaSans";
+  src: url("./assets/fonts/PlusJakartaSans.ttf") format("truetype");
+  font-weight: 100 900;
+  font-display: swap;
+}
 
-  body {
-    font-family: "PlusJakartaSans", sans-serif;
-  }
+@font-face {
+  font-family: "GeistMono";
+  src: url("./assets/fonts/GeistMono.ttf") format("truetype");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: "PlusJakartaSans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "GeistMono", ui-monospace, monospace;
 }
 
 ::-webkit-scrollbar {
