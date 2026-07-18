@@ -51,6 +51,10 @@ body {
   display: none;
 }
 
+[data-sonner-toaster] {
+  font-family: inherit !important;
+}
+
 [data-resize-wrapper] img {
   margin: 0;
   display: block;

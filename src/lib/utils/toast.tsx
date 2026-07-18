@@ -2,12 +2,13 @@ import { toast as sonnerToast } from "sonner";
 import { CheckCircle2, FolderOpen, Info, X, XCircle } from "lucide-react";
 import { cn, openAppFolder } from "./general";
 import { useNestStore } from "@/stores/useNestStore";
+import { ReactNode } from "react";
 
 type ToastVariant = "success" | "error" | "info";
 
 const variantStyles: Record<
   ToastVariant,
-  { border: string; bg: string; icon: React.ReactNode }
+  { border: string; bg: string; icon: ReactNode }
 > = {
   success: {
     border: "border-green-500",
@@ -28,21 +29,26 @@ const variantStyles: Record<
   },
 };
 
-function createToast(
+const createToast = (
   variant: ToastVariant,
   message: string,
   extraActions?: (
     id: string | number,
     activeBackgroundId: number | null,
-  ) => React.ReactNode,
-) {
+  ) => ReactNode,
+) => {
   const activeBackgroundId = useNestStore.getState().activeBackgroundId;
   const { border, bg, icon } = variantStyles[variant];
 
   return sonnerToast.custom((id) => (
     <div
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       className={cn(
-        `flex w-90 flex-row items-center gap-2 rounded-lg border-l-6 ${border} bg-white p-3 shadow-lg dark:bg-zinc-800`,
+        "flex w-90 flex-row items-center gap-2 rounded-lg border-l-6 bg-white p-3 shadow-lg dark:bg-zinc-800",
+        border,
         activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/50",
       )}
     >
@@ -67,7 +73,7 @@ function createToast(
       </button>
     </div>
   ));
-}
+};
 
 export const toast = {
   success: (message: string) => createToast("success", message),

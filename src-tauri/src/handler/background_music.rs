@@ -38,11 +38,7 @@ pub fn get_music(db: tauri::State<AppDb>, nest_id: i64) -> AppResult<Vec<Backgro
 }
 
 #[tauri::command]
-pub fn update_music(
-    db: tauri::State<AppDb>,
-    id: i64,
-    title: String,
-) -> AppResult<()> {
+pub fn update_music(db: tauri::State<AppDb>, id: i64, title: String) -> AppResult<()> {
     update_music_in_db(&db, id, title)
 }
 
