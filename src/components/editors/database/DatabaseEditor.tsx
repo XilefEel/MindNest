@@ -17,6 +17,7 @@ import {
   useDbColumns,
   useDbActions,
   useVisibleDbRows,
+  useDbViewMode,
 } from "@/stores/useDatabaseStore";
 import DatabaseHeader from "./DatabaseHeader";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
@@ -26,6 +27,7 @@ import DatabaseToolbar from "./DatabaseToolbar";
 import { ColumnType } from "@/lib/types/database";
 import DatabaseRow from "./DatabaseRow";
 import { DragDropProvider } from "@dnd-kit/react";
+import DatabaseBoardView from "./DatabaseBoardView";
 
 export default function DatabaseEditor() {
   const activeNestling = useActiveNestling();
@@ -40,6 +42,7 @@ export default function DatabaseEditor() {
 
   const columns = useDbColumns();
   const rows = useVisibleDbRows();
+  const viewMode = useDbViewMode();
   const { getDbData, createColumn, createRow, handleRowDragEnd } =
     useDbActions();
 
@@ -58,69 +61,77 @@ export default function DatabaseEditor() {
       <div>
         <DatabaseToolbar />
 
-        <Table className="min-w-max">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-10 border-transparent" />
-
-              {columns.map((col, index) => (
-                <DatabaseHeader
-                  key={col.id}
-                  column={col}
-                  isFirst={index === 0}
-                  isLast={index === columns.length - 1}
-                />
-              ))}
-
-              <TableHead
-                onClick={() =>
-                  createColumn(activeNestling.id!, "Name", "text" as ColumnType)
-                }
-                className={cn(
-                  "border-zinc-300 text-zinc-400 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
-                  activeBackgroundId &&
-                    "border-black/30 text-zinc-500 hover:bg-black/5 dark:border-white/30 dark:text-zinc-400 dark:hover:bg-white/5",
-                )}
-              >
-                <button className="flex items-center gap-1">
-                  <Plus className="size-4 shrink-0" />
-                  New Column
-                </button>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <DragDropProvider onDragEnd={(event) => handleRowDragEnd(event)}>
-            <TableBody>
-              {rows.map((rowData, index) => (
-                <DatabaseRow
-                  key={rowData.row.id}
-                  rowData={rowData}
-                  index={index}
-                />
-              ))}
-
+        {viewMode === "table" ? (
+          <Table className="min-w-max">
+            <TableHeader>
               <TableRow>
-                <TableCell className="w-10 border-transparent" />
+                <TableHead className="w-10 border-transparent" />
 
-                <TableCell
-                  colSpan={columns.length + 1}
-                  onClick={() => createRow(activeNestling.id!)}
+                {columns.map((col, index) => (
+                  <DatabaseHeader
+                    key={col.id}
+                    column={col}
+                    isFirst={index === 0}
+                    isLast={index === columns.length - 1}
+                  />
+                ))}
+
+                <TableHead
+                  onClick={() =>
+                    createColumn(
+                      activeNestling.id!,
+                      "Name",
+                      "text" as ColumnType,
+                    )
+                  }
                   className={cn(
-                    "border-l-0 border-zinc-300 text-zinc-400 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
+                    "border-zinc-300 text-zinc-400 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
                     activeBackgroundId &&
-                      "border-black/30 text-zinc-600 hover:bg-black/5 dark:border-white/30 dark:text-zinc-300 dark:hover:bg-white/5",
+                      "border-black/30 text-zinc-500 hover:bg-black/5 dark:border-white/30 dark:text-zinc-400 dark:hover:bg-white/5",
                   )}
                 >
                   <button className="flex items-center gap-1">
                     <Plus className="size-4 shrink-0" />
-                    New row
+                    New Column
                   </button>
-                </TableCell>
+                </TableHead>
               </TableRow>
-            </TableBody>
-          </DragDropProvider>
-        </Table>
+            </TableHeader>
+
+            <DragDropProvider onDragEnd={(event) => handleRowDragEnd(event)}>
+              <TableBody>
+                {rows.map((rowData, index) => (
+                  <DatabaseRow
+                    key={rowData.row.id}
+                    rowData={rowData}
+                    index={index}
+                  />
+                ))}
+
+                <TableRow>
+                  <TableCell className="w-10 border-transparent" />
+
+                  <TableCell
+                    colSpan={columns.length + 1}
+                    onClick={() => createRow(activeNestling.id!)}
+                    className={cn(
+                      "border-l-0 border-zinc-300 text-zinc-400 transition-[background] hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800",
+                      activeBackgroundId &&
+                        "border-black/30 text-zinc-600 hover:bg-black/5 dark:border-white/30 dark:text-zinc-300 dark:hover:bg-white/5",
+                    )}
+                  >
+                    <button className="flex items-center gap-1">
+                      <Plus className="size-4 shrink-0" />
+                      New row
+                    </button>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </DragDropProvider>
+          </Table>
+        ) : (
+          <DatabaseBoardView />
+        )}
       </div>
     </div>
   );

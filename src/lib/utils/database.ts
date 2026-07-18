@@ -13,6 +13,7 @@ import {
   DbCell,
   DbColumn,
   DbRowData,
+  DbSelectOption,
   FilterCondition,
 } from "../types/database";
 
@@ -106,6 +107,21 @@ export const filterRows = (
   );
 };
 
+export const sortRows = (
+  rows: DbRowData[],
+  columns: DbColumn[],
+  sortColumnId: number | null,
+  sortDirection: "asc" | "desc",
+): DbRowData[] => {
+  if (!sortColumnId) return rows;
+
+  const column = columns.find((col) => col.id === sortColumnId);
+  if (!column) return rows;
+
+  const dir = sortDirection === "asc" ? 1 : -1;
+  return rows.toSorted((a, b) => compareRowsByColumn(column, a, b, dir));
+};
+
 export const matchesFilter = (
   column: DbColumn,
   cell: DbCell | undefined,
@@ -142,4 +158,51 @@ export const reorderRowsAt = (
     ...rowData,
     row: { ...rowData.row, orderIndex: idx },
   }));
+};
+
+export type BoardGroup = {
+  option: DbSelectOption | null;
+  rows: DbRowData[];
+};
+
+export const groupRowsBySelectOption = (
+  rows: DbRowData[],
+  column: DbColumn,
+): BoardGroup[] => {
+  const sortedOptions = column.options.toSorted(
+    (a, b) => a.orderIndex - b.orderIndex,
+  );
+
+  const groups: BoardGroup[] = sortedOptions.map((option) => ({
+    option,
+    rows: [],
+  }));
+
+  const noValueGroup: BoardGroup = { option: null, rows: [] };
+
+  for (const rowData of rows) {
+    const cell = rowData.cells.find((c) => c.columnId === column.id);
+    const matchedGroup = groups.find(
+      (g) => String(g.option?.id) === cell?.value,
+    );
+
+    if (matchedGroup) {
+      matchedGroup.rows.push(rowData);
+    } else {
+      noValueGroup.rows.push(rowData);
+    }
+  }
+
+  return [...groups, noValueGroup];
+};
+
+export const getCardTitleColumn = (
+  columns: { id: number; orderIndex: number; columnType: string }[],
+) => {
+  const sorted = columns.toSorted((a, b) => a.orderIndex - b.orderIndex);
+  return (
+    sorted.find(
+      (col) => col.columnType !== "select" && col.columnType !== "checkbox",
+    ) ?? null
+  );
 };

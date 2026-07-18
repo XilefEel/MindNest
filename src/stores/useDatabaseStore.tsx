@@ -13,15 +13,23 @@ import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
 import { DragEndEvent } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
 import {
-  compareRowsByColumn,
   filterRows,
+  groupRowsBySelectOption,
   reorderRowsAt,
+  sortRows,
 } from "@/lib/utils/database";
+import { useMemo } from "react";
 
 type DatabaseState = {
   columns: DbColumn[];
   rows: DbRowData[];
   loading: boolean;
+
+  viewMode: "table" | "board";
+  setViewMode: (mode: "table" | "board") => void;
+
+  boardGroupColumnId: number | null;
+  setBoardGroupColumn: (columnId: number | null) => void;
 
   getDbData: (nestlingId: number) => Promise<void>;
   createColumn: (
@@ -80,8 +88,14 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
 
   sortColumnId: null,
   sortDirection: "asc",
+  viewMode: "table",
+  boardGroupColumnId: null,
 
   filters: [],
+
+  setViewMode: (mode) => set({ viewMode: mode }),
+
+  setBoardGroupColumn: (columnId) => set({ boardGroupColumnId: columnId }),
 
   getDbData: withStoreErrorHandler(set, async (nestlingId: number) => {
     const data = await dbApi.getDbData(nestlingId);
@@ -491,6 +505,9 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
 export const useDbActions = () =>
   useDatabaseStore(
     useShallow((state) => ({
+      setViewMode: state.setViewMode,
+      setBoardGroupColumn: state.setBoardGroupColumn,
+
       getDbData: state.getDbData,
       createColumn: state.createColumn,
       updateColumn: state.updateColumn,
@@ -526,6 +543,11 @@ export const useDbRows = () => useDatabaseStore((state) => state.rows);
 
 export const useDbFilters = () => useDatabaseStore((state) => state.filters);
 
+export const useDbViewMode = () => useDatabaseStore((state) => state.viewMode);
+
+export const useDbBoardGroupColumnId = () =>
+  useDatabaseStore((state) => state.boardGroupColumnId);
+
 export const useSortColumnId = () =>
   useDatabaseStore((state) => state.sortColumnId);
 
@@ -536,15 +558,32 @@ export const useVisibleDbRows = () =>
   useDatabaseStore(
     useShallow((state) => {
       const filtered = filterRows(state.rows, state.columns, state.filters);
-
-      if (!state.sortColumnId) return filtered;
-
-      const column = state.columns.find((col) => col.id === state.sortColumnId);
-      if (!column) return filtered;
-
-      const dir = state.sortDirection === "asc" ? 1 : -1;
-      return filtered.toSorted((a, b) =>
-        compareRowsByColumn(column, a, b, dir),
+      return sortRows(
+        filtered,
+        state.columns,
+        state.sortColumnId,
+        state.sortDirection!,
       );
     }),
   );
+
+export const useBoardGroups = () => {
+  const boardGroupColumnId = useDbBoardGroupColumnId();
+  const columns = useDbColumns();
+  const rows = useDbRows();
+  const filters = useDbFilters();
+  const sortColumnId = useDatabaseStore((s) => s.sortColumnId);
+  const sortDirection = useDatabaseStore((s) => s.sortDirection);
+
+  return useMemo(() => {
+    if (!boardGroupColumnId) return [];
+
+    const column = columns.find((c) => c.id === boardGroupColumnId);
+    if (!column || column.columnType !== "select") return [];
+
+    const filtered = filterRows(rows, columns, filters);
+    const sorted = sortRows(filtered, columns, sortColumnId, sortDirection!);
+
+    return groupRowsBySelectOption(sorted, column);
+  }, [boardGroupColumnId, columns, rows, filters, sortColumnId, sortDirection]);
+};

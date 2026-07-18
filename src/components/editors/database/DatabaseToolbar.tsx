@@ -3,26 +3,31 @@ import BasePopover from "@/components/popovers/BasePopover";
 import DatabaseFilterPopover from "@/components/popovers/DatabaseFilterPopover";
 import DatabaseSortPopover from "@/components/popovers/DatabaseSortPopover";
 import { cn } from "@/lib/utils/general";
-import { useSortColumnId, useDbFilters } from "@/stores/useDatabaseStore";
+import {
+  useSortColumnId,
+  useDbFilters,
+  useDbViewMode,
+  useDbActions,
+} from "@/stores/useDatabaseStore";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { ArrowDownUp, Filter, Search, SquareKanban, Table } from "lucide-react";
-import { useState } from "react";
 
 export default function DatabaseToolbar() {
   const activeBackgroundId = useActiveBackgroundId();
   const sortColumnId = useSortColumnId();
   const filters = useDbFilters();
 
-  const [tableView, setTableView] = useState<"table" | "board">("table");
+  const viewMode = useDbViewMode();
+  const { setViewMode } = useDbActions();
 
   return (
     <div className="flex flex-row justify-between pr-4 pl-14">
       <div className="flex items-center gap-1">
         <button
-          onClick={() => setTableView("table")}
+          onClick={() => setViewMode("table")}
           className={cn(
             "flex items-center gap-2 rounded-t-md border-b-2 px-3 py-1 text-sm transition-colors",
-            tableView === "table"
+            viewMode === "table"
               ? "border-teal-500 text-zinc-800 dark:text-zinc-100"
               : "border-transparent text-zinc-600 hover:bg-zinc-100 hover:text-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700/50 dark:hover:text-zinc-100",
           )}
@@ -32,10 +37,10 @@ export default function DatabaseToolbar() {
         </button>
 
         <button
-          onClick={() => setTableView("board")}
+          onClick={() => setViewMode("board")}
           className={cn(
             "flex items-center gap-2 rounded-t-md border-b-2 px-3 py-1 text-sm transition-colors",
-            tableView === "board"
+            viewMode === "board"
               ? "border-teal-500 text-zinc-800 dark:text-zinc-100"
               : "border-transparent text-zinc-600 hover:bg-zinc-100 hover:text-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700/50 dark:hover:text-zinc-100",
           )}
