@@ -9,11 +9,11 @@ import {
   Type,
 } from "lucide-react";
 import {
+  BoardGroups,
   ColumnType,
   DbCell,
   DbColumn,
   DbRowData,
-  DbSelectOption,
   FilterCondition,
 } from "../types/database";
 
@@ -160,40 +160,31 @@ export const reorderRowsAt = (
   }));
 };
 
-export type BoardGroup = {
-  option: DbSelectOption | null;
-  rows: DbRowData[];
-};
-
 export const groupRowsBySelectOption = (
   rows: DbRowData[],
   column: DbColumn,
-): BoardGroup[] => {
+): BoardGroups => {
   const sortedOptions = column.options.toSorted(
     (a, b) => a.orderIndex - b.orderIndex,
   );
 
-  const groups: BoardGroup[] = sortedOptions.map((option) => ({
-    option,
-    rows: [],
-  }));
+  const groups: BoardGroups = {};
 
-  const noValueGroup: BoardGroup = { option: null, rows: [] };
+  for (const option of sortedOptions) {
+    groups[String(option.id)] = [];
+  }
+
+  groups["no-value"] = [];
 
   for (const rowData of rows) {
     const cell = rowData.cells.find((c) => c.columnId === column.id);
-    const matchedGroup = groups.find(
-      (g) => String(g.option?.id) === cell?.value,
-    );
+    const key =
+      cell?.value && groups[cell.value] !== undefined ? cell.value : "no-value";
 
-    if (matchedGroup) {
-      matchedGroup.rows.push(rowData);
-    } else {
-      noValueGroup.rows.push(rowData);
-    }
+    groups[key].push({ ...rowData, id: rowData.row.id });
   }
 
-  return [...groups, noValueGroup];
+  return groups;
 };
 
 export const getCardTitleColumn = (

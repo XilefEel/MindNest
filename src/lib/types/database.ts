@@ -61,3 +61,7 @@ export type FilterCondition = {
   columnId: number;
   value: string;
 };
+
+export type BoardRowItem = DbRowData & { id: number };
+
+export type BoardGroups = Record<string, BoardRowItem[]>;

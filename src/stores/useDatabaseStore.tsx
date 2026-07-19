@@ -4,13 +4,14 @@ import {
   DbRowData,
   ColumnType,
   FilterCondition,
+  BoardGroups,
 } from "@/lib/types/database";
 import { mergeWithCurrent, withStoreErrorHandler } from "@/lib/utils/general";
 import { create } from "zustand";
 import * as dbApi from "@/lib/api/database";
 import { useShallow } from "zustand/react/shallow";
 import { updateNestlingTimestamp } from "@/lib/utils/nestlings";
-import { DragEndEvent } from "@dnd-kit/react";
+import { DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
 import {
   filterRows,
@@ -18,7 +19,9 @@ import {
   reorderRowsAt,
   sortRows,
 } from "@/lib/utils/database";
-import { useMemo } from "react";
+import { move } from "@dnd-kit/helpers";
+
+let snapshot: BoardGroups = {};
 
 type DatabaseState = {
   columns: DbColumn[];
@@ -27,9 +30,6 @@ type DatabaseState = {
 
   viewMode: "table" | "board";
   setViewMode: (mode: "table" | "board") => void;
-
-  boardGroupColumnId: number | null;
-  setBoardGroupColumn: (columnId: number | null) => void;
 
   getDbData: (nestlingId: number) => Promise<void>;
   createColumn: (
@@ -79,6 +79,15 @@ type DatabaseState = {
   updateFilter: (id: string, value: string) => void;
   removeFilter: (id: string) => void;
   clearFilters: () => void;
+
+  boardGroups: BoardGroups;
+  boardGroupColumnId: number | null;
+  setBoardGroupColumn: (columnId: number | null) => void;
+
+  computeBoardGroups: () => void;
+  handleDragStart: (event: DragStartEvent) => void;
+  handleDragOver: (event: DragMoveEvent) => void;
+  handleDragEnd: (event: DragEndEvent) => void;
 };
 export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
   nestlingId: null,
@@ -89,6 +98,8 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
   sortColumnId: null,
   sortDirection: "asc",
   viewMode: "table",
+
+  boardGroups: {},
   boardGroupColumnId: null,
 
   filters: [],
@@ -500,6 +511,68 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
   clearFilters: () => {
     set({ filters: [] });
   },
+
+  computeBoardGroups: () => {
+    const state = get();
+    const column = state.columns.find((c) => c.id === state.boardGroupColumnId);
+    if (!column) {
+      set({ boardGroups: {} });
+      return;
+    }
+
+    const filtered = filterRows(state.rows, state.columns, state.filters);
+    const sorted = sortRows(
+      filtered,
+      state.columns,
+      state.sortColumnId,
+      state.sortDirection!,
+    );
+    set({ boardGroups: groupRowsBySelectOption(sorted, column) });
+  },
+
+  handleDragStart: () => {
+    snapshot = structuredClone(get().boardGroups);
+  },
+
+  handleDragOver: (event: DragMoveEvent) => {
+    set((state) => ({ boardGroups: move(state.boardGroups, event) }));
+  },
+
+  handleDragEnd: withStoreErrorHandler(set, async (event: DragEndEvent) => {
+    const { source } = event.operation;
+    if (!source) return;
+
+    if (event.canceled) {
+      set({ boardGroups: snapshot });
+      return;
+    }
+
+    if (source.type === "column") {
+      return;
+    }
+
+    if (source.type === "card") {
+      const rowId = Number(source.id);
+      const groups = get().boardGroups;
+
+      const newGroupKey = Object.entries(groups).find(([, rows]) =>
+        rows.some((r) => r.row.id === rowId),
+      )?.[0];
+
+      const newValue = newGroupKey === "no-value" ? null : newGroupKey!;
+
+      console.log(
+        "Updating row",
+        rowId,
+        "to new value",
+        newValue,
+        "in column",
+        get().boardGroupColumnId,
+      );
+
+      await new Promise((r) => setTimeout(r, 0));
+    }
+  }),
 }));
 
 export const useDbActions = () =>
@@ -534,6 +607,11 @@ export const useDbActions = () =>
       updateFilter: state.updateFilter,
       removeFilter: state.removeFilter,
       clearFilters: state.clearFilters,
+
+      computeBoardGroups: state.computeBoardGroups,
+      handleDragStart: state.handleDragStart,
+      handleDragOver: state.handleDragOver,
+      handleDragEnd: state.handleDragEnd,
     })),
   );
 
@@ -544,6 +622,9 @@ export const useDbRows = () => useDatabaseStore((state) => state.rows);
 export const useDbFilters = () => useDatabaseStore((state) => state.filters);
 
 export const useDbViewMode = () => useDatabaseStore((state) => state.viewMode);
+
+export const useDbBoardGroups = () =>
+  useDatabaseStore((state) => state.boardGroups);
 
 export const useDbBoardGroupColumnId = () =>
   useDatabaseStore((state) => state.boardGroupColumnId);
@@ -566,24 +647,3 @@ export const useVisibleDbRows = () =>
       );
     }),
   );
-
-export const useBoardGroups = () => {
-  const boardGroupColumnId = useDbBoardGroupColumnId();
-  const columns = useDbColumns();
-  const rows = useDbRows();
-  const filters = useDbFilters();
-  const sortColumnId = useDatabaseStore((s) => s.sortColumnId);
-  const sortDirection = useDatabaseStore((s) => s.sortDirection);
-
-  return useMemo(() => {
-    if (!boardGroupColumnId) return [];
-
-    const column = columns.find((c) => c.id === boardGroupColumnId);
-    if (!column || column.columnType !== "select") return [];
-
-    const filtered = filterRows(rows, columns, filters);
-    const sorted = sortRows(filtered, columns, sortColumnId, sortDirection!);
-
-    return groupRowsBySelectOption(sorted, column);
-  }, [boardGroupColumnId, columns, rows, filters, sortColumnId, sortDirection]);
-};
