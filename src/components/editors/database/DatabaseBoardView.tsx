@@ -50,6 +50,8 @@ export default function DatabaseBoardView() {
     (a, b) => a.orderIndex - b.orderIndex,
   );
 
+  const allLanes = [...laneOptions, null];
+
   return (
     <DragDropProvider
       onDragStart={handleDragStart}
@@ -57,7 +59,7 @@ export default function DatabaseBoardView() {
       onDragEnd={handleDragEnd}
     >
       <div className="flex h-full flex-row items-start gap-4 overflow-x-auto pt-2">
-        {laneOptions.map((option, index) => (
+        {allLanes.map((option, index) => (
           <DbBoardColumn
             key={option?.id ?? "no-value"}
             option={option}

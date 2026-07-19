@@ -307,6 +307,7 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
   reorderSelectOptions: withStoreErrorHandler(
     set,
     async (columnId: number, event: DragEndEvent) => {
+      console.log("Reordering select options");
       const { source } = event.operation;
       if (!source) return;
 
@@ -535,9 +536,23 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
   },
 
   handleDragOver: (event: DragMoveEvent) => {
+    const { source } = event.operation;
+
+    if (source && source.type === "column") {
+      set((state) => ({
+        columns: state.columns.map((col) => {
+          if (col.id !== get().boardGroupColumnId!) return col;
+          return {
+            ...col,
+            options: move(col.options, event),
+          };
+        }),
+      }));
+      return;
+    }
+
     set((state) => ({ boardGroups: move(state.boardGroups, event) }));
   },
-
   handleDragEnd: withStoreErrorHandler(set, async (event: DragEndEvent) => {
     const { source } = event.operation;
     if (!source) return;
@@ -547,7 +562,38 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
       return;
     }
 
+    console.log(source.type);
+
     if (source.type === "column") {
+      const columnId = get().boardGroupColumnId;
+      if (!columnId) return;
+
+      const column = get().columns.find((c) => c.id === columnId);
+      if (!column) return;
+
+      const withNewIndices = column.options.map((opt, idx) => ({
+        ...opt,
+        orderIndex: idx,
+      }));
+
+      set((state) => ({
+        columns: state.columns.map((col) =>
+          col.id === columnId ? { ...col, options: withNewIndices } : col,
+        ),
+      }));
+
+      await Promise.all(
+        withNewIndices.map((opt) =>
+          dbApi.updateSelectOption(
+            opt.id,
+            opt.label,
+            opt.color,
+            opt.orderIndex,
+          ),
+        ),
+      );
+
+      await updateNestlingTimestamp(column.nestlingId);
       return;
     }
 
@@ -561,16 +607,7 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
 
       const newValue = newGroupKey === "no-value" ? null : newGroupKey!;
 
-      console.log(
-        "Updating row",
-        rowId,
-        "to new value",
-        newValue,
-        "in column",
-        get().boardGroupColumnId,
-      );
-
-      await new Promise((r) => setTimeout(r, 0));
+      await get().insertCell(rowId, get().boardGroupColumnId!, newValue);
     }
   }),
 }));
