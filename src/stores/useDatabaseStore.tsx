@@ -307,7 +307,6 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
   reorderSelectOptions: withStoreErrorHandler(
     set,
     async (columnId: number, event: DragEndEvent) => {
-      console.log("Reordering select options");
       const { source } = event.operation;
       if (!source) return;
 
@@ -561,8 +560,6 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
       set({ boardGroups: snapshot });
       return;
     }
-
-    console.log(source.type);
 
     if (source.type === "column") {
       const columnId = get().boardGroupColumnId;

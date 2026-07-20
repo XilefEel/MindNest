@@ -46,11 +46,9 @@ export default function DatabaseBoardView() {
     );
   }
 
-  const laneOptions = groupColumn.options.toSorted(
+  const columnOptions = groupColumn.options.toSorted(
     (a, b) => a.orderIndex - b.orderIndex,
   );
-
-  const allLanes = [...laneOptions, null];
 
   return (
     <DragDropProvider
@@ -59,7 +57,7 @@ export default function DatabaseBoardView() {
       onDragEnd={handleDragEnd}
     >
       <div className="flex h-full flex-row items-start gap-4 overflow-x-auto pt-2">
-        {allLanes.map((option, index) => (
+        {[...columnOptions, null].map((option, index) => (
           <DbBoardColumn
             key={option?.id ?? "no-value"}
             option={option}

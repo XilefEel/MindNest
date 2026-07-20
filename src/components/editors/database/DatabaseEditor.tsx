@@ -27,14 +27,14 @@ export default function DatabaseEditor() {
   }, [activeNestling.id]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex h-full flex-col gap-4">
       <NestlingTitle
         title={title}
         setTitle={setTitle}
         nestling={activeNestling}
       />
 
-      <div>
+      <div className="flex flex-1 flex-col overflow-hidden">
         <DatabaseToolbar />
         {viewMode === "table" ? <DatabaseTableView /> : <DatabaseBoardView />}
       </div>

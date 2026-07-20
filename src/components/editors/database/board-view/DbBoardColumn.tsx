@@ -20,32 +20,33 @@ export default function DbBoardColumn({
     index,
     disabled: option === null,
   });
-
   const laneColor = option?.color ?? "#a1a1aa";
   const laneLabel = option?.label ?? "No value";
 
   return (
     <div
       ref={ref}
-      style={{ backgroundColor: `${laneColor}30` }}
-      className="flex w-72 shrink-0 flex-col overflow-hidden rounded-2xl border border-black/5 shadow-sm"
+      style={{ backgroundColor: `${laneColor}0d` }}
+      className="flex w-72 shrink-0 flex-col overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50/60 dark:border-zinc-800 dark:bg-zinc-900/40"
     >
-      <div className="flex items-center gap-3 px-4 pt-2">
+      <div className="flex items-center gap-2 px-3 py-3">
         <span
           style={{ backgroundColor: laneColor }}
-          className="size-2.5 shrink-0 rounded-full"
+          className="size-2 shrink-0 rounded-full"
         />
 
-        <h3 className="flex-1 text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+        <h3 className="flex-1 truncate text-sm font-semibold tracking-tight text-zinc-700 dark:text-zinc-200">
           {laneLabel}
         </h3>
 
-        <span className="flex size-6 items-center justify-center rounded-full bg-black/5 text-xs font-medium text-zinc-500 dark:bg-white/10 dark:text-zinc-400">
+        <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-zinc-200/70 px-1.5 text-[11px] font-medium text-zinc-500 tabular-nums dark:bg-zinc-800 dark:text-zinc-400">
           {rows.length}
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 p-2">
+      <div style={{ backgroundColor: laneColor }} className="h-0.5 w-full" />
+
+      <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-2">
         {rows.length > 0 ? (
           rows.map((rowData, i) => (
             <DbBoardCard
@@ -56,7 +57,7 @@ export default function DbBoardColumn({
             />
           ))
         ) : (
-          <div className="flex min-h-20 items-center justify-center rounded-xl border-2 border-dashed border-zinc-300 text-xs text-zinc-400 dark:border-zinc-600 dark:text-zinc-500">
+          <div className="flex min-h-20 items-center justify-center rounded-lg border border-dashed border-zinc-300 text-xs text-zinc-400 dark:border-zinc-700 dark:text-zinc-600">
             No rows
           </div>
         )}
