@@ -59,10 +59,10 @@ export default function DatabaseBoardView() {
       <div className="flex h-full flex-row items-start gap-4 overflow-x-auto pt-2">
         {[...columnOptions, null].map((option, index) => (
           <DbBoardColumn
-            key={option?.id ?? "no-value"}
+            key={option?.id ?? "no-option"}
             option={option}
             index={index}
-            rows={groups[option ? String(option.id) : "no-value"] ?? []}
+            rows={groups[option ? String(option.id) : "no-option"] ?? []}
           />
         ))}
       </div>

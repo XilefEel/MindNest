@@ -24,6 +24,7 @@ export default function DbBoardCard({
     index,
     data: { group: groupKey },
   });
+
   const titleCell = titleColumn
     ? rowData.cells.find((c) => c.columnId === titleColumn.id)
     : null;
@@ -34,10 +35,8 @@ export default function DbBoardCard({
     <div
       ref={ref}
       className={cn(
-        "group cursor-grab rounded-lg border border-zinc-200 bg-white px-3 py-2.5 transition-all active:cursor-grabbing dark:border-zinc-700 dark:bg-zinc-800",
-        isDragging
-          ? "opacity-50"
-          : "hover:border-zinc-300 dark:hover:border-zinc-600",
+        "group cursor-grab rounded-lg border border-zinc-200 bg-white px-3 py-2.5 transition-colors hover:border-zinc-300 active:cursor-grabbing dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-600",
+        isDragging && "opacity-50",
       )}
     >
       <h3 className="text-sm leading-snug font-medium text-zinc-800 dark:text-zinc-200">

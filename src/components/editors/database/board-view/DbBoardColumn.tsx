@@ -13,20 +13,21 @@ export default function DbBoardColumn({
   index: number;
 }) {
   const { ref } = useSortable({
-    id: option?.id ?? "no-value",
+    id: option?.id ?? "no-option",
     accept: ["column", "card"],
     collisionPriority: CollisionPriority.Low,
     type: "column",
     index,
-    disabled: option === null,
+    disabled: option === null ? { draggable: true, droppable: false } : false,
   });
+
   const laneColor = option?.color ?? "#a1a1aa";
-  const laneLabel = option?.label ?? "No value";
+  const laneLabel = option?.label ?? "No option";
 
   return (
     <div
       ref={ref}
-      style={{ backgroundColor: `${laneColor}0d` }}
+      style={{ backgroundColor: `${laneColor}20` }}
       className="flex w-72 shrink-0 flex-col overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50/60 dark:border-zinc-800 dark:bg-zinc-900/40"
     >
       <div className="flex items-center gap-2 px-3 py-3">
@@ -53,7 +54,7 @@ export default function DbBoardColumn({
               key={rowData.row.id}
               rowData={rowData}
               index={i}
-              groupKey={String(option?.id ?? "no-value")}
+              groupKey={String(option?.id ?? "no-option")}
             />
           ))
         ) : (

@@ -174,12 +174,14 @@ export const groupRowsBySelectOption = (
     groups[String(option.id)] = [];
   }
 
-  groups["no-value"] = [];
+  groups["no-option"] = [];
 
   for (const rowData of rows) {
     const cell = rowData.cells.find((c) => c.columnId === column.id);
     const key =
-      cell?.value && groups[cell.value] !== undefined ? cell.value : "no-value";
+      cell?.value && groups[cell.value] !== undefined
+        ? cell.value
+        : "no-option";
 
     groups[key].push({ ...rowData, id: rowData.row.id });
   }

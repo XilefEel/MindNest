@@ -541,10 +541,7 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
       set((state) => ({
         columns: state.columns.map((col) => {
           if (col.id !== get().boardGroupColumnId!) return col;
-          return {
-            ...col,
-            options: move(col.options, event),
-          };
+          return { ...col, options: move(col.options, event) };
         }),
       }));
       return;
@@ -552,6 +549,7 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
 
     set((state) => ({ boardGroups: move(state.boardGroups, event) }));
   },
+
   handleDragEnd: withStoreErrorHandler(set, async (event: DragEndEvent) => {
     const { source } = event.operation;
     if (!source) return;
@@ -602,7 +600,7 @@ export const useDatabaseStore = create<DatabaseState>()((set, get) => ({
         rows.some((r) => r.row.id === rowId),
       )?.[0];
 
-      const newValue = newGroupKey === "no-value" ? null : newGroupKey!;
+      const newValue = newGroupKey === "no-option" ? null : newGroupKey!;
 
       await get().insertCell(rowId, get().boardGroupColumnId!, newValue);
     }
