@@ -199,3 +199,16 @@ export const getCardTitleColumn = (
     ) ?? null
   );
 };
+
+const CARD_FIELD_TYPE_ORDER = ["text", "number", "date", "checkbox"];
+
+export const getCardFields = (
+  columns: DbColumn[],
+  titleColumnId: number,
+): DbColumn[] => {
+  const sorted = columns.toSorted((a, b) => a.orderIndex - b.orderIndex);
+
+  return CARD_FIELD_TYPE_ORDER.map((type) =>
+    sorted.find((col) => col.columnType === type && col.id !== titleColumnId),
+  ).filter((col): col is DbColumn => col !== undefined);
+};

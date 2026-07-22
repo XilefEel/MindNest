@@ -116,7 +116,7 @@ export default function DatabasePopover({
         }}
         className="flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm text-red-600 transition-colors hover:bg-red-300/30 dark:text-red-400 dark:hover:bg-red-800/30"
       >
-        <Trash2 className="size-4" />{" "}
+        <Trash2 className="size-4 shrink-0" />
         <span className="text-sm leading-tight">Delete</span>
       </button>
     </div>
