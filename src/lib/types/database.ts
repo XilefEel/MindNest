@@ -7,6 +7,9 @@ export type ColumnType =
   | "checkbox"
   | "date"
   | "select"
+  | "email"
+  | "url"
+  | "phone"
   | "created_at"
   | "last_modified";
 

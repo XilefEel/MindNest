@@ -3,7 +3,10 @@ import {
   Clock,
   ClockPlus,
   Hash,
+  Link,
   LucideIcon,
+  Mail,
+  Phone,
   SquareCheckBig,
   Tag,
   Type,
@@ -29,6 +32,9 @@ export const COLUMN_TYPES: Record<
   checkbox: { label: "Checkbox", Icon: SquareCheckBig },
   date: { label: "Date", Icon: Calendar },
   select: { label: "Select", Icon: Tag },
+  email: { label: "Email", Icon: Mail },
+  url: { label: "URL", Icon: Link },
+  phone: { label: "Phone", Icon: Phone },
   created_at: { label: "Created at", Icon: Clock },
   last_modified: { label: "Last modified", Icon: ClockPlus },
 };
@@ -200,7 +206,15 @@ export const getCardTitleColumn = (
   );
 };
 
-const CARD_FIELD_TYPE_ORDER = ["text", "number", "date", "checkbox"];
+const CARD_FIELD_TYPE_ORDER = [
+  "text",
+  "number",
+  "date",
+  "checkbox",
+  "email",
+  "phone",
+  "url",
+];
 
 export const getCardFields = (
   columns: DbColumn[],

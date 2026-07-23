@@ -6,6 +6,9 @@ import { format } from "date-fns";
 import DateCell from "./cells/DateCell";
 import SelectCell from "./cells/SelectCell";
 import { useDbActions } from "@/stores/useDatabaseStore";
+import EmailCell from "./cells/EmailCell";
+import PhoneCell from "./cells/PhoneCell";
+import UrlCell from "./cells/UrlCell";
 
 export default function DatabaseCell({
   column,
@@ -45,6 +48,15 @@ export default function DatabaseCell({
           }
         />
       );
+
+    case "email":
+      return <EmailCell value={cell?.value ?? null} onSave={onSave} />;
+
+    case "url":
+      return <UrlCell value={cell?.value ?? null} onSave={onSave} />;
+
+    case "phone":
+      return <PhoneCell value={cell?.value ?? null} onSave={onSave} />;
 
     case "created_at":
       return (
