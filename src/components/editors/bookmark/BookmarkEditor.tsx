@@ -14,13 +14,11 @@ import { BookmarkPlus, SearchX } from "lucide-react";
 
 export default function BookmarkEditor() {
   const activeNestling = useActiveNestling();
-  if (!activeNestling) return null;
-
   const bookmarks = useBookmarks();
   const { getBookmarks, createBookmark } = useBookmarkActions();
   const { updateNestling } = useNestlingActions();
 
-  const [title, setTitle] = useState(activeNestling.title);
+  const [title, setTitle] = useState(activeNestling?.title ?? "");
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const [isDragging, setIsDragging] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,13 +36,11 @@ export default function BookmarkEditor() {
   }, [bookmarks, searchQuery]);
 
   const nestlingData = useMemo(() => ({ title }), [title]);
-  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
+  useAutoSave(activeNestling?.id, nestlingData, updateNestling);
 
   const handleAddBookmark = async (url: string) => {
-    if (!url.trim()) return;
-
+    if (!activeNestling || !url.trim()) return;
     toast.info("Adding bookmark...");
-
     try {
       await createBookmark(activeNestling.id!, url.trim());
       toast.success("Bookmark added!");
@@ -76,8 +72,11 @@ export default function BookmarkEditor() {
   };
 
   useEffect(() => {
-    getBookmarks(activeNestling.id);
-  }, [getBookmarks, activeNestling.id]);
+    const id = activeNestling?.id;
+    if (id) getBookmarks(id);
+  }, [getBookmarks, activeNestling?.id]);
+
+  if (!activeNestling) return null;
 
   return (
     <div

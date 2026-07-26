@@ -44,7 +44,6 @@ export default function ImageLayout({
   layoutMode: "row" | "column";
 }) {
   const activeNestling = useActiveNestling();
-  if (!activeNestling) return;
 
   const images = useImages();
   const { uploadImage } = useGalleryActions();
@@ -78,7 +77,7 @@ export default function ImageLayout({
     e.stopPropagation();
     setIsDragOver(false);
 
-    if (isUploading) return;
+    if (isUploading || !activeNestling) return;
 
     const files = Array.from(e.dataTransfer.files);
     const imageFiles = files.filter((file) => file.type.startsWith("image/"));
@@ -120,7 +119,7 @@ export default function ImageLayout({
     }
   };
 
-
+  if (!activeNestling) return null;
 
   return (
     <div

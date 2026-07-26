@@ -54,7 +54,7 @@ export default function Sidebar({
     if (nestId) {
       fetchSidebar(nestId);
     }
-  }, [nestId]);
+  }, [nestId, fetchSidebar]);
 
   return (
     <SidebarContextMenu nestId={nestId}>
@@ -82,9 +82,7 @@ export default function Sidebar({
           setIsSidebarOpen={setIsSidebarOpen}
         />
 
-        <DragDropProvider
-          onDragEnd={(e) => handleDragEnd(e, nestId)}
-        >
+        <DragDropProvider onDragEnd={(e) => handleDragEnd(e, nestId)}>
           {folderGroups.map((folder) => (
             <FolderTree
               key={folder.id}

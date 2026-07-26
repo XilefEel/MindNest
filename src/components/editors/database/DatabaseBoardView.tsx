@@ -30,11 +30,17 @@ export default function DatabaseBoardView() {
       const firstSelect = columns.find((c) => c.columnType === "select");
       if (firstSelect) setBoardGroupColumn(firstSelect.id);
     }
-  }, [boardGroupColumnId]);
+  }, [boardGroupColumnId, columns, setBoardGroupColumn]);
 
   useEffect(() => {
     computeBoardGroups();
-  }, [boardGroupColumnId, filters, sortColumnId, sortDirection]);
+  }, [
+    boardGroupColumnId,
+    filters,
+    sortColumnId,
+    sortDirection,
+    computeBoardGroups,
+  ]);
 
   const groupColumn = columns.find((c) => c.id === boardGroupColumnId);
 

@@ -64,7 +64,7 @@ export default function EmojiMenu({
 
     if (showPicker) document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showPicker]);
+  }, [showPicker, pickerRef, setShowPicker]);
 
   return (
     <>

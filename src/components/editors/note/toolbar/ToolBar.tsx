@@ -44,29 +44,33 @@ export default function ToolBar({ title }: { title: string }) {
   const [showImageDialog, setShowImageDialog] = useState(false);
 
   const { editor } = useCurrentEditor();
-  if (!editor) return null;
 
   const state = useEditorState({
     editor,
-    selector: (ctx) => ({
-      isBold: ctx.editor.isActive("bold"),
-      isItalic: ctx.editor.isActive("italic"),
-      isStrike: ctx.editor.isActive("strike"),
-      isCode: ctx.editor.isActive("codeBlock"),
-      isH1: ctx.editor.isActive("heading", { level: 1 }),
-      isH2: ctx.editor.isActive("heading", { level: 2 }),
-      isH3: ctx.editor.isActive("heading", { level: 3 }),
-      isH4: ctx.editor.isActive("heading", { level: 4 }),
-      isBlockquote: ctx.editor.isActive("blockquote"),
-      isBulletList: ctx.editor.isActive("bulletList"),
-      isOrderedList: ctx.editor.isActive("orderedList"),
-      isTaskList: ctx.editor.isActive("taskList"),
-      isAlignLeft: ctx.editor.isActive({ textAlign: "left" }),
-      isAlignCenter: ctx.editor.isActive({ textAlign: "center" }),
-      isAlignRight: ctx.editor.isActive({ textAlign: "right" }),
-      isAlignJustify: ctx.editor.isActive({ textAlign: "justify" }),
-    }),
+    selector: (ctx) => {
+      if (!ctx.editor) return null;
+      return {
+        isBold: ctx.editor.isActive("bold"),
+        isItalic: ctx.editor.isActive("italic"),
+        isStrike: ctx.editor.isActive("strike"),
+        isCode: ctx.editor.isActive("codeBlock"),
+        isH1: ctx.editor.isActive("heading", { level: 1 }),
+        isH2: ctx.editor.isActive("heading", { level: 2 }),
+        isH3: ctx.editor.isActive("heading", { level: 3 }),
+        isH4: ctx.editor.isActive("heading", { level: 4 }),
+        isBlockquote: ctx.editor.isActive("blockquote"),
+        isBulletList: ctx.editor.isActive("bulletList"),
+        isOrderedList: ctx.editor.isActive("orderedList"),
+        isTaskList: ctx.editor.isActive("taskList"),
+        isAlignLeft: ctx.editor.isActive({ textAlign: "left" }),
+        isAlignCenter: ctx.editor.isActive({ textAlign: "center" }),
+        isAlignRight: ctx.editor.isActive({ textAlign: "right" }),
+        isAlignJustify: ctx.editor.isActive({ textAlign: "justify" }),
+      };
+    },
   });
+
+  if (!editor || !state) return null;
 
   const HeadingIcon = getActiveIcon(
     [

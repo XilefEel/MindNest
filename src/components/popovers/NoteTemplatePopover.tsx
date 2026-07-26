@@ -18,18 +18,16 @@ export default function NoteTemplatePopover() {
 
   const activeNestId = useActiveNestId();
   const activeNestling = useActiveNestling();
-  if (!activeNestling || !activeNestId) return;
-
   const activeBackgroundId = useActiveBackgroundId();
 
-  const { getTemplates, addTemplate, useTemplate, deleteTemplate } =
+  const { getTemplates, addTemplate, applyTemplate, deleteTemplate } =
     useNoteActions();
   const noteTemplates = useTemplates();
 
   const { editor } = useCurrentEditor();
-  if (!editor) return;
 
   const handleSaveAsTemplate = async () => {
+    if (!activeNestId || !activeNestling) return;
     const name = templateName.trim() || `Template ${noteTemplates.length + 1}`;
     try {
       await addTemplate({
@@ -45,8 +43,9 @@ export default function NoteTemplatePopover() {
   };
 
   const handleUseTemplate = async (template: NoteTemplate) => {
+    if (!activeNestling || !editor) return;
     try {
-      await useTemplate(activeNestling.id, template);
+      await applyTemplate(activeNestling.id, template);
       editor.commands.setContent(JSON.parse(template.content));
     } catch (error) {
       toast.error("Failed to use template.");
@@ -66,7 +65,9 @@ export default function NoteTemplatePopover() {
       setIsSaving(false);
       setTemplateName("");
     }
-  }, [isOpen]);
+  }, [isOpen, activeNestId, getTemplates]);
+
+  if (!activeNestling || !activeNestId || !editor) return;
 
   return (
     <BasePopover

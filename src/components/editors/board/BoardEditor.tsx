@@ -20,12 +20,9 @@ import { DragDropProvider } from "@dnd-kit/react";
 
 export default function BoardEditor() {
   const activeNestling = useActiveNestling();
-  if (!activeNestling) return;
-
   const activeBackgroundId = useActiveBackgroundId();
   const columns = useBoardColumns();
   const cardsByColumn = useCardsByColumn();
-
   const {
     getBoard,
     createColumn,
@@ -34,9 +31,10 @@ export default function BoardEditor() {
     handleDragEnd,
   } = useBoardActions();
   const { updateNestling } = useNestlingActions();
-  const [title, setTitle] = useState(activeNestling.title);
+  const [title, setTitle] = useState(activeNestling?.title ?? "");
 
   const handleAddColumn = async () => {
+    if (!activeNestling) return;
     try {
       createColumn({
         nestlingId: activeNestling.id!,
@@ -50,15 +48,14 @@ export default function BoardEditor() {
   };
 
   const nestlingData = useMemo(() => ({ title }), [title]);
-  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
+  useAutoSave(activeNestling?.id!, nestlingData, updateNestling);
 
   useEffect(() => {
-    getBoard(activeNestling.id!);
-  }, [getBoard, activeNestling.id]);
+    const id = activeNestling?.id;
+    if (id) getBoard(id);
+  }, [getBoard, activeNestling?.id]);
 
-  useEffect(() => {
-    setTitle(activeNestling.title);
-  }, [activeNestling.title]);
+  if (!activeNestling) return null;
 
   return (
     <div className="flex h-full flex-col gap-3">

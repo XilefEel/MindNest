@@ -22,13 +22,12 @@ import { useActiveBackgroundId } from "@/stores/useNestStore";
 
 export default function DatabaseTableView() {
   const activeNestling = useActiveNestling();
-  if (!activeNestling) return null;
-
   const activeBackgroundId = useActiveBackgroundId();
-
   const columns = useDbColumns();
   const rows = useVisibleDbRows();
   const { createColumn, createRow, handleRowDragEnd } = useDbActions();
+
+  if (!activeNestling) return null;
 
   return (
     <Table className="min-w-max">

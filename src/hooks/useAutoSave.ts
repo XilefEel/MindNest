@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 type AutoSaveStatus = "idle" | "saving" | "saved" | "error";
 
 export default function useAutoSave(
-  id: number,
+  id: number | undefined,
   data: Record<string, any>,
   updateFunction: (id: number, data: Record<string, any>) => Promise<void>,
   options?: { debounceTime?: number },

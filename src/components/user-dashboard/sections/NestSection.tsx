@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input";
 export default function NestSection() {
   const { user } = useAuth();
   const userId = user?.id;
-  if (!userId) return null;
 
   const nests = useNests();
   const { getNests } = useNestActions();
@@ -22,9 +21,10 @@ export default function NestSection() {
   );
 
   useEffect(() => {
-    if (!userId) return;
-    getNests(userId);
+    if (userId) getNests(userId);
   }, [getNests, userId]);
+
+  if (!userId) return null;
 
   return (
     <div className="mx-auto flex w-full flex-col gap-5 md:p-4 md:pt-8">

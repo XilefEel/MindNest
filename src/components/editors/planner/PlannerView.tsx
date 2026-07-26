@@ -3,7 +3,6 @@ import { addDays, format, isSameDay, startOfWeek } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 import PlannerEvent from "./PlannerEvent";
 import { useEvents, usePlannerActions } from "@/stores/usePlannerStore";
-import { NewPlannerEventType } from "@/lib/types/planner";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { COLORS, gridHeight } from "@/lib/utils/constants";
 import { useActiveNestling } from "@/stores/useNestlingStore";
@@ -17,8 +16,6 @@ export default function PlannerView({
   onDateSelect: (date: Date) => void;
 }) {
   const activeNestling = useActiveNestling();
-  if (!activeNestling) return;
-
   const activeBackgroundId = useActiveBackgroundId();
   const { createEvent } = usePlannerActions();
   const events = useEvents();
@@ -51,7 +48,8 @@ export default function PlannerView({
     clickedDate: Date;
     startHour: number;
   }) => {
-    const newEvent: NewPlannerEventType = {
+    if (!activeNestling) return;
+    await createEvent({
       nestlingId: activeNestling.id,
       date: format(clickedDate, "yyyy-MM-dd"),
       title: "New Event",
@@ -59,8 +57,7 @@ export default function PlannerView({
       startTime: startHour,
       duration: 1,
       color: getRandomElement(COLORS),
-    };
-    await createEvent(newEvent);
+    });
   };
 
   const handleMoveWeek = (direction: "left" | "right") => {
@@ -96,6 +93,8 @@ export default function PlannerView({
     }, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  if (!activeNestling) return null;
 
   return (
     <div className="h-full w-full px-8">

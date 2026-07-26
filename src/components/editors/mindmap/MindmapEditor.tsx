@@ -53,17 +53,19 @@ function MindmapEditorContent() {
     deleteNode,
   } = useMindmapActions();
   const activeNestling = useActiveNestling();
-  if (!activeNestling) return;
-
   const nodes = useMindmapNodes();
   const edges = useMindmapEdges();
   const { screenToFlowPosition } = useReactFlow();
   const { updateNestling } = useNestlingActions();
 
-  const [title, setTitle] = useState(activeNestling.title);
-
+  const [title, setTitle] = useState(activeNestling?.title ?? "");
   const nestlingData = useMemo(() => ({ title }), [title]);
-  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
+  useAutoSave(activeNestling?.id, nestlingData, updateNestling);
+
+  useEffect(() => {
+    const title = activeNestling?.title ?? "";
+    setTitle(title);
+  }, [activeNestling?.title]);
 
   const onNodesChange = useCallback(
     (changes: NodeChange<MindmapNode>[]) => {
@@ -136,7 +138,7 @@ function MindmapEditorContent() {
         }
       });
     },
-    [nodes, updateNode, setNodes, deleteNode, edges, setEdges],
+    [nodes, updateNode, setNodes, deleteNode, edges, setEdges, updateEdge],
   );
 
   const onNodeDelete = useCallback(
@@ -242,8 +244,10 @@ function MindmapEditorContent() {
           y: clientY,
         });
 
+        const id = activeNestling?.id;
+
         const newNode = await createNode({
-          nestlingId: activeNestling.id!,
+          nestlingId: id!,
           position,
           height: 50,
           width: 120,
@@ -274,11 +278,12 @@ function MindmapEditorContent() {
       createNode,
       createEdge,
       nodes.length,
-      activeNestling.id,
+      activeNestling?.id,
     ],
   );
 
   const handleCreateNode = async () => {
+    if (!activeNestling) return;
     try {
       await createNode({
         nestlingId: activeNestling.id!,
@@ -301,7 +306,6 @@ function MindmapEditorContent() {
 
   const handleDeleteAll = async () => {
     if (nodes.length === 0) return;
-
     try {
       await Promise.all(nodes.map((node) => deleteNode(node.id)));
       toast.success("All nodes successfully deleted!");
@@ -311,9 +315,14 @@ function MindmapEditorContent() {
   };
 
   useEffect(() => {
-    getNodes(activeNestling.id);
-    getEdges(activeNestling.id);
-  }, [activeNestling.id, getNodes, getEdges]);
+    const id = activeNestling?.id;
+    if (id) {
+      getNodes(id);
+      getEdges(id);
+    }
+  }, [activeNestling?.id, getNodes, getEdges]);
+
+  if (!activeNestling) return null;
 
   return (
     <>

@@ -63,9 +63,7 @@ export default function BackgroundMusicPlayer() {
       if (musicLooped) return;
 
       if (activeMusic && music.length > 0) {
-        const currentIndex = music.findIndex(
-          (m) => m.id === activeMusic.id,
-        );
+        const currentIndex = music.findIndex((m) => m.id === activeMusic.id);
         const nextIndex = (currentIndex + 1) % music.length;
         const nextMusic = music[nextIndex];
 
@@ -116,6 +114,8 @@ export default function BackgroundMusicPlayer() {
     setAudioCurrentTime,
     setAudioIsPlaying,
     setAudioIsPaused,
+    setActiveMusicId,
+    volume,
   ]);
 
   return null;

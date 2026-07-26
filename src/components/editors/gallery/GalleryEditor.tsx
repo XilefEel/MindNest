@@ -14,25 +14,28 @@ import ImageLayout from "./ImageLayout";
 
 export default function GalleryEditor() {
   const activeNestling = useActiveNestling();
-  if (!activeNestling) return;
 
   const images = useImages();
   const { getImages } = useGalleryActions();
   const { updateNestling } = useNestlingActions();
 
-  const [title, setTitle] = useState(activeNestling.title);
-  const nestlingData = useMemo(() => ({ title }), [title]);
-  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
-
   const [layoutMode, setLayoutMode] = useState<"row" | "column">("row");
 
-  useEffect(() => {
-    setTitle(activeNestling.title);
-  }, [activeNestling.title]);
+  const [title, setTitle] = useState(activeNestling?.title ?? "");
+  const nestlingData = useMemo(() => ({ title }), [title]);
+  useAutoSave(activeNestling?.id, nestlingData, updateNestling);
 
   useEffect(() => {
-    getImages(activeNestling.id);
-  }, [getImages, activeNestling.id]);
+    const title = activeNestling?.title ?? "";
+    setTitle(title);
+  }, [activeNestling?.title]);
+
+  useEffect(() => {
+    const id = activeNestling?.id;
+    if (id) getImages(id);
+  }, [getImages, activeNestling?.id]);
+
+  if (!activeNestling) return null;
 
   return (
     <div className="flex flex-col gap-4">

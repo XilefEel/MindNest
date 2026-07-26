@@ -9,14 +9,15 @@ import { FolderOpen, Plus } from "lucide-react";
 export default function NestPreview() {
   const { user } = useAuth();
   const userId = user?.id;
-  if (!userId) return;
 
   const nests = useNests();
   const { getNests } = useNestActions();
 
   useEffect(() => {
-    getNests(userId);
+    if (userId) getNests(userId);
   }, [getNests, userId]);
+
+  if (!userId) return;
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-zinc-100 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800/50">

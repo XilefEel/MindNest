@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   useNestlingModal,
   useFolderModal,
@@ -101,6 +101,8 @@ export function useKeyboardShortcuts({
         ? clearActiveBackgroundId()
         : setActiveBackgroundId(storedBackgroundId),
   };
+  const shortcutHandlersRef = useRef(shortcutHandlers);
+  shortcutHandlersRef.current = shortcutHandlers;
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -129,24 +131,11 @@ export function useKeyboardShortcuts({
 
       if (match) {
         e.preventDefault();
-        shortcutHandlers[match.id]();
+        shortcutHandlersRef.current[match.id]();
       }
     };
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [
-    topbarHidden,
-    sidebarHidden,
-    isSidebarOpen,
-    isCardHidden,
-    isNestlingOpen,
-    isFolderOpen,
-    isSearchOpen,
-    isSettingsOpen,
-    audioIsPaused,
-    activeBackgroundId,
-    storedBackgroundId,
-    cycleTheme,
-  ]);
+  }, []);
 }

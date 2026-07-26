@@ -130,5 +130,24 @@ export default function useLoadNest({
     }
 
     restore();
-  }, [id]);
+  }, [
+    id,
+    setNest,
+    setLoading,
+    setActiveNestId,
+    setActiveBackgroundId,
+    setStoredBackgroundId,
+    setActiveMusicId,
+    setBackgroundBrightness,
+    setMusicVolume,
+    getNests,
+    getBackgrounds,
+    getMusic,
+    setActiveNestlingId,
+    setActiveFolderId,
+    setFolderOpen,
+    fetchSidebar,
+    getTags,
+    getAllNestlingTags,
+  ]);
 }

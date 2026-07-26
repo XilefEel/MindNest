@@ -28,11 +28,9 @@ import { SlashCommand } from "@/lib/utils/note";
 
 export default function NoteEditor() {
   const activeNestling = useActiveNestling();
-  if (!activeNestling) return;
-
   const { updateNestling } = useNestlingActions();
   const { getTemplates } = useNoteStore();
-  const [title, setTitle] = useState(activeNestling.title);
+  const [title, setTitle] = useState(activeNestling?.title ?? "");
   const [content, setContent] = useState({});
 
   const editor = useEditor({
@@ -94,7 +92,7 @@ export default function NoteEditor() {
   );
 
   const autoSaveStatus = useAutoSave(
-    activeNestling.id,
+    activeNestling?.id,
     nestlingData,
     updateNestling,
   );
@@ -113,16 +111,18 @@ export default function NoteEditor() {
   }, [editor]);
 
   useEffect(() => {
-    getTemplates(activeNestling.nestId);
-  }, [activeNestling.nestId]);
+    const nestId = activeNestling?.nestId;
+    if (nestId) getTemplates(nestId);
+  }, [activeNestling?.nestId, getTemplates]);
 
   useEffect(() => {
-    if (!activeNestling.content) return;
-
+    if (!editor || !activeNestling?.content) return;
     const noteContent = JSON.parse(activeNestling.content);
     editor.commands.setContent(noteContent);
     setContent(noteContent);
-  }, [editor]);
+  }, [editor]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!activeNestling) return null;
 
   return (
     <div className="flex h-full w-full flex-col gap-3">

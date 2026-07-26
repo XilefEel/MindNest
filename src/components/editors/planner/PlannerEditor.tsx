@@ -14,9 +14,7 @@ import { toast } from "@/lib/utils/toast.tsx";
 
 export default function CalendarEditor() {
   const activeNestling = useActiveNestling();
-  if (!activeNestling) return;
-
-  const [title, setTitle] = useState(activeNestling.title);
+  const [title, setTitle] = useState(activeNestling?.title ?? "");
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const { getEvents, createEvent, clearEvents } = usePlannerActions();
@@ -24,7 +22,7 @@ export default function CalendarEditor() {
   const { updateNestling } = useNestlingActions();
 
   const nestlingData = useMemo(() => ({ title }), [title]);
-  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
+  useAutoSave(activeNestling?.id, nestlingData, updateNestling);
 
   const { start, end } = useMemo(
     () => getWeekRange(selectedDate),
@@ -58,15 +56,19 @@ export default function CalendarEditor() {
 
   useEffect(() => {
     clearEvents();
-  }, [activeNestling.id]);
+  }, [activeNestling?.id, clearEvents]);
 
   useEffect(() => {
-    getEvents({
-      nestlingId: activeNestling.id,
-      start,
-      end,
-    });
-  }, [activeNestling.id, start, end]);
+    const id = activeNestling?.id;
+    if (id)
+      getEvents({
+        nestlingId: id,
+        start,
+        end,
+      });
+  }, [activeNestling?.id, start, end, getEvents]);
+
+  if (!activeNestling) return null;
 
   return (
     <div className="relative">

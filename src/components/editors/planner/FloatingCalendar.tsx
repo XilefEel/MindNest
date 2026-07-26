@@ -76,7 +76,7 @@ export default function FloatingCalendar({
     };
 
     fetch();
-  }, [isOpen, currentMonth, activeNestlingId]);
+  }, [isOpen, currentMonth, activeNestlingId, monthStart, monthEnd]);
 
   return createPortal(
     <BasePopover
@@ -127,7 +127,10 @@ export default function FloatingCalendar({
           <div className="grid grid-cols-7 gap-2">
             {days.map((day) => {
               return (
-                <div key={day.toString()} className="relative flex flex-col items-center">
+                <div
+                  key={day.toString()}
+                  className="relative flex flex-col items-center"
+                >
                   <button
                     onClick={() => handleDateClick(day)}
                     className={cn(

@@ -12,19 +12,21 @@ import DatabaseTableView from "./DatabaseTableView";
 
 export default function DatabaseEditor() {
   const activeNestling = useActiveNestling();
-  if (!activeNestling) return null;
 
   const { updateNestling } = useNestlingActions();
-  const [title, setTitle] = useState(activeNestling.title);
+  const [title, setTitle] = useState(activeNestling?.title ?? "");
   const nestlingData = useMemo(() => ({ title }), [title]);
-  useAutoSave(activeNestling.id!, nestlingData, updateNestling);
+  useAutoSave(activeNestling?.id, nestlingData, updateNestling);
 
   const viewMode = useDbViewMode();
   const { getDbData } = useDbActions();
 
   useEffect(() => {
-    getDbData(activeNestling.id!);
-  }, [activeNestling.id]);
+    const id = activeNestling?.id;
+    if (id) getDbData(id);
+  }, [getDbData, activeNestling?.id]);
+
+  if (!activeNestling) return null;
 
   return (
     <div className="flex h-full flex-col gap-4">

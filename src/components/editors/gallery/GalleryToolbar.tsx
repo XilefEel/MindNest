@@ -16,7 +16,6 @@ export default function GalleryToolbar({
   setLayoutMode: (mode: "row" | "column") => void;
 }) {
   const activeNestling = useActiveNestling();
-  if (!activeNestling) return null;
 
   const images = useImages();
   const activeBackgroundId = useActiveBackgroundId();
@@ -25,6 +24,7 @@ export default function GalleryToolbar({
   const [isUploading, setIsUploading] = useState(false);
 
   const handleDownloadAll = async () => {
+    if (!activeNestling) return;
     try {
       const selected = await downloadAll(activeNestling.id!);
       if (selected) {
@@ -36,6 +36,7 @@ export default function GalleryToolbar({
   };
 
   const handleSelectImage = async () => {
+    if (!activeNestling) return;
     try {
       setIsUploading(true);
       const selected = await selectImages(activeNestling.id!);
@@ -47,6 +48,8 @@ export default function GalleryToolbar({
       toast.error("Failed to upload image.");
     }
   };
+
+  if (!activeNestling) return null;
 
   return (
     <>

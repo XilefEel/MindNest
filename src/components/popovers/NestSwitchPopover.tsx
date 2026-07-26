@@ -14,10 +14,6 @@ export default function NestSwitchPopover({
 }: {
   onClose: () => void;
 }) {
-  const { user } = useAuth();
-  const userId = user?.id;
-  if (!userId) return;
-
   const navigate = useNavigate();
   const nests = useNests();
   const activeNestId = useActiveNestId();
@@ -27,6 +23,10 @@ export default function NestSwitchPopover({
     navigate(`/nest/${nest.id}`);
     onClose();
   };
+
+  const { user } = useAuth();
+  const userId = user?.id;
+  if (!userId) return;
 
   return (
     <>

@@ -11,7 +11,7 @@ type NoteState = {
   loading: boolean;
 
   addTemplate: (template: NewNoteTemplate) => Promise<NoteTemplate>;
-  useTemplate: (nestId: number, template: NoteTemplate) => Promise<void>;
+  applyTemplate: (nestId: number, template: NoteTemplate) => Promise<void>;
   getTemplates: (nestId: number) => Promise<void>;
   updateTemplate: (id: number, updates: Partial<NoteTemplate>) => Promise<void>;
   deleteTemplate: (id: number) => Promise<void>;
@@ -34,7 +34,7 @@ export const useNoteStore = create<NoteState>((set, get) => ({
     return newTemplate;
   }),
 
-  useTemplate: withStoreErrorHandler(
+  applyTemplate: withStoreErrorHandler(
     set,
     async (nestId: number, template: NoteTemplate) => {
       await useNestlingStore.getState().updateNestling(nestId, {
@@ -80,7 +80,7 @@ export const useNoteActions = () =>
   useNoteStore(
     useShallow((state) => ({
       addTemplate: state.addTemplate,
-      useTemplate: state.useTemplate,
+      applyTemplate: state.applyTemplate,
       getTemplates: state.getTemplates,
       updateTemplate: state.updateTemplate,
       deleteTemplate: state.deleteTemplate,
