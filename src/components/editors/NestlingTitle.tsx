@@ -155,7 +155,7 @@ export default function NestlingTitle({
       </div>
 
       {showPicker && (
-        <div className="absolute top-10 left-0 z-50">
+        <div ref={pickerRef} className="absolute top-10 left-0 z-50">
           <EmojiMenu
             nestling={nestling}
             showPicker={showPicker}

@@ -31,10 +31,9 @@ export default function FolderItem({
 
   const FolderIcon = isFolderOpen ? FolderOpen : FolderClose;
 
-  const { ref, handleRef } =
-    useDraggable({
-      id: `folder-${folder.id}`,
-    });
+  const { ref, handleRef } = useDraggable({
+    id: `folder-${folder.id}`,
+  });
 
   const {
     value: name,
