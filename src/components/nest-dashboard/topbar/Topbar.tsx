@@ -151,7 +151,7 @@ export default function Topbar({
 
       <div
         className={cn(
-          "ml-auto flex items-center justify-center gap-6",
+          "ml-auto flex items-center justify-center gap-6 px-3 py-2",
           activeBackgroundId &&
             cn(
               "rounded-lg bg-white/30 dark:bg-black/30",

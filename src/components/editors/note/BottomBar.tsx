@@ -14,7 +14,7 @@ export default function BottomBar({
   return (
     <div
       className={cn(
-        "sticky bottom-0 z-10 flex w-full items-center justify-between rounded-lg bg-zinc-50/80 px-3 py-2 text-xs backdrop-blur-sm dark:bg-zinc-900/80",
+        "flex w-full items-center justify-between rounded-lg bg-zinc-50/80 px-3 py-2 text-xs backdrop-blur-sm dark:bg-zinc-900/80",
         activeBackgroundId && "bg-white/50 dark:bg-black/50",
       )}
     >

@@ -125,17 +125,18 @@ export default function NoteEditor() {
   if (!activeNestling) return null;
 
   return (
-    <div className="flex h-full w-full flex-col gap-3">
-      <NestlingTitle
-        title={title}
-        setTitle={setTitle}
-        nestling={activeNestling}
-      />
-
-      <div className="mx-auto flex h-full min-h-0 w-full max-w-200 flex-col">
-        <EditorContext.Provider value={providerValue}>
+    <EditorContext.Provider value={providerValue}>
+      <div className="flex h-full w-full flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <NestlingTitle
+            title={title}
+            setTitle={setTitle}
+            nestling={activeNestling}
+          />
           <ToolBar title={activeNestling.title} />
+        </div>
 
+        <div className="mx-auto flex h-full min-h-0 w-full max-w-200 flex-col">
           <div
             style={{ scrollbarGutter: "stable" }}
             className="w-full flex-1 overflow-auto"
@@ -143,10 +144,10 @@ export default function NoteEditor() {
           >
             <EditorContent editor={editor} className="tiptap w-full" />
           </div>
-        </EditorContext.Provider>
 
-        <BottomBar autoSaveStatus={autoSaveStatus} wordCount={wordCount} />
+          <BottomBar autoSaveStatus={autoSaveStatus} wordCount={wordCount} />
+        </div>
       </div>
-    </div>
+    </EditorContext.Provider>
   );
 }

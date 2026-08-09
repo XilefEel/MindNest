@@ -69,10 +69,7 @@ export default function MusicSection() {
 
       <div
         style={{ scrollbarGutter: "stable" }}
-        className={cn(
-          "grid grid-cols-3 gap-3 p-1",
-          activeBackgroundId && "bg-white/30 dark:bg-black/30",
-        )}
+        className="grid grid-cols-3 gap-3 p-1"
       >
         {music.length === 0 ? (
           <p className="p-4 text-center text-sm text-zinc-500 dark:text-zinc-400">

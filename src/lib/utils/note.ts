@@ -14,6 +14,11 @@ import {
   Heading4,
   Code2,
   TextQuote,
+  AlignCenter,
+  AlignJustify,
+  AlignLeft,
+  AlignRight,
+  Pilcrow,
 } from "lucide-react";
 import { Extension } from "@tiptap/core";
 import Suggestion, { SuggestionOptions } from "@tiptap/suggestion";
@@ -159,6 +164,13 @@ export const exportNoteToHTML = async (editor: Editor, title: string) => {
 
 export const suggestionItems: CommandItemType[] = [
   {
+    title: "Text",
+    group: "Text",
+    Icon: Pilcrow,
+    command: ({ editor, range }) =>
+      editor.chain().focus().deleteRange(range).setParagraph().run(),
+  },
+  {
     title: "Heading 1",
     group: "Text",
     Icon: Heading1,
@@ -247,6 +259,34 @@ export const suggestionItems: CommandItemType[] = [
     Icon: Minus,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).setHorizontalRule().run(),
+  },
+  {
+    title: "Align Left",
+    group: "Alignment",
+    Icon: AlignLeft,
+    command: ({ editor, range }) =>
+      editor.chain().focus().deleteRange(range).setTextAlign("left").run(),
+  },
+  {
+    title: "Align Center",
+    group: "Alignment",
+    Icon: AlignCenter,
+    command: ({ editor, range }) =>
+      editor.chain().focus().deleteRange(range).setTextAlign("center").run(),
+  },
+  {
+    title: "Align Right",
+    group: "Alignment",
+    Icon: AlignRight,
+    command: ({ editor, range }) =>
+      editor.chain().focus().deleteRange(range).setTextAlign("right").run(),
+  },
+  {
+    title: "Justify",
+    group: "Alignment",
+    Icon: AlignJustify,
+    command: ({ editor, range }) =>
+      editor.chain().focus().deleteRange(range).setTextAlign("justify").run(),
   },
 ];
 
