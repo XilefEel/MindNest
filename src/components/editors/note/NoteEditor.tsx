@@ -21,8 +21,6 @@ import {
 } from "@/stores/useNestlingStore";
 import NestlingTitle from "../NestlingTitle";
 import BottomBar from "./BottomBar";
-import { useNoteStore } from "@/stores/useNoteStore";
-import { openUrl } from "@tauri-apps/plugin-opener";
 import { TaskItem, TaskList } from "@tiptap/extension-list";
 import { SlashCommand } from "@/lib/utils/note";
 import CustomBubbleMenu from "./CustomBubbleMenu";
@@ -30,7 +28,6 @@ import CustomBubbleMenu from "./CustomBubbleMenu";
 export default function NoteEditor() {
   const activeNestling = useActiveNestling();
   const { updateNestling } = useNestlingActions();
-  const { getTemplates } = useNoteStore();
   const [title, setTitle] = useState(activeNestling?.title ?? "");
   const [content, setContent] = useState({});
 
@@ -65,15 +62,6 @@ export default function NoteEditor() {
       attributes: {
         class:
           "prose dark:prose-invert prose-sm md:prose-base max-w-none min-h-full outline-none focus:outline-none text-zinc-900 dark:text-zinc-100",
-      },
-      handleClick(_view, _pos, event) {
-        const target = event.target as HTMLElement;
-        const anchor = target.closest("a");
-        if (anchor?.href) {
-          openUrl(anchor.href);
-          return true;
-        }
-        return false;
       },
     },
   });
@@ -112,11 +100,6 @@ export default function NoteEditor() {
   }, [editor]);
 
   useEffect(() => {
-    const nestId = activeNestling?.nestId;
-    if (nestId) getTemplates(nestId);
-  }, [activeNestling?.nestId, getTemplates]);
-
-  useEffect(() => {
     if (!editor || !activeNestling?.content) return;
     const noteContent = JSON.parse(activeNestling.content);
     editor.commands.setContent(noteContent);
@@ -137,18 +120,17 @@ export default function NoteEditor() {
           <ToolBar title={activeNestling.title} />
         </div>
 
-        <div className="mx-auto flex h-full min-h-0 w-full max-w-200 flex-col">
-          <div
-            style={{ scrollbarGutter: "stable" }}
-            className="w-full flex-1 overflow-auto"
-            data-editor-scroll-container
-          >
+        <div
+          style={{ scrollbarGutter: "stable" }}
+          className="h-full min-h-0 w-full flex-1 overflow-auto"
+          data-editor-scroll-container
+        >
+          <div className="mx-auto flex w-full max-w-200 flex-col">
             <EditorContent editor={editor} className="tiptap w-full" />
             {editor && <CustomBubbleMenu editor={editor} />}
           </div>
-
-          <BottomBar autoSaveStatus={autoSaveStatus} wordCount={wordCount} />
         </div>
+        <BottomBar autoSaveStatus={autoSaveStatus} wordCount={wordCount} />
       </div>
     </EditorContext.Provider>
   );

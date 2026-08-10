@@ -1,8 +1,9 @@
-import { Download } from "lucide-react";
+import { Download, FilePen } from "lucide-react";
 import ToolBarItem from "./ToolBarItem.tsx";
 import { useCurrentEditor } from "@tiptap/react";
 import { exportNoteToHTML } from "@/lib/utils/note";
 import NoteTemplatePopover from "@/components/popovers/NoteTemplatePopover.tsx";
+import BasePopover from "@/components/popovers/BasePopover.tsx";
 
 export default function ToolBar({ title }: { title: string }) {
   const { editor } = useCurrentEditor();
@@ -10,7 +11,21 @@ export default function ToolBar({ title }: { title: string }) {
 
   return (
     <div className="flex flex-row gap-2">
-      <NoteTemplatePopover />
+      <BasePopover
+        align="end"
+        width="w-60"
+        padding="p-2"
+        trigger={
+          <button>
+            <ToolBarItem
+              Icon={FilePen}
+              label="Use Template"
+              onFormat={() => {}}
+            />
+          </button>
+        }
+        content={<NoteTemplatePopover />}
+      />
 
       <ToolBarItem
         Icon={Download}
