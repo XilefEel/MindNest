@@ -24,12 +24,23 @@ import BottomBar from "./BottomBar";
 import { TaskItem, TaskList } from "@tiptap/extension-list";
 import { SlashCommand } from "@/lib/utils/note";
 import CustomBubbleMenu from "./CustomBubbleMenu";
+import { useNoteFontSize, useNoteWidth } from "@/stores/useSettingsStore";
+import { cn } from "@/lib/utils/general";
+
+const widthClasses = {
+  narrow: "max-w-150",
+  normal: "max-w-200",
+  wide: "max-w-250",
+} as const;
 
 export default function NoteEditor() {
   const activeNestling = useActiveNestling();
   const { updateNestling } = useNestlingActions();
   const [title, setTitle] = useState(activeNestling?.title ?? "");
   const [content, setContent] = useState({});
+
+  const noteFontSize = useNoteFontSize();
+  const noteWidth = useNoteWidth();
 
   const editor = useEditor({
     extensions: [
@@ -56,13 +67,13 @@ export default function NoteEditor() {
       Typography,
       SlashCommand,
       Placeholder.configure({
-        placeholder: "Start typing...",
+        placeholder: "Start typing or press '/' for commands...",
       }),
     ],
     editorProps: {
       attributes: {
         class:
-          "prose dark:prose-invert prose-sm md:prose-base max-w-none min-h-full outline-none focus:outline-none text-zinc-900 dark:text-zinc-100",
+          "max-w-none min-h-full outline-none focus:outline-none text-zinc-900 dark:text-zinc-100",
       },
     },
   });
@@ -126,8 +137,17 @@ export default function NoteEditor() {
           className="h-full min-h-0 w-full flex-1 overflow-auto"
           data-editor-scroll-container
         >
-          <div className="mx-auto flex w-full max-w-200 flex-col">
-            <EditorContent editor={editor} className="tiptap w-full" />
+          <div
+            className={cn(
+              "mx-auto flex w-full max-w-200 flex-col",
+              widthClasses[noteWidth],
+            )}
+          >
+            <EditorContent
+              editor={editor}
+              className="tiptap w-full"
+              data-text-size={noteFontSize}
+            />
             {editor && <CustomBubbleMenu editor={editor} />}
           </div>
         </div>

@@ -94,3 +94,8 @@ export const useMusicLooped = () =>
   useSettingsStore((state) => state.musicLooped);
 
 export const useFontMode = () => useSettingsStore((state) => state.fontMode);
+
+export const useNoteFontSize = () =>
+  useSettingsStore((state) => state.noteFontSize);
+
+export const useNoteWidth = () => useSettingsStore((state) => state.noteWidth);

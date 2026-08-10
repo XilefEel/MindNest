@@ -16,6 +16,8 @@ export type Settings = {
   blurStrength: BlurStrength;
   musicLooped: boolean;
   fontMode: FontMode;
+  noteFontSize: "sm" | "base" | "lg";
+  noteWidth: "narrow" | "normal" | "wide";
 };
 
 export const DEFAULT_UI_SETTINGS: Settings = {
@@ -30,6 +32,8 @@ export const DEFAULT_UI_SETTINGS: Settings = {
   blurStrength: "low",
   musicLooped: false,
   fontMode: "sans",
+  noteFontSize: "base",
+  noteWidth: "normal",
 };
 
 const KEY = "uiSettings";
