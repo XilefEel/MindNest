@@ -25,6 +25,7 @@ import { useNoteStore } from "@/stores/useNoteStore";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { TaskItem, TaskList } from "@tiptap/extension-list";
 import { SlashCommand } from "@/lib/utils/note";
+import CustomBubbleMenu from "./CustomBubbleMenu";
 
 export default function NoteEditor() {
   const activeNestling = useActiveNestling();
@@ -143,6 +144,7 @@ export default function NoteEditor() {
             data-editor-scroll-container
           >
             <EditorContent editor={editor} className="tiptap w-full" />
+            {editor && <CustomBubbleMenu editor={editor} />}
           </div>
 
           <BottomBar autoSaveStatus={autoSaveStatus} wordCount={wordCount} />
