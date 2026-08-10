@@ -113,6 +113,11 @@ body {
 
   .dark & {
     color: theme("colors.zinc.100");
+
+    p.is-editor-empty:first-child::before,
+    p.is-empty::before {
+      color: theme("colors.zinc.500");
+    }
   }
 
   :first-child {
@@ -121,6 +126,15 @@ body {
 
   p {
     margin: 0.75rem 0;
+  }
+
+  p.is-editor-empty:first-child::before,
+  p.is-empty::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: theme("colors.zinc.400");
+    pointer-events: none;
+    height: 0;
   }
 
   h1,
@@ -168,6 +182,10 @@ body {
         margin: 0;
       }
     }
+  }
+
+  ol {
+    padding-left: 2.5rem;
   }
 
   hr {

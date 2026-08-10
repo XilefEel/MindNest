@@ -10,7 +10,7 @@ import {
   Check,
   Trash2,
 } from "lucide-react";
-import ToolBarItem from "./toolbar/ToolBarItem";
+import ToolBarItem from "./ToolBarItem";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { cn } from "@/lib/utils/general";
 import { useEffect, useState } from "react";

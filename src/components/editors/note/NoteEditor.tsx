@@ -6,11 +6,11 @@ import {
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useMemo, useState } from "react";
-import ToolBar from "./toolbar/ToolBar";
+import ToolBar from "./NoteMenu";
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import Image from "@tiptap/extension-image";
-import { Dropcursor } from "@tiptap/extensions";
+import { Placeholder } from "@tiptap/extensions";
 import Youtube from "@tiptap/extension-youtube";
 import { CharacterCount } from "@tiptap/extensions";
 import Typography from "@tiptap/extension-typography";
@@ -53,11 +53,12 @@ export default function NoteEditor() {
         controls: true,
         nocookie: true,
       }),
-      Dropcursor,
       Typography,
       SlashCommand,
+      Placeholder.configure({
+        placeholder: "Start typing...",
+      }),
     ],
-    content: "<p>Start writing here...</p>",
     editorProps: {
       attributes: {
         class:
