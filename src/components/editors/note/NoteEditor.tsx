@@ -78,11 +78,26 @@ export default function NoteEditor() {
     },
   });
 
-  const { wordCount } = useEditorState({
+  const { wordCount, taskStats } = useEditorState({
     editor,
-    selector: (ctx) => ({
-      wordCount: ctx.editor.storage.characterCount.words(),
-    }),
+    selector: (ctx) => {
+      let total = 0;
+      let completed = 0;
+
+      ctx.editor.state.doc.descendants((node) => {
+        if (node.type.name === "taskItem") {
+          total++;
+          if (node.attrs.checked) {
+            completed++;
+          }
+        }
+      });
+
+      return {
+        wordCount: ctx.editor.storage.characterCount.words(),
+        taskStats: { total, completed },
+      };
+    },
   });
 
   const providerValue = useMemo(() => ({ editor }), [editor]);
@@ -151,7 +166,12 @@ export default function NoteEditor() {
             {editor && <CustomBubbleMenu editor={editor} />}
           </div>
         </div>
-        <BottomBar autoSaveStatus={autoSaveStatus} wordCount={wordCount} />
+
+        <BottomBar
+          autoSaveStatus={autoSaveStatus}
+          wordCount={wordCount}
+          taskStats={taskStats}
+        />
       </div>
     </EditorContext.Provider>
   );

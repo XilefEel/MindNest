@@ -257,11 +257,20 @@ body {
     background: theme("colors.zinc.900");
     color: theme("colors.zinc.100");
 
+    .dark & {
+      background: theme("colors.zinc.950");
+    }
+
     code {
       background: transparent;
       padding: 0;
       color: inherit;
       font-size: 0.9em;
+
+      .dark & {
+        background: transparent;
+        color: inherit;
+      }
     }
   }
 
