@@ -5,7 +5,7 @@ import {
   useEditorState,
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ToolBar from "./NoteMenu";
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
@@ -26,6 +26,7 @@ import { SlashCommand } from "@/lib/utils/note";
 import CustomBubbleMenu from "./CustomBubbleMenu";
 import { useNoteFontSize, useNoteWidth } from "@/stores/useSettingsStore";
 import { cn } from "@/lib/utils/general";
+import confetti from "canvas-confetti";
 
 const widthClasses = {
   narrow: "max-w-150",
@@ -132,6 +133,35 @@ export default function NoteEditor() {
     editor.commands.setContent(noteContent);
     setContent(noteContent);
   }, [editor]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const prevTaskStats = useRef<{ total: number; completed: number } | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const prev = prevTaskStats.current;
+
+    if (prev === null) {
+      prevTaskStats.current = taskStats;
+      return;
+    }
+
+    const justCompleted =
+      prev.total > 0 &&
+      prev.completed < prev.total &&
+      taskStats.total > 0 &&
+      taskStats.completed === taskStats.total;
+
+    if (justCompleted) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 1 },
+      });
+    }
+
+    prevTaskStats.current = taskStats;
+  }, [taskStats]);
 
   if (!activeNestling) return null;
 
