@@ -19,20 +19,20 @@ export default function BottomBar({
   return (
     <div
       className={cn(
-        "flex w-full items-center gap-6 rounded-lg bg-zinc-50/80 px-3 py-2 text-xs backdrop-blur-sm dark:bg-zinc-900/80",
-        activeBackgroundId && "bg-white/50 dark:bg-black/50",
+        "flex w-full items-center gap-6 rounded-lg px-3 py-2 text-xs",
+        activeBackgroundId && "bg-white/10 backdrop-blur-sm dark:bg-black/10",
       )}
     >
       <div className="mr-auto flex items-center gap-2">
         {autoSaveStatus === "saving" && (
           <>
-            <Loader2 className="h-3 w-3 animate-spin text-blue-500" />
+            <Loader2 className="size-3 shrink-0 animate-spin text-blue-500" />
             <span className="text-blue-600 dark:text-blue-400">Saving...</span>
           </>
         )}
         {autoSaveStatus === "saved" && (
           <>
-            <Check className="h-3 w-3 text-green-500" />
+            <Check className="size-3 shrink-0 text-green-500" />
             <span className="text-green-600 dark:text-green-400">
               All changes saved
             </span>
@@ -40,7 +40,7 @@ export default function BottomBar({
         )}
         {autoSaveStatus === "error" && (
           <>
-            <AlertCircle className="h-3 w-3 text-red-500" />
+            <AlertCircle className="size-3 shrink-0 text-red-500" />
             <span className="text-red-600 dark:text-red-400">
               Failed to save
             </span>

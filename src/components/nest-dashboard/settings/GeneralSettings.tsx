@@ -163,10 +163,10 @@ export default function GeneralSettings() {
       <div className="flex items-center justify-between">
         <div>
           <label className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-            Theme
+            Font Mode
           </label>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Choose your preferred theme
+            Choose your preferred font mode
           </p>
         </div>
 
