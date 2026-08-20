@@ -1,14 +1,25 @@
 import BaseToolTip from "@/components/BaseToolTip";
 import { cn } from "@/lib/utils/general";
-import { useNestlingModal, useFolderModal } from "@/stores/useModalStore";
+import {
+  useNestlingModal,
+  useFolderModal,
+  useSearchModal,
+} from "@/stores/useModalStore";
 import { useNestlingActions } from "@/stores/useNestlingStore";
-import { FilePlus, FolderPlus, Minimize2, Maximize2 } from "lucide-react";
+import {
+  FilePlus,
+  FolderPlus,
+  Minimize2,
+  Maximize2,
+  Search,
+} from "lucide-react";
 import { useActiveBackgroundId } from "@/stores/useNestStore.tsx";
 
 export default function ToolBar({ nestId }: { nestId: number }) {
   const { toggleAllFolders } = useNestlingActions();
   const { openNestlingModal } = useNestlingModal();
   const { openFolderModal } = useFolderModal();
+  const { setIsSearchOpen } = useSearchModal();
   const activeBackgroundId = useActiveBackgroundId();
 
   const buttons = [
@@ -32,6 +43,11 @@ export default function ToolBar({ nestId }: { nestId: number }) {
       onClick: () => toggleAllFolders(true),
       Icon: Maximize2,
     },
+    {
+      label: "Search",
+      onClick: () => setIsSearchOpen(true),
+      Icon: Search,
+    },
   ];
 
   return (
@@ -44,7 +60,7 @@ export default function ToolBar({ nestId }: { nestId: number }) {
     >
       {buttons.map((btn) => (
         <BaseToolTip label={btn.label} key={btn.label}>
-          <button
+          <div
             onClick={btn.onClick}
             onDoubleClick={(e) => e.stopPropagation()}
             className={cn(
@@ -55,7 +71,7 @@ export default function ToolBar({ nestId }: { nestId: number }) {
             )}
           >
             <btn.Icon className="size-4 shrink-0" />
-          </button>
+          </div>
         </BaseToolTip>
       ))}
     </div>

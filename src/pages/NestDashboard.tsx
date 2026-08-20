@@ -105,7 +105,6 @@ export default function NestDashboardPage() {
 
   return (
     <div
-      style={{ scrollbarGutter: "stable" }}
       className="flex h-screen flex-col bg-zinc-50 pb-2 select-none dark:bg-zinc-900"
       onContextMenu={(e) => e.preventDefault()}
     >
@@ -184,6 +183,7 @@ export default function NestDashboardPage() {
           </aside>
 
           <main
+            style={{ scrollbarGutter: "stable" }}
             className={cn(
               "relative flex-1 overflow-y-auto px-5 py-3 md:mx-3",
               activeBackgroundId &&
