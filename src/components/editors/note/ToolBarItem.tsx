@@ -1,4 +1,4 @@
-import BaseToolTip from "@/components/BaseToolTip";
+import BaseTooltip from "@/components/BaseTooltip";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { LucideIcon } from "lucide-react";
@@ -17,7 +17,7 @@ export default function ToolBarItem({
   const activeBackgroundId = useActiveBackgroundId();
 
   return (
-    <BaseToolTip label={label}>
+    <BaseTooltip label={label}>
       <button
         onMouseDown={(e) => {
           e.preventDefault();
@@ -35,6 +35,6 @@ export default function ToolBarItem({
       >
         <Icon className="size-4 shrink-0" />
       </button>
-    </BaseToolTip>
+    </BaseTooltip>
   );
 }

@@ -1,4 +1,4 @@
-import BaseToolTip from "@/components/BaseToolTip";
+import BaseTooltip from "@/components/BaseTooltip";
 import { cn } from "@/lib/utils/general";
 import { Grid, List } from "lucide-react";
 
@@ -11,7 +11,7 @@ export default function ViewToggle({
 }) {
   return (
     <div className="flex rounded border border-zinc-200 bg-zinc-100 p-1 dark:border-zinc-700 dark:bg-zinc-800">
-      <BaseToolTip label="Grid view">
+      <BaseTooltip label="Grid view">
         <button
           onClick={() => setViewMode("grid")}
           className={cn(
@@ -23,9 +23,9 @@ export default function ViewToggle({
         >
           <Grid size={18} />
         </button>
-      </BaseToolTip>
+      </BaseTooltip>
 
-      <BaseToolTip label="List view">
+      <BaseTooltip label="List view">
         <button
           onClick={() => setViewMode("list")}
           className={cn(
@@ -37,7 +37,7 @@ export default function ViewToggle({
         >
           <List size={18} />
         </button>
-      </BaseToolTip>
+      </BaseTooltip>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils/general";
 import { LucideIcon } from "lucide-react";
-import BaseToolTip from "@/components/BaseToolTip.tsx";
+import BaseTooltip from "@/components/BaseTooltip";
 import { useActiveBackgroundId } from "@/stores/useNestStore.tsx";
 
 export default function TopbarButton({
@@ -17,7 +17,7 @@ export default function TopbarButton({
   const activeBackgroundId = useActiveBackgroundId();
 
   return (
-    <BaseToolTip label={label}>
+    <BaseTooltip label={label}>
       <button
         className={cn(
           "rounded-lg text-zinc-800 transition-colors dark:text-zinc-200",
@@ -33,6 +33,6 @@ export default function TopbarButton({
       >
         <Icon className="size-4 sm:size-5" />
       </button>
-    </BaseToolTip>
+    </BaseTooltip>
   );
 }

@@ -1,4 +1,4 @@
-import BaseToolTip from "@/components/BaseToolTip";
+import BaseTooltip from "@/components/BaseTooltip";
 import { cn } from "@/lib/utils/general";
 import {
   useNestlingModal,
@@ -59,7 +59,7 @@ export default function ToolBar({ nestId }: { nestId: number }) {
       className="mb-2.5 flex items-center border-b border-zinc-400 dark:border-zinc-500"
     >
       {buttons.map((btn) => (
-        <BaseToolTip label={btn.label} key={btn.label}>
+        <BaseTooltip label={btn.label} key={btn.label}>
           <div
             onClick={btn.onClick}
             onDoubleClick={(e) => e.stopPropagation()}
@@ -72,7 +72,7 @@ export default function ToolBar({ nestId }: { nestId: number }) {
           >
             <btn.Icon className="size-4 shrink-0" />
           </div>
-        </BaseToolTip>
+        </BaseTooltip>
       ))}
     </div>
   );

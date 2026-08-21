@@ -11,7 +11,7 @@ import MusicItem from "./MusicItem";
 import { FolderOpen, Repeat, Volume1, Volume2, VolumeX } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { useMusicLooped, useSettingsActions } from "@/stores/useSettingsStore";
-import BaseToolTip from "@/components/BaseToolTip";
+import BaseTooltip from "@/components/BaseTooltip";
 
 export default function MusicSection() {
   const activeNestId = useActiveNestId();
@@ -48,7 +48,7 @@ export default function MusicSection() {
           </p>
         </div>
 
-        <BaseToolTip label="Open Music Folder">
+        <BaseTooltip label="Open Music Folder">
           <button
             onClick={() =>
               openAppFolder({ location: "roaming", subfolder: "music" })
@@ -64,7 +64,7 @@ export default function MusicSection() {
           >
             <FolderOpen className="size-4 shrink-0" />
           </button>
-        </BaseToolTip>
+        </BaseTooltip>
       </div>
 
       <div

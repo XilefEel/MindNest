@@ -1,4 +1,4 @@
-import BaseToolTip from "@/components/BaseToolTip";
+import BaseTooltip from "@/components/BaseTooltip";
 import { Bookmark } from "@/lib/types/bookmark";
 import { exportBookmarksToJson } from "@/lib/utils/bookmark";
 import { cn } from "@/lib/utils/general";
@@ -62,7 +62,7 @@ export default function BookmarkToolbar({
           handleAddBookmark={handleAddBookmark}
         >
           <div>
-            <BaseToolTip label="Add Bookmark">
+            <BaseTooltip label="Add Bookmark">
               <button
                 className={cn(
                   "rounded p-2 transition-colors",
@@ -75,11 +75,11 @@ export default function BookmarkToolbar({
               >
                 <BookmarkPlus className="size-4 shrink-0" />
               </button>
-            </BaseToolTip>
+            </BaseTooltip>
           </div>
         </BookmarkPopover>
 
-        <BaseToolTip label={`Open All (${bookmarks.length})`}>
+        <BaseTooltip label={`Open All (${bookmarks.length})`}>
           <button
             onClick={handleOpenAll}
             disabled={bookmarks.length === 0}
@@ -94,9 +94,9 @@ export default function BookmarkToolbar({
           >
             <ExternalLink className="size-4 shrink-0" />
           </button>
-        </BaseToolTip>
+        </BaseTooltip>
 
-        <BaseToolTip label="Export to JSON">
+        <BaseTooltip label="Export to JSON">
           <button
             onClick={() => exportBookmarksToJson(bookmarks, title)}
             disabled={bookmarks.length === 0}
@@ -111,7 +111,7 @@ export default function BookmarkToolbar({
           >
             <Download className="size-4 shrink-0" />
           </button>
-        </BaseToolTip>
+        </BaseTooltip>
 
         <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
       </div>

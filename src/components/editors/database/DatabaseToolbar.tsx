@@ -1,4 +1,4 @@
-import BaseToolTip from "@/components/BaseToolTip";
+import BaseTooltip from "@/components/BaseTooltip";
 import BasePopover from "@/components/popovers/BasePopover";
 import DatabaseFilterPopover from "@/components/popovers/DatabaseFilterPopover";
 import DatabaseSortPopover from "@/components/popovers/DatabaseSortPopover";
@@ -56,7 +56,7 @@ export default function DatabaseToolbar() {
           padding="p-2"
           trigger={
             <div className="flex items-center justify-center">
-              <BaseToolTip label="Filter">
+              <BaseTooltip label="Filter">
                 <button
                   className={cn(
                     "rounded-lg p-1 text-zinc-800 transition-colors dark:text-zinc-200",
@@ -69,7 +69,7 @@ export default function DatabaseToolbar() {
                 >
                   <Filter className="size-4 shrink-0" />
                 </button>
-              </BaseToolTip>
+              </BaseTooltip>
             </div>
           }
           content={<DatabaseFilterPopover />}
@@ -81,7 +81,7 @@ export default function DatabaseToolbar() {
           side="left"
           trigger={
             <div className="flex items-center justify-center">
-              <BaseToolTip label="Sort">
+              <BaseTooltip label="Sort">
                 <button
                   className={cn(
                     "rounded-lg p-1 text-zinc-800 transition-colors dark:text-zinc-200",
@@ -94,14 +94,14 @@ export default function DatabaseToolbar() {
                 >
                   <ArrowDownUp className="size-4 shrink-0" />
                 </button>
-              </BaseToolTip>
+              </BaseTooltip>
             </div>
           }
           content={<DatabaseSortPopover />}
         />
 
         <div className="flex items-center justify-center">
-          <BaseToolTip label="Search">
+          <BaseTooltip label="Search">
             <button
               className={cn(
                 "rounded-lg p-1 text-zinc-800 transition-colors dark:text-zinc-200",
@@ -113,7 +113,7 @@ export default function DatabaseToolbar() {
             >
               <Search className="size-4 shrink-0" />
             </button>
-          </BaseToolTip>
+          </BaseTooltip>
         </div>
       </div>
     </div>

@@ -10,7 +10,7 @@ import { convertFileSrc } from "@tauri-apps/api/core";
 import { FolderOpen, Sun, SunDim, SunMedium, Trash2 } from "lucide-react";
 import { toast } from "@/lib/utils/toast";
 import { Slider } from "@/components/ui/slider";
-import BaseToolTip from "@/components/BaseToolTip";
+import BaseTooltip from "@/components/BaseTooltip";
 
 export default function BackgroundSection() {
   const activeNestId = useActiveNestId();
@@ -70,7 +70,7 @@ export default function BackgroundSection() {
           </p>
         </div>
 
-        <BaseToolTip label="Open Backgrounds Folder">
+        <BaseTooltip label="Open Backgrounds Folder">
           <button
             onClick={() =>
               openAppFolder({ location: "roaming", subfolder: "backgrounds" })
@@ -86,9 +86,8 @@ export default function BackgroundSection() {
           >
             <FolderOpen className="size-4 shrink-0" />
           </button>
-        </BaseToolTip>
+        </BaseTooltip>
       </div>
-
 
       <div className="grid grid-cols-2 gap-3 p-1 sm:grid-cols-3">
         {backgrounds.length === 0 ? (

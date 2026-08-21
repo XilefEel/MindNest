@@ -1,4 +1,4 @@
-import BaseToolTip from "@/components/BaseToolTip";
+import BaseTooltip from "@/components/BaseTooltip";
 import { cn } from "@/lib/utils/general";
 import { Rows3, Columns3 } from "lucide-react";
 
@@ -11,7 +11,7 @@ export default function LayoutToggle({
 }) {
   return (
     <div className="flex rounded border border-zinc-200 bg-zinc-100 p-1 dark:border-zinc-700 dark:bg-zinc-800">
-      <BaseToolTip label="Row view">
+      <BaseTooltip label="Row view">
         <button
           onClick={() => setLayoutMode("row")}
           className={cn(
@@ -23,9 +23,9 @@ export default function LayoutToggle({
         >
           <Rows3 size={18} />
         </button>
-      </BaseToolTip>
+      </BaseTooltip>
 
-      <BaseToolTip label="Column view">
+      <BaseTooltip label="Column view">
         <button
           onClick={() => setLayoutMode("column")}
           className={cn(
@@ -37,7 +37,7 @@ export default function LayoutToggle({
         >
           <Columns3 size={18} />
         </button>
-      </BaseToolTip>
+      </BaseTooltip>
     </div>
   );
 }

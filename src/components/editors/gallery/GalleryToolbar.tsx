@@ -1,4 +1,4 @@
-import BaseToolTip from "@/components/BaseToolTip";
+import BaseTooltip from "@/components/BaseTooltip";
 import { cn, openAppFolder } from "@/lib/utils/general";
 import { toast } from "@/lib/utils/toast";
 import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
@@ -53,7 +53,7 @@ export default function GalleryToolbar({
 
   return (
     <>
-      <BaseToolTip label="Open Gallery Folder">
+      <BaseTooltip label="Open Gallery Folder">
         <button
           onClick={() =>
             openAppFolder({ location: "roaming", subfolder: "gallery" })
@@ -69,9 +69,9 @@ export default function GalleryToolbar({
         >
           <FolderOpen className="size-4 shrink-0" />
         </button>
-      </BaseToolTip>
+      </BaseTooltip>
 
-      <BaseToolTip label="Download All">
+      <BaseTooltip label="Download All">
         <button
           onClick={handleDownloadAll}
           disabled={images.length === 0}
@@ -86,9 +86,9 @@ export default function GalleryToolbar({
         >
           <Download className="size-4 shrink-0" />
         </button>
-      </BaseToolTip>
+      </BaseTooltip>
 
-      <BaseToolTip label="Add Images">
+      <BaseTooltip label="Add Images">
         <button
           onClick={handleSelectImage}
           disabled={isUploading}
@@ -107,7 +107,7 @@ export default function GalleryToolbar({
             <Upload className="size-4 shrink-0" />
           )}
         </button>
-      </BaseToolTip>
+      </BaseTooltip>
 
       <LayoutToggle layoutMode={layoutMode} setLayoutMode={setLayoutMode} />
     </>
