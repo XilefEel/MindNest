@@ -29,12 +29,12 @@ export default function Titlebar() {
   return (
     <div
       data-tauri-drag-region
-      className="fixed z-100 flex h-6 w-full items-center justify-between dark:text-white"
+      className="fixed z-50 flex h-6 w-full items-center justify-between dark:text-white"
     >
       <div
         className={cn(
           "ml-auto flex items-center",
-          activeBackgroundId && "bg-white/30 backdrop-blur-sm dark:bg-black/30",
+          activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/50",
         )}
       >
         <div

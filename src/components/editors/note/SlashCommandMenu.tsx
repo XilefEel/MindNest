@@ -118,7 +118,7 @@ export const SlashCommandMenu = forwardRef<
         className={cn(
           "max-h-75 w-60 overflow-y-auto rounded-lg border border-zinc-200 bg-white p-2 shadow-md select-none dark:border-zinc-700 dark:bg-zinc-800",
           activeBackgroundId &&
-            "border-0 bg-white/50 backdrop-blur-sm dark:bg-black/30",
+            "border-0 bg-white/50 backdrop-blur-sm dark:bg-black/50",
         )}
       >
         <CommandList>

@@ -70,7 +70,7 @@ export default function Sidebar({
             ? "rounded-tl-2xl rounded-bl-2xl"
             : "rounded-tr-2xl rounded-br-2xl",
           activeBackgroundId &&
-            "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30 md:dark:bg-black/30",
+            "border-transparent bg-white/50 dark:border-transparent dark:bg-black/50 md:dark:bg-black/50",
         )}
       >
         {!sidebarToolbarHidden && <ToolBar nestId={nestId} />}

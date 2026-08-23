@@ -188,7 +188,7 @@ export default function NestDashboardPage() {
               "relative flex-1 overflow-y-auto px-5 py-3 md:mx-3",
               activeBackgroundId &&
                 cn(
-                  "rounded-2xl bg-white/30 dark:bg-black/30",
+                  "rounded-2xl bg-white/50 dark:bg-black/50",
                   getBlurClass(blurStrength),
                 ),
             )}

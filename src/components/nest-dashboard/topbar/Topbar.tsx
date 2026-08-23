@@ -82,15 +82,15 @@ export default function Topbar({
           "flex items-center justify-center p-1",
           activeBackgroundId &&
             cn(
-              "rounded-lg bg-white/30 dark:bg-black/30",
+              "rounded-lg bg-white/50 dark:bg-black/50",
               getBlurClass(blurStrength),
             ),
         )}
       >
-        <TopbarButton label={"Go Back"} action={handleExit} Icon={ArrowLeft} />
+        <TopbarButton label="Go Back" action={handleExit} Icon={ArrowLeft} />
 
         <TopbarButton
-          label={"Toggle Sidebar"}
+          label="Toggle Sidebar"
           action={() => setIsSidebarOpen(!isSidebarOpen)}
           Icon={Menu}
           isHidden
@@ -102,7 +102,7 @@ export default function Topbar({
           "flex items-center gap-3 p-1 px-3",
           activeBackgroundId &&
             cn(
-              "rounded-lg bg-white/30 dark:bg-black/30",
+              "rounded-lg bg-white/50 dark:bg-black/50",
               getBlurClass(blurStrength),
             ),
         )}
@@ -154,21 +154,21 @@ export default function Topbar({
           "ml-auto flex items-center justify-center gap-6 px-3 py-2",
           activeBackgroundId &&
             cn(
-              "rounded-lg bg-white/30 dark:bg-black/30",
+              "rounded-lg bg-white/50 dark:bg-black/50",
               getBlurClass(blurStrength),
             ),
         )}
       >
-        <TopbarButton label={"Share"} action={() => {}} Icon={Link} />
+        <TopbarButton label="Share" action={() => {}} Icon={Link} />
 
         <TopbarButton
-          label={"Settings"}
+          label="Settings"
           action={() => setIsSettingsOpen(true)}
           Icon={Settings}
         />
 
         <TopbarButton
-          label={"Profile"}
+          label="Profile"
           action={() => {}}
           Icon={CircleUserRound}
         />

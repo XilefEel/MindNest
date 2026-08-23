@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils/general";
 import { LucideIcon } from "lucide-react";
 import BaseTooltip from "@/components/BaseTooltip";
-import { useActiveBackgroundId } from "@/stores/useNestStore.tsx";
 
 export default function TopbarButton({
   label,
@@ -14,8 +13,6 @@ export default function TopbarButton({
   Icon: LucideIcon;
   isHidden?: boolean;
 }) {
-  const activeBackgroundId = useActiveBackgroundId();
-
   return (
     <BaseTooltip label={label}>
       <button
@@ -23,7 +20,6 @@ export default function TopbarButton({
           "rounded-lg text-zinc-800 transition-colors dark:text-zinc-200",
           "hover:text-teal-500 dark:hover:text-teal-300",
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-          activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
           isHidden && "block md:hidden",
         )}
         onClick={action}

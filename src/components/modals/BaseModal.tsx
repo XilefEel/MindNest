@@ -61,7 +61,7 @@ export default function BaseModal({
           "flex flex-col rounded-2xl border-0 bg-white p-3 select-none md:p-6 dark:bg-zinc-800",
           isLarge && "md:min-w-3xl",
           activeBackgroundId &&
-            cn("bg-white/30 dark:bg-black/30", getBlurClass(blurStrength)),
+            cn("bg-white/50 dark:bg-black/50", getBlurClass(blurStrength)),
         )}
       >
         <DialogHeader>

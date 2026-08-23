@@ -44,7 +44,7 @@ export default function BasePopover({
           padding,
           activeBackgroundId &&
             cn(
-              "border-transparent bg-white/30 dark:border-transparent dark:bg-black/30",
+              "border-transparent bg-white/50 dark:border-transparent dark:bg-black/50",
               getBlurClass(blurStrength),
             ),
         )}

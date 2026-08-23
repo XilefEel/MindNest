@@ -56,7 +56,10 @@ export default function ToolBar({ nestId }: { nestId: number }) {
         e.preventDefault();
         e.stopPropagation();
       }}
-      className="mb-2.5 flex items-center border-b border-zinc-400 dark:border-zinc-500"
+      className={cn(
+        "mb-2.5 flex items-center border-b border-zinc-400 dark:border-zinc-500",
+        activeBackgroundId && "border-black/30 dark:border-white/30",
+      )}
     >
       {buttons.map((btn) => (
         <BaseTooltip label={btn.label} key={btn.label}>
@@ -67,7 +70,6 @@ export default function ToolBar({ nestId }: { nestId: number }) {
               "rounded-lg p-2 text-zinc-800 transition-colors dark:text-zinc-200",
               "hover:text-teal-500 dark:hover:text-teal-300",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-              activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
             )}
           >
             <btn.Icon className="size-4 shrink-0" />
