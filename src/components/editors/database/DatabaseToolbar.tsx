@@ -1,4 +1,5 @@
 import BaseTooltip from "@/components/BaseTooltip";
+import IconButton from "@/components/ui/icon-button";
 import BasePopover from "@/components/popovers/BasePopover";
 import DatabaseFilterPopover from "@/components/popovers/DatabaseFilterPopover";
 import DatabaseSortPopover from "@/components/popovers/DatabaseSortPopover";
@@ -9,11 +10,9 @@ import {
   useDbViewMode,
   useDbActions,
 } from "@/stores/useDatabaseStore";
-import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { ArrowDownUp, Filter, Search, SquareKanban, Table } from "lucide-react";
 
 export default function DatabaseToolbar() {
-  const activeBackgroundId = useActiveBackgroundId();
   const sortColumnId = useSortColumnId();
   const filters = useDbFilters();
 
@@ -56,20 +55,15 @@ export default function DatabaseToolbar() {
           padding="p-2"
           trigger={
             <div className="flex items-center justify-center">
-              <BaseTooltip label="Filter">
-                <button
-                  className={cn(
-                    "rounded-lg p-1 text-zinc-800 transition-colors dark:text-zinc-200",
-                    "hover:text-teal-500 dark:hover:text-teal-400",
-                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-                    activeBackgroundId &&
-                      "hover:bg-black/5 dark:hover:bg-white/5",
-                    filters.length > 0 && "text-teal-500 dark:text-teal-400",
-                  )}
-                >
-                  <Filter className="size-4 shrink-0" />
-                </button>
-              </BaseTooltip>
+              <IconButton
+                label="Filter"
+                onClick={() => {}}
+                Icon={Filter}
+                className={cn(
+                  "p-1",
+                  filters.length > 0 && "text-teal-500 dark:text-teal-400",
+                )}
+              />
             </div>
           }
           content={<DatabaseFilterPopover />}
@@ -81,20 +75,15 @@ export default function DatabaseToolbar() {
           side="left"
           trigger={
             <div className="flex items-center justify-center">
-              <BaseTooltip label="Sort">
-                <button
-                  className={cn(
-                    "rounded-lg p-1 text-zinc-800 transition-colors dark:text-zinc-200",
-                    "hover:text-teal-500 dark:hover:text-teal-400",
-                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-                    activeBackgroundId &&
-                      "hover:bg-black/5 dark:hover:bg-white/5",
-                    sortColumnId && "text-teal-500 dark:text-teal-400",
-                  )}
-                >
-                  <ArrowDownUp className="size-4 shrink-0" />
-                </button>
-              </BaseTooltip>
+              <IconButton
+                label="Sort"
+                onClick={() => {}}
+                Icon={ArrowDownUp}
+                className={cn(
+                  "p-1",
+                  sortColumnId && "text-teal-500 dark:text-teal-400",
+                )}
+              />
             </div>
           }
           content={<DatabaseSortPopover />}
@@ -102,17 +91,15 @@ export default function DatabaseToolbar() {
 
         <div className="flex items-center justify-center">
           <BaseTooltip label="Search">
-            <button
+            <IconButton
+              label="Search"
+              onClick={() => {}}
+              Icon={Search}
               className={cn(
-                "rounded-lg p-1 text-zinc-800 transition-colors dark:text-zinc-200",
-                "hover:text-teal-500 dark:hover:text-teal-400",
-                "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-                activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
+                "p-1",
                 sortColumnId && "text-teal-500 dark:text-teal-400",
               )}
-            >
-              <Search className="size-4 shrink-0" />
-            </button>
+            />
           </BaseTooltip>
         </div>
       </div>

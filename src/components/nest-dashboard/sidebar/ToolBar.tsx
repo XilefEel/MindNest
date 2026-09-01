@@ -1,5 +1,5 @@
-import BaseTooltip from "@/components/BaseTooltip";
 import { cn } from "@/lib/utils/general";
+import IconButton from "@/components/ui/icon-button";
 import {
   useNestlingModal,
   useFolderModal,
@@ -62,19 +62,12 @@ export default function ToolBar({ nestId }: { nestId: number }) {
       )}
     >
       {buttons.map((btn) => (
-        <BaseTooltip label={btn.label} key={btn.label}>
-          <div
-            onClick={btn.onClick}
-            onDoubleClick={(e) => e.stopPropagation()}
-            className={cn(
-              "rounded-lg p-2 text-zinc-800 transition-colors dark:text-zinc-200",
-              "hover:text-teal-500 dark:hover:text-teal-300",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-            )}
-          >
-            <btn.Icon className="size-4 shrink-0" />
-          </div>
-        </BaseTooltip>
+        <IconButton
+          key={btn.label}
+          label={btn.label}
+          onClick={btn.onClick}
+          Icon={btn.Icon}
+        />
       ))}
     </div>
   );

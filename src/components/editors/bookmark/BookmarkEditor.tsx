@@ -93,7 +93,6 @@ export default function BookmarkEditor() {
 
       <BookmarkToolbar
         title={activeNestling.title}
-        bookmarks={bookmarks}
         viewMode={viewMode}
         searchQuery={searchQuery}
         setViewMode={setViewMode}

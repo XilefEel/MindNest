@@ -1,5 +1,3 @@
-import BaseTooltip from "@/components/BaseTooltip";
-import { Bookmark } from "@/lib/types/bookmark";
 import { exportBookmarksToJson } from "@/lib/utils/bookmark";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
@@ -8,10 +6,11 @@ import { ExternalLink, Download, Search, BookmarkPlus } from "lucide-react";
 import ViewToggle from "../gallery/ViewToggle";
 import BookmarkPopover from "../../popovers/BookmarkPopover";
 import { useState } from "react";
+import { useBookmarks } from "@/stores/useBookmarkStore";
+import IconButton from "@/components/ui/icon-button";
 
 export default function BookmarkToolbar({
   title,
-  bookmarks,
   viewMode,
   searchQuery,
   setViewMode,
@@ -19,7 +18,6 @@ export default function BookmarkToolbar({
   handleAddBookmark,
 }: {
   title: string;
-  bookmarks: Bookmark[];
   viewMode: "grid" | "list";
   searchQuery: string;
   setViewMode: (viewMode: "grid" | "list") => void;
@@ -27,6 +25,7 @@ export default function BookmarkToolbar({
   handleAddBookmark: (url: string) => void;
 }) {
   const activeBackgroundId = useActiveBackgroundId();
+  const bookmarks = useBookmarks();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenAll = () => {
@@ -62,56 +61,27 @@ export default function BookmarkToolbar({
           handleAddBookmark={handleAddBookmark}
         >
           <div>
-            <BaseTooltip label="Add Bookmark">
-              <button
-                className={cn(
-                  "rounded p-2 transition-colors",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-                  "hover:bg-zinc-100 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
-                  "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
-                  activeBackgroundId &&
-                    "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
-                )}
-              >
-                <BookmarkPlus className="size-4 shrink-0" />
-              </button>
-            </BaseTooltip>
+            <IconButton
+              label="Add Bookmark"
+              Icon={BookmarkPlus}
+              onClick={() => setIsOpen(true)}
+            />
           </div>
         </BookmarkPopover>
 
-        <BaseTooltip label={`Open All (${bookmarks.length})`}>
-          <button
-            onClick={handleOpenAll}
-            disabled={bookmarks.length === 0}
-            className={cn(
-              "rounded p-2 transition-colors",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-              "hover:bg-zinc-100 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
-              "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
-              activeBackgroundId &&
-                "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
-            )}
-          >
-            <ExternalLink className="size-4 shrink-0" />
-          </button>
-        </BaseTooltip>
+        <IconButton
+          label={`Open All (${bookmarks.length})`}
+          Icon={ExternalLink}
+          onClick={handleOpenAll}
+          disabled={bookmarks.length === 0}
+        />
 
-        <BaseTooltip label="Export to JSON">
-          <button
-            onClick={() => exportBookmarksToJson(bookmarks, title)}
-            disabled={bookmarks.length === 0}
-            className={cn(
-              "rounded p-2 transition-colors",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-              "hover:bg-zinc-100 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
-              "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
-              activeBackgroundId &&
-                "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
-            )}
-          >
-            <Download className="size-4 shrink-0" />
-          </button>
-        </BaseTooltip>
+        <IconButton
+          label="Export to JSON"
+          Icon={Download}
+          onClick={() => exportBookmarksToJson(bookmarks, title)}
+          disabled={bookmarks.length === 0}
+        />
 
         <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
       </div>

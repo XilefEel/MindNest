@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId, useNestActions } from "@/stores/useNestStore";
 import { useNestlingActions } from "@/stores/useNestlingStore";
-import TopbarButton from "./TopbarButton";
 import { useEffect, useRef, useState } from "react";
 import { clearLastNestId } from "@/lib/storage/nest";
 import { useSettingsModal } from "@/stores/useModalStore";
@@ -16,6 +15,7 @@ import { useInlineEdit } from "@/hooks/useInlineEdit";
 import BasePopover from "@/components/popovers/BasePopover";
 import NestSwitchPopover from "@/components/popovers/NestSwitchPopover";
 import { getBlurClass } from "@/lib/utils/settings";
+import IconButton from "@/components/ui/icon-button";
 
 export default function Topbar({
   nest,
@@ -79,7 +79,7 @@ export default function Topbar({
     >
       <div
         className={cn(
-          "flex items-center justify-center p-1",
+          "flex items-center justify-center gap-4 p-2",
           activeBackgroundId &&
             cn(
               "rounded-lg bg-white/50 dark:bg-black/50",
@@ -87,13 +87,20 @@ export default function Topbar({
             ),
         )}
       >
-        <TopbarButton label="Go Back" action={handleExit} Icon={ArrowLeft} />
+        <IconButton
+          label="Go Back"
+          onClick={handleExit}
+          Icon={ArrowLeft}
+          iconSize="size-4 sm:size-5"
+          className="p-0"
+        />
 
-        <TopbarButton
+        <IconButton
           label="Toggle Sidebar"
-          action={() => setIsSidebarOpen(!isSidebarOpen)}
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           Icon={Menu}
-          isHidden
+          iconSize="size-4 sm:size-5"
+          className="block p-0 md:hidden"
         />
       </div>
 
@@ -133,10 +140,6 @@ export default function Topbar({
           <input
             ref={inputRef}
             id="text"
-            className={cn(
-              "w-full truncate bg-transparent text-xl font-bold tracking-tight focus:outline-none sm:text-2xl",
-              !isEditing && "pointer-events-none",
-            )}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onBlur={handleBlur}
@@ -145,6 +148,10 @@ export default function Topbar({
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
+            className={cn(
+              "w-full truncate bg-transparent text-xl font-bold tracking-tight focus:outline-none sm:text-2xl",
+              !isEditing && "pointer-events-none",
+            )}
           />
         </div>
       </div>
@@ -159,18 +166,28 @@ export default function Topbar({
             ),
         )}
       >
-        <TopbarButton label="Share" action={() => {}} Icon={Link} />
-
-        <TopbarButton
-          label="Settings"
-          action={() => setIsSettingsOpen(true)}
-          Icon={Settings}
+        <IconButton
+          label="Share"
+          onClick={() => {}}
+          Icon={Link}
+          className="p-0"
+          iconSize="size-4 sm:size-5"
         />
 
-        <TopbarButton
+        <IconButton
+          label="Settings"
+          onClick={() => setIsSettingsOpen(true)}
+          Icon={Settings}
+          className="p-0"
+          iconSize="size-4 sm:size-5"
+        />
+
+        <IconButton
           label="Profile"
-          action={() => {}}
+          onClick={() => {}}
           Icon={CircleUserRound}
+          className="p-0"
+          iconSize="size-4 sm:size-5"
         />
       </div>
     </nav>

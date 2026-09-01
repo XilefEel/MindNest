@@ -1,9 +1,8 @@
-import BaseTooltip from "@/components/BaseTooltip";
-import { cn, openAppFolder } from "@/lib/utils/general";
+import IconButton from "@/components/ui/icon-button";
+import { openAppFolder } from "@/lib/utils/general";
 import { toast } from "@/lib/utils/toast";
 import { useGalleryActions, useImages } from "@/stores/useGalleryStore";
 import { useActiveNestling } from "@/stores/useNestlingStore";
-import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { Download, FolderOpen, Loader, Upload } from "lucide-react";
 import { useState } from "react";
 import LayoutToggle from "./LayoutToggle";
@@ -18,7 +17,6 @@ export default function GalleryToolbar({
   const activeNestling = useActiveNestling();
 
   const images = useImages();
-  const activeBackgroundId = useActiveBackgroundId();
   const { selectImages, downloadAll } = useGalleryActions();
 
   const [isUploading, setIsUploading] = useState(false);
@@ -53,61 +51,29 @@ export default function GalleryToolbar({
 
   return (
     <>
-      <BaseTooltip label="Open Gallery Folder">
-        <button
-          onClick={() =>
-            openAppFolder({ location: "roaming", subfolder: "gallery" })
-          }
-          className={cn(
-            "ml-auto rounded p-2 transition-colors",
-            "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-            "hover:bg-zinc-100 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
-            "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
-            activeBackgroundId &&
-              "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
-          )}
-        >
-          <FolderOpen className="size-4 shrink-0" />
-        </button>
-      </BaseTooltip>
+      <IconButton
+        label="Open Gallery Folder"
+        onClick={() =>
+          openAppFolder({ location: "roaming", subfolder: "gallery" })
+        }
+        Icon={FolderOpen}
+        className="ml-auto"
+      />
 
-      <BaseTooltip label="Download All">
-        <button
-          onClick={handleDownloadAll}
-          disabled={images.length === 0}
-          className={cn(
-            "rounded p-2 transition-colors",
-            "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-            "hover:bg-zinc-100 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
-            "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
-            activeBackgroundId &&
-              "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
-          )}
-        >
-          <Download className="size-4 shrink-0" />
-        </button>
-      </BaseTooltip>
+      <IconButton
+        label="Download All"
+        onClick={handleDownloadAll}
+        disabled={images.length === 0}
+        Icon={Download}
+      />
 
-      <BaseTooltip label="Add Images">
-        <button
-          onClick={handleSelectImage}
-          disabled={isUploading}
-          className={cn(
-            "rounded p-2 transition-colors",
-            "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 dark:focus-visible:ring-teal-300",
-            "hover:bg-zinc-100 hover:text-teal-500 dark:hover:bg-zinc-700 dark:hover:text-teal-400",
-            "disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-current dark:disabled:cursor-default dark:disabled:opacity-50 dark:disabled:hover:bg-transparent dark:disabled:hover:text-current",
-            activeBackgroundId &&
-              "hover:bg-black/5 hover:text-black dark:hover:bg-white/5",
-          )}
-        >
-          {isUploading ? (
-            <Loader className="size-4 shrink-0 animate-spin" />
-          ) : (
-            <Upload className="size-4 shrink-0" />
-          )}
-        </button>
-      </BaseTooltip>
+      <IconButton
+        label="Add Images"
+        onClick={handleSelectImage}
+        disabled={isUploading}
+        Icon={isUploading ? Loader : Upload}
+        className={isUploading ? "animate-spin" : undefined}
+      />
 
       <LayoutToggle layoutMode={layoutMode} setLayoutMode={setLayoutMode} />
     </>
