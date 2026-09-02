@@ -1,12 +1,15 @@
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { Minus, X } from "lucide-react";
+import { Minus, Settings, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import IconButton from "./ui/icon-button";
+import { useSettingsModal } from "@/stores/useModalStore";
 
 export default function Titlebar() {
   const appWindow = getCurrentWindow();
   const activeBackgroundId = useActiveBackgroundId();
+  const { setIsSettingsOpen } = useSettingsModal();
 
   const [isMaximized, setIsMaximized] = useState(false);
 
@@ -29,33 +32,39 @@ export default function Titlebar() {
   return (
     <div
       data-tauri-drag-region
-      className="fixed z-50 flex h-6 w-full items-center justify-between dark:text-white"
+      className="fixed z-50 flex h-8 w-full items-center justify-between dark:text-white"
     >
       <div
         className={cn(
-          "ml-auto flex items-center",
+          "ml-auto flex h-full items-center justify-center rounded-bl-md",
           activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/50",
         )}
       >
+        <IconButton
+          label="Settings"
+          Icon={Settings}
+          onClick={() => setIsSettingsOpen(true)}
+        />
+
         <div
+          onClick={() => appWindow.minimize()}
           className={cn(
-            "flex h-6 items-center justify-center px-4 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800",
+            "flex h-full items-center justify-center px-3 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800",
             activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
           )}
-          onClick={() => appWindow.minimize()}
         >
           <Minus className="size-4 shrink-0" />
         </div>
 
         <div
-          className={cn(
-            "flex h-6 items-center justify-center px-4 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800",
-            activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
-          )}
           onClick={async () => {
             await appWindow.toggleMaximize();
             setIsMaximized(await appWindow.isMaximized());
           }}
+          className={cn(
+            "flex h-full items-center justify-center px-3 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800",
+            activeBackgroundId && "hover:bg-black/5 dark:hover:bg-white/5",
+          )}
         >
           {isMaximized ? (
             <svg
@@ -92,8 +101,8 @@ export default function Titlebar() {
         </div>
 
         <div
-          className="group flex h-6 items-center justify-center px-4 transition-colors hover:bg-red-500"
           onClick={() => appWindow.close()}
+          className="group flex h-full items-center justify-center px-3 transition-colors hover:bg-red-500"
         >
           <X className="size-4 shrink-0 group-hover:text-white" />
         </div>

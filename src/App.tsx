@@ -4,7 +4,6 @@ import { ThemeProvider } from "@/components/nest-dashboard/settings/theme-provid
 import AppRoutes from "./routes/Routes";
 import { Toaster } from "sonner";
 import { useFontMode, useSettingsActions } from "./stores/useSettingsStore";
-import * as Tooltip from "@radix-ui/react-tooltip";
 
 export default function App() {
   const fontMode = useFontMode();
@@ -21,10 +20,8 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <Tooltip.Provider delayDuration={300}>
-        <AppRoutes />
-        <Toaster position="top-right" richColors />
-      </Tooltip.Provider>
+      <AppRoutes />
+      <Toaster position="top-right" richColors />
     </ThemeProvider>
   );
 }

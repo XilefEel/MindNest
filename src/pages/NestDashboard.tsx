@@ -147,7 +147,7 @@ export default function NestDashboardPage() {
 
         <div
           className={cn(
-            "flex flex-1 overflow-hidden sm:mt-6",
+            "mt-8 flex flex-1 overflow-hidden",
             sidebarPosition === "right" && "flex-row-reverse",
           )}
         >
