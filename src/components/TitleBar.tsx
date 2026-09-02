@@ -1,15 +1,28 @@
 import { cn } from "@/lib/utils/general";
 import { useActiveBackgroundId } from "@/stores/useNestStore";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { Minus, Settings, X } from "lucide-react";
+import {
+  Minus,
+  PanelLeftOpen,
+  PanelRightOpen,
+  Settings,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import IconButton from "./ui/icon-button";
 import { useSettingsModal } from "@/stores/useModalStore";
+import {
+  useSettingsActions,
+  useSidebarHidden,
+} from "@/stores/useSettingsStore";
 
 export default function Titlebar() {
   const appWindow = getCurrentWindow();
   const activeBackgroundId = useActiveBackgroundId();
+
+  const sidebarHidden = useSidebarHidden();
   const { setIsSettingsOpen } = useSettingsModal();
+  const { setSetting } = useSettingsActions();
 
   const [isMaximized, setIsMaximized] = useState(false);
 
@@ -34,6 +47,19 @@ export default function Titlebar() {
       data-tauri-drag-region
       className="fixed z-50 flex h-8 w-full items-center justify-between dark:text-white"
     >
+      <div
+        className={cn(
+          "flex h-full items-center justify-center rounded-br-md",
+          activeBackgroundId && "bg-white/50 backdrop-blur-sm dark:bg-black/50",
+        )}
+      >
+        <IconButton
+          label="Toggle Sidebar"
+          Icon={sidebarHidden ? PanelLeftOpen : PanelRightOpen}
+          onClick={() => setSetting("sidebarHidden", !sidebarHidden)}
+        />
+      </div>
+
       <div
         className={cn(
           "ml-auto flex h-full items-center justify-center rounded-bl-md",
