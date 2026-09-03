@@ -1,5 +1,4 @@
 import {
-  PanelTop,
   PanelLeft,
   Eye,
   FilePlus,
@@ -13,13 +12,6 @@ import {
 } from "lucide-react";
 
 const shortcutConfig = [
-  {
-    id: "toggleTopbar",
-    keys: ["Ctrl", "T"],
-    description: "Toggle topbar",
-    category: "Navigation",
-    Icon: PanelTop,
-  },
   {
     id: "toggleSidebar",
     keys: ["Ctrl", "E"],

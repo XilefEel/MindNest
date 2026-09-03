@@ -9,7 +9,6 @@ import {
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { cn } from "@/lib/utils/general";
 import { useActiveNestling } from "@/stores/useNestlingStore";
-import Topbar from "@/components/nest-dashboard/topbar/Topbar";
 import Sidebar from "@/components/nest-dashboard/sidebar/Sidebar";
 import Home from "@/components/nest-dashboard/home/Home";
 import LoadingScreen from "@/components/LoadingScreen";
@@ -28,7 +27,6 @@ import {
   useSettingsActions,
   useSidebarHidden,
   useSidebarPosition,
-  useTopbarHidden,
 } from "@/stores/useSettingsStore";
 import { NestlingType } from "@/lib/types/nestling";
 import { getBlurClass } from "@/lib/utils/settings";
@@ -57,7 +55,6 @@ export default function NestDashboardPage() {
   const activeBackgroundId = useActiveBackgroundId();
   const brightness = useBackgroundBrightness();
 
-  const topbarHidden = useTopbarHidden();
   const sidebarHidden = useSidebarHidden();
   const sidebarPosition = useSidebarPosition();
   const blurStrength = useBlurStrength();
@@ -124,27 +121,6 @@ export default function NestDashboardPage() {
           isCardHidden ? "pointer-events-none opacity-0" : "opacity-100",
         )}
       >
-        <nav
-          className={cn(
-            "mx-2 shrink-0 transition-[height] duration-300 ease-in-out",
-            topbarHidden ? "h-0" : "h-16",
-          )}
-        >
-          <div
-            onDoubleClick={() => setSetting("topbarHidden", !topbarHidden)}
-            className={cn(
-              "transition-transform duration-300",
-              topbarHidden ? "-translate-y-full" : "translate-y-0",
-            )}
-          >
-            <Topbar
-              nest={nest}
-              isSidebarOpen={isSidebarOpen}
-              setIsSidebarOpen={setIsSidebarOpen}
-            />
-          </div>
-        </nav>
-
         <div
           className={cn(
             "mt-8 flex flex-1 overflow-hidden",

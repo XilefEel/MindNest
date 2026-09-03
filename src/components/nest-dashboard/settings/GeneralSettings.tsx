@@ -10,7 +10,6 @@ import {
   useSettingsActions,
   useSidebarHidden,
   useSidebarPosition,
-  useTopbarHidden,
   useBlurStrength,
   useSidebarToolbarHidden,
   useFontMode,
@@ -31,7 +30,6 @@ export default function GeneralSettings() {
   const activeBackgroundId = useActiveBackgroundId();
 
   const fontMode = useFontMode();
-  const topbarHidden = useTopbarHidden();
   const sidebarHidden = useSidebarHidden();
   const sidebarPosition = useSidebarPosition();
   const sidebarToolbarHidden = useSidebarToolbarHidden();
@@ -44,12 +42,6 @@ export default function GeneralSettings() {
   const { setSetting, resetSettings } = useSettingsActions();
 
   const settings: Setting[] = [
-    {
-      text: "Hide Nest Topbar",
-      description: "Hide the topbar across all nests",
-      value: topbarHidden,
-      onChange: () => setSetting("topbarHidden", !topbarHidden),
-    },
     {
       text: "Hide Nest Sidebar",
       description: "Hide the sidebar across all nests",

@@ -15,7 +15,6 @@ import {
 import {
   useSettingsActions,
   useSidebarHidden,
-  useTopbarHidden,
 } from "@/stores/useSettingsStore";
 import shortcutConfig, { ShortcutId } from "@/lib/utils/shortcuts";
 
@@ -46,7 +45,6 @@ export function useKeyboardShortcuts({
   setIsCardHidden: (val: boolean) => void;
 }) {
   const { setSetting } = useSettingsActions();
-  const topbarHidden = useTopbarHidden();
   const sidebarHidden = useSidebarHidden();
 
   const activeBackgroundId = useActiveBackgroundId();
@@ -65,8 +63,6 @@ export function useKeyboardShortcuts({
   const cycleTheme = useThemeToggle();
 
   const shortcutHandlers: Record<ShortcutId, () => void> = {
-    toggleTopbar: () => setSetting("topbarHidden", !topbarHidden),
-
     toggleSidebar: () => {
       const isMobile = window.innerWidth < 768;
       isMobile

@@ -5,7 +5,6 @@ export type BlurStrength = "low" | "medium" | "high";
 export type FontMode = "sans" | "mono";
 
 export type Settings = {
-  topbarHidden: boolean;
   sidebarHidden: boolean;
   sidebarPosition: "left" | "right";
   sidebarToolbarHidden: boolean;
@@ -21,7 +20,6 @@ export type Settings = {
 };
 
 export const DEFAULT_UI_SETTINGS: Settings = {
-  topbarHidden: false,
   sidebarHidden: false,
   sidebarPosition: "left",
   sidebarToolbarHidden: false,

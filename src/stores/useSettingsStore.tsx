@@ -72,9 +72,6 @@ export const useSidebarPosition = () =>
 export const useSidebarToolbarHidden = () =>
   useSettingsStore((state) => state.sidebarToolbarHidden);
 
-export const useTopbarHidden = () =>
-  useSettingsStore((state) => state.topbarHidden);
-
 export const useCompactNestlingTitle = () =>
   useSettingsStore((state) => state.compactNestlingTitle);
 
