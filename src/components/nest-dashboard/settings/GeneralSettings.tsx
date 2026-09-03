@@ -13,6 +13,7 @@ import {
   useBlurStrength,
   useSidebarToolbarHidden,
   useFontMode,
+  useMinimalTitlebar,
 } from "@/stores/useSettingsStore.tsx";
 import { useActiveBackgroundId } from "@/stores/useNestStore.tsx";
 import { BlurStrength, FontMode } from "@/lib/storage/settings.ts";
@@ -30,6 +31,7 @@ export default function GeneralSettings() {
   const activeBackgroundId = useActiveBackgroundId();
 
   const fontMode = useFontMode();
+  const minimalTitlebar = useMinimalTitlebar();
   const sidebarHidden = useSidebarHidden();
   const sidebarPosition = useSidebarPosition();
   const sidebarToolbarHidden = useSidebarToolbarHidden();
@@ -42,6 +44,12 @@ export default function GeneralSettings() {
   const { setSetting, resetSettings } = useSettingsActions();
 
   const settings: Setting[] = [
+    {
+      text: "Minimal Titlebar",
+      description: "Hides the buttons in the titlebar",
+      value: minimalTitlebar,
+      onChange: () => setSetting("minimalTitlebar", !minimalTitlebar),
+    },
     {
       text: "Hide Nest Sidebar",
       description: "Hide the sidebar across all nests",

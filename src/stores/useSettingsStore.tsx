@@ -63,6 +63,9 @@ export const useSettingsActions = () =>
     })),
   );
 
+export const useMinimalTitlebar = () =>
+  useSettingsStore((state) => state.minimalTitlebar);
+
 export const useSidebarHidden = () =>
   useSettingsStore((state) => state.sidebarHidden);
 
