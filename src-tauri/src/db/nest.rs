@@ -14,35 +14,33 @@ pub fn create_nest_in_db(db: &AppDb, data: NewNest) -> AppResult<Nest> {
 
     let mut statement = connection.prepare(
         "
-            INSERT INTO nests (user_id, title, created_at, updated_at)
-            VALUES (?1, ?2, ?3, ?4)
-            RETURNING id, user_id, title, created_at, updated_at",
+            INSERT INTO nests (title, created_at, updated_at)
+            VALUES (?1, ?2, ?3)
+            RETURNING id, title, created_at, updated_at",
     )?;
 
     let nest = statement
-        .query_row(
-            params![data.user_id, data.title, created_at, created_at],
-            |row| Nest::try_from(row),
-        )
+        .query_row(params![data.title, created_at, created_at], |row| {
+            Nest::try_from(row)
+        })
         .log_err("create_nest_in_db")?;
 
     Ok(nest)
 }
 
-pub fn get_nests_by_user(db: &AppDb, user_id: i64) -> AppResult<Vec<Nest>> {
+pub fn get_all_nests_from_db(db: &AppDb) -> AppResult<Vec<Nest>> {
     let connection = db.conn()?;
 
     let mut statement = connection.prepare(
         "
-            SELECT id, user_id, title, created_at, updated_at
+            SELECT id, title, created_at, updated_at
             FROM nests
-            WHERE user_id = ?1
             ORDER BY created_at DESC",
     )?;
 
     let nests = statement
-        .query_map(params![user_id], |row| Nest::try_from(row))
-        .log_err("get_nests_by_user")?
+        .query_map(params![], |row| Nest::try_from(row))
+        .log_err("get_all_nests_from_db")?
         .collect::<Result<Vec<_>, _>>()?;
 
     Ok(nests)
@@ -53,7 +51,7 @@ pub fn get_nest_data(db: &AppDb, nest_id: i64) -> AppResult<Nest> {
 
     let mut statement = connection.prepare(
         "
-            SELECT id, user_id, title, created_at, updated_at
+            SELECT id, title, created_at, updated_at
             FROM nests
             WHERE id = ?1",
     )?;

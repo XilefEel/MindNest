@@ -2,7 +2,6 @@ import NestPreview from "./NestPreview";
 import SharedPreview from "./SharedPreview";
 import DiscoverPreview from "./DiscoverPreview";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
 
 function getGreeting(hour: number) {
   if (hour < 12) return "Good Morning 🌅";
@@ -11,8 +10,6 @@ function getGreeting(hour: number) {
 }
 
 export default function HomeSection() {
-  const { user } = useAuth();
-
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -42,7 +39,7 @@ export default function HomeSection() {
     <section className="flex flex-col gap-5 overflow-y-auto md:pt-6">
       <div className="items-center justify-between px-6 md:flex">
         <h1 className="text-4xl font-bold">
-          {greeting}, {user?.username}
+          {greeting}, welcome back
         </h1>
         <div className="mt-2 md:mt-0 md:text-right">
           <div className="text-2xl font-bold text-zinc-700 tabular-nums dark:text-zinc-200">

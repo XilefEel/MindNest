@@ -42,8 +42,8 @@ type NestState = {
 
   // Nest
   setActiveNestId: (nest: number | null) => void;
-  getNests: (userId: number) => Promise<void>;
-  createNest: (userId: number, title: string) => Promise<void>;
+  getNests: () => Promise<void>;
+  createNest: (title: string) => Promise<void>;
   updateNest: (nestId: number, newTitle: string) => Promise<void>;
   deleteNest: (nestId: number) => Promise<void>;
   refreshNest: () => Promise<void>;
@@ -96,14 +96,14 @@ export const useNestStore = create<NestState>((set, get) => ({
     set({ activeNestId: nestId });
   },
 
-  getNests: withStoreErrorHandler(set, async (userId) => {
-    const nests = await nestApi.getNests(userId);
+  getNests: withStoreErrorHandler(set, async () => {
+    const nests = await nestApi.getNests();
     set({ nests });
   }),
 
-  createNest: withStoreErrorHandler(set, async (userId, title) => {
-    await nestApi.createNest(userId, title);
-    await get().getNests(userId);
+  createNest: withStoreErrorHandler(set, async (title) => {
+    await nestApi.createNest(title);
+    await get().getNests();
   }),
 
   updateNest: withStoreErrorHandler(set, async (nestId, newTitle) => {

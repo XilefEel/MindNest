@@ -5,9 +5,6 @@ pub enum AppError {
     #[error("Validation error: {0}")]
     ValidationError(String),
 
-    #[error("Authentication failed: {0}")]
-    AuthError(String),
-
     #[error("Resource not found")]
     NotFound,
 

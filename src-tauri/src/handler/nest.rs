@@ -1,5 +1,5 @@
 use crate::db::nest::{
-    create_nest_in_db, delete_nest_from_db, get_nest_data, get_nests_by_user, update_nest_title,
+    create_nest_in_db, delete_nest_from_db, get_all_nests_from_db, get_nest_data, update_nest_title,
 };
 use crate::models::nest::{Nest, NewNest};
 use crate::utils::{db::AppDb, errors::AppResult};
@@ -10,8 +10,8 @@ pub fn create_nest(db: tauri::State<AppDb>, data: NewNest) -> AppResult<Nest> {
 }
 
 #[tauri::command]
-pub fn get_user_nests(db: tauri::State<AppDb>, user_id: i64) -> AppResult<Vec<Nest>> {
-    get_nests_by_user(&db, user_id)
+pub fn get_nests(db: tauri::State<AppDb>) -> AppResult<Vec<Nest>> {
+    get_all_nests_from_db(&db)
 }
 
 #[tauri::command]

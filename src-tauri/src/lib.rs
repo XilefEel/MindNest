@@ -4,7 +4,7 @@ mod handler;
 mod models;
 mod utils;
 
-use handler::nest::{create_nest, delete_nest, get_nest_by_id, get_user_nests, update_nest};
+use handler::nest::{create_nest, delete_nest, get_nest_by_id, get_nests, update_nest};
 use tauri::Manager;
 
 use handler::nestling::{
@@ -16,8 +16,6 @@ use handler::folder::{create_folder, delete_folder, get_folders, update_folder};
 use handler::background_image::{delete_background, get_backgrounds, import_background};
 
 use handler::background_music::{delete_music, get_music, import_music, update_music};
-
-use handler::user::{login_user, signup_user};
 
 use handler::note::{
     create_note_template, delete_note_template, edit_note, get_note_templates, update_note_template,
@@ -102,12 +100,9 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
-            // Auth
-            signup_user,
-            login_user,
             // Nests
             create_nest,
-            get_user_nests,
+            get_nests,
             update_nest,
             delete_nest,
             get_nest_by_id,

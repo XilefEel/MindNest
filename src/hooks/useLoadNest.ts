@@ -79,7 +79,7 @@ export default function useLoadNest({
 
         await Promise.all([
           fetchSidebar(lastNest.id),
-          getNests(lastNest.userId),
+          getNests(),
           getBackgrounds(lastNest.id),
           getMusic(lastNest.id),
           getTags(lastNest.id),

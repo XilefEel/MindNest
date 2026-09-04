@@ -5,10 +5,8 @@ import BaseModal from "./BaseModal";
 import { TextField } from "./TextField";
 
 export default function AddNestModal({
-  userId,
   children,
 }: {
-  userId: number;
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +24,7 @@ export default function AddNestModal({
     if (!title.trim()) return;
     setLoading(true);
     try {
-      await createNest(userId, title);
+      await createNest(title);
       handleExit();
       toast.success(`Nest "${title}" created successfully!`);
     } catch (err) {

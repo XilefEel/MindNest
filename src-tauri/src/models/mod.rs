@@ -11,4 +11,3 @@ pub mod nestling;
 pub mod note;
 pub mod planner;
 pub mod tag;
-pub mod user;

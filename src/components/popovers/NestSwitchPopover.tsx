@@ -1,4 +1,3 @@
-import { useAuth } from "@/context/AuthContext";
 import { Nest } from "@/lib/types/nest";
 import { cn } from "@/lib/utils/general";
 import {
@@ -23,10 +22,6 @@ export default function NestSwitchPopover({
     navigate(`/nest/${nest.id}`);
     onClose();
   };
-
-  const { user } = useAuth();
-  const userId = user?.id;
-  if (!userId) return;
 
   return (
     <>
