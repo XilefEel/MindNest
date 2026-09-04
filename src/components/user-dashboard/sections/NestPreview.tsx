@@ -3,21 +3,15 @@ import { Nest } from "@/lib/types/nest";
 import NestCard from "../cards/NestCard";
 import { useNestActions, useNests } from "@/stores/useNestStore";
 import { useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
 import { FolderOpen, Plus } from "lucide-react";
 
 export default function NestPreview() {
-  const { user } = useAuth();
-  const userId = user?.id;
-
   const nests = useNests();
   const { getNests } = useNestActions();
 
   useEffect(() => {
-    if (userId) getNests(userId);
-  }, [getNests, userId]);
-
-  if (!userId) return;
+    getNests();
+  }, [getNests]);
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-zinc-100 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800/50">
@@ -36,7 +30,7 @@ export default function NestPreview() {
           </div>
         </div>
 
-        <AddNestModal userId={user.id}>
+        <AddNestModal>
           <button className="flex items-center gap-1.5 rounded-lg bg-teal-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600">
             <Plus size={14} className="shrink-0" />
             <span>Create Nest</span>

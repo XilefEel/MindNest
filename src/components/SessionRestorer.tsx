@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
 import {
   useNestlingActions,
   useNestlingStore,
@@ -10,7 +9,6 @@ import { getLastNestId } from "@/lib/storage/nest";
 import { getLastNestling } from "@/lib/storage/nestling";
 
 export default function SessionRestorer() {
-  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -21,7 +19,7 @@ export default function SessionRestorer() {
 
   useEffect(() => {
     const shouldRestore =
-      user && !loading && location.pathname === "/" && !hasRestoredRef.current;
+      location.pathname === "/" && !hasRestoredRef.current;
 
     if (!shouldRestore) return;
     hasRestoredRef.current = true;
@@ -64,8 +62,6 @@ export default function SessionRestorer() {
 
     restoreSession();
   }, [
-    user,
-    loading,
     location.pathname,
     navigate,
     setActiveNestId,

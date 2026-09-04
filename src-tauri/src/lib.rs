@@ -17,8 +17,6 @@ use handler::background_image::{delete_background, get_backgrounds, import_backg
 
 use handler::background_music::{delete_music, get_music, import_music, update_music};
 
-use handler::user::{login_user, signup_user};
-
 use handler::note::{
     create_note_template, delete_note_template, edit_note, get_note_templates, update_note_template,
 };
@@ -102,9 +100,6 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
-            // Auth
-            signup_user,
-            login_user,
             // Nests
             create_nest,
             get_user_nests,

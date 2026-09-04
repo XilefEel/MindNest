@@ -2,16 +2,12 @@ import { Nest } from "@/lib/types/nest";
 import NestCard from "../cards/NestCard";
 import { useNestActions, useNests } from "@/stores/useNestStore";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
 import { Search, Plus, FolderOpen } from "lucide-react";
 import AddNestModal from "@/components/modals/AddNestModal";
 import { cn } from "@/lib/utils/general";
 import { Input } from "@/components/ui/input";
 
 export default function NestSection() {
-  const { user } = useAuth();
-  const userId = user?.id;
-
   const nests = useNests();
   const { getNests } = useNestActions();
 
@@ -21,10 +17,8 @@ export default function NestSection() {
   );
 
   useEffect(() => {
-    if (userId) getNests(userId);
-  }, [getNests, userId]);
-
-  if (!userId) return null;
+    getNests();
+  }, [getNests]);
 
   return (
     <div className="mx-auto flex w-full flex-col gap-5 md:p-4 md:pt-8">
@@ -38,7 +32,7 @@ export default function NestSection() {
           </p>
         </div>
 
-        <AddNestModal userId={userId}>
+        <AddNestModal>
           <button className="flex items-center gap-1.5 rounded-lg bg-teal-500 px-3 py-1.5 text-sm text-white shadow transition-colors hover:bg-teal-600">
             <Plus size={14} className="shrink-0" />
             <span>Create Nest</span>
