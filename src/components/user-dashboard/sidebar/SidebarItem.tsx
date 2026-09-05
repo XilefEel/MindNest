@@ -6,7 +6,6 @@ export default function SidebarItem({
   label,
   active = false,
   handleClick,
-  isCollapsed = false,
 }: {
   Icon: LucideIcon;
   label: string;
@@ -25,13 +24,8 @@ export default function SidebarItem({
           : "text-zinc-900 hover:bg-zinc-50 dark:text-zinc-100 dark:hover:bg-zinc-700/50",
       )}
     >
-      <Icon size={16} className="shrink-0" />
-      <span
-        className={cn(
-          "overflow-hidden whitespace-nowrap transition-all duration-300",
-          isCollapsed ? "w-0 opacity-0" : "w-auto opacity-100",
-        )}
-      >
+      <Icon className="size-4 shrink-0" />
+      <span className="overflow-hidden whitespace-nowrap transition-all duration-300">
         {label}
       </span>
     </div>

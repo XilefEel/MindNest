@@ -9,10 +9,12 @@ export default function DiscoverPreview() {
           <div className="flex size-10 items-center justify-center rounded-xl bg-blue-500">
             <Globe className="text-white" size={18} />
           </div>
+
           <div>
             <h2 className="text-base font-bold text-zinc-800 dark:text-zinc-100">
               Discover Public Nests
             </h2>
+
             <p className="text-xs text-zinc-400 dark:text-zinc-500">
               Explore popular community nests
             </p>

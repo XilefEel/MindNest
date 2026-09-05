@@ -5,8 +5,9 @@ export function SharedCard() {
     <div className="group relative overflow-hidden rounded-xl border border-zinc-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-purple-200 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-purple-500/50">
       <div className="mb-3 flex items-start justify-between">
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-50 text-purple-500 dark:bg-purple-500/10 dark:text-purple-400">
-          <Users size={14} />
+          <Users className="size-3.5 shrink-0" />
         </div>
+
         <span className="rounded-full bg-purple-50 px-2.5 py-1 text-xs font-semibold text-purple-600 dark:bg-purple-500/10 dark:text-purple-400">
           Editor
         </span>
@@ -16,6 +17,7 @@ export function SharedCard() {
         <h3 className="line-clamp-2 font-semibold text-zinc-800 transition-colors group-hover:text-purple-600 dark:text-zinc-100 dark:group-hover:text-purple-400">
           Title Here
         </h3>
+
         <p className="text-xs text-zinc-400 dark:text-zinc-500">
           Shared by John Doe · 3d ago
         </p>

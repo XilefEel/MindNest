@@ -13,7 +13,6 @@ export default function DashboardPage() {
     "home" | "nests" | "shared" | "explore"
   >("home");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const handleToggleActive = (
     section: "home" | "nests" | "shared" | "explore",
@@ -41,18 +40,11 @@ export default function DashboardPage() {
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
-      <aside
-        className={cn(
-          "shrink-0 transition-[width] duration-300 ease-in-out",
-          "w-0 md:w-64",
-          isSidebarCollapsed ? "md:w-[76px]" : "md:w-64",
-        )}
-      >
+
+      <aside className="w-0 shrink-0 md:w-64">
         <div
-          onDoubleClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           className={cn(
             "fixed top-0 left-0 z-50 flex w-64 flex-col transition-transform duration-300 ease-in-out md:transition-[width]",
-            isSidebarCollapsed ? "md:w-[76px]" : "md:w-64",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full",
             "md:relative md:flex md:translate-x-0",
           )}
@@ -60,7 +52,6 @@ export default function DashboardPage() {
           <Sidebar
             activeSection={activeSection}
             setActiveSection={handleToggleActive}
-            isCollapsed={isSidebarCollapsed}
           />
         </div>
       </aside>

@@ -27,6 +27,7 @@ export default function NestSection() {
           <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
             🪹 My Nests
           </h1>
+
           <p className="text-sm text-zinc-400 dark:text-zinc-500">
             Your personal collections and projects
           </p>
@@ -64,7 +65,7 @@ export default function NestSection() {
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
           <div className="flex size-16 items-center justify-center rounded-2xl bg-teal-50 text-teal-400 dark:bg-teal-500/10">
-            <FolderOpen size={32} />
+            <FolderOpen className="size-8 shrink-0" />
           </div>
 
           <div className="flex flex-col gap-1">

@@ -7,6 +7,7 @@ export default function ExploreSection() {
         <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
           Discover Nests
         </h1>
+
         <p className="text-sm text-zinc-400 dark:text-zinc-500">
           Explore popular community collections
         </p>

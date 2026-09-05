@@ -21,14 +21,15 @@ export default function NestCard({ nest }: { nest: Nest }) {
     >
       <div className="mb-2 flex items-start justify-between">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-500 dark:bg-teal-500/10 dark:text-teal-400">
-          <FolderOpen size={14} />
+          <FolderOpen className="size-3.5 shrink-0" />
         </div>
+
         <EditNestModal nest={nest}>
           <div
             onClick={(e) => e.stopPropagation()}
             className="rounded-lg p-0.5 text-zinc-400 transition-colors hover:text-zinc-500 dark:text-zinc-500 dark:hover:text-zinc-300"
           >
-            <EllipsisVertical size={14} />
+            <EllipsisVertical className="size-3.5 shrink-0" />
           </div>
         </EditNestModal>
       </div>

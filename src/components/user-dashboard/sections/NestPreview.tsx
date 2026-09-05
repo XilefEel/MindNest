@@ -20,10 +20,12 @@ export default function NestPreview() {
           <div className="flex size-10 items-center justify-center rounded-xl bg-teal-500">
             <FolderOpen className="text-white" size={18} />
           </div>
+
           <div>
             <h2 className="text-base font-bold text-zinc-800 dark:text-zinc-100">
               Your Nests
             </h2>
+
             <p className="text-xs text-zinc-400 dark:text-zinc-500">
               Personal collections and projects
             </p>

@@ -5,8 +5,9 @@ export default function DiscoverCard() {
     <div className="group relative overflow-hidden rounded-xl border border-zinc-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-blue-500/50">
       <div className="mb-3 flex items-start justify-between">
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-500 dark:bg-blue-500/10 dark:text-blue-400">
-          <Globe size={14} />
+          <Globe className="size-3.5 shrink-0" />
         </div>
+
         <div className="flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-1 dark:bg-zinc-700">
           <span className="text-xs">👤</span>
           <span className="text-xs font-medium text-zinc-600 dark:text-zinc-300">
@@ -19,6 +20,7 @@ export default function DiscoverCard() {
         <h3 className="line-clamp-2 font-semibold text-zinc-800 transition-colors group-hover:text-blue-600 dark:text-zinc-100 dark:group-hover:text-blue-400">
           Mind Mapping Vault
         </h3>
+
         <div className="flex flex-wrap gap-1.5">
           <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
             #brainstorm
@@ -27,6 +29,7 @@ export default function DiscoverCard() {
             #mindmap
           </span>
         </div>
+
         <p className="text-xs text-zinc-400 dark:text-zinc-500">3d ago</p>
       </div>
 

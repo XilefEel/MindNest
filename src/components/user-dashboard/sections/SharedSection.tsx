@@ -7,6 +7,7 @@ export default function SharedSection() {
         <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
           Shared
         </h1>
+
         <p className="text-sm text-zinc-400 dark:text-zinc-500">
           Nests shared by others
         </p>
@@ -21,6 +22,7 @@ export default function SharedSection() {
           <p className="text-base font-semibold text-zinc-700 dark:text-zinc-200">
             Coming soon
           </p>
+
           <p className="text-xs text-zinc-400 dark:text-zinc-500">
             This feature is still being built
           </p>

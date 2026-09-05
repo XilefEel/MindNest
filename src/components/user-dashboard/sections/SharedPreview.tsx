@@ -9,10 +9,12 @@ export default function SharedPreview() {
           <div className="flex size-10 items-center justify-center rounded-xl bg-purple-500">
             <Users className="text-white" size={18} />
           </div>
+
           <div>
             <h2 className="text-base font-bold text-zinc-800 dark:text-zinc-100">
               Shared with You
             </h2>
+
             <p className="text-xs text-zinc-400 dark:text-zinc-500">
               Nests shared by others
             </p>

@@ -1,4 +1,11 @@
-import { BookOpen, Settings, CircleUserRound, LayoutDashboard, Share2, Compass } from "lucide-react";
+import {
+  BookOpen,
+  Settings,
+  CircleUserRound,
+  LayoutDashboard,
+  Share2,
+  Compass,
+} from "lucide-react";
 import SidebarItem from "./SidebarItem";
 import { cn } from "@/lib/utils/general";
 import { useSettingsModal } from "@/stores/useModalStore";
@@ -6,11 +13,9 @@ import { useSettingsModal } from "@/stores/useModalStore";
 export default function Sidebar({
   activeSection,
   setActiveSection,
-  isCollapsed = false,
 }: {
   activeSection: string;
   setActiveSection: (section: any) => void;
-  isCollapsed: boolean;
 }) {
   const { setIsSettingsOpen } = useSettingsModal();
 
@@ -22,25 +27,53 @@ export default function Sidebar({
         "border-r border-zinc-100 dark:border-zinc-700",
       )}
     >
-      <div
-        className={cn(
-          "mb-5 px-2 text-2xl font-bold whitespace-nowrap transition-all duration-300",
-          isCollapsed && "px-0 text-center",
-        )}
-      >
-        {isCollapsed ? "🧠" : "🧠 MindNest"}
+      <div className="mb-5 px-2 text-2xl font-bold whitespace-nowrap">
+        🧠 MindNest
       </div>
 
       <nav className="flex flex-col gap-1.5">
-        <SidebarItem Icon={LayoutDashboard} label="Dashboard" active={activeSection === "home"} handleClick={() => setActiveSection("home")} isCollapsed={isCollapsed} />
-        <SidebarItem Icon={BookOpen} label="My Nests" active={activeSection === "nests"} handleClick={() => setActiveSection("nests")} isCollapsed={isCollapsed} />
-        <SidebarItem Icon={Share2} label="Shared" active={activeSection === "shared"} handleClick={() => setActiveSection("shared")} isCollapsed={isCollapsed} />
-        <SidebarItem Icon={Compass} label="Discover Nests" active={activeSection === "explore"} handleClick={() => setActiveSection("explore")} isCollapsed={isCollapsed} />
+        <SidebarItem
+          Icon={LayoutDashboard}
+          label="Dashboard"
+          active={activeSection === "home"}
+          handleClick={() => setActiveSection("home")}
+        />
+
+        <SidebarItem
+          Icon={BookOpen}
+          label="My Nests"
+          active={activeSection === "nests"}
+          handleClick={() => setActiveSection("nests")}
+        />
+
+        <SidebarItem
+          Icon={Share2}
+          label="Shared"
+          active={activeSection === "shared"}
+          handleClick={() => setActiveSection("shared")}
+        />
+
+        <SidebarItem
+          Icon={Compass}
+          label="Discover Nests"
+          active={activeSection === "explore"}
+          handleClick={() => setActiveSection("explore")}
+        />
       </nav>
 
       <div className="mt-auto flex flex-col gap-1.5 border-t border-zinc-300 pt-4 dark:border-zinc-600">
-        <SidebarItem Icon={CircleUserRound} label="Profile" active={activeSection === "profile"} handleClick={() => {}} isCollapsed={isCollapsed} />
-        <SidebarItem Icon={Settings} label="Settings" isCollapsed={isCollapsed} handleClick={() => setIsSettingsOpen(true)} />
+        <SidebarItem
+          Icon={CircleUserRound}
+          label="Profile"
+          active={activeSection === "profile"}
+          handleClick={() => {}}
+        />
+
+        <SidebarItem
+          Icon={Settings}
+          label="Settings"
+          handleClick={() => setIsSettingsOpen(true)}
+        />
       </div>
     </aside>
   );
